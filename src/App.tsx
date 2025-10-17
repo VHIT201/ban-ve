@@ -90,7 +90,6 @@ function App() {
   return (
     <div className="min-h-screen bg-background">
       <Toaster position="top-right" />
-
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-4">
@@ -112,16 +111,13 @@ function App() {
           </div>
         </div>
       </header>
-
       <main className="container mx-auto px-4 py-8 md:py-12">
         <div className="mb-8 md:mb-12 space-y-6">
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">
               Professional Blueprint Collection
             </h2>
-            <p className="text-lg text-muted-foreground">
-              Discover expertly crafted architectural plans for your next project
-            </p>
+            <p className="text-lg text-muted-foreground">Discover expertly crafted architectural plans for your next project</p>
           </div>
 
           <div className="flex flex-col md:flex-row gap-4 max-w-4xl mx-auto">
@@ -193,7 +189,6 @@ function App() {
           </>
         )}
       </main>
-
       <footer className="border-t mt-16">
         <div className="container mx-auto px-4 py-8">
           <div className="text-center text-sm text-muted-foreground">
@@ -201,7 +196,6 @@ function App() {
           </div>
         </div>
       </footer>
-
       <BlueprintDialog
         blueprint={selectedBlueprint}
         open={dialogOpen}
