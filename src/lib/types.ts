@@ -1,4 +1,4 @@
-export type Category = 'Residential' | 'Commercial' | 'Landscape' | 'Industrial' | 'Modern' | 'Traditional';
+export type Category = 'Cơ khí' | 'Điện' | 'Xây dựng' | 'Điều hòa' | 'Cấp thoát nước' | 'Điện tử' | 'Robot' | 'Nội thất';
 
 export interface Blueprint {
   id: string;
@@ -8,12 +8,13 @@ export interface Blueprint {
   price: number;
   dimensions: string;
   sqft: number;
+  imageUrl: string;
   bedrooms?: number;
   bathrooms?: number;
-  imageUrl: string;
 }
 
 export interface CartItem {
   blueprint: Blueprint;
   quantity: number;
+  notes?: string;
 }

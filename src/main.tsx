@@ -2,15 +2,20 @@ import { createRoot } from 'react-dom/client'
 import { ErrorBoundary } from "react-error-boundary";
 import "@github/spark/spark"
 
-import App from './App.tsx'
+import { AppRouter } from './AppRouter';
 import { ErrorFallback } from './ErrorFallback.tsx'
 
 import "./main.css"
 import "./styles/theme.css"
 import "./index.css"
 
+import React from 'react';
+import { AuthProvider } from '@/contexts/AuthContext';
+
 createRoot(document.getElementById('root')!).render(
   <ErrorBoundary FallbackComponent={ErrorFallback}>
-    <App />
-   </ErrorBoundary>
+    <AuthProvider>
+      <AppRouter />
+    </AuthProvider>
+  </ErrorBoundary>
 )
