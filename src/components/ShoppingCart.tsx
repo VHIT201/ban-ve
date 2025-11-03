@@ -11,7 +11,9 @@ import {
 } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
 import { ShoppingCart as CartIcon, Plus, Minus, Trash, CheckCircle } from '@phosphor-icons/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { PaymentDialog } from './PaymentDialog';
 
 interface ShoppingCartProps {
   items: CartItem[];
@@ -22,9 +24,20 @@ interface ShoppingCartProps {
 
 export function ShoppingCart({ items, onUpdateQuantity, onRemoveItem, onCheckout }: ShoppingCartProps) {
   const [open, setOpen] = useState(false);
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+  const [orderId, setOrderId] = useState('');
   
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + item.blueprint.price * item.quantity, 0);
+  
+  // Tạo orderId mới khi mở giỏ hàng
+  useEffect(() => {
+    if (open) {
+      setOrderId(`ORDER-${uuidv4().substring(0, 8).toUpperCase()}`);
+    } else {
+      setShowPaymentDialog(false); // Đảm bảo đóng hộp thoại thanh toán khi đóng giỏ hàng
+    }
+  }, [open]);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -38,110 +51,111 @@ export function ShoppingCart({ items, onUpdateQuantity, onRemoveItem, onCheckout
           )}
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-md flex flex-col">
-        <SheetHeader>
-          <SheetTitle className="flex items-center gap-2">
-            <CartIcon size={24} weight="bold" />
-            Shopping Cart
-            {totalItems > 0 && (
-              <Badge variant="secondary">{totalItems} {totalItems === 1 ? 'item' : 'items'}</Badge>
-            )}
-          </SheetTitle>
-        </SheetHeader>
-
-        {items.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center text-center py-12">
-            <CartIcon size={64} weight="thin" className="text-muted-foreground mb-4" />
-            <h3 className="font-semibold text-lg mb-2">Your cart is empty</h3>
-            <p className="text-sm text-muted-foreground mb-6">
-              Start adding blueprints to your cart
-            </p>
-            <Button onClick={() => setOpen(false)}>Browse Catalog</Button>
+      <SheetContent className="flex flex-col w-full sm:max-w-lg p-0 h-full">
+        <div className="flex flex-col h-full">
+          <div className="p-6 border-b">
+            <SheetHeader>
+              <SheetTitle className="flex items-center gap-2">
+                <CartIcon size={24} weight="bold" />
+                Giỏ hàng
+                {totalItems > 0 && (
+                  <Badge variant="secondary">{totalItems} {totalItems === 1 ? 'sản phẩm' : 'sản phẩm'}</Badge>
+                )}
+              </SheetTitle>
+            </SheetHeader>
           </div>
-        ) : (
-          <>
-            <ScrollArea className="flex-1 -mx-6 px-6 py-4">
-              <div className="space-y-4">
-                {items.map((item) => (
-                  <div key={item.blueprint.id} className="flex gap-4 p-4 rounded-lg border bg-card">
-                    <img
-                      src={item.blueprint.imageUrl}
-                      alt={item.blueprint.title}
-                      className="w-20 h-20 object-cover rounded"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-sm line-clamp-1 mb-1">
-                        {item.blueprint.title}
-                      </h4>
-                      <p className="text-sm text-muted-foreground mb-2">
-                        ${item.blueprint.price}
-                      </p>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-7 w-7"
-                          onClick={() => onUpdateQuantity(item.blueprint.id, Math.max(1, item.quantity - 1))}
-                        >
-                          <Minus size={14} weight="bold" />
-                        </Button>
-                        <span className="w-8 text-center font-semibold tabular-nums">
-                          {item.quantity}
-                        </span>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-7 w-7"
-                          onClick={() => onUpdateQuantity(item.blueprint.id, item.quantity + 1)}
-                        >
-                          <Plus size={14} weight="bold" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 ml-auto text-destructive"
-                          onClick={() => onRemoveItem(item.blueprint.id)}
-                        >
-                          <Trash size={14} weight="bold" />
-                        </Button>
+
+          {items.length === 0 ? (
+            <div className="flex-1 flex flex-col items-center justify-center text-center py-12">
+              <CartIcon size={64} weight="thin" className="text-muted-foreground mb-4" />
+              <h3 className="font-semibold text-lg mb-2">Giỏ hàng của bạn đang trống</h3>
+              <p className="text-sm text-muted-foreground mb-6">
+                Hãy thêm sản phẩm vào giỏ hàng
+              </p>
+              <Button onClick={() => setOpen(false)}>Xem danh mục</Button>
+            </div>
+          ) : (
+            <>
+              <ScrollArea className="flex-1 -mx-6 px-6 py-4 h-[calc(100vh-350px)]">
+                <div className="space-y-4 pr-2">
+                  {items.map((item) => (
+                    <div key={item.blueprint.id} className="flex gap-4 p-4 rounded-lg border bg-card">
+                      <img
+                        src={item.blueprint.imageUrl}
+                        alt={item.blueprint.title}
+                        className="w-20 h-20 object-cover rounded"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-sm line-clamp-1 mb-1">
+                          {item.blueprint.title}
+                        </h4>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          ${item.blueprint.price}
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={() => onUpdateQuantity(item.blueprint.id, Math.max(1, item.quantity - 1))}
+                          >
+                            <Minus size={14} weight="bold" />
+                          </Button>
+                          <span className="w-8 text-center font-semibold tabular-nums">
+                            {item.quantity}
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={() => onUpdateQuantity(item.blueprint.id, item.quantity + 1)}
+                          >
+                            <Plus size={14} weight="bold" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 ml-auto text-destructive"
+                            onClick={() => onRemoveItem(item.blueprint.id)}
+                          >
+                            <Trash size={14} weight="bold" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </ScrollArea>
+                  ))}
+                </div>
+              </ScrollArea>
 
-            <div className="space-y-4 pt-4 border-t">
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span className="font-semibold tabular-nums">${totalPrice}</span>
+              <div className="p-6 border-t bg-background">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="font-medium">Tổng cộng:</span>
+                  <span className="text-lg font-bold">
+                    {new Intl.NumberFormat('vi-VN', {
+                      style: 'currency',
+                      currency: 'VND',
+                    }).format(totalPrice)}
+                  </span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Tax</span>
-                  <span className="font-semibold tabular-nums">Calculated at checkout</span>
-                </div>
-                <Separator />
-                <div className="flex justify-between">
-                  <span className="font-semibold">Total</span>
-                  <span className="text-2xl font-bold text-primary tabular-nums">${totalPrice}</span>
-                </div>
+                <Button 
+                  className="w-full" 
+                  size="lg"
+                  onClick={onCheckout}
+                  disabled={items.length === 0}
+                >
+                  Tiến hành thanh toán
+                </Button>
+                
+                <PaymentDialog
+                  open={showPaymentDialog}
+                  onOpenChange={setShowPaymentDialog}
+                  amount={totalPrice}
+                  orderId={orderId}
+                />
               </div>
-
-              <Button
-                size="lg"
-                className="w-full gap-2"
-                onClick={() => {
-                  onCheckout();
-                  setOpen(false);
-                }}
-              >
-                <CheckCircle size={20} weight="bold" />
-                Proceed to Checkout
-              </Button>
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
       </SheetContent>
     </Sheet>
   );
