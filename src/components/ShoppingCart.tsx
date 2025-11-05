@@ -42,7 +42,7 @@ export function ShoppingCart({ items, onUpdateQuantity, onRemoveItem, onCheckout
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="outline" size="icon" className="relative">
+        <Button variant="outline" size="icon" className="relative cursor-pointer">
           <CartIcon size={20} weight="bold" />
           {totalItems > 0 && (
             <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-accent text-accent-foreground">
@@ -72,7 +72,7 @@ export function ShoppingCart({ items, onUpdateQuantity, onRemoveItem, onCheckout
               <p className="text-sm text-muted-foreground mb-6">
                 Hãy thêm sản phẩm vào giỏ hàng
               </p>
-              <Button onClick={() => setOpen(false)}>Xem danh mục</Button>
+              <Button onClick={() => setOpen(false)} className="cursor-pointer">Xem danh mục</Button>
             </div>
           ) : (
             <>
@@ -96,7 +96,7 @@ export function ShoppingCart({ items, onUpdateQuantity, onRemoveItem, onCheckout
                           <Button
                             variant="outline"
                             size="icon"
-                            className="h-7 w-7"
+                            className="h-7 w-7 cursor-pointer"
                             onClick={() => onUpdateQuantity(item.blueprint.id, Math.max(1, item.quantity - 1))}
                           >
                             <Minus size={14} weight="bold" />
@@ -107,7 +107,7 @@ export function ShoppingCart({ items, onUpdateQuantity, onRemoveItem, onCheckout
                           <Button
                             variant="outline"
                             size="icon"
-                            className="h-7 w-7"
+                            className="h-7 w-7 cursor-pointer"
                             onClick={() => onUpdateQuantity(item.blueprint.id, item.quantity + 1)}
                           >
                             <Plus size={14} weight="bold" />
@@ -115,7 +115,7 @@ export function ShoppingCart({ items, onUpdateQuantity, onRemoveItem, onCheckout
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-7 w-7 ml-auto text-destructive"
+                            className="h-7 w-7 ml-auto text-destructive cursor-pointer"
                             onClick={() => onRemoveItem(item.blueprint.id)}
                           >
                             <Trash size={14} weight="bold" />
@@ -138,7 +138,7 @@ export function ShoppingCart({ items, onUpdateQuantity, onRemoveItem, onCheckout
                   </span>
                 </div>
                 <Button 
-                  className="w-full" 
+                  className="w-full cursor-pointer" 
                   size="lg"
                   onClick={onCheckout}
                   disabled={items.length === 0}

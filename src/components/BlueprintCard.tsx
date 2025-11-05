@@ -2,7 +2,7 @@ import { Blueprint } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Ruler, Cpu, Factory, Lightning, Drop, Robot } from '@phosphor-icons/react';
+import { ShoppingCart, Ruler, Cpu, Factory, Lightning, Drop, Robot, Star, StarHalf } from '@phosphor-icons/react';
 
 interface BlueprintCardProps {
   blueprint: Blueprint;
@@ -39,7 +39,7 @@ const getCategoryName = (category: string) => {
 export function BlueprintCard({ blueprint, onViewDetails, onAddToCart }: BlueprintCardProps) {
   return (
     <Card 
-      className="group flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer"
+      className="group flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
       onClick={() => onViewDetails(blueprint)}
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
@@ -53,9 +53,9 @@ export function BlueprintCard({ blueprint, onViewDetails, onAddToCart }: Bluepri
         </Badge>
       </div>
       
-      <div className="flex flex-col flex-1 p-5">
+      <div className="flex flex-col flex-1 p-5 cursor-default">
         <div className="mb-4">
-          <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2 h-12 flex items-center">
+          <h3 className="text-lg font-semibold text-foreground mb-1 line-clamp-2 h-12 flex items-center">
             {blueprint.title}
           </h3>
           <p className="text-sm text-muted-foreground line-clamp-2 mb-4 min-h-[40px]">
@@ -91,7 +91,7 @@ export function BlueprintCard({ blueprint, onViewDetails, onAddToCart }: Bluepri
                 e.stopPropagation();
                 onAddToCart(blueprint);
               }}
-              className="gap-1.5 h-8 px-3 text-xs"
+              className="gap-1.5 h-8 px-3 text-xs cursor-pointer"
             >
               <ShoppingCart size={14} weight="bold" />
               Thêm

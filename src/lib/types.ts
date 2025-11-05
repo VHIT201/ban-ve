@@ -11,6 +11,10 @@ export interface Blueprint {
   imageUrl: string;
   bedrooms?: number;
   bathrooms?: number;
+  rating?: {
+    average: number;
+    count: number;
+  };
 }
 
 export interface CartItem {

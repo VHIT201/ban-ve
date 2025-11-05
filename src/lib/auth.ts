@@ -20,8 +20,18 @@ const sampleAdmin: User = {
   createdAt: new Date()
 };
 
+// Tài khoản người dùng Lê Nguyễn Hoàng
+const leNguyenHoangUser: User = {
+  id: 'user-001',
+  email: 'lenguyenhoang@gmail.com',
+  password: 'lehoang123', 
+  name: 'Lê Nguyễn Hoàng',
+  role: 'user',
+  createdAt: new Date()
+};
+
 // Lưu trữ người dùng trong bộ nhớ (trong ứng dụng thực tế nên dùng database)
-const users: User[] = [sampleAdmin];
+const users: User[] = [sampleAdmin, leNguyenHoangUser];
 
 // Trạng thái xác thực
 let currentUser: User | null = null;

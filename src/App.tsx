@@ -40,22 +40,37 @@ interface CategoryButtonProps {
   isSelected: boolean;
   onClick: () => void;
   fullWidth?: boolean;
+  className?: string;
 }
 
 const CategoryButton = ({ 
   category, 
   isSelected, 
   onClick, 
-  fullWidth = false 
+  fullWidth = false,
+  className = ''
 }: CategoryButtonProps) => {
+  // Create a wrapper div to ensure consistent icon sizing
+  const IconWrapper = ({ children }: { children: React.ReactElement }) => (
+    <div className="flex-shrink-0 w-5 h-5 flex items-center justify-center">
+      {children}
+    </div>
+  );
+
   return (
     <Button
       variant={isSelected ? 'default' : 'outline'}
       onClick={onClick}
-      className={`${fullWidth ? 'w-full justify-start' : ''} gap-2 text-sm h-9 px-4`}
+      className={cn(
+        'gap-3 text-sm h-9 px-4 items-center',
+        fullWidth && 'w-full justify-start',
+        className
+      )}
     >
-      {categoryIcons[category.value]}
-      {category.name}
+      <IconWrapper>
+        {categoryIcons[category.value]}
+      </IconWrapper>
+      <span className="whitespace-nowrap">{category.name}</span>
     </Button>
   );
 };
@@ -198,7 +213,10 @@ function App() {
       <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 cursor-pointer" onClick={() => {
+              setSelectedCategory('All');
+              setSearchQuery('');
+            }}>
               <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
                 <Ruler size={24} weight="bold" />
               </div>
@@ -226,7 +244,7 @@ function App() {
                 <Button 
                   variant="ghost" 
                   size="icon" 
-                  className="h-9 w-9 rounded-full" 
+                  className="h-9 w-9 rounded-full cursor-pointer" 
                   title="Yêu thích"
                   onClick={() => navigate('/favorites')}
                 >
@@ -238,7 +256,7 @@ function App() {
                 <Button 
                   variant="outline"
                   size="sm"
-                  className="hidden sm:flex gap-1.5 items-center h-8 px-3 text-sm font-medium text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 border-emerald-200 transition-colors duration-200"
+                  className="hidden sm:flex gap-1.5 items-center h-8 px-3 text-sm font-medium text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 border-emerald-200 transition-colors duration-200 cursor-pointer"
                   onClick={() => navigate('/upload')}
                 >
                   <div className="flex items-center gap-1.5">
@@ -262,54 +280,56 @@ function App() {
             </div>
           </div>
         </div>
-      </header>
-      
-      {/* Categories Filter */}
-      <div className="sticky top-[73px] z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-        <div className="container mx-auto px-4 py-2 md:py-4">
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex justify-end py-2">
-            <Button
-              variant="outline"
-              size="icon"
-              className="w-10 h-10 rounded-full mr-2"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? <X size={20} /> : <List size={20} />}
-            </Button>
-          </div>
+        <div className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-between">
+              {/* Desktop Categories */}
+              <div className="hidden md:flex flex-1 items-center gap-1 py-1.5 overflow-x-auto scrollbar-hide">
+                {categories.map((category) => (
+                  <CategoryButton 
+                    key={category.value}
+                    category={category}
+                    isSelected={selectedCategory === category.value}
+                    onClick={() => setSelectedCategory(category.value)}
+                    className="flex-shrink-0 cursor-pointer"
+                  />
+                ))}
+              </div>
 
-          {/* Desktop Categories */}
-          <div className="hidden md:flex flex-wrap gap-2 justify-center">
-            {categories.map((category) => (
-              <CategoryButton 
-                key={category.value}
-                category={category}
-                isSelected={selectedCategory === category.value}
-                onClick={() => setSelectedCategory(category.value)}
-              />
-            ))}
-          </div>
-
-          {/* Mobile Categories Dropdown */}
-          {isMobileMenuOpen && (
-            <div className="md:hidden mt-2 space-y-2">
-              {categories.map((category) => (
-                <CategoryButton 
-                  key={category.value}
-                  category={category}
-                  isSelected={selectedCategory === category.value}
-                  onClick={() => {
-                    setSelectedCategory(category.value);
-                    setIsMobileMenuOpen(false);
-                  }}
-                  fullWidth
-                />
-              ))}
+              {/* Mobile Menu Button */}
+              <div className="md:hidden py-1.5">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="w-9 h-9 rounded-full cursor-pointer"
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                >
+                  {isMobileMenuOpen ? <X size={18} /> : <List size={18} />}
+                </Button>
+              </div>
             </div>
-          )}
+
+            {/* Mobile Categories Dropdown */}
+            {isMobileMenuOpen && (
+              <div className="md:hidden mt-1 mb-2 space-y-1.5">
+                {categories.map((category) => (
+                  <CategoryButton 
+                    key={category.value}
+                    category={category}
+                    isSelected={selectedCategory === category.value}
+                    onClick={() => {
+                      setSelectedCategory(category.value);
+                      setIsMobileMenuOpen(false);
+                    }}
+                    fullWidth
+                    className="text-sm"
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      </header>
 
 
       {/* Banner Chính - Phiên bản Nâng cấp */}

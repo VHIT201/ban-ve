@@ -8,7 +8,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { ShoppingCart, Bed, Bathtub, ArrowsOut, Ruler, ChatCircle } from '@phosphor-icons/react';
+import { ShoppingCart, Bed, Bathtub, ArrowsOut, Ruler, ChatCircle, Star } from '@phosphor-icons/react';
 import { CommentSection } from './comments/CommentSection';
 
 interface BlueprintDialogProps {
@@ -27,8 +27,57 @@ export function BlueprintDialog({ blueprint, open, onOpenChange, onAddToCart }: 
         <DialogHeader>
           <div className="flex items-start justify-between gap-4">
             <div>
-              <DialogTitle className="text-2xl mb-2">{blueprint.title}</DialogTitle>
-              <Badge variant="secondary">{blueprint.category}</Badge>
+              <DialogTitle className="text-2xl mb-1">{blueprint.title}</DialogTitle>
+              <div className="flex items-center gap-3">
+                <Badge variant="secondary">{blueprint.category}</Badge>
+                {blueprint.rating ? (
+                  <div className="flex items-center gap-1">
+                    <div className="flex items-center">
+                      {[1, 2, 3, 4, 5].map((star) => {
+                        const rating = blueprint.rating!.average;
+                        const isHalfStar = rating >= star - 0.5 && rating < star;
+                        const isFullStar = rating >= star;
+                        
+                        return (
+                          <div key={star} className="relative w-4 h-4">
+                            <Star 
+                              size={16} 
+                              className="absolute text-gray-300" 
+                              weight="regular"
+                            />
+                            {isFullStar ? (
+                              <Star 
+                                size={16} 
+                                className="absolute text-yellow-400" 
+                                weight="fill"
+                              />
+                            ) : isHalfStar ? (
+                              <div className="absolute w-1/2 h-full overflow-hidden">
+                                <Star 
+                                  size={16} 
+                                  className="text-yellow-400" 
+                                  weight="fill"
+                                />
+                              </div>
+                            ) : null}
+                          </div>
+                        );
+                      })}
+                      <span className="ml-1.5 text-sm font-medium text-foreground/90">
+                        {blueprint.rating.average.toFixed(1)}
+                      </span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">
+                      • {blueprint.rating.count} đánh giá
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5 text-muted-foreground text-sm">
+                    <Star size={16} className="text-gray-300" weight="regular" />
+                    <span className="text-sm">Chưa có đánh giá</span>
+                  </div>
+                )}
+              </div>
             </div>
             <span className="text-3xl font-bold text-primary tabular-nums">
               {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(blueprint.price)}
@@ -36,8 +85,8 @@ export function BlueprintDialog({ blueprint, open, onOpenChange, onAddToCart }: 
           </div>
         </DialogHeader>
 
-        <div className="space-y-6">
-          <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
+        <div className="space-y-6 cursor-default">
+          <div className="relative aspect-video overflow-hidden rounded-lg bg-muted cursor-default">
             <img
               src={blueprint.imageUrl}
               alt={blueprint.title}
@@ -56,7 +105,7 @@ export function BlueprintDialog({ blueprint, open, onOpenChange, onAddToCart }: 
 
           <div>
             <h3 className="font-semibold mb-4">Specifications</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 cursor-default">
               <div className="flex flex-col items-center gap-2 p-4 rounded-lg bg-muted/50">
                 <ArrowsOut size={24} weight="bold" className="text-primary" />
                 <div className="text-center">
@@ -107,7 +156,7 @@ export function BlueprintDialog({ blueprint, open, onOpenChange, onAddToCart }: 
             <div className="flex justify-end mt-6">
               <Button 
                 size="lg" 
-                className="gap-2"
+                className="gap-2 cursor-pointer"
                 onClick={() => onAddToCart(blueprint)}
               >
                 <ShoppingCart size={20} weight="bold" />
