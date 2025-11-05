@@ -1,19 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useKV } from '@github/spark/hooks';
-import { Clock, Loader2, RefreshCw } from 'lucide-react';
-import { Blueprint, CartItem } from '@/lib/types';
+import { Loader2 } from 'lucide-react';
+import { CartItem } from '@/lib/types';
 
 // Components
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Separator } from '@/components/ui/separator';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Separator } from '@/components/ui/separator';
 import { PaymentDialog } from '@/components/PaymentDialog';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 // Types
 interface CartItemDisplay {
@@ -108,7 +106,6 @@ export default function CheckoutPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('bank');
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
-  const [saveInfo, setSaveInfo] = useState(false);
   const [clientInfo, setClientInfo] = useState({
     fullName: '',
     phone: '',

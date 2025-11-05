@@ -189,10 +189,10 @@ function App() {
         richColors 
         toastOptions={{
           style: {
-            marginTop: '80px', // Add margin to avoid overlap with header
-            marginRight: '20px' // Add some right margin
+            marginTop: '80px',
+            marginRight: '20px' 
           },
-          className: 'mt-20' // Add Tailwind class for top margin
+          className: 'mt-20'
         }}
       />
       <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
