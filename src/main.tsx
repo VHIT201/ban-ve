@@ -5,6 +5,8 @@ import { RouterProvider } from "react-router-dom";
 
 // Internal
 import "./main.css";
+import "./index.css";
+import "./styles/theme.css";
 import router from "./routes";
 
 // if (!import.meta.env.VITE_BACKEND_URL) {

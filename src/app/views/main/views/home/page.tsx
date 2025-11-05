@@ -1,11 +1,12 @@
 import { Blueprint, CartItem, Category } from "@/lib/types";
 import { useKV } from "@github/spark/hooks";
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { blueprints } from "@/lib/data";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Magnet } from "lucide-react";
 import { BlueprintCard } from "@/components/BlueprintCard";
+import { BannerSection } from "./components";
 
 const Home = () => {
   const [cart, setCart] = useKV<CartItem[]>("blueprint-cart", []);
@@ -75,54 +76,61 @@ const Home = () => {
   };
 
   return (
-    <main className="container mx-auto px-4 pt-4 pb-8">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Bản Vẽ Nổi Bật</h2>
-          <p className="text-muted-foreground">
-            Tìm thấy {filteredBlueprints.length}{" "}
-            {filteredBlueprints.length === 1 ? "thiết kế" : "thiết kế"}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" className="rounded-lg">
-            Sắp xếp: Mới nhất
-          </Button>
-        </div>
-      </div>
-      {filteredBlueprints.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredBlueprints.map((blueprint) => (
-            <BlueprintCard
-              key={blueprint.id}
-              blueprint={blueprint}
-              onViewDetails={handleViewDetails}
-              onAddToCart={handleAddToCart}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center py-20 text-center bg-muted/30 rounded-2xl">
-          <div className="bg-muted p-4 rounded-full mb-4">
-            <Magnet size={32} className="text-muted-foreground" />
+    <Fragment>
+      <BannerSection />
+      <main className="container mx-auto px-4 pt-4 pb-8">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight">
+              Bản Vẽ Nổi Bật
+            </h2>
+            <p className="text-muted-foreground">
+              Tìm thấy {filteredBlueprints.length}{" "}
+              {filteredBlueprints.length === 1 ? "thiết kế" : "thiết kế"}
+            </p>
           </div>
-          <h2 className="text-2xl font-semibold mb-2">Không tìm thấy bản vẽ</h2>
-          <p className="text-muted-foreground mb-6 max-w-md">
-            Chúng tôi không tìm thấy bản vẽ nào phù hợp với tìm kiếm của bạn.
-            Vui lòng điều chỉnh bộ lọc hoặc tìm kiếm với từ khóa khác.
-          </p>
-          <Button
-            variant="outline"
-            onClick={() => {
-              setSearchQuery("");
-              setSelectedCategory("All");
-            }}
-          >
-            Xóa tất cả bộ lọc
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" className="rounded-lg">
+              Sắp xếp: Mới nhất
+            </Button>
+          </div>
         </div>
-      )}
-    </main>
+        {filteredBlueprints.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredBlueprints.map((blueprint) => (
+              <BlueprintCard
+                key={blueprint.id}
+                blueprint={blueprint}
+                onViewDetails={handleViewDetails}
+                onAddToCart={handleAddToCart}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20 text-center bg-muted/30 rounded-2xl">
+            <div className="bg-muted p-4 rounded-full mb-4">
+              <Magnet size={32} className="text-muted-foreground" />
+            </div>
+            <h2 className="text-2xl font-semibold mb-2">
+              Không tìm thấy bản vẽ
+            </h2>
+            <p className="text-muted-foreground mb-6 max-w-md">
+              Chúng tôi không tìm thấy bản vẽ nào phù hợp với tìm kiếm của bạn.
+              Vui lòng điều chỉnh bộ lọc hoặc tìm kiếm với từ khóa khác.
+            </p>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSearchQuery("");
+                setSelectedCategory("All");
+              }}
+            >
+              Xóa tất cả bộ lọc
+            </Button>
+          </div>
+        )}
+      </main>
+    </Fragment>
   );
 };
 

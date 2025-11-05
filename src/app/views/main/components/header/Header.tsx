@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LucideMessageCircleQuestion, Ruler, Star, Upload } from "lucide-react";
-import AuthFormDialog from "./components/auth-form-dialog/AuthFormDialog";
 import { ShoppingCart } from "@/components/ShoppingCart";
 import { Blueprint, CartItem, Category } from "@/lib/types";
 import { useKV } from "@github/spark/hooks";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { AuthDialog } from "@/components/modules/auth";
 
 const Header = () => {
   const [cart, setCart] = useKV<CartItem[]>("blueprint-cart", []);
@@ -129,7 +129,7 @@ const Header = () => {
 
             <div className="flex items-center gap-3">
               <div className="hidden sm:block">
-                <AuthFormDialog />
+                <AuthDialog />
               </div>
               <ShoppingCart
                 items={cartItems}
