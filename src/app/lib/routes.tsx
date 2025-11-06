@@ -10,6 +10,7 @@ import {
   RouterHydrateFallbackElement,
 } from "../components";
 import mainRoutes from "../views/main/lib/routes";
+import authRoutes from "../views/auth/lib/routes";
 
 // App routes
 const appRoutes: RouteObject[] = [
@@ -24,7 +25,7 @@ const appRoutes: RouteObject[] = [
             element: <App />,
           };
         },
-        children: [mainRoutes],
+        children: [mainRoutes, authRoutes],
       },
     ],
     errorElement: <RouterErrorBoundary />,
