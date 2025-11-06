@@ -87,7 +87,7 @@ const LoginForm: FC<Props> = () => {
                 <Button
                   asChild
                   variant="link"
-                  className="text-xs text-primary hover:underline font-medium"
+                  className="p-0! h-fit text-xs text-primary hover:underline font-medium"
                 >
                   <Link to={BASE_PATHS.auth.forgot.path}>Quên mật khẩu?</Link>
                 </Button>
@@ -120,7 +120,7 @@ const LoginForm: FC<Props> = () => {
           )}
         </Button>
 
-        <div className="mt-4 text-center text-sm">
+        <div className="text-center text-sm">
           Chưa có tài khoản?{" "}
           <Button asChild variant="link" disabled={form.formState.isSubmitting}>
             <Link to={BASE_PATHS.auth.register.path}>Đăng ký ngay</Link>

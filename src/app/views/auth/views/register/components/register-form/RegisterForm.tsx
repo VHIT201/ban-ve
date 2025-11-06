@@ -161,7 +161,7 @@ const RegisterForm: FC<Props> = (props) => {
           )}
         </Button>
 
-        <div className="mt-4 text-center text-sm">
+        <div className="text-center text-sm">
           Đã có tài khoản?{" "}
           <Button
             asChild

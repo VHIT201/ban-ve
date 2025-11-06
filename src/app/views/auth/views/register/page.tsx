@@ -21,8 +21,8 @@ const stepsData = [
 ];
 
 const Register: FC = () => {
-  const [currentStep, setCurrentStep] = useState<number>(2);
-  const [registerEmail, setRegisterEmail] = useState<string>("123@example.com");
+  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [registerEmail, setRegisterEmail] = useState<string>("");
 
   return (
     <div className="space-y-8">

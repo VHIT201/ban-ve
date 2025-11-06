@@ -10,7 +10,9 @@ import { createStorage } from "@/utils/storage";
 // States
 interface States {
   isSignedIn: boolean;
-  token: string | null;
+  ssid: string | null;
+  accessToken: string | null;
+  refreshToken: string | null;
   expiredAt: Date | null;
   storedUsername: string | null;
   storedPassword: string | null;
@@ -19,7 +21,9 @@ interface States {
 // Actions
 interface SetStoreActionValues {
   isSignedIn?: States["isSignedIn"];
-  token?: States["token"];
+  ssid?: States["ssid"];
+  accessToken?: States["accessToken"];
+  refreshToken?: States["refreshToken"];
   expiredAt?: States["expiredAt"];
   storedUsername?: States["storedUsername"];
   storedPassword?: States["storedPassword"];
@@ -36,7 +40,9 @@ type Store = States & Actions;
 // Constants
 const INITIAL_STATES: States = {
   isSignedIn: false,
-  token: null,
+  ssid: null,
+  accessToken: null,
+  refreshToken: null,
   expiredAt: null,
   storedUsername: null,
   storedPassword: null,
@@ -50,14 +56,20 @@ const authStore: StateCreator<Store> = (set) => ({
   // Methods
   setStore: ({
     isSignedIn,
-    token,
+    ssid,
+    accessToken,
+    refreshToken,
     expiredAt,
     storedUsername,
     storedPassword,
   }) =>
     set((state) => ({
       isSignedIn: isUndefined(isSignedIn) ? state.isSignedIn : isSignedIn,
-      token: isUndefined(token) ? state.token : token,
+      ssid: isUndefined(ssid) ? state.ssid : ssid,
+      accessToken: isUndefined(accessToken) ? state.accessToken : accessToken,
+      refreshToken: isUndefined(refreshToken)
+        ? state.refreshToken
+        : refreshToken,
       expiredAt: isUndefined(expiredAt) ? state.expiredAt : expiredAt,
       storedUsername: isUndefined(storedUsername)
         ? state.storedUsername
@@ -69,7 +81,9 @@ const authStore: StateCreator<Store> = (set) => ({
   resetStore: () =>
     set({
       isSignedIn: INITIAL_STATES.isSignedIn,
-      token: INITIAL_STATES.token,
+      ssid: INITIAL_STATES.ssid,
+      accessToken: INITIAL_STATES.accessToken,
+      refreshToken: INITIAL_STATES.refreshToken,
       expiredAt: INITIAL_STATES.expiredAt,
     }),
 });
