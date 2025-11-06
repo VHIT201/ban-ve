@@ -13,9 +13,9 @@ const stepperVariants = cva("flex items-center flex-1 justify-between", {
       vertical: "flex-col",
     },
     size: {
-      sm: "gap-4",
-      md: "gap-6",
-      lg: "gap-8",
+      sm: "gap-1",
+      md: "gap-2",
+      lg: "gap-4",
     },
   },
   defaultVariants: {

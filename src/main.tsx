@@ -9,11 +9,6 @@ import "./index.css";
 import "./styles/theme.css";
 import router from "./routes";
 
-// if (!import.meta.env.VITE_BACKEND_URL) {
-//   throw new Error("Missing BACKEND_URL environment variable");
-// }
-// console.log("Backend URL:", import.meta.env.VITE_BACKEND_URL);
-
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <RouterProvider router={router} />

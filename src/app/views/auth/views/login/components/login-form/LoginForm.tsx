@@ -15,11 +15,11 @@ import { Loader2Icon, LockIcon, MailIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FC } from "react";
 import { Props } from "./lib/types";
-import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { BASE_PATHS } from "@/constants/paths";
 import { usePostApiAuthLogin } from "@/api/endpoints/auth";
 import { toast } from "sonner";
+import queryClient from "@/configs/query-client";
 
 const LoginForm: FC<Props> = () => {
   // Hooks
@@ -29,7 +29,11 @@ const LoginForm: FC<Props> = () => {
   });
 
   // Mutations
-  const loginMutation = usePostApiAuthLogin();
+  const loginMutation = usePostApiAuthLogin({
+    mutation: {
+      retry: 1,
+    },
+  });
 
   const handleSubmit = async (values: LoginFormValues) => {
     try {
@@ -37,10 +41,11 @@ const LoginForm: FC<Props> = () => {
         data: values,
       });
 
-      toast.success("Đăng nhập thành công!");
+      toast.success("Đăng nhập thành công");
       window.location.href = BASE_PATHS.app.path;
-    } catch {
-      toast.error("Đăng nhập thất bại!");
+      queryClient.clear();
+    } catch (error) {
+      throw error;
     }
   };
 

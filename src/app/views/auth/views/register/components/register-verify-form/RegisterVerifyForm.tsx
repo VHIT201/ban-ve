@@ -23,16 +23,24 @@ import {
   ClockIcon,
   Loader2Icon,
   RefreshCcwIcon,
-  ShieldIcon,
 } from "lucide-react";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useLayoutEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { isEmpty } from "lodash-es";
+import {
+  usePostApiAuthResendOtp,
+  usePostApiAuthVerifyRegistration,
+} from "@/api/endpoints/auth";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { BASE_PATHS } from "@/constants/paths";
 
 const RegisterVerifyForm: FC<Props> = (props) => {
   // Props
   const { email: registeredEmail, onCancel } = props;
 
   // Hooks
+  const navigate = useNavigate();
   const form = useForm<RegisterVerifyFormValues>({
     resolver: zodResolver(REGISTER_VERIFY_FORM_SCHEMA),
     defaultValues: REGISTER_VERIFY_FORM_DEFAULT_VALUES,
@@ -40,15 +48,50 @@ const RegisterVerifyForm: FC<Props> = (props) => {
 
   // States
   const [countdown, setCountdown] = useState(30);
-  const [isResending] = useState(false);
+
+  // Mutations
+  const verifyOTPMutation = usePostApiAuthVerifyRegistration({
+    mutation: {
+      retry: 1,
+    },
+  });
+
+  const reSendOTPMutation = usePostApiAuthResendOtp({
+    mutation: {
+      retry: 1,
+    },
+  });
 
   // Methods
-  const handleResendOTP = () => {
-    console.log("Resending OTP to:", registeredEmail);
-    setCountdown(30);
+  const handleResendOTP = async () => {
+    try {
+      await reSendOTPMutation.mutateAsync({
+        data: {
+          email: registeredEmail,
+        },
+      });
+
+      setCountdown(30);
+    } catch {
+      // Handle error
+    }
   };
 
-  const handleSubmit = (data: RegisterVerifyFormValues) => {};
+  const handleSubmit = async (data: RegisterVerifyFormValues) => {
+    try {
+      await verifyOTPMutation.mutateAsync({
+        data: {
+          email: registeredEmail,
+          otp: data.otp,
+        },
+      });
+
+      toast.success("Xác thực thành công");
+      navigate(BASE_PATHS.auth.login.path);
+    } catch {
+      // Handle error
+    }
+  };
 
   // Effects
   useEffect(() => {
@@ -58,7 +101,24 @@ const RegisterVerifyForm: FC<Props> = (props) => {
     }
   }, [countdown]);
 
-  return (
+  return isEmpty(registeredEmail) ? (
+    <div className="flex items-center justify-center space-y-6 flex-col">
+      <p className="text-sm text-muted-foreground">
+        Không có email đăng ký. Vui lòng quay lại bước trước và nhập email của
+        bạn.
+      </p>
+
+      <Button
+        type="button"
+        variant="outline"
+        onClick={onCancel}
+        className="flex-1"
+      >
+        <ArrowLeftIcon className="mr-2 h-4 w-4" />
+        Quay lại
+      </Button>
+    </div>
+  ) : (
     <div className="space-y-6">
       {/* OTP Info */}
       <div className="text-center space-y-2">
@@ -108,10 +168,10 @@ const RegisterVerifyForm: FC<Props> = (props) => {
                 type="button"
                 variant="link"
                 onClick={handleResendOTP}
-                disabled={isResending}
+                disabled={reSendOTPMutation.isPending}
                 className="p-0 h-auto font-medium text-primary hover:underline"
               >
-                {isResending ? (
+                {reSendOTPMutation.isPending ? (
                   <>
                     <RefreshCcwIcon className="mr-1 h-4 w-4 animate-spin" />
                     Đang gửi...

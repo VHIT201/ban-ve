@@ -21,7 +21,8 @@ const stepsData = [
 ];
 
 const Register: FC = () => {
-  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [currentStep, setCurrentStep] = useState<number>(2);
+  const [registerEmail, setRegisterEmail] = useState<string>("123@example.com");
 
   return (
     <div className="space-y-8">
@@ -39,10 +40,15 @@ const Register: FC = () => {
 
       {/* Step Content */}
       {currentStep === 1 ? (
-        <RegisterForm onSubmit={() => setCurrentStep(2)} />
+        <RegisterForm
+          onSubmit={(values) => {
+            setRegisterEmail(values.email);
+            setCurrentStep(2);
+          }}
+        />
       ) : (
         <RegisterVerifyForm
-          email="nguyend@gmail.com"
+          email={registerEmail}
           onCancel={() => setCurrentStep(1)}
         />
       )}

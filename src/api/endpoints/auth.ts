@@ -24,9 +24,17 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  GetApiAuthMe200,
+  PostApiAuthLogin200,
   PostApiAuthLoginBody,
+  PostApiAuthRefreshToken200,
+  PostApiAuthRefreshTokenBody,
+  PostApiAuthRegister200,
   PostApiAuthRegisterBody,
-  User
+  PostApiAuthResendOtp200,
+  PostApiAuthResendOtpBody,
+  PostApiAuthVerifyRegistration200,
+  PostApiAuthVerifyRegistrationBody
 } from '../models';
 
 import { mainInstance } from '../mutator/custom-instance';
@@ -39,7 +47,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 /**
- * @summary Đăng ký tài khoản mới
+ * @summary Bắt đầu quá trình đăng ký tài khoản mới (gửi OTP)
  */
 export const postApiAuthRegister = (
     postApiAuthRegisterBody: BodyType<PostApiAuthRegisterBody>,
@@ -47,7 +55,7 @@ export const postApiAuthRegister = (
 ) => {
       
       
-      return mainInstance<void>(
+      return mainInstance<PostApiAuthRegister200>(
       {url: `/api/auth/register`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: postApiAuthRegisterBody, signal
@@ -87,7 +95,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type PostApiAuthRegisterMutationError = ErrorType<void>
 
     /**
- * @summary Đăng ký tài khoản mới
+ * @summary Bắt đầu quá trình đăng ký tài khoản mới (gửi OTP)
  */
 export const usePostApiAuthRegister = <TError = ErrorType<void>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRegister>>, TError,{data: BodyType<PostApiAuthRegisterBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
@@ -103,6 +111,135 @@ export const usePostApiAuthRegister = <TError = ErrorType<void>,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * Sử dụng mã OTP đã gửi đến email để kích hoạt tài khoản
+ * @summary Xác thực OTP để kích hoạt tài khoản
+ */
+export const postApiAuthVerifyRegistration = (
+    postApiAuthVerifyRegistrationBody: BodyType<PostApiAuthVerifyRegistrationBody>,
+ options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<PostApiAuthVerifyRegistration200>(
+      {url: `/api/auth/verify-registration`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: postApiAuthVerifyRegistrationBody, signal
+    },
+      options);
+    }
+  
+
+
+export const getPostApiAuthVerifyRegistrationMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthVerifyRegistration>>, TError,{data: BodyType<PostApiAuthVerifyRegistrationBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiAuthVerifyRegistration>>, TError,{data: BodyType<PostApiAuthVerifyRegistrationBody>}, TContext> => {
+
+const mutationKey = ['postApiAuthVerifyRegistration'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiAuthVerifyRegistration>>, {data: BodyType<PostApiAuthVerifyRegistrationBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postApiAuthVerifyRegistration(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiAuthVerifyRegistrationMutationResult = NonNullable<Awaited<ReturnType<typeof postApiAuthVerifyRegistration>>>
+    export type PostApiAuthVerifyRegistrationMutationBody = BodyType<PostApiAuthVerifyRegistrationBody>
+    export type PostApiAuthVerifyRegistrationMutationError = ErrorType<void>
+
+    /**
+ * @summary Xác thực OTP để kích hoạt tài khoản
+ */
+export const usePostApiAuthVerifyRegistration = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthVerifyRegistration>>, TError,{data: BodyType<PostApiAuthVerifyRegistrationBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiAuthVerifyRegistration>>,
+        TError,
+        {data: BodyType<PostApiAuthVerifyRegistrationBody>},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiAuthVerifyRegistrationMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Gửi lại mã OTP
+ */
+export const postApiAuthResendOtp = (
+    postApiAuthResendOtpBody: BodyType<PostApiAuthResendOtpBody>,
+ options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<PostApiAuthResendOtp200>(
+      {url: `/api/auth/resend-otp`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: postApiAuthResendOtpBody, signal
+    },
+      options);
+    }
+  
+
+
+export const getPostApiAuthResendOtpMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthResendOtp>>, TError,{data: BodyType<PostApiAuthResendOtpBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiAuthResendOtp>>, TError,{data: BodyType<PostApiAuthResendOtpBody>}, TContext> => {
+
+const mutationKey = ['postApiAuthResendOtp'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiAuthResendOtp>>, {data: BodyType<PostApiAuthResendOtpBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postApiAuthResendOtp(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiAuthResendOtpMutationResult = NonNullable<Awaited<ReturnType<typeof postApiAuthResendOtp>>>
+    export type PostApiAuthResendOtpMutationBody = BodyType<PostApiAuthResendOtpBody>
+    export type PostApiAuthResendOtpMutationError = ErrorType<void>
+
+    /**
+ * @summary Gửi lại mã OTP
+ */
+export const usePostApiAuthResendOtp = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthResendOtp>>, TError,{data: BodyType<PostApiAuthResendOtpBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiAuthResendOtp>>,
+        TError,
+        {data: BodyType<PostApiAuthResendOtpBody>},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiAuthResendOtpMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
  * @summary Đăng nhập
  */
 export const postApiAuthLogin = (
@@ -111,7 +248,7 @@ export const postApiAuthLogin = (
 ) => {
       
       
-      return mainInstance<void>(
+      return mainInstance<PostApiAuthLogin200>(
       {url: `/api/auth/login`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: postApiAuthLoginBody, signal
@@ -167,6 +304,70 @@ export const usePostApiAuthLogin = <TError = ErrorType<void>,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary Làm mới access token
+ */
+export const postApiAuthRefreshToken = (
+    postApiAuthRefreshTokenBody: BodyType<PostApiAuthRefreshTokenBody>,
+ options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<PostApiAuthRefreshToken200>(
+      {url: `/api/auth/refresh-token`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: postApiAuthRefreshTokenBody, signal
+    },
+      options);
+    }
+  
+
+
+export const getPostApiAuthRefreshTokenMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRefreshToken>>, TError,{data: BodyType<PostApiAuthRefreshTokenBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRefreshToken>>, TError,{data: BodyType<PostApiAuthRefreshTokenBody>}, TContext> => {
+
+const mutationKey = ['postApiAuthRefreshToken'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiAuthRefreshToken>>, {data: BodyType<PostApiAuthRefreshTokenBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postApiAuthRefreshToken(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiAuthRefreshTokenMutationResult = NonNullable<Awaited<ReturnType<typeof postApiAuthRefreshToken>>>
+    export type PostApiAuthRefreshTokenMutationBody = BodyType<PostApiAuthRefreshTokenBody>
+    export type PostApiAuthRefreshTokenMutationError = ErrorType<void>
+
+    /**
+ * @summary Làm mới access token
+ */
+export const usePostApiAuthRefreshToken = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRefreshToken>>, TError,{data: BodyType<PostApiAuthRefreshTokenBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiAuthRefreshToken>>,
+        TError,
+        {data: BodyType<PostApiAuthRefreshTokenBody>},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiAuthRefreshTokenMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
  * @summary Lấy thông tin người dùng hiện tại
  */
 export const getApiAuthMe = (
@@ -175,7 +376,7 @@ export const getApiAuthMe = (
 ) => {
       
       
-      return mainInstance<User>(
+      return mainInstance<GetApiAuthMe200>(
       {url: `/api/auth/me`, method: 'GET', signal
     },
       options);

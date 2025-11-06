@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
-import { CartItem } from '@/lib/types';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+import { CartItem } from "@/lib/types";
 
 // Components
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Separator } from '@/components/ui/separator';
-import { PaymentDialog } from '@/components/PaymentDialog';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
+import { PaymentDialog } from "@/components/PaymentDialog";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Types
 interface CartItemDisplay {
@@ -54,93 +54,98 @@ interface ClientInfo {
 // Sử dụng localStorage thay vì useKV để tránh lỗi xác thực
 const useCartItems = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
-  
+
   useEffect(() => {
     try {
       // Lấy dữ liệu từ localStorage
-      const savedCart = localStorage.getItem('local-cart');
+      const savedCart = localStorage.getItem("local-cart");
       if (savedCart) {
         setCart(JSON.parse(savedCart));
       }
     } catch (error) {
-      console.error('Error loading cart from localStorage:', error);
+      console.error("Error loading cart from localStorage:", error);
     }
   }, []);
-  
+
   return cart;
 };
 
 // Mock payment methods
 const paymentMethods: PaymentMethod[] = [
   {
-    id: 'bank',
-    name: 'Chuyển khoản ngân hàng',
-    icon: '🏦',
-    description: 'Chuyển khoản trước 50%, 50% còn lại khi nhận bản vẽ'
+    id: "bank",
+    name: "Chuyển khoản ngân hàng",
+    icon: "🏦",
+    description: "Chuyển khoản trước 50%, 50% còn lại khi nhận bản vẽ",
   },
   {
-    id: 'momo',
-    name: 'Ví điện tử Momo',
-    icon: '📱',
-    description: 'Thanh toán nhanh qua ví điện tử'
+    id: "momo",
+    name: "Ví điện tử Momo",
+    icon: "📱",
+    description: "Thanh toán nhanh qua ví điện tử",
   },
   {
-    id: 'installment',
-    name: 'Trả góp 0%',
-    icon: '💳',
-    description: 'Trả góp qua thẻ tín dụng (hỗ trợ 3-6-12 tháng)'
-  }
+    id: "installment",
+    name: "Trả góp 0%",
+    icon: "💳",
+    description: "Trả góp qua thẻ tín dụng (hỗ trợ 3-6-12 tháng)",
+  },
 ];
 
 // Calculate order summary
-const calculateOrderSummary = (items: { price: number; quantity: number }[]): OrderSummary => {
-  const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+const calculateOrderSummary = (
+  items: { price: number; quantity: number }[]
+): OrderSummary => {
+  const subtotal = items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
   const discount = 0; // Có thể thêm logic tính giảm giá sau
   const total = subtotal - discount;
-  
+
   return { subtotal, discount, total };
 };
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('bank');
+  const [paymentMethod, setPaymentMethod] = useState("bank");
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const [clientInfo, setClientInfo] = useState({
-    fullName: '',
-    phone: '',
-    email: ''
+    fullName: "",
+    phone: "",
+    email: "",
   });
-  
+
   const cartItems = useCartItems();
-  const displayItems = cartItems.map(item => ({
+  const displayItems = cartItems.map((item) => ({
     id: item.blueprint.id,
     name: item.blueprint.title,
     price: item.blueprint.price,
     quantity: item.quantity,
-    image: item.blueprint.imageUrl || '',
-    description: item.blueprint.description || '',
-    deliveryTime: '7-10 ngày làm việc',
-    revisions: 2 // Default value since revisions is not in Blueprint type
+    image: item.blueprint.imageUrl || "",
+    description: item.blueprint.description || "",
+    deliveryTime: "7-10 ngày làm việc",
+    revisions: 2, // Default value since revisions is not in Blueprint type
   }));
-  
+
   const orderSummary = calculateOrderSummary(displayItems);
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
       // Kiểm tra thông tin bắt buộc
       if (!clientInfo.fullName || !clientInfo.phone || !clientInfo.email) {
-        alert('Vui lòng điền đầy đủ thông tin bắt buộc');
+        alert("Vui lòng điền đầy đủ thông tin bắt buộc");
         setIsLoading(false);
         return;
       }
-      
+
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       // Lưu thông tin đơn hàng vào localStorage hoặc state management
       const orderData = {
         orderId: `DV-${Date.now()}`,
@@ -149,23 +154,23 @@ export default function CheckoutPage() {
         clientInfo,
         paymentMethod,
         createdAt: new Date().toISOString(),
-        status: 'pending'
+        status: "pending",
       };
-      
+
       // Chuyển đến trang xác nhận
-      navigate('/order-success', { state: { order: orderData } });
+      navigate("/order-success", { state: { order: orderData } });
     } catch (error) {
-      console.error('Lỗi khi đặt dịch vụ:', error);
-      alert('Có lỗi xảy ra, vui lòng thử lại sau');
+      console.error("Lỗi khi đặt dịch vụ:", error);
+      alert("Có lỗi xảy ra, vui lòng thử lại sau");
     } finally {
       setIsLoading(false);
     }
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
     }).format(amount);
   };
 
@@ -173,10 +178,15 @@ export default function CheckoutPage() {
     <div className="container py-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold">Thanh toán bản vẽ</h1>
-        <p className="text-muted-foreground">Vui lòng điền đầy đủ thông tin để hoàn tất giao dịch</p>
+        <p className="text-muted-foreground">
+          Vui lòng điền đầy đủ thông tin để hoàn tất giao dịch
+        </p>
       </div>
-      
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+      >
         {/* Left column - Client and Project Info */}
         <div className="lg:col-span-2 space-y-8">
           {/* Client Information */}
@@ -191,7 +201,9 @@ export default function CheckoutPage() {
                   <Input
                     id="fullName"
                     value={clientInfo.fullName}
-                    onChange={(e) => setClientInfo({...clientInfo, fullName: e.target.value})}
+                    onChange={(e) =>
+                      setClientInfo({ ...clientInfo, fullName: e.target.value })
+                    }
                     placeholder="Nguyễn Văn A"
                     required
                   />
@@ -202,35 +214,39 @@ export default function CheckoutPage() {
                     id="phone"
                     type="tel"
                     value={clientInfo.phone}
-                    onChange={(e) => setClientInfo({...clientInfo, phone: e.target.value})}
+                    onChange={(e) =>
+                      setClientInfo({ ...clientInfo, phone: e.target.value })
+                    }
                     placeholder="0987 654 321"
                     required
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="email">Email *</Label>
                 <Input
                   id="email"
                   type="email"
                   value={clientInfo.email}
-                  onChange={(e) => setClientInfo({...clientInfo, email: e.target.value})}
+                  onChange={(e) =>
+                    setClientInfo({ ...clientInfo, email: e.target.value })
+                  }
                   placeholder="example@email.com"
                   required
                 />
               </div>
-              
+
               <div className="flex items-center space-x-2 pt-4">
-                <Checkbox
-                  id="terms"
-                  required
-                />
+                <Checkbox id="terms" required />
                 <label
                   htmlFor="terms"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  Tôi đã đọc và đồng ý với <a href="/terms" className="text-primary hover:underline">điều khoản dịch vụ</a>
+                  Tôi đã đọc và đồng ý với{" "}
+                  <a href="/terms" className="text-primary hover:underline">
+                    điều khoản dịch vụ
+                  </a>
                 </label>
               </div>
             </CardContent>
@@ -267,7 +283,7 @@ export default function CheckoutPage() {
             </CardContent>
           </Card>
         </div>
-        
+
         {/* Right column - Order Summary */}
         <div className="space-y-6">
           <Card className="sticky top-4">
@@ -278,12 +294,19 @@ export default function CheckoutPage() {
               <div className="space-y-4">
                 <div className="space-y-4">
                   {displayItems.map((item) => (
-                    <div key={item.id} className="flex justify-between items-start">
+                    <div
+                      key={item.id}
+                      className="flex justify-between items-start"
+                    >
                       <div>
                         <p className="font-medium">{item.name}</p>
-                        <p className="text-sm text-muted-foreground">Số lượng: {item.quantity}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Số lượng: {item.quantity}
+                        </p>
                       </div>
-                      <p className="font-medium">{formatCurrency(item.price * item.quantity)}</p>
+                      <p className="font-medium">
+                        {formatCurrency(item.price * item.quantity)}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -305,15 +328,19 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                <Button 
-                  type="button" 
+                <Button
+                  type="button"
                   className="w-full mt-6"
                   size="lg"
                   disabled={isLoading}
                   onClick={() => {
                     // Kiểm tra thông tin bắt buộc
-                    if (!clientInfo.fullName || !clientInfo.phone || !clientInfo.email) {
-                      alert('Vui lòng điền đầy đủ thông tin bắt buộc');
+                    if (
+                      !clientInfo.fullName ||
+                      !clientInfo.phone ||
+                      !clientInfo.email
+                    ) {
+                      alert("Vui lòng điền đầy đủ thông tin bắt buộc");
                       return;
                     }
                     setShowPaymentDialog(true);
@@ -325,19 +352,20 @@ export default function CheckoutPage() {
                       Đang xử lý...
                     </>
                   ) : (
-                    'Thanh toán ngay'
+                    "Thanh toán ngay"
                   )}
                 </Button>
-                
-                <PaymentDialog 
+
+                <PaymentDialog
                   open={showPaymentDialog}
                   onOpenChange={setShowPaymentDialog}
                   amount={orderSummary.total}
                   orderId={`ORDER-${Date.now()}`}
                 />
-                
+
                 <p className="text-xs text-muted-foreground text-center mt-2">
-                  Bằng cách nhấn "Thanh toán ngay", bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của chúng tôi.
+                  Bằng cách nhấn "Thanh toán ngay", bạn đồng ý với Điều khoản
+                  dịch vụ và Chính sách bảo mật của chúng tôi.
                 </p>
               </div>
             </CardContent>

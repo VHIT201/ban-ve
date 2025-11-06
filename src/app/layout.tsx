@@ -1,15 +1,21 @@
-import { ErrorBoundary } from "react-error-boundary";
+// Core
 import "@github/spark/spark";
 import { Outlet } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { ErrorBoundary } from "react-error-boundary";
+
+// App
 import { ErrorFallback } from "@/ErrorFallback";
+import queryClient from "@/configs/query-client";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "sonner";
 
 const App = () => {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <AuthProvider>
+      <Toaster richColors position="bottom-right" />
+      <QueryClientProvider client={queryClient}>
         <Outlet />
-      </AuthProvider>
+      </QueryClientProvider>
     </ErrorBoundary>
   );
 };

@@ -24,19 +24,39 @@ import {
 } from "./lib/constants";
 import { Link } from "react-router-dom";
 import { BASE_PATHS } from "@/constants/paths";
+import { usePostApiAuthRegister } from "@/api/endpoints/auth";
 
 const RegisterForm: FC<Props> = (props) => {
   // Props
   const { onSubmit } = props;
 
+  // Hooks
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(REGISTER_FORM_SCHEMA),
     defaultValues: DEFAULT_REGISTER_FORM_VALUES,
   });
 
-  const handleSubmit = () => {
-    console.log("Form submitted:");
-    onSubmit(form.getValues());
+  // Mutations
+  const registerMutation = usePostApiAuthRegister({
+    mutation: {
+      retry: 0,
+    },
+  });
+
+  const handleSubmit = async (values: RegisterFormValues) => {
+    try {
+      await registerMutation.mutateAsync({
+        data: {
+          email: values.email,
+          username: values.name,
+          password: values.password,
+        },
+      });
+
+      onSubmit(values);
+    } catch (error) {
+      throw error;
+    }
   };
 
   return (
