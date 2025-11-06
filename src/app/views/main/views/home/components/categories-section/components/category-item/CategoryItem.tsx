@@ -19,7 +19,6 @@ import { cn } from "@/lib/utils";
 interface CategoryItemProps {
   category: Category;
   onClick?: (category: Category) => void;
-  variant?: "default" | "compact" | "featured";
   showDescription?: boolean;
   className?: string;
 }
@@ -81,57 +80,53 @@ const getCategoryIcon = (categoryName: string, slug: string) => {
   return Building2; // Default icon
 };
 
-// Color schemes for different categories
+// Simple gradient colors inspired by the image
 const getCategoryColors = (slug: string) => {
   const colorSchemes = {
     residential: {
-      bg: "bg-gradient-to-br from-blue-50 to-indigo-50",
-      border: "border-blue-200/60",
-      icon: "text-blue-600",
-      iconBg: "bg-blue-100",
-      accent: "bg-blue-500",
+      bg: "bg-linear-to-br from-sky-100/80 to-blue-200/60",
+      icon: "text-blue-700",
+      iconBg: "bg-white/90 backdrop-blur-sm",
     },
     commercial: {
-      bg: "bg-gradient-to-br from-emerald-50 to-green-50",
-      border: "border-emerald-200/60",
-      icon: "text-emerald-600",
-      iconBg: "bg-emerald-100",
-      accent: "bg-emerald-500",
+      bg: "bg-linear-to-br from-emerald-100/80 to-green-200/60",
+      icon: "text-emerald-700",
+      iconBg: "bg-white/90 backdrop-blur-sm",
     },
     industrial: {
-      bg: "bg-gradient-to-br from-orange-50 to-amber-50",
-      border: "border-orange-200/60",
-      icon: "text-orange-600",
-      iconBg: "bg-orange-100",
-      accent: "bg-orange-500",
+      bg: "bg-linear-to-br from-orange-100/80 to-amber-200/60",
+      icon: "text-orange-700",
+      iconBg: "bg-white/90 backdrop-blur-sm",
     },
     education: {
-      bg: "bg-gradient-to-br from-purple-50 to-violet-50",
-      border: "border-purple-200/60",
-      icon: "text-purple-600",
-      iconBg: "bg-purple-100",
-      accent: "bg-purple-500",
+      bg: "bg-linear-to-br from-purple-100/80 to-violet-200/60",
+      icon: "text-purple-700",
+      iconBg: "bg-white/90 backdrop-blur-sm",
     },
     healthcare: {
-      bg: "bg-gradient-to-br from-red-50 to-pink-50",
-      border: "border-red-200/60",
-      icon: "text-red-600",
-      iconBg: "bg-red-100",
-      accent: "bg-red-500",
+      bg: "bg-linear-to-br from-rose-100/80 to-pink-200/60",
+      icon: "text-rose-700",
+      iconBg: "bg-white/90 backdrop-blur-sm",
     },
     landscape: {
-      bg: "bg-gradient-to-br from-green-50 to-lime-50",
-      border: "border-green-200/60",
-      icon: "text-green-600",
-      iconBg: "bg-green-100",
-      accent: "bg-green-500",
+      bg: "bg-linear-to-br from-green-100/80 to-lime-200/60",
+      icon: "text-green-700",
+      iconBg: "bg-white/90 backdrop-blur-sm",
+    },
+    energy: {
+      bg: "bg-linear-to-br from-yellow-100/80 to-amber-200/60",
+      icon: "text-yellow-700",
+      iconBg: "bg-white/90 backdrop-blur-sm",
+    },
+    infrastructure: {
+      bg: "bg-linear-to-br from-slate-100/80 to-gray-200/60",
+      icon: "text-slate-700",
+      iconBg: "bg-white/90 backdrop-blur-sm",
     },
     default: {
-      bg: "bg-gradient-to-br from-slate-50 to-gray-50",
-      border: "border-slate-200/60",
-      icon: "text-slate-600",
-      iconBg: "bg-slate-100",
-      accent: "bg-slate-500",
+      bg: "bg-linear-to-br from-gray-100/80 to-slate-200/60",
+      icon: "text-gray-700",
+      iconBg: "bg-white/90 backdrop-blur-sm",
     },
   };
 
@@ -149,6 +144,10 @@ const getCategoryColors = (slug: string) => {
     return colorSchemes.healthcare;
   if (slugLower.includes("landscape") || slugLower.includes("cong-vien"))
     return colorSchemes.landscape;
+  if (slugLower.includes("energy") || slugLower.includes("nang-luong"))
+    return colorSchemes.energy;
+  if (slugLower.includes("infrastructure") || slugLower.includes("ha-tang"))
+    return colorSchemes.infrastructure;
 
   return colorSchemes.default;
 };
@@ -156,7 +155,6 @@ const getCategoryColors = (slug: string) => {
 const CategoryItem = ({
   category,
   onClick,
-  variant = "default",
   showDescription = true,
   className,
 }: CategoryItemProps) => {
@@ -167,107 +165,32 @@ const CategoryItem = ({
     onClick?.(category);
   };
 
-  if (variant === "compact") {
-    return (
-      <Button
-        variant="ghost"
-        className={cn(
-          "h-auto p-3 justify-start group",
-          "hover:bg-accent/50 transition-all duration-200",
-          className
-        )}
-        onClick={handleClick}
-      >
-        <div className={cn("p-2 rounded-lg mr-3", colors.iconBg)}>
-          <IconComponent className={cn("w-4 h-4", colors.icon)} />
-        </div>
-        <div className="text-left">
-          <p className="font-medium text-sm text-foreground group-hover:text-primary transition-colors">
-            {category.name}
-          </p>
-          {showDescription && category.description && (
-            <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
-              {category.description}
-            </p>
-          )}
-        </div>
-        <ArrowRight className="w-4 h-4 ml-auto text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-      </Button>
-    );
-  }
-
-  if (variant === "featured") {
-    return (
-      <Card
-        className={cn(
-          "group cursor-pointer border-2 transition-all duration-300",
-          "hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10",
-          "hover:-translate-y-1",
-          colors.border,
-          className
-        )}
-        onClick={handleClick}
-      >
-        <CardContent className={cn("p-6", colors.bg)}>
-          <div className="flex items-start justify-between mb-4">
-            <div className={cn("p-3 rounded-xl", colors.iconBg)}>
-              <IconComponent className={cn("w-6 h-6", colors.icon)} />
-            </div>
-            <Badge variant="secondary" className="text-xs">
-              Nổi bật
-            </Badge>
-          </div>
-
-          <h3 className="font-bold text-lg text-foreground mb-2 group-hover:text-primary transition-colors">
-            {category.name}
-          </h3>
-
-          {showDescription && category.description && (
-            <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-              {category.description}
-            </p>
-          )}
-
-          <div className="flex items-center justify-between">
-            <div className={cn("w-8 h-1 rounded-full", colors.accent)} />
-            <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  // Default variant
+  // Single design variant - simple card with gradient background
   return (
     <Card
       className={cn(
-        "group cursor-pointer transition-all duration-300",
-        "hover:border-primary/40 hover:shadow-md hover:shadow-primary/5",
-        "hover:-translate-y-0.5",
-        colors.border,
+        "group cursor-pointer transition-all duration-300 border-0 shadow-sm",
+        "hover:shadow-lg hover:-translate-y-1",
+        colors.bg,
         className
       )}
       onClick={handleClick}
     >
-      <CardContent className={cn("p-4", colors.bg)}>
-        <div className="flex items-center gap-3">
-          <div className={cn("p-2.5 rounded-xl shrink-0", colors.iconBg)}>
+      <CardContent className="p-6 relative">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold text-white text-lg truncate">
+            {category.name}
+          </h3>
+          <div className={cn("p-2 rounded-lg shrink-0", colors.iconBg)}>
             <IconComponent className={cn("w-5 h-5", colors.icon)} />
           </div>
-
-          <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
-              {category.name}
-            </h3>
-            {showDescription && category.description && (
-              <p className="text-sm text-muted-foreground line-clamp-1 mt-1">
-                {category.description}
-              </p>
-            )}
-          </div>
-
-          <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0" />
         </div>
+
+        {showDescription && category.description && (
+          <p className="text-white/80 text-sm line-clamp-2">
+            {category.description}
+          </p>
+        )}
       </CardContent>
     </Card>
   );

@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Magnet } from "lucide-react";
 import { BlueprintCard } from "@/components/BlueprintCard";
-import { BannerSection } from "./components";
+import { BannerSection, CategoriesSection } from "./components";
 
 const Home = () => {
   const [cart, setCart] = useKV<CartItem[]>("blueprint-cart", []);
@@ -78,6 +78,7 @@ const Home = () => {
   return (
     <Fragment>
       <BannerSection />
+      <CategoriesSection />
       <main className="container mx-auto px-4 pt-4 pb-8">
         <div className="flex items-center justify-between mb-8">
           <div>
