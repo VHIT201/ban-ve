@@ -4,12 +4,23 @@ import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
-import { Send, ExternalLink, Loader2 } from 'lucide-react';
+import { Send, ExternalLink, Loader2, Edit, Trash2, X, Check } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface Comment {
   id: string;
   author: {
+    id: string;  // Thêm id để kiểm tra quyền sửa/xóa
     name: string;
     avatar?: string;
   };
@@ -49,14 +60,14 @@ interface CommentSectionProps {
 const SAMPLE_COMMENTS: Comment[] = [
   {
     id: '1',
-    author: { name: 'Kiến Trúc Sư Trẻ', avatar: '' },
+    author: { id: 'user-1', name: 'Kiến Trúc Sư Trẻ', avatar: '' },
     content: 'Bản vẽ rất chi tiết và chuyên nghiệp. Cảm ơn tác giả đã chia sẻ!',
     createdAt: new Date(Date.now() - 3600000), // 1 giờ trước
     isAdmin: true
   },
   {
     id: '2',
-    author: { name: 'Người Yêu Kiến Trúc', avatar: '' },
+    author: { id: 'user-2', name: 'Người Yêu Kiến Trúc', avatar: '' },
     content: 'Tôi rất thích phong cách thiết kế này. Có thể chia sẻ thêm về ý tưởng không ạ?',
     link: 'https://example.com/design-inspiration',
     linkTitle: 'Tham khảo thêm tại đây',
@@ -64,7 +75,7 @@ const SAMPLE_COMMENTS: Comment[] = [
   },
   {
     id: '3',
-    author: { name: 'Sinh Viên Kiến Trúc', avatar: '' },
+    author: { id: 'user-3', name: 'Sinh Viên Kiến Trúc', avatar: '' },
     content: 'Bạn nào có tài liệu hướng dẫn chi tiết về cách dựng hình không? Mình mới học nên còn nhiều bỡ ngỡ.',
     createdAt: new Date(Date.now() - 86400000), // 1 ngày trước
   }
@@ -77,6 +88,9 @@ export function CommentSection({ blueprintId }: CommentSectionProps) {
   const [link, setLink] = useState('');
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editContent, setEditContent] = useState('');
+  const [commentToDelete, setCommentToDelete] = useState<string | null>(null);
 
   // Lấy dữ liệu bình luận từ localStorage hoặc dùng dữ liệu mẫu
   useEffect(() => {
@@ -100,7 +114,7 @@ export function CommentSection({ blueprintId }: CommentSectionProps) {
     setTimeout(() => {
       const newCommentObj: Comment = {
         id: uuidv4(),
-        author: { name: 'Người dùng' },
+        author: { id: 'current-user', name: 'Người dùng' },
         content: newComment,
         rating: rating,
         link: link || undefined,
@@ -120,14 +134,57 @@ export function CommentSection({ blueprintId }: CommentSectionProps) {
     }, 500);
   };
 
+  const handleEditComment = (comment: Comment) => {
+    setEditingCommentId(comment.id);
+    setEditContent(comment.content);
+  };
+
+  const handleSaveEdit = (commentId: string) => {
+    const updatedComments = comments.map(comment => 
+      comment.id === commentId 
+        ? { ...comment, content: editContent } 
+        : comment
+    );
+    setComments(updatedComments);
+    localStorage.setItem(`comments_${blueprintId}`, JSON.stringify(updatedComments));
+    setEditingCommentId(null);
+  };
+
+  const handleDeleteComment = (commentId: string) => {
+    const updatedComments = comments.filter(comment => comment.id !== commentId);
+    setComments(updatedComments);
+    localStorage.setItem(`comments_${blueprintId}`, JSON.stringify(updatedComments));
+    setCommentToDelete(null);
+  };
+
   return (
     <div className="mt-8">
+      {/* Xác nhận xóa bình luận */}
+      <AlertDialog open={!!commentToDelete} onOpenChange={(open) => !open && setCommentToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Xác nhận xóa bình luận</AlertDialogTitle>
+            <AlertDialogDescription>
+              Bạn có chắc chắn muốn xóa bình luận này? Hành động này không thể hoàn tác.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => commentToDelete && handleDeleteComment(commentToDelete)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Xóa
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold">Đánh giá & Bình luận ({comments.length})</h3>
         {comments.length > 0 && (
           <div className="flex items-center">
             <span className="text-2xl font-bold mr-2">
-              {comments.reduce((acc, curr) => acc + (curr.rating || 0), 0) / comments.length}
+              {(comments.reduce((acc, curr) => acc + (curr.rating || 0), 0) / comments.length).toFixed(2)}
             </span>
             <StarRating rating={Math.round(comments.reduce((acc, curr) => acc + (curr.rating || 0), 0) / comments.length)} />
             <span className="text-sm text-muted-foreground ml-2">
@@ -211,7 +268,7 @@ export function CommentSection({ blueprintId }: CommentSectionProps) {
           comments.map((comment, index) => (
             <div 
               key={comment.id} 
-              className={`flex gap-4 p-4 ${index < comments.length - 1 ? 'border-b' : ''} ${comment.isAdmin ? 'bg-blue-50' : 'bg-white'}`}
+              className={`flex gap-4 p-4 ${index < comments.length - 1 ? 'border-b' : ''} ${comment.isAdmin ? 'bg-blue-50' : 'bg-white'} group`}
             >
               <Avatar className="h-10 w-10 flex-shrink-0">
                 <AvatarImage src={comment.author.avatar} alt={comment.author.name} />
@@ -221,16 +278,36 @@ export function CommentSection({ blueprintId }: CommentSectionProps) {
               </Avatar>
               
               <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <h4 className="font-medium">{comment.author.name}</h4>
-                  {comment.isAdmin && (
-                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
-                      Quản trị viên
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-medium">{comment.author.name}</h4>
+                    {comment.isAdmin && (
+                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+                        Quản trị viên
+                      </span>
+                    )}
+                    <span className="text-xs text-muted-foreground">
+                      {formatDistanceToNow(comment.createdAt, { locale: vi, addSuffix: true })}
                     </span>
-                  )}
-                  <span className="text-xs text-muted-foreground">
-                    {formatDistanceToNow(comment.createdAt, { locale: vi, addSuffix: true })}
-                  </span>
+                  </div>
+                  
+                  {/* Nút chỉnh sửa/xóa */}
+                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button 
+                      onClick={() => handleEditComment(comment)}
+                      className="p-1 text-muted-foreground hover:text-blue-600"
+                      title="Chỉnh sửa"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </button>
+                    <button 
+                      onClick={() => setCommentToDelete(comment.id)}
+                      className="p-1 text-muted-foreground hover:text-destructive"
+                      title="Xóa"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
                 {comment.rating && (
                   <div className="mt-1">
@@ -238,9 +315,35 @@ export function CommentSection({ blueprintId }: CommentSectionProps) {
                   </div>
                 )}
                 
-                <p className="mt-1 text-sm text-gray-800 whitespace-pre-line break-words">
-                  {comment.content}
-                </p>
+                {editingCommentId === comment.id ? (
+                  <div className="mt-2 space-y-2">
+                    <Textarea
+                      value={editContent}
+                      onChange={(e) => setEditContent(e.target.value)}
+                      className="min-h-[100px] bg-white"
+                      autoFocus
+                    />
+                    <div className="flex justify-end gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => setEditingCommentId(null)}
+                      >
+                        <X className="h-4 w-4 mr-1" /> Hủy
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        onClick={() => handleSaveEdit(comment.id)}
+                      >
+                        <Check className="h-4 w-4 mr-1" /> Lưu
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="mt-1 text-sm text-gray-800 whitespace-pre-line break-words">
+                    {comment.content}
+                  </p>
+                )}
                 
                 {comment.link && (
                   <div className="mt-2">

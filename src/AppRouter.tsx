@@ -13,7 +13,10 @@ import {
   CommentsPage,
   AnalyticsPage,
   PaymentsPage,
-  AdminLayout 
+  CategoriesPage,
+  AdminLayout,
+  SocialPage,
+  SettingsPage
 } from './pages/admin';
 
 // Wrapper component to protect admin routes
@@ -58,10 +61,13 @@ export function AppRouter() {
         }>
           <Route index element={<DashboardPage />} />
           <Route path="approvals" element={<ApprovalsPage />} />
+          <Route path="categories" element={<CategoriesPage />} />
           <Route path="copyright" element={<CopyrightPage />} />
           <Route path="comments" element={<CommentsPage />} />
           <Route path="analytics" element={<AnalyticsPage />} />
           <Route path="payments" element={<PaymentsPage />} />
+          <Route path="social" element={<SocialPage />} />
+          <Route path="settings" element={<SettingsPage />} />
         </Route>
         
         {/* 404 - Keep this last */}

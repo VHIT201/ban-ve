@@ -210,7 +210,7 @@ function App() {
           className: 'mt-20' // Add Tailwind class for top margin
         }}
       />
-      <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-50 w-full border-b bg-background/90 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80 shadow-sm">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3 cursor-pointer" onClick={() => {
@@ -280,38 +280,82 @@ function App() {
             </div>
           </div>
         </div>
-        <div className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="border-t bg-background/95 backdrop-blur-lg supports-[backdrop-filter]:bg-background/90 shadow-sm">
           <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-center">
               {/* Desktop Categories */}
-              <div className="hidden md:flex flex-1 items-center gap-1 py-1.5 overflow-x-auto scrollbar-hide">
-                {categories.map((category) => (
+              <div className="hidden md:flex w-full py-2.5 overflow-x-auto scrollbar-hide">
+                <nav className="flex items-center justify-center space-x-1.5 whitespace-nowrap mx-auto">
                   <CategoryButton 
-                    key={category.value}
-                    category={category}
-                    isSelected={selectedCategory === category.value}
-                    onClick={() => setSelectedCategory(category.value)}
-                    className="flex-shrink-0 cursor-pointer"
+                    category={{ value: 'All', name: 'Tất cả' }}
+                    isSelected={selectedCategory === 'All'}
+                    onClick={() => setSelectedCategory('All')}
+                    className={`flex-shrink-0 transition-all duration-200 text-sm px-3 py-1.5 rounded-lg cursor-pointer ${
+                      selectedCategory === 'All' 
+                        ? 'bg-primary/10 text-primary font-medium' 
+                        : 'text-foreground/80 hover:bg-accent/50 hover:text-foreground'
+                    }`}
                   />
-                ))}
+                  {categories.map((category) => (
+                    <CategoryButton 
+                      key={category.value}
+                      category={category}
+                      isSelected={selectedCategory === category.value}
+                      onClick={() => setSelectedCategory(category.value)}
+                      className={`flex-shrink-0 transition-all duration-200 text-sm px-3 py-1.5 rounded-lg cursor-pointer ${
+                        selectedCategory === category.value 
+                          ? 'bg-primary/10 text-primary font-medium' 
+                          : 'text-foreground/80 hover:bg-accent/50 hover:text-foreground'
+                      }`}
+                    />
+                  ))}
+                </nav>
               </div>
 
               {/* Mobile Menu Button */}
-              <div className="md:hidden py-1.5">
+              <div className="md:hidden py-2 w-full text-center">
                 <Button
                   variant="outline"
-                  size="icon"
-                  className="w-9 h-9 rounded-full cursor-pointer"
+                  size="sm"
+                  className="h-9 px-3 rounded-lg transition-all duration-200 flex items-center gap-2 border-border/50"
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 >
-                  {isMobileMenuOpen ? <X size={18} /> : <List size={18} />}
+                  {isMobileMenuOpen ? (
+                    <>
+                      <X size={16} weight="bold" />
+                      <span>Đóng</span>
+                    </>
+                  ) : (
+                    <>
+                      <List size={16} weight="bold" />
+                      <span>Danh mục</span>
+                    </>
+                  )}
                 </Button>
               </div>
             </div>
 
             {/* Mobile Categories Dropdown */}
-            {isMobileMenuOpen && (
-              <div className="md:hidden mt-1 mb-2 space-y-1.5">
+            <div 
+              className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden ${
+                isMobileMenuOpen ? 'max-h-[80vh] py-2' : 'max-h-0 py-0'
+              }`}
+            >
+              <div className="space-y-1.5 py-1 px-2">
+                <CategoryButton 
+                  category={{ value: 'All', name: 'Tất cả danh mục' }}
+                  isSelected={selectedCategory === 'All'}
+                  onClick={() => {
+                    setSelectedCategory('All');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  fullWidth
+                  className={`text-left px-4 py-2.5 rounded-lg text-base cursor-pointer ${
+                    selectedCategory === 'All' 
+                      ? 'bg-primary/10 text-primary font-medium' 
+                      : 'text-foreground/90 hover:bg-accent/50'
+                  }`}
+                />
                 {categories.map((category) => (
                   <CategoryButton 
                     key={category.value}
@@ -322,11 +366,15 @@ function App() {
                       setIsMobileMenuOpen(false);
                     }}
                     fullWidth
-                    className="text-sm"
+                    className={`text-left px-4 py-2.5 rounded-lg text-base cursor-pointer ${
+                      selectedCategory === category.value 
+                        ? 'bg-primary/10 text-primary font-medium' 
+                        : 'text-foreground/90 hover:bg-accent/50'
+                    }`}
                   />
                 ))}
               </div>
-            )}
+            </div>
           </div>
         </div>
       </header>

@@ -12,7 +12,8 @@ import {
   Clock, 
   CheckCircle, 
   XCircle,
-  Loader2
+  Loader2,
+  AlertTriangle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -21,6 +22,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
+  DialogFooter
 } from '@/components/ui/dialog';
 
 // ====== Types ====== //
@@ -116,6 +119,7 @@ export function UploadsDialog({ open, onOpenChange }: UploadsDialogProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [fileToDelete, setFileToDelete] = useState<string | null>(null);
   const [files, setFiles] = useState<UploadedFile[]>([
     {
       id: '1',
@@ -151,9 +155,24 @@ export function UploadsDialog({ open, onOpenChange }: UploadsDialogProps) {
     },
   ]);
 
-  const handleDelete = (id: string) => {
+  const handleDeleteClick = (id: string) => {
+    setFileToDelete(id);
+  };
+
+  const confirmDelete = () => {
+    if (!fileToDelete) return;
+    
     // In a real app, this would call an API to delete the file
-    setFiles(files.filter(file => file.id !== id));
+    setFiles(files.filter(file => file.id !== fileToDelete));
+    setFileToDelete(null);
+    
+    // Show success message
+    // You can add a toast notification here
+    console.log('Đã xóa file thành công');
+  };
+  
+  const cancelDelete = () => {
+    setFileToDelete(null);
   };
 
   const handleUploadClick = () => {
@@ -318,8 +337,8 @@ export function UploadsDialog({ open, onOpenChange }: UploadsDialogProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-destructive hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={() => handleDelete(file.id)}
+                className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                onClick={() => handleDeleteClick(file.id)}
                 title="Xóa file"
               >
                 <Trash2 className="h-4 w-4" />
@@ -365,19 +384,72 @@ export function UploadsDialog({ open, onOpenChange }: UploadsDialogProps) {
   // ====== Main Render ====== //
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-4xl w-[90vw] h-[80vh] max-h-[800px] flex flex-col">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Upload className="h-5 w-5" />
-            <span>File đã tải lên</span>
-          </DialogTitle>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-4xl w-[90vw] h-[80vh] max-h-[800px] flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Upload className="h-5 w-5" />
+              <span>File đã tải lên</span>
+            </DialogTitle>
+          </DialogHeader>
 
-        <div className="space-y-4">
-          {files.length === 0 ? renderEmptyState() : renderFileList()}
-        </div>
-      </DialogContent>
-    </Dialog>
+          <div className="space-y-4">
+            {files.length === 0 ? renderEmptyState() : renderFileList()}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={!!fileToDelete} onOpenChange={(open) => !open && setFileToDelete(null)}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <div className="flex items-center space-x-3">
+              <div className="p-2 rounded-full bg-destructive/10">
+                <AlertTriangle className="h-5 w-5 text-destructive" />
+              </div>
+              <DialogTitle className="text-lg font-semibold">Xác nhận xóa file</DialogTitle>
+            </div>
+            <DialogDescription className="pt-2 text-gray-600">
+              Bạn có chắc chắn muốn xóa file này? Hành động này không thể hoàn tác.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {fileToDelete && (
+            <div className="bg-muted/50 p-4 rounded-md">
+              <div className="flex items-center space-x-3">
+                {getFileIcon(files.find(f => f.id === fileToDelete)?.type || 'document')}
+                <div className="truncate">
+                  <p className="font-medium truncate">
+                    {files.find(f => f.id === fileToDelete)?.name || 'Tệp tin'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {files.find(f => f.id === fileToDelete)?.size}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter className="sm:flex sm:justify-between">
+            <Button 
+              variant="outline" 
+              onClick={cancelDelete}
+              className="w-full sm:w-auto"
+            >
+              Hủy bỏ
+            </Button>
+            <Button 
+              variant="destructive"
+              onClick={confirmDelete}
+              className="w-full sm:w-auto"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Xác nhận xóa
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

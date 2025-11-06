@@ -27,6 +27,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             <h2 className="text-lg font-semibold">
               {location.pathname === '/admin' ? 'Tổng quan' : 
                location.pathname.includes('approvals') ? 'Duyệt nội dung' :
+               location.pathname.includes('categories') ? 'Quản lý danh mục' :
                location.pathname.includes('copyright') ? 'Báo cáo bản quyền' :
                location.pathname.includes('comments') ? 'Bình luận' :
                location.pathname.includes('analytics') ? 'Thống kê' :
