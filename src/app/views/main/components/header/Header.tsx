@@ -1,24 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  LucideMessageCircleQuestion,
+  Search,
   Ruler,
-  Star,
-  Upload,
+  LogIn,
+  Sparkles,
+  DraftingCompassIcon,
   UserIcon,
 } from "lucide-react";
-import { ShoppingCart } from "@/components/ShoppingCart";
-import { Blueprint, CartItem, Category } from "@/lib/types";
+import { CartItem } from "@/lib/types";
 import { useKV } from "@github/spark/hooks";
-import { useState } from "react";
-import { useNavigate, useNavigation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { AuthDialog } from "@/components/modules/auth";
 import { HeaderShoppingCart, HeaderUserProfile } from "./components";
 import { useAuthStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
 import { Link } from "react-router-dom";
 import { BASE_PATHS } from "@/constants/paths";
+import { cn } from "@/lib/utils";
 
 const Header = () => {
   // Stores
@@ -32,6 +32,33 @@ const Header = () => {
   const [cart, setCart] = useKV<CartItem[]>("blueprint-cart", []);
   const cartItems = cart ?? [];
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSlideDown, setIsSlideDown] = useState(false);
+
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+
+          if (currentScrollY > 200 && currentScrollY > lastScrollY) {
+            setIsSlideDown(true);
+          } else if (currentScrollY <= lastScrollY || currentScrollY <= 100) {
+            setIsSlideDown(false);
+          }
+
+          lastScrollY = currentScrollY;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const updateLocalCart = (newCart: CartItem[]) => {
     try {
@@ -89,38 +116,56 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
-              <Ruler size={24} />
+    <header>
+      {/* Dynamic Header */}
+      <div
+        className={cn(
+          "fixed top-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-border/40 supports-backdrop-filter:bg-background/60",
+          "transition-transform duration-300 ease-in-out",
+          isSlideDown ? "translate-y-0" : "-translate-y-full"
+        )}
+      >
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-18">
+            {/* Logo Section */}
+            <Link
+              to="/"
+              className="flex items-center gap-3 group transition-all duration-200 hover:scale-[1.02]"
+            >
+              <div className="relative">
+                <div className="flex items-center justify-center size-10 rounded-full bg-linear-to-br from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/20 group-hover:shadow-xl group-hover:shadow-primary/30 transition-all duration-300">
+                  <DraftingCompassIcon strokeWidth={2} className="size-6" />
+                </div>
+              </div>
+              <div className="hidden sm:block">
+                <h1 className="text-base font-bold tracking-tight text-foreground group-hover:text-primary transition-colors duration-200">
+                  Marketplace Blueprint
+                </h1>
+                <p className="text-xs text-muted-foreground/80 font-medium">
+                  Premium Blueprints
+                </p>
+              </div>
+            </Link>
+            {/* Search Section */}
+            <div className="flex-1 max-w-xl mx-6">
+              <div className="relative group">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors duration-200" />
+                <Input
+                  type="search"
+                  placeholder="Tìm kiếm bản vẽ..."
+                  className={cn(
+                    "pl-10 pr-4 h-10 rounded-full border-border/40 bg-background/50",
+                    "focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/40",
+                    "placeholder:text-muted-foreground/60 transition-all duration-200",
+                    "hover:border-border/60 hover:bg-background/80"
+                  )}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
             </div>
-            <div className="hidden sm:block">
-              <h1 className="text-xl font-bold tracking-tight">
-                Blueprint Marketplace
-              </h1>
-              <p className="text-xs text-muted-foreground">
-                Premium Architectural Drawings
-              </p>
-            </div>
-          </div>
-
-          <div className="flex-1 max-w-2xl px-4">
-            <div className="relative">
-              <LucideMessageCircleQuestion className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search blueprints by title, description or category..."
-                className="pl-10 pr-4 py-2 rounded-xl border-border/50 focus-visible:ring-2 focus-visible:ring-primary/20"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center">
-            <div className="flex items-center gap-4">
+            {/* Actions Section */}
+            <div className="flex items-center gap-3">
               {authStore.isSignedIn ? (
                 <HeaderUserProfile />
               ) : (
@@ -128,13 +173,94 @@ const Header = () => {
                   onClick={() => navigate(BASE_PATHS.auth.login.path)}
                   size="sm"
                   variant="outline"
-                  className="gap-2 h-9 px-4 rounded-full border-border/40 hover:bg-accent/80 transition-colors"
+                  className={cn(
+                    "gap-2 h-10 px-4 rounded-full border-border/40",
+                    "hover:bg-primary hover:border-border/60",
+                    "transition-all duration-200 font-medium",
+                    "shadow-sm hover:shadow-md"
+                  )}
                 >
-                  <UserIcon size={16} />
-                  <span className="hidden sm:inline">Đăng nhập / Đăng ký</span>
+                  <UserIcon className="size-4" />
+                  <span className="hidden sm:inline">Đăng nhập</span>
                 </Button>
               )}
+              <HeaderShoppingCart
+                items={cartItems}
+                onUpdateQuantity={handleUpdateQuantity}
+                onRemoveItem={handleRemoveItem}
+                onCheckout={handleCheckout}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
 
+      {/* Static Header */}
+      <div
+        className={cn(
+          "relative top-0 z-50 w-full bg-white backdrop-blur-xl border-b border-border/40 supports-backdrop-filter:bg-background/60",
+          "transition-transform duration-300 ease-in-out"
+        )}
+      >
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-24">
+            {/* Logo Section */}
+            <Link
+              to="/"
+              className="flex items-center gap-3 group transition-all duration-200 hover:scale-[1.02]"
+            >
+              <div className="relative">
+                <div className="flex items-center justify-center size-10 md:size-12 rounded-full bg-linear-to-br from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/20 group-hover:shadow-xl group-hover:shadow-primary/30 transition-all duration-300">
+                  <DraftingCompassIcon strokeWidth={2} className="size-8" />
+                </div>
+              </div>
+              <div className="hidden sm:block">
+                <h1 className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors duration-200">
+                  Marketplace Blueprint
+                </h1>
+                <p className="text-xs text-muted-foreground/80 font-medium">
+                  Premium Blueprints
+                </p>
+              </div>
+            </Link>
+            {/* Search Section */}
+            <div className="flex-1 max-w-xl mx-6">
+              <div className="relative group">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors duration-200" />
+                <Input
+                  type="search"
+                  placeholder="Tìm kiếm bản vẽ..."
+                  className={cn(
+                    "pl-10 pr-4 h-10 rounded-full border-border/40 bg-background/50",
+                    "focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/40",
+                    "placeholder:text-muted-foreground/60 transition-all duration-200",
+                    "hover:border-border/60 hover:bg-background/80"
+                  )}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            </div>
+            {/* Actions Section */}
+            <div className="flex items-center gap-3">
+              {authStore.isSignedIn ? (
+                <HeaderUserProfile />
+              ) : (
+                <Button
+                  onClick={() => navigate(BASE_PATHS.auth.login.path)}
+                  size="sm"
+                  variant="outline"
+                  className={cn(
+                    "gap-2 h-10 px-4 rounded-full border-border/40",
+                    "hover:bg-primary hover:border-border/60",
+                    "transition-all duration-200 font-medium",
+                    "shadow-sm hover:shadow-md"
+                  )}
+                >
+                  <UserIcon className="size-4" />
+                  <span className="hidden sm:inline">Đăng nhập</span>
+                </Button>
+              )}
               <HeaderShoppingCart
                 items={cartItems}
                 onUpdateQuantity={handleUpdateQuantity}
