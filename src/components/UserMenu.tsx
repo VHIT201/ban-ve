@@ -19,6 +19,7 @@ import { PasswordSettingsDialog } from './PasswordSettingsDialog';
 import { PrivacySettingsDialog } from './PrivacySettingsDialog';
 import { SupportDialog } from './SupportDialog';
 import { UploadsDialog } from './UploadsDialog';
+import { SoldFilesDialog } from './SoldFilesDialog';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -31,7 +32,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/contexts/AuthContext';
-import { Package, Upload } from 'lucide-react';
+import { Package, Upload, DollarSign } from 'lucide-react';
 
 export function UserMenu() {
   const { user, logout, isAdmin } = useAuth();
@@ -39,6 +40,7 @@ export function UserMenu() {
   const [isAccountDialogOpen, setIsAccountDialogOpen] = useState(false);
   const [isOrdersDialogOpen, setIsOrdersDialogOpen] = useState(false);
   const [isUploadsDialogOpen, setIsUploadsDialogOpen] = useState(false);
+  const [isSoldFilesDialogOpen, setIsSoldFilesDialogOpen] = useState(false);
   const [isNotificationsDialogOpen, setIsNotificationsDialogOpen] = useState(false);
   const [isPasswordSettingsDialogOpen, setIsPasswordSettingsDialogOpen] = useState(false);
   const [isPrivacySettingsDialogOpen, setIsPrivacySettingsDialogOpen] = useState(false);
@@ -117,26 +119,42 @@ export function UserMenu() {
             <User className="mr-2 h-4 w-4" />
             <span>Tài khoản của tôi</span>
           </DropdownMenuItem>
-          <DropdownMenuItem 
-            className="px-2 py-2.5 rounded-md text-sm cursor-pointer hover:bg-accent/50 transition-colors"
-            onClick={() => {
-              setIsOpen(false);
-              setIsOrdersDialogOpen(true);
-            }}
-          >
-            <Package className="mr-3 h-5 w-5 text-muted-foreground" />
-            <span>File đã mua</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem 
-            className="px-2 py-2.5 rounded-md text-sm cursor-pointer hover:bg-accent/50 transition-colors"
-            onClick={() => {
-              setIsOpen(false);
-              setIsUploadsDialogOpen(true);
-            }}
-          >
-            <Upload className="mr-3 h-5 w-5 text-muted-foreground" />
-            <span>File đã tải lên</span>
-          </DropdownMenuItem>
+          {user?.role === 'user' && (
+            <DropdownMenuItem 
+              className="px-2 py-2.5 rounded-md text-sm cursor-pointer hover:bg-accent/50 transition-colors"
+              onClick={() => {
+                setIsOpen(false);
+                setIsOrdersDialogOpen(true);
+              }}
+            >
+              <Package className="mr-3 h-5 w-5 text-muted-foreground" />
+              <span>File đã mua</span>
+            </DropdownMenuItem>
+          )}
+          {user?.role === 'collaborator' && (
+            <>
+              <DropdownMenuItem 
+                className="px-2 py-2.5 rounded-md text-sm cursor-pointer hover:bg-accent/50 transition-colors"
+                onClick={() => {
+                  setIsOpen(false);
+                  setIsUploadsDialogOpen(true);
+                }}
+              >
+                <Upload className="mr-3 h-5 w-5 text-muted-foreground" />
+                <span>File đã tải lên</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                className="px-2 py-2.5 rounded-md text-sm cursor-pointer hover:bg-accent/50 transition-colors"
+                onClick={() => {
+                  setIsOpen(false);
+                  setIsSoldFilesDialogOpen(true);
+                }}
+              >
+                <DollarSign className="mr-3 h-5 w-5 text-muted-foreground" />
+                <span>File đã bán</span>
+              </DropdownMenuItem>
+            </>
+          )}
           <DropdownMenuItem 
             className="px-2 py-2.5 rounded-md text-sm cursor-pointer hover:bg-accent/50 transition-colors"
             onClick={() => {
@@ -244,6 +262,10 @@ export function UserMenu() {
       <SupportDialog
         open={isSupportDialogOpen}
         onOpenChange={setIsSupportDialogOpen}
+      />
+      <SoldFilesDialog
+        open={isSoldFilesDialogOpen}
+        onOpenChange={setIsSoldFilesDialogOpen}
       />
     </DropdownMenu>
   );

@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
 import { useKV } from '@github/spark/hooks';
+import { useAuth } from '@/contexts/AuthContext';
 import { Blueprint, CartItem, Category } from '@/lib/types';
 import { blueprints, categories } from '@/lib/data';
 import { BlueprintCard } from '@/components/BlueprintCard';
@@ -97,6 +98,7 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>('All');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user } = useAuth();
 
   const filteredBlueprints = useMemo(() => {
     return blueprints.filter((blueprint) => {
@@ -252,19 +254,21 @@ function App() {
                 </Button>
               </div>
               
-              <div className="flex items-center border-r border-gray-200 pr-3 mr-3">
-                <Button 
-                  variant="outline"
-                  size="sm"
-                  className="hidden sm:flex gap-1.5 items-center h-8 px-3 text-sm font-medium text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 border-emerald-200 transition-colors duration-200 cursor-pointer"
-                  onClick={() => navigate('/upload')}
-                >
-                  <div className="flex items-center gap-1.5">
-                    <Upload size={14} weight="bold" />
-                    <span>Tải lên</span>
-                  </div>
-                </Button>
-              </div>
+              {user?.role === 'collaborator' && (
+                <div className="flex items-center border-r border-gray-200 pr-3 mr-3">
+                  <Button 
+                    variant="outline"
+                    size="sm"
+                    className="hidden sm:flex gap-1.5 items-center h-8 px-3 text-sm font-medium text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 border-emerald-200 transition-colors duration-200 cursor-pointer"
+                    onClick={() => navigate('/upload')}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <Upload size={14} weight="bold" />
+                      <span>Tải lên</span>
+                    </div>
+                  </Button>
+                </div>
+              )}
               
               <div className="flex items-center gap-3">
                 <div className="hidden sm:block">

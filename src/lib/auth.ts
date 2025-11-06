@@ -6,7 +6,7 @@ export interface User {
   email: string;
   password: string;
   name: string;
-  role: 'user' | 'admin';
+  role: 'user' | 'admin' | 'collaborator';
   createdAt: Date;
 }
 
@@ -30,8 +30,18 @@ const leNguyenHoangUser: User = {
   createdAt: new Date()
 };
 
+// Tài khoản cộng tác viên mẫu
+const sampleCollaborator: User = {
+  id: 'collab-001',
+  email: 'congtacvien@gmail.com',
+  password: 'lehoang123', // Same as admin password
+  name: 'Cộng Tác Viên',
+  role: 'collaborator',
+  createdAt: new Date()
+};
+
 // Lưu trữ người dùng trong bộ nhớ (trong ứng dụng thực tế nên dùng database)
-const users: User[] = [sampleAdmin, leNguyenHoangUser];
+const users: User[] = [sampleAdmin, leNguyenHoangUser, sampleCollaborator];
 
 // Trạng thái xác thực
 let currentUser: User | null = null;
