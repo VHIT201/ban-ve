@@ -1,15 +1,34 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { LucideMessageCircleQuestion, Ruler, Star, Upload } from "lucide-react";
+import {
+  LucideMessageCircleQuestion,
+  Ruler,
+  Star,
+  Upload,
+  UserIcon,
+} from "lucide-react";
 import { ShoppingCart } from "@/components/ShoppingCart";
 import { Blueprint, CartItem, Category } from "@/lib/types";
 import { useKV } from "@github/spark/hooks";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useNavigation } from "react-router-dom";
 import { toast } from "sonner";
 import { AuthDialog } from "@/components/modules/auth";
+import { HeaderShoppingCart, HeaderUserProfile } from "./components";
+import { useAuthStore } from "@/stores";
+import { useShallow } from "zustand/shallow";
+import { Link } from "react-router-dom";
+import { BASE_PATHS } from "@/constants/paths";
 
 const Header = () => {
+  // Stores
+  const authStore = useAuthStore(
+    useShallow(({ isSignedIn }) => ({
+      isSignedIn,
+    }))
+  );
+
+  // Hooks
   const [cart, setCart] = useKV<CartItem[]>("blueprint-cart", []);
   const cartItems = cart ?? [];
   const [searchQuery, setSearchQuery] = useState("");
@@ -101,37 +120,22 @@ const Header = () => {
           </div>
 
           <div className="flex items-center">
-            <div className="flex items-center border-r border-gray-200 pr-3 mr-3">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-9 w-9 rounded-full"
-                title="Yêu thích"
-                onClick={() => navigate("/favorites")}
-              >
-                <Star size={18} />
-              </Button>
-            </div>
+            <div className="flex items-center gap-4">
+              {authStore.isSignedIn ? (
+                <HeaderUserProfile />
+              ) : (
+                <Button
+                  onClick={() => navigate(BASE_PATHS.auth.login.path)}
+                  size="sm"
+                  variant="outline"
+                  className="gap-2 h-9 px-4 rounded-full border-border/40 hover:bg-accent/80 transition-colors"
+                >
+                  <UserIcon size={16} />
+                  <span className="hidden sm:inline">Đăng nhập / Đăng ký</span>
+                </Button>
+              )}
 
-            <div className="flex items-center border-r border-gray-200 pr-3 mr-3">
-              <Button
-                variant="outline"
-                size="sm"
-                className="hidden sm:flex gap-1.5 items-center h-8 px-3 text-sm font-medium text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 border-emerald-200 transition-colors duration-200"
-                onClick={() => navigate("/upload")}
-              >
-                <div className="flex items-center gap-1.5">
-                  <Upload size={14} />
-                  <span>Tải lên</span>
-                </div>
-              </Button>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="hidden sm:block">
-                <AuthDialog />
-              </div>
-              <ShoppingCart
+              <HeaderShoppingCart
                 items={cartItems}
                 onUpdateQuantity={handleUpdateQuantity}
                 onRemoveItem={handleRemoveItem}

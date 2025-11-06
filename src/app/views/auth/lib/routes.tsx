@@ -1,8 +1,9 @@
 // Core
-import { RouteObject } from "react-router-dom";
+import { redirect, RouteObject } from "react-router-dom";
 
 // App
 import { ROUTE_PATHS } from "@/constants/paths";
+import { useAuthStore } from "@/stores";
 
 // Auth route paths
 const { auth } = ROUTE_PATHS;
@@ -10,6 +11,15 @@ const { auth } = ROUTE_PATHS;
 // Auth routes
 const authRoutes: RouteObject = {
   path: auth.path,
+  loader: () => {
+    const isLoginedIn = useAuthStore.getState().isSignedIn;
+
+    if (isLoginedIn) {
+      return redirect(ROUTE_PATHS.app.path);
+    }
+
+    return null;
+  },
   lazy: async () => {
     const { default: Auth } = await import("../layout");
     return {

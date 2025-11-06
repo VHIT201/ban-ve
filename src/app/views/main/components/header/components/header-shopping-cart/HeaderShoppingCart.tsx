@@ -1,7 +1,6 @@
 import { CartItem } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetContent,
@@ -27,7 +26,7 @@ interface ShoppingCartProps {
   onCheckout: () => void;
 }
 
-function ShoppingCart({
+function HeaderShoppingCart({
   items,
   onUpdateQuantity,
   onRemoveItem,
@@ -188,4 +187,4 @@ function ShoppingCart({
   );
 }
 
-export default ShoppingCart;
+export default HeaderShoppingCart;

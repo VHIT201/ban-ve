@@ -5,7 +5,7 @@ export const ROUTE_PATHS = {
     register: { path: "register" },
   },
 
-  app: { path: "" },
+  app: { path: "/" },
 };
 
 export const BASE_PATHS = {

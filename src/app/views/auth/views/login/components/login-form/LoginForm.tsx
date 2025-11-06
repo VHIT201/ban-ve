@@ -20,8 +20,19 @@ import { BASE_PATHS } from "@/constants/paths";
 import { usePostApiAuthLogin } from "@/api/endpoints/auth";
 import { toast } from "sonner";
 import queryClient from "@/configs/query-client";
+import { useShallow } from "zustand/shallow";
+import { useAuthStore } from "@/stores";
+import { Response } from "@/api/types/base";
+import { PostApiAuthLogin200Data } from "@/api/models";
 
 const LoginForm: FC<Props> = () => {
+  // Stores
+  const authStore = useAuthStore(
+    useShallow(({ setStore }) => ({
+      setStore,
+    }))
+  );
+
   // Hooks
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(LOGIN_FORM_SCHEMA),
@@ -31,19 +42,31 @@ const LoginForm: FC<Props> = () => {
   // Mutations
   const loginMutation = usePostApiAuthLogin({
     mutation: {
-      retry: 1,
+      retry: 0,
     },
   });
 
   const handleSubmit = async (values: LoginFormValues) => {
     try {
-      await loginMutation.mutateAsync({
+      const loginResponse = await loginMutation.mutateAsync({
         data: values,
       });
+
+      if (!loginResponse) {
+        throw new Error("Đăng nhập thất bại, vui lòng thử lại");
+      }
+
+      const loginData = (
+        loginResponse as unknown as Response<PostApiAuthLogin200Data>
+      ).responseData;
+
+      authStore.setStore({ isSignedIn: true, ...loginData });
 
       toast.success("Đăng nhập thành công");
       window.location.href = BASE_PATHS.app.path;
       queryClient.clear();
+
+      console.log("Login Success");
     } catch (error) {
       throw error;
     }

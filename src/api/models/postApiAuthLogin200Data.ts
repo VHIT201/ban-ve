@@ -1,5 +1,5 @@
 // @ts-nocheck
-import type { User } from './user';
+import type { User } from "./user";
 
 export type PostApiAuthLogin200Data = {
   user?: User;

@@ -1,7 +1,9 @@
 // Base API data
 export interface Response<Data = unknown> {
-  data: Data;
-  statusCode: number;
   message: string;
-  success: boolean;
+  message_en: string;
+  responseData: Data;
+  status: string;
+  statusCode: number;
+  timeStamp: Date;
 }
