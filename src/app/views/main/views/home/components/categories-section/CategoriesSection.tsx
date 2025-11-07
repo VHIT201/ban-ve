@@ -14,6 +14,8 @@ import { CategoryItem } from "./components";
 import Autoplay from "embla-carousel-autoplay";
 import { Grid3X3, ArrowRight, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useGetApiCategories } from "@/api/endpoints/categories";
+import { Response } from "@/api/types/base";
 
 const mockCategories: Category[] = [
   {
@@ -98,6 +100,13 @@ const CategoriesSection = () => {
       bottomRowCategories: mockCategories.slice(half),
     };
   }, []);
+
+  // Queries
+  const getCategoryListQuery = useGetApiCategories({
+    query: {
+      select: (data) => (data as unknown as Response<Category[]>).responseData,
+    },
+  });
 
   // Methods
   const handleCategoryClick = (category: Category) => {
