@@ -85,16 +85,17 @@ const getCategoryColors = () => {
   return {
     bg: "bg-white",
     border: "border-gray-200/60",
-    icon: "text-gray-600",
-    iconBg: "bg-gray-50",
+    icon: "text-white",
+    iconBg: "bg-primary",
     title: "text-gray-900",
     description: "text-gray-600",
     hover: {
-      bg: "hover:bg-gray-50/50",
-      border: "hover:border-gray-300/60",
       shadow: "hover:shadow-sm",
-      icon: "group-hover:text-gray-700",
+      icon: "group-hover:text-white",
+      iconBg: "group-hover:-translate-y-2 transition-transform duration-500",
+      border: "hover:border-gray-300/60",
       transform: "hover:-translate-y-0.5",
+      bg: "hover:bg-primary/30 backdrop-blur-sm",
     },
   };
 };
@@ -117,7 +118,7 @@ const CategoryItem = ({
     <Card
       className={cn(
         "group cursor-pointer transition-all duration-200",
-        "h-full flex flex-col", // Fixed height and flex layout
+        "h-full flex flex-col",
         colors.bg,
         colors.border,
         colors.hover.bg,
@@ -129,10 +130,15 @@ const CategoryItem = ({
       )}
       onClick={handleClick}
     >
-      <CardContent className="p-5 flex flex-col h-full">
+      <CardContent className="p-5 flex flex-col h-full items-center justify-center">
         {/* Icon */}
         <div
-          className={cn("mb-4 inline-flex", colors.iconBg, "p-2.5 rounded-lg")}
+          className={cn(
+            "mb-4 shadow-lg size-12 flex items-center justify-center mx-auto",
+            "p-2.5 rounded-full",
+            colors.iconBg,
+            colors.hover.iconBg
+          )}
         >
           <IconComponent
             className={cn("w-5 h-5", colors.icon, colors.hover.icon)}
@@ -142,7 +148,7 @@ const CategoryItem = ({
         {/* Title */}
         <h3
           className={cn(
-            "font-medium text-base mb-2",
+            "font-semibold text-base mb-2",
             colors.title,
             "line-clamp-2 leading-tight"
           )}
@@ -151,13 +157,12 @@ const CategoryItem = ({
         </h3>
 
         {/* Description - flexible height */}
-        <div className="flex-1 mb-4">
+        <div className="flex-1 mb-4  ">
           {showDescription && category.description && (
             <p
               className={cn(
-                "text-sm leading-relaxed",
-                colors.description,
-                "line-clamp-3"
+                "text-sm leading-relaxed line-clamp-2 text-center",
+                colors.description
               )}
             >
               {category.description}

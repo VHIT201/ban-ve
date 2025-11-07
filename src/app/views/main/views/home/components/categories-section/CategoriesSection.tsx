@@ -99,6 +99,7 @@ const CategoriesSection = () => {
     };
   }, []);
 
+  // Methods
   const handleCategoryClick = (category: Category) => {
     console.log("Category selected:", category);
   };
@@ -107,6 +108,7 @@ const CategoriesSection = () => {
     console.log("View all categories");
   };
 
+  // Template
   return (
     <section className="py-16 bg-linear-to-b from-background to-secondary/20">
       <div className="container mx-auto px-4">
@@ -114,24 +116,20 @@ const CategoriesSection = () => {
         <div className="flex items-center justify-between mb-12">
           <div className="space-y-3">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-              Khám phá theo
-              <span className="text-primary ml-2">Danh mục</span>
+              Danh mục
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl">
-              Tìm kiếm bản vẽ kiến trúc phù hợp với dự án của bạn qua các danh
-              mục chuyên nghiệp
+              Tìm kiếm bản vẽ kiến trúc phù hợp với dự án của bạn
             </p>
           </div>
 
           <div className="hidden md:flex items-center gap-3">
             <Button
-              variant="outline"
               onClick={handleViewAll}
-              className="gap-2 hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+              className="group gap-2 hover:bg-primary hover:text-primary-foreground transition-all duration-200"
             >
-              <Grid3X3 className="w-4 h-4" />
               Xem tất cả
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform duration-200" />
             </Button>
           </div>
         </div>
@@ -168,22 +166,6 @@ const CategoriesSection = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-
-            {/* Navigation for top carousel */}
-            <CarouselPrevious
-              className={cn(
-                "left-2 w-10 h-10 bg-background/80 backdrop-blur-sm",
-                "border-border/40 hover:bg-accent hover:border-border/60",
-                "transition-all duration-200 shadow-md"
-              )}
-            />
-            <CarouselNext
-              className={cn(
-                "right-2 w-10 h-10 bg-background/80 backdrop-blur-sm",
-                "border-border/40 hover:bg-accent hover:border-border/60",
-                "transition-all duration-200 shadow-md"
-              )}
-            />
           </Carousel>
 
           {/* Bottom Row Carousel - Moving Right to Left (Reversed) */}
@@ -217,22 +199,6 @@ const CategoriesSection = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-
-            {/* Navigation for bottom carousel */}
-            <CarouselPrevious
-              className={cn(
-                "left-2 w-10 h-10 bg-background/80 backdrop-blur-sm",
-                "border-border/40 hover:bg-accent hover:border-border/60",
-                "transition-all duration-200 shadow-md"
-              )}
-            />
-            <CarouselNext
-              className={cn(
-                "right-2 w-10 h-10 bg-background/80 backdrop-blur-sm",
-                "border-border/40 hover:bg-accent hover:border-border/60",
-                "transition-all duration-200 shadow-md"
-              )}
-            />
           </Carousel>
         </div>
 

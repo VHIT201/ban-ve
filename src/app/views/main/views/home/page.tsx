@@ -65,13 +65,12 @@ const Home = () => {
         });
       }
 
-      // Cập nhật localStorage
       updateLocalCart(newCart);
       return newCart;
     });
   };
 
-  const handleViewDetails = (blueprint: Blueprint) => {
+  const handleViewDetails = () => {
     setDialogOpen(true);
   };
 
