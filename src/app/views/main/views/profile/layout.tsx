@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Outlet } from "react-router-dom";
+import { ProfileSidebar } from "./components";
 
 // Mock data
 const mockUser = {
@@ -47,45 +48,7 @@ const Profile = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <Card className="border-0 shadow-sm">
-              <CardContent className="p-6">
-                {/* User Profile */}
-                <div className="text-center mb-8">
-                  <Avatar className="w-20 h-20 mx-auto mb-4">
-                    <AvatarImage src={mockUser.avatar} alt={mockUser.name} />
-                    <AvatarFallback className="text-lg font-medium bg-gray-100">
-                      {mockUser.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
-                    </AvatarFallback>
-                  </Avatar>
-                  <h3 className="font-semibold text-lg text-gray-900 mb-1">
-                    {mockUser.name}
-                  </h3>
-                  <p className="text-sm text-gray-500">{mockUser.email}</p>
-                </div>
-
-                {/* Navigation */}
-                <nav className="space-y-2">
-                  {sidebarItems.map((item) => (
-                    <button
-                      key={item.label}
-                      onClick={() => setActiveTab(item.label)}
-                      className={cn(
-                        "w-full flex items-center gap-3 px-3 py-2.5 text-left rounded-lg transition-colors",
-                        item.active || activeTab === item.label
-                          ? "bg-blue-50 text-blue-700 border border-blue-200"
-                          : "text-gray-600 hover:bg-gray-50"
-                      )}
-                    >
-                      <item.icon className="w-5 h-5" />
-                      <span className="text-sm font-medium">{item.label}</span>
-                    </button>
-                  ))}
-                </nav>
-              </CardContent>
-            </Card>
+            <ProfileSidebar />
           </div>
 
           {/* Main Content */}

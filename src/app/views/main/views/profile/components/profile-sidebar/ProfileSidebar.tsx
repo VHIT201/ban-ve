@@ -1,8 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { NavLink } from "react-router-dom";
 import { SIDEBAR_MENU } from "./lib/constants";
 import { cn } from "@/lib/utils";
-import { useLocation } from "react-router-dom";
+import { useMatchPath } from "@/hooks";
 
 // Mock data
 const mockUser = {
@@ -16,11 +17,8 @@ const mockUser = {
 };
 
 const ProfileSidebar = () => {
-  // Hooks
-  const location = useLocation();
-
   return (
-    <Card className="border-0 shadow-sm">
+    <Card className="sticky top-12 border-0 shadow-sm">
       <CardContent className="p-6">
         {/* User Profile */}
         <div className="text-center mb-8">
@@ -41,22 +39,23 @@ const ProfileSidebar = () => {
 
         {/* Navigation */}
         <nav className="space-y-2">
-          {SIDEBAR_MENU.map((item) => {
-            return (
-              <button
-                key={item.title}
-                className={cn(
-                  "w-full flex items-center gap-3 px-3 py-2.5 text-left rounded-lg transition-colors",
-                  item.active || activeTab === item.label
-                    ? "bg-blue-50 text-blue-700 border border-blue-200"
-                    : "text-gray-600 hover:bg-gray-50"
-                )}
-              >
-                <item.icon className="w-5 h-5" />
-                <span className="text-sm font-medium">{item.title}</span>
-              </button>
-            );
-          })}
+          {SIDEBAR_MENU.map((item) => (
+            <NavLink
+              key={item.title}
+              to={item.path}
+              className={({ isActive }) =>
+                cn(
+                  "w-full cursor-pointer flex items-center gap-3 px-3 py-2.5 text-left rounded-lg transition-colors",
+                  isActive
+                    ? "bg-primary text-white border border-primary/20"
+                    : "text-gray-600 hover:bg-primary/20"
+                )
+              }
+            >
+              <item.icon className="size-5" />
+              <span className="text-sm font-medium">{item.title}</span>
+            </NavLink>
+          ))}
         </nav>
       </CardContent>
     </Card>

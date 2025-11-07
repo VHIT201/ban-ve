@@ -3,6 +3,7 @@ import { RouteObject } from "react-router-dom";
 
 // App
 import { ROUTE_PATHS } from "@/constants/paths";
+import profileRoutes from "../views/profile/lib/routes";
 
 // Main route paths
 const { app } = ROUTE_PATHS;
@@ -26,15 +27,7 @@ const mainRoutes: RouteObject = {
         };
       },
     },
-    {
-      path: "profile",
-      lazy: async () => {
-        const { default: Profile } = await import("../views/profile/page");
-        return {
-          element: <Profile />,
-        };
-      },
-    },
+    { ...profileRoutes },
   ],
 };
 

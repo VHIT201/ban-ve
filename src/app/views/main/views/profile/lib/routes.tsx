@@ -10,7 +10,7 @@ const {
 } = ROUTE_PATHS;
 
 // Profile routes
-const ProfileRoutes: RouteObject = {
+const profileRoutes: RouteObject = {
   path: profile.path,
   lazy: async () => {
     const { default: Profile } = await import("../layout");
@@ -41,4 +41,4 @@ const ProfileRoutes: RouteObject = {
   ],
 };
 
-export default ProfileRoutes;
+export default profileRoutes;
