@@ -3,6 +3,7 @@ import { RouteObject } from "react-router-dom";
 
 // App
 import { ROUTE_PATHS } from "@/constants/paths";
+import { useAuthStore } from "@/stores";
 
 // Profile route paths
 const {
@@ -17,6 +18,16 @@ const profileRoutes: RouteObject = {
     return {
       element: <Profile />,
     };
+  },
+  loader: () => {
+    const isLoginedIn = useAuthStore.getState().isSignedIn;
+    console.log("Is login : ", isLoginedIn);
+
+    if (isLoginedIn) {
+      return null;
+    }
+
+    throw new Response("Not Found", { status: 404 });
   },
   children: [
     {

@@ -65,8 +65,6 @@ const LoginForm: FC<Props> = () => {
       toast.success("Đăng nhập thành công");
       window.location.href = BASE_PATHS.app.path;
       queryClient.clear();
-
-      console.log("Login Success");
     } catch (error) {
       throw error;
     }

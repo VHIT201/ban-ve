@@ -91,7 +91,7 @@ const authStore: StateCreator<Store> = (set) => ({
 const useAuthStore = create<Store>()(
   devtools(
     persist(authStore, {
-      name: "auth-store",
+      name: "blue-market-auth-store",
       storage: createStorage<States>(),
     })
   )
