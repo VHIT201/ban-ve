@@ -38,8 +38,6 @@ import type { ErrorType , BodyType } from '../mutator/custom-instance';
 
 
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
 
 
 /**
@@ -47,7 +45,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  */
 export const postApiReports = (
     createReportInput: BodyType<CreateReportInput>,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -56,21 +54,21 @@ export const postApiReports = (
       headers: {'Content-Type': 'application/json', },
       data: createReportInput, signal
     },
-      options);
+      );
     }
   
 
 
 export const getPostApiReportsMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiReports>>, TError,{data: BodyType<CreateReportInput>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiReports>>, TError,{data: BodyType<CreateReportInput>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiReports>>, TError,{data: BodyType<CreateReportInput>}, TContext> => {
 
 const mutationKey = ['postApiReports'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -78,7 +76,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiReports>>, {data: BodyType<CreateReportInput>}> = (props) => {
           const {data} = props ?? {};
 
-          return  postApiReports(data,requestOptions)
+          return  postApiReports(data,)
         }
 
         
@@ -94,7 +92,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Gửi báo cáo vi phạm bản quyền
  */
 export const usePostApiReports = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiReports>>, TError,{data: BodyType<CreateReportInput>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiReports>>, TError,{data: BodyType<CreateReportInput>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiReports>>,
         TError,
@@ -111,7 +109,7 @@ export const usePostApiReports = <TError = ErrorType<unknown>,
  */
 export const getApiReports = (
     params?: GetApiReportsParams,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -119,7 +117,7 @@ export const getApiReports = (
       {url: `/api/reports`, method: 'GET',
         params, signal
     },
-      options);
+      );
     }
   
 
@@ -138,16 +136,16 @@ export const getGetApiReportsQueryKey = (params?: GetApiReportsParams,) => {
     }
 
     
-export const getGetApiReportsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiReports>>, GetApiReportsParams['page']>, TError = ErrorType<unknown>>(params?: GetApiReportsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReports>>, TError, TData, QueryKey, GetApiReportsParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiReportsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiReports>>, GetApiReportsParams['page']>, TError = ErrorType<unknown>>(params?: GetApiReportsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReports>>, TError, TData, QueryKey, GetApiReportsParams['page']>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiReportsInfiniteQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiReports>>, QueryKey, GetApiReportsParams['page']> = ({ signal, pageParam }) => getApiReports({...params, 'page': pageParam || params?.['page']}, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiReports>>, QueryKey, GetApiReportsParams['page']> = ({ signal, pageParam }) => getApiReports({...params, 'page': pageParam || params?.['page']}, signal);
 
       
 
@@ -167,7 +165,7 @@ export function useGetApiReportsInfinite<TData = InfiniteData<Awaited<ReturnType
           TError,
           Awaited<ReturnType<typeof getApiReports>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiReportsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiReports>>, GetApiReportsParams['page']>, TError = ErrorType<unknown>>(
@@ -177,11 +175,11 @@ export function useGetApiReportsInfinite<TData = InfiniteData<Awaited<ReturnType
           TError,
           Awaited<ReturnType<typeof getApiReports>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiReportsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiReports>>, GetApiReportsParams['page']>, TError = ErrorType<unknown>>(
- params?: GetApiReportsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReports>>, TError, TData, QueryKey, GetApiReportsParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+ params?: GetApiReportsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReports>>, TError, TData, QueryKey, GetApiReportsParams['page']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -189,7 +187,7 @@ export function useGetApiReportsInfinite<TData = InfiniteData<Awaited<ReturnType
  */
 
 export function useGetApiReportsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiReports>>, GetApiReportsParams['page']>, TError = ErrorType<unknown>>(
- params?: GetApiReportsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReports>>, TError, TData, QueryKey, GetApiReportsParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+ params?: GetApiReportsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReports>>, TError, TData, QueryKey, GetApiReportsParams['page']>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -205,16 +203,16 @@ export function useGetApiReportsInfinite<TData = InfiniteData<Awaited<ReturnType
 
 
 
-export const getGetApiReportsQueryOptions = <TData = Awaited<ReturnType<typeof getApiReports>>, TError = ErrorType<unknown>>(params?: GetApiReportsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReports>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiReportsQueryOptions = <TData = Awaited<ReturnType<typeof getApiReports>>, TError = ErrorType<unknown>>(params?: GetApiReportsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReports>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiReportsQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiReports>>> = ({ signal }) => getApiReports(params, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiReports>>> = ({ signal }) => getApiReports(params, signal);
 
       
 
@@ -234,7 +232,7 @@ export function useGetApiReports<TData = Awaited<ReturnType<typeof getApiReports
           TError,
           Awaited<ReturnType<typeof getApiReports>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiReports<TData = Awaited<ReturnType<typeof getApiReports>>, TError = ErrorType<unknown>>(
@@ -244,11 +242,11 @@ export function useGetApiReports<TData = Awaited<ReturnType<typeof getApiReports
           TError,
           Awaited<ReturnType<typeof getApiReports>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiReports<TData = Awaited<ReturnType<typeof getApiReports>>, TError = ErrorType<unknown>>(
- params?: GetApiReportsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReports>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ params?: GetApiReportsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReports>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -256,7 +254,7 @@ export function useGetApiReports<TData = Awaited<ReturnType<typeof getApiReports
  */
 
 export function useGetApiReports<TData = Awaited<ReturnType<typeof getApiReports>>, TError = ErrorType<unknown>>(
- params?: GetApiReportsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReports>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ params?: GetApiReportsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReports>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -277,14 +275,14 @@ export function useGetApiReports<TData = Awaited<ReturnType<typeof getApiReports
  */
 export const getApiReportsReportId = (
     reportId: string,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
       return mainInstance<GetApiReportsReportId200>(
       {url: `/api/reports/${reportId}`, method: 'GET', signal
     },
-      options);
+      );
     }
   
 
@@ -303,16 +301,16 @@ export const getGetApiReportsReportIdQueryKey = (reportId?: string,) => {
     }
 
     
-export const getGetApiReportsReportIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiReportsReportId>>>, TError = ErrorType<unknown>>(reportId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReportsReportId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiReportsReportIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiReportsReportId>>>, TError = ErrorType<unknown>>(reportId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReportsReportId>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiReportsReportIdInfiniteQueryKey(reportId);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiReportsReportId>>> = ({ signal }) => getApiReportsReportId(reportId, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiReportsReportId>>> = ({ signal }) => getApiReportsReportId(reportId, signal);
 
       
 
@@ -332,7 +330,7 @@ export function useGetApiReportsReportIdInfinite<TData = InfiniteData<Awaited<Re
           TError,
           Awaited<ReturnType<typeof getApiReportsReportId>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiReportsReportIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiReportsReportId>>>, TError = ErrorType<unknown>>(
@@ -342,11 +340,11 @@ export function useGetApiReportsReportIdInfinite<TData = InfiniteData<Awaited<Re
           TError,
           Awaited<ReturnType<typeof getApiReportsReportId>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiReportsReportIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiReportsReportId>>>, TError = ErrorType<unknown>>(
- reportId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReportsReportId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ reportId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReportsReportId>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -354,7 +352,7 @@ export function useGetApiReportsReportIdInfinite<TData = InfiniteData<Awaited<Re
  */
 
 export function useGetApiReportsReportIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiReportsReportId>>>, TError = ErrorType<unknown>>(
- reportId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReportsReportId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ reportId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiReportsReportId>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -370,16 +368,16 @@ export function useGetApiReportsReportIdInfinite<TData = InfiniteData<Awaited<Re
 
 
 
-export const getGetApiReportsReportIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiReportsReportId>>, TError = ErrorType<unknown>>(reportId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReportsReportId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiReportsReportIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiReportsReportId>>, TError = ErrorType<unknown>>(reportId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReportsReportId>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiReportsReportIdQueryKey(reportId);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiReportsReportId>>> = ({ signal }) => getApiReportsReportId(reportId, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiReportsReportId>>> = ({ signal }) => getApiReportsReportId(reportId, signal);
 
       
 
@@ -399,7 +397,7 @@ export function useGetApiReportsReportId<TData = Awaited<ReturnType<typeof getAp
           TError,
           Awaited<ReturnType<typeof getApiReportsReportId>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiReportsReportId<TData = Awaited<ReturnType<typeof getApiReportsReportId>>, TError = ErrorType<unknown>>(
@@ -409,11 +407,11 @@ export function useGetApiReportsReportId<TData = Awaited<ReturnType<typeof getAp
           TError,
           Awaited<ReturnType<typeof getApiReportsReportId>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiReportsReportId<TData = Awaited<ReturnType<typeof getApiReportsReportId>>, TError = ErrorType<unknown>>(
- reportId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReportsReportId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ reportId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReportsReportId>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -421,7 +419,7 @@ export function useGetApiReportsReportId<TData = Awaited<ReturnType<typeof getAp
  */
 
 export function useGetApiReportsReportId<TData = Awaited<ReturnType<typeof getApiReportsReportId>>, TError = ErrorType<unknown>>(
- reportId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReportsReportId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ reportId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReportsReportId>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -443,7 +441,7 @@ export function useGetApiReportsReportId<TData = Awaited<ReturnType<typeof getAp
 export const putApiReportsReportIdStatus = (
     reportId: string,
     updateReportStatusInput: BodyType<UpdateReportStatusInput>,
- options?: SecondParameter<typeof mainInstance>,) => {
+ ) => {
       
       
       return mainInstance<PutApiReportsReportIdStatus200>(
@@ -451,21 +449,21 @@ export const putApiReportsReportIdStatus = (
       headers: {'Content-Type': 'application/json', },
       data: updateReportStatusInput
     },
-      options);
+      );
     }
   
 
 
 export const getPutApiReportsReportIdStatusMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiReportsReportIdStatus>>, TError,{reportId: string;data: BodyType<UpdateReportStatusInput>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiReportsReportIdStatus>>, TError,{reportId: string;data: BodyType<UpdateReportStatusInput>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof putApiReportsReportIdStatus>>, TError,{reportId: string;data: BodyType<UpdateReportStatusInput>}, TContext> => {
 
 const mutationKey = ['putApiReportsReportIdStatus'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -473,7 +471,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiReportsReportIdStatus>>, {reportId: string;data: BodyType<UpdateReportStatusInput>}> = (props) => {
           const {reportId,data} = props ?? {};
 
-          return  putApiReportsReportIdStatus(reportId,data,requestOptions)
+          return  putApiReportsReportIdStatus(reportId,data,)
         }
 
         
@@ -489,7 +487,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Cập nhật trạng thái báo cáo (Admin)
  */
 export const usePutApiReportsReportIdStatus = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiReportsReportIdStatus>>, TError,{reportId: string;data: BodyType<UpdateReportStatusInput>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiReportsReportIdStatus>>, TError,{reportId: string;data: BodyType<UpdateReportStatusInput>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putApiReportsReportIdStatus>>,
         TError,

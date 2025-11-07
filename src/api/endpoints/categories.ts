@@ -35,8 +35,6 @@ import type { ErrorType , BodyType } from '../mutator/custom-instance';
 
 
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
 
 
 /**
@@ -44,7 +42,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  */
 export const postApiCategories = (
     postApiCategoriesBody: BodyType<PostApiCategoriesBody>,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -53,21 +51,21 @@ export const postApiCategories = (
       headers: {'Content-Type': 'application/json', },
       data: postApiCategoriesBody, signal
     },
-      options);
+      );
     }
   
 
 
 export const getPostApiCategoriesMutationOptions = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiCategories>>, TError,{data: BodyType<PostApiCategoriesBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiCategories>>, TError,{data: BodyType<PostApiCategoriesBody>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiCategories>>, TError,{data: BodyType<PostApiCategoriesBody>}, TContext> => {
 
 const mutationKey = ['postApiCategories'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -75,7 +73,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiCategories>>, {data: BodyType<PostApiCategoriesBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  postApiCategories(data,requestOptions)
+          return  postApiCategories(data,)
         }
 
         
@@ -91,7 +89,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Tạo mới danh mục
  */
 export const usePostApiCategories = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiCategories>>, TError,{data: BodyType<PostApiCategoriesBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiCategories>>, TError,{data: BodyType<PostApiCategoriesBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiCategories>>,
         TError,
@@ -108,14 +106,14 @@ export const usePostApiCategories = <TError = ErrorType<void>,
  */
 export const getApiCategories = (
     
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
       return mainInstance<Category[]>(
       {url: `/api/categories`, method: 'GET', signal
     },
-      options);
+      );
     }
   
 
@@ -134,16 +132,16 @@ export const getGetApiCategoriesQueryKey = () => {
     }
 
     
-export const getGetApiCategoriesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCategories>>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiCategoriesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCategories>>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesInfiniteQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategories>>> = ({ signal }) => getApiCategories(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategories>>> = ({ signal }) => getApiCategories(signal);
 
       
 
@@ -163,7 +161,7 @@ export function useGetApiCategoriesInfinite<TData = InfiniteData<Awaited<ReturnT
           TError,
           Awaited<ReturnType<typeof getApiCategories>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCategoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategories>>>, TError = ErrorType<unknown>>(
@@ -173,11 +171,11 @@ export function useGetApiCategoriesInfinite<TData = InfiniteData<Awaited<ReturnT
           TError,
           Awaited<ReturnType<typeof getApiCategories>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCategoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategories>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -185,7 +183,7 @@ export function useGetApiCategoriesInfinite<TData = InfiniteData<Awaited<ReturnT
  */
 
 export function useGetApiCategoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategories>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -201,16 +199,16 @@ export function useGetApiCategoriesInfinite<TData = InfiniteData<Awaited<ReturnT
 
 
 
-export const getGetApiCategoriesQueryOptions = <TData = Awaited<ReturnType<typeof getApiCategories>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiCategoriesQueryOptions = <TData = Awaited<ReturnType<typeof getApiCategories>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategories>>> = ({ signal }) => getApiCategories(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategories>>> = ({ signal }) => getApiCategories(signal);
 
       
 
@@ -230,7 +228,7 @@ export function useGetApiCategories<TData = Awaited<ReturnType<typeof getApiCate
           TError,
           Awaited<ReturnType<typeof getApiCategories>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCategories<TData = Awaited<ReturnType<typeof getApiCategories>>, TError = ErrorType<unknown>>(
@@ -240,11 +238,11 @@ export function useGetApiCategories<TData = Awaited<ReturnType<typeof getApiCate
           TError,
           Awaited<ReturnType<typeof getApiCategories>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCategories<TData = Awaited<ReturnType<typeof getApiCategories>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -252,7 +250,7 @@ export function useGetApiCategories<TData = Awaited<ReturnType<typeof getApiCate
  */
 
 export function useGetApiCategories<TData = Awaited<ReturnType<typeof getApiCategories>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -273,14 +271,14 @@ export function useGetApiCategories<TData = Awaited<ReturnType<typeof getApiCate
  */
 export const getApiCategoriesId = (
     id: string,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
       return mainInstance<Category>(
       {url: `/api/categories/${id}`, method: 'GET', signal
     },
-      options);
+      );
     }
   
 
@@ -299,16 +297,16 @@ export const getGetApiCategoriesIdQueryKey = (id?: string,) => {
     }
 
     
-export const getGetApiCategoriesIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesId>>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiCategoriesIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesId>>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesId>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesIdInfiniteQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesId>>> = ({ signal }) => getApiCategoriesId(id, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesId>>> = ({ signal }) => getApiCategoriesId(id, signal);
 
       
 
@@ -328,7 +326,7 @@ export function useGetApiCategoriesIdInfinite<TData = InfiniteData<Awaited<Retur
           TError,
           Awaited<ReturnType<typeof getApiCategoriesId>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCategoriesIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesId>>>, TError = ErrorType<void>>(
@@ -338,11 +336,11 @@ export function useGetApiCategoriesIdInfinite<TData = InfiniteData<Awaited<Retur
           TError,
           Awaited<ReturnType<typeof getApiCategoriesId>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCategoriesIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesId>>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesId>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -350,7 +348,7 @@ export function useGetApiCategoriesIdInfinite<TData = InfiniteData<Awaited<Retur
  */
 
 export function useGetApiCategoriesIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesId>>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesId>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -366,16 +364,16 @@ export function useGetApiCategoriesIdInfinite<TData = InfiniteData<Awaited<Retur
 
 
 
-export const getGetApiCategoriesIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiCategoriesId>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiCategoriesIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiCategoriesId>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesId>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesIdQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesId>>> = ({ signal }) => getApiCategoriesId(id, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesId>>> = ({ signal }) => getApiCategoriesId(id, signal);
 
       
 
@@ -395,7 +393,7 @@ export function useGetApiCategoriesId<TData = Awaited<ReturnType<typeof getApiCa
           TError,
           Awaited<ReturnType<typeof getApiCategoriesId>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCategoriesId<TData = Awaited<ReturnType<typeof getApiCategoriesId>>, TError = ErrorType<void>>(
@@ -405,11 +403,11 @@ export function useGetApiCategoriesId<TData = Awaited<ReturnType<typeof getApiCa
           TError,
           Awaited<ReturnType<typeof getApiCategoriesId>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCategoriesId<TData = Awaited<ReturnType<typeof getApiCategoriesId>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesId>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -417,7 +415,7 @@ export function useGetApiCategoriesId<TData = Awaited<ReturnType<typeof getApiCa
  */
 
 export function useGetApiCategoriesId<TData = Awaited<ReturnType<typeof getApiCategoriesId>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesId>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -439,7 +437,7 @@ export function useGetApiCategoriesId<TData = Awaited<ReturnType<typeof getApiCa
 export const putApiCategoriesId = (
     id: string,
     putApiCategoriesIdBody: BodyType<PutApiCategoriesIdBody>,
- options?: SecondParameter<typeof mainInstance>,) => {
+ ) => {
       
       
       return mainInstance<Category>(
@@ -447,21 +445,21 @@ export const putApiCategoriesId = (
       headers: {'Content-Type': 'application/json', },
       data: putApiCategoriesIdBody
     },
-      options);
+      );
     }
   
 
 
 export const getPutApiCategoriesIdMutationOptions = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCategoriesId>>, TError,{id: string;data: BodyType<PutApiCategoriesIdBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCategoriesId>>, TError,{id: string;data: BodyType<PutApiCategoriesIdBody>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof putApiCategoriesId>>, TError,{id: string;data: BodyType<PutApiCategoriesIdBody>}, TContext> => {
 
 const mutationKey = ['putApiCategoriesId'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -469,7 +467,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiCategoriesId>>, {id: string;data: BodyType<PutApiCategoriesIdBody>}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  putApiCategoriesId(id,data,requestOptions)
+          return  putApiCategoriesId(id,data,)
         }
 
         
@@ -485,7 +483,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Cập nhật thông tin danh mục
  */
 export const usePutApiCategoriesId = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCategoriesId>>, TError,{id: string;data: BodyType<PutApiCategoriesIdBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCategoriesId>>, TError,{id: string;data: BodyType<PutApiCategoriesIdBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putApiCategoriesId>>,
         TError,
@@ -502,27 +500,27 @@ export const usePutApiCategoriesId = <TError = ErrorType<void>,
  */
 export const deleteApiCategoriesId = (
     id: string,
- options?: SecondParameter<typeof mainInstance>,) => {
+ ) => {
       
       
       return mainInstance<DeleteApiCategoriesId200>(
       {url: `/api/categories/${id}`, method: 'DELETE'
     },
-      options);
+      );
     }
   
 
 
 export const getDeleteApiCategoriesIdMutationOptions = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiCategoriesId>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiCategoriesId>>, TError,{id: string}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteApiCategoriesId>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['deleteApiCategoriesId'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -530,7 +528,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiCategoriesId>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteApiCategoriesId(id,requestOptions)
+          return  deleteApiCategoriesId(id,)
         }
 
         
@@ -546,7 +544,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Xóa một danh mục
  */
 export const useDeleteApiCategoriesId = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiCategoriesId>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiCategoriesId>>, TError,{id: string}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteApiCategoriesId>>,
         TError,

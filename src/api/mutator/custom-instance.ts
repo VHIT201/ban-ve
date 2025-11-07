@@ -133,8 +133,8 @@ export const mainInstance = <T>(
   const promise = MAIN_AXIOS_INSTANCE({
     ...config,
     ...options,
-  }).then(({ data, status }) => {
-    return data instanceof Blob ? data : { ...data, statusCode: status };
+  }).then(({ data }) => {
+    return data;
   });
 
   // @ts-expect-error not exist cancel
@@ -162,5 +162,19 @@ export const fileUploadServiceInstance = async <T>(
 
 export default mainInstance;
 
-export type ErrorType<Error = any> = Error;
-export type BodyType<BodyData = any> = BodyData;
+type SnakeToCamelCase<S extends string> = S extends `${infer T}_${infer U}`
+  ? `${T}${Capitalize<SnakeToCamelCase<U>>}`
+  : S;
+
+type SnakeToCamelCaseDeep<T> = {
+  [K in keyof T as K extends string
+    ? SnakeToCamelCase<K>
+    : K]: T[K] extends object
+    ? T[K] extends Array<infer U>
+      ? Array<SnakeToCamelCaseDeep<U>>
+      : SnakeToCamelCaseDeep<T[K]>
+    : T[K];
+};
+
+export type ErrorType<Error = any> = SnakeToCamelCaseDeep<Error>;
+export type BodyType<BodyData = any> = SnakeToCamelCaseDeep<BodyData>;

@@ -42,8 +42,6 @@ import type { ErrorType , BodyType } from '../mutator/custom-instance';
 
 
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
 
 
 /**
@@ -51,7 +49,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  */
 export const postApiAuthRegister = (
     postApiAuthRegisterBody: BodyType<PostApiAuthRegisterBody>,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -60,21 +58,21 @@ export const postApiAuthRegister = (
       headers: {'Content-Type': 'application/json', },
       data: postApiAuthRegisterBody, signal
     },
-      options);
+      );
     }
   
 
 
 export const getPostApiAuthRegisterMutationOptions = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRegister>>, TError,{data: BodyType<PostApiAuthRegisterBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRegister>>, TError,{data: BodyType<PostApiAuthRegisterBody>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRegister>>, TError,{data: BodyType<PostApiAuthRegisterBody>}, TContext> => {
 
 const mutationKey = ['postApiAuthRegister'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -82,7 +80,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiAuthRegister>>, {data: BodyType<PostApiAuthRegisterBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  postApiAuthRegister(data,requestOptions)
+          return  postApiAuthRegister(data,)
         }
 
         
@@ -98,7 +96,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Bắt đầu quá trình đăng ký tài khoản mới (gửi OTP)
  */
 export const usePostApiAuthRegister = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRegister>>, TError,{data: BodyType<PostApiAuthRegisterBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRegister>>, TError,{data: BodyType<PostApiAuthRegisterBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiAuthRegister>>,
         TError,
@@ -116,7 +114,7 @@ export const usePostApiAuthRegister = <TError = ErrorType<void>,
  */
 export const postApiAuthVerifyRegistration = (
     postApiAuthVerifyRegistrationBody: BodyType<PostApiAuthVerifyRegistrationBody>,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -125,21 +123,21 @@ export const postApiAuthVerifyRegistration = (
       headers: {'Content-Type': 'application/json', },
       data: postApiAuthVerifyRegistrationBody, signal
     },
-      options);
+      );
     }
   
 
 
 export const getPostApiAuthVerifyRegistrationMutationOptions = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthVerifyRegistration>>, TError,{data: BodyType<PostApiAuthVerifyRegistrationBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthVerifyRegistration>>, TError,{data: BodyType<PostApiAuthVerifyRegistrationBody>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiAuthVerifyRegistration>>, TError,{data: BodyType<PostApiAuthVerifyRegistrationBody>}, TContext> => {
 
 const mutationKey = ['postApiAuthVerifyRegistration'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -147,7 +145,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiAuthVerifyRegistration>>, {data: BodyType<PostApiAuthVerifyRegistrationBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  postApiAuthVerifyRegistration(data,requestOptions)
+          return  postApiAuthVerifyRegistration(data,)
         }
 
         
@@ -163,7 +161,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Xác thực OTP để kích hoạt tài khoản
  */
 export const usePostApiAuthVerifyRegistration = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthVerifyRegistration>>, TError,{data: BodyType<PostApiAuthVerifyRegistrationBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthVerifyRegistration>>, TError,{data: BodyType<PostApiAuthVerifyRegistrationBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiAuthVerifyRegistration>>,
         TError,
@@ -180,7 +178,7 @@ export const usePostApiAuthVerifyRegistration = <TError = ErrorType<void>,
  */
 export const postApiAuthResendOtp = (
     postApiAuthResendOtpBody: BodyType<PostApiAuthResendOtpBody>,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -189,21 +187,21 @@ export const postApiAuthResendOtp = (
       headers: {'Content-Type': 'application/json', },
       data: postApiAuthResendOtpBody, signal
     },
-      options);
+      );
     }
   
 
 
 export const getPostApiAuthResendOtpMutationOptions = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthResendOtp>>, TError,{data: BodyType<PostApiAuthResendOtpBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthResendOtp>>, TError,{data: BodyType<PostApiAuthResendOtpBody>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiAuthResendOtp>>, TError,{data: BodyType<PostApiAuthResendOtpBody>}, TContext> => {
 
 const mutationKey = ['postApiAuthResendOtp'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -211,7 +209,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiAuthResendOtp>>, {data: BodyType<PostApiAuthResendOtpBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  postApiAuthResendOtp(data,requestOptions)
+          return  postApiAuthResendOtp(data,)
         }
 
         
@@ -227,7 +225,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Gửi lại mã OTP
  */
 export const usePostApiAuthResendOtp = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthResendOtp>>, TError,{data: BodyType<PostApiAuthResendOtpBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthResendOtp>>, TError,{data: BodyType<PostApiAuthResendOtpBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiAuthResendOtp>>,
         TError,
@@ -244,7 +242,7 @@ export const usePostApiAuthResendOtp = <TError = ErrorType<void>,
  */
 export const postApiAuthLogin = (
     postApiAuthLoginBody: BodyType<PostApiAuthLoginBody>,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -253,21 +251,21 @@ export const postApiAuthLogin = (
       headers: {'Content-Type': 'application/json', },
       data: postApiAuthLoginBody, signal
     },
-      options);
+      );
     }
   
 
 
 export const getPostApiAuthLoginMutationOptions = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthLogin>>, TError,{data: BodyType<PostApiAuthLoginBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthLogin>>, TError,{data: BodyType<PostApiAuthLoginBody>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiAuthLogin>>, TError,{data: BodyType<PostApiAuthLoginBody>}, TContext> => {
 
 const mutationKey = ['postApiAuthLogin'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -275,7 +273,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiAuthLogin>>, {data: BodyType<PostApiAuthLoginBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  postApiAuthLogin(data,requestOptions)
+          return  postApiAuthLogin(data,)
         }
 
         
@@ -291,7 +289,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Đăng nhập
  */
 export const usePostApiAuthLogin = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthLogin>>, TError,{data: BodyType<PostApiAuthLoginBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthLogin>>, TError,{data: BodyType<PostApiAuthLoginBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiAuthLogin>>,
         TError,
@@ -308,7 +306,7 @@ export const usePostApiAuthLogin = <TError = ErrorType<void>,
  */
 export const postApiAuthRefreshToken = (
     postApiAuthRefreshTokenBody: BodyType<PostApiAuthRefreshTokenBody>,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -317,21 +315,21 @@ export const postApiAuthRefreshToken = (
       headers: {'Content-Type': 'application/json', },
       data: postApiAuthRefreshTokenBody, signal
     },
-      options);
+      );
     }
   
 
 
 export const getPostApiAuthRefreshTokenMutationOptions = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRefreshToken>>, TError,{data: BodyType<PostApiAuthRefreshTokenBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRefreshToken>>, TError,{data: BodyType<PostApiAuthRefreshTokenBody>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRefreshToken>>, TError,{data: BodyType<PostApiAuthRefreshTokenBody>}, TContext> => {
 
 const mutationKey = ['postApiAuthRefreshToken'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -339,7 +337,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiAuthRefreshToken>>, {data: BodyType<PostApiAuthRefreshTokenBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  postApiAuthRefreshToken(data,requestOptions)
+          return  postApiAuthRefreshToken(data,)
         }
 
         
@@ -355,7 +353,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Làm mới access token
  */
 export const usePostApiAuthRefreshToken = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRefreshToken>>, TError,{data: BodyType<PostApiAuthRefreshTokenBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthRefreshToken>>, TError,{data: BodyType<PostApiAuthRefreshTokenBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiAuthRefreshToken>>,
         TError,
@@ -372,14 +370,14 @@ export const usePostApiAuthRefreshToken = <TError = ErrorType<void>,
  */
 export const getApiAuthMe = (
     
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
       return mainInstance<GetApiAuthMe200>(
       {url: `/api/auth/me`, method: 'GET', signal
     },
-      options);
+      );
     }
   
 
@@ -398,16 +396,16 @@ export const getGetApiAuthMeQueryKey = () => {
     }
 
     
-export const getGetApiAuthMeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiAuthMe>>>, TError = ErrorType<void>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiAuthMeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiAuthMe>>>, TError = ErrorType<void>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiAuthMeInfiniteQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAuthMe>>> = ({ signal }) => getApiAuthMe(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAuthMe>>> = ({ signal }) => getApiAuthMe(signal);
 
       
 
@@ -427,7 +425,7 @@ export function useGetApiAuthMeInfinite<TData = InfiniteData<Awaited<ReturnType<
           TError,
           Awaited<ReturnType<typeof getApiAuthMe>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAuthMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAuthMe>>>, TError = ErrorType<void>>(
@@ -437,11 +435,11 @@ export function useGetApiAuthMeInfinite<TData = InfiniteData<Awaited<ReturnType<
           TError,
           Awaited<ReturnType<typeof getApiAuthMe>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAuthMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAuthMe>>>, TError = ErrorType<void>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -449,7 +447,7 @@ export function useGetApiAuthMeInfinite<TData = InfiniteData<Awaited<ReturnType<
  */
 
 export function useGetApiAuthMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAuthMe>>>, TError = ErrorType<void>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -465,16 +463,16 @@ export function useGetApiAuthMeInfinite<TData = InfiniteData<Awaited<ReturnType<
 
 
 
-export const getGetApiAuthMeQueryOptions = <TData = Awaited<ReturnType<typeof getApiAuthMe>>, TError = ErrorType<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiAuthMeQueryOptions = <TData = Awaited<ReturnType<typeof getApiAuthMe>>, TError = ErrorType<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiAuthMeQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAuthMe>>> = ({ signal }) => getApiAuthMe(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAuthMe>>> = ({ signal }) => getApiAuthMe(signal);
 
       
 
@@ -494,7 +492,7 @@ export function useGetApiAuthMe<TData = Awaited<ReturnType<typeof getApiAuthMe>>
           TError,
           Awaited<ReturnType<typeof getApiAuthMe>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAuthMe<TData = Awaited<ReturnType<typeof getApiAuthMe>>, TError = ErrorType<void>>(
@@ -504,11 +502,11 @@ export function useGetApiAuthMe<TData = Awaited<ReturnType<typeof getApiAuthMe>>
           TError,
           Awaited<ReturnType<typeof getApiAuthMe>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAuthMe<TData = Awaited<ReturnType<typeof getApiAuthMe>>, TError = ErrorType<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -516,7 +514,7 @@ export function useGetApiAuthMe<TData = Awaited<ReturnType<typeof getApiAuthMe>>
  */
 
 export function useGetApiAuthMe<TData = Awaited<ReturnType<typeof getApiAuthMe>>, TError = ErrorType<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthMe>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 

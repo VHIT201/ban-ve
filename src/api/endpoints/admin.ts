@@ -36,8 +36,6 @@ import type { ErrorType , BodyType } from '../mutator/custom-instance';
 
 
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
 
 
 /**
@@ -45,14 +43,14 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  */
 export const getApiAdminStats = (
     
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
       return mainInstance<GetApiAdminStats200>(
       {url: `/api/admin/stats`, method: 'GET', signal
     },
-      options);
+      );
     }
   
 
@@ -71,16 +69,16 @@ export const getGetApiAdminStatsQueryKey = () => {
     }
 
     
-export const getGetApiAdminStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiAdminStats>>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAdminStats>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiAdminStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiAdminStats>>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAdminStats>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiAdminStatsInfiniteQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAdminStats>>> = ({ signal }) => getApiAdminStats(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAdminStats>>> = ({ signal }) => getApiAdminStats(signal);
 
       
 
@@ -100,7 +98,7 @@ export function useGetApiAdminStatsInfinite<TData = InfiniteData<Awaited<ReturnT
           TError,
           Awaited<ReturnType<typeof getApiAdminStats>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAdminStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAdminStats>>>, TError = ErrorType<unknown>>(
@@ -110,11 +108,11 @@ export function useGetApiAdminStatsInfinite<TData = InfiniteData<Awaited<ReturnT
           TError,
           Awaited<ReturnType<typeof getApiAdminStats>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAdminStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAdminStats>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAdminStats>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAdminStats>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -122,7 +120,7 @@ export function useGetApiAdminStatsInfinite<TData = InfiniteData<Awaited<ReturnT
  */
 
 export function useGetApiAdminStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAdminStats>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAdminStats>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAdminStats>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -138,16 +136,16 @@ export function useGetApiAdminStatsInfinite<TData = InfiniteData<Awaited<ReturnT
 
 
 
-export const getGetApiAdminStatsQueryOptions = <TData = Awaited<ReturnType<typeof getApiAdminStats>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAdminStats>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiAdminStatsQueryOptions = <TData = Awaited<ReturnType<typeof getApiAdminStats>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAdminStats>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiAdminStatsQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAdminStats>>> = ({ signal }) => getApiAdminStats(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAdminStats>>> = ({ signal }) => getApiAdminStats(signal);
 
       
 
@@ -167,7 +165,7 @@ export function useGetApiAdminStats<TData = Awaited<ReturnType<typeof getApiAdmi
           TError,
           Awaited<ReturnType<typeof getApiAdminStats>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAdminStats<TData = Awaited<ReturnType<typeof getApiAdminStats>>, TError = ErrorType<unknown>>(
@@ -177,11 +175,11 @@ export function useGetApiAdminStats<TData = Awaited<ReturnType<typeof getApiAdmi
           TError,
           Awaited<ReturnType<typeof getApiAdminStats>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAdminStats<TData = Awaited<ReturnType<typeof getApiAdminStats>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAdminStats>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAdminStats>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -189,7 +187,7 @@ export function useGetApiAdminStats<TData = Awaited<ReturnType<typeof getApiAdmi
  */
 
 export function useGetApiAdminStats<TData = Awaited<ReturnType<typeof getApiAdminStats>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAdminStats>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAdminStats>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -210,7 +208,7 @@ export function useGetApiAdminStats<TData = Awaited<ReturnType<typeof getApiAdmi
  */
 export const getApiAdminContentsPending = (
     params?: GetApiAdminContentsPendingParams,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -218,7 +216,7 @@ export const getApiAdminContentsPending = (
       {url: `/api/admin/contents/pending`, method: 'GET',
         params, signal
     },
-      options);
+      );
     }
   
 
@@ -237,16 +235,16 @@ export const getGetApiAdminContentsPendingQueryKey = (params?: GetApiAdminConten
     }
 
     
-export const getGetApiAdminContentsPendingInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiAdminContentsPending>>, GetApiAdminContentsPendingParams['page']>, TError = ErrorType<unknown>>(params?: GetApiAdminContentsPendingParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAdminContentsPending>>, TError, TData, QueryKey, GetApiAdminContentsPendingParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiAdminContentsPendingInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiAdminContentsPending>>, GetApiAdminContentsPendingParams['page']>, TError = ErrorType<unknown>>(params?: GetApiAdminContentsPendingParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAdminContentsPending>>, TError, TData, QueryKey, GetApiAdminContentsPendingParams['page']>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiAdminContentsPendingInfiniteQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAdminContentsPending>>, QueryKey, GetApiAdminContentsPendingParams['page']> = ({ signal, pageParam }) => getApiAdminContentsPending({...params, 'page': pageParam || params?.['page']}, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAdminContentsPending>>, QueryKey, GetApiAdminContentsPendingParams['page']> = ({ signal, pageParam }) => getApiAdminContentsPending({...params, 'page': pageParam || params?.['page']}, signal);
 
       
 
@@ -266,7 +264,7 @@ export function useGetApiAdminContentsPendingInfinite<TData = InfiniteData<Await
           TError,
           Awaited<ReturnType<typeof getApiAdminContentsPending>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAdminContentsPendingInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAdminContentsPending>>, GetApiAdminContentsPendingParams['page']>, TError = ErrorType<unknown>>(
@@ -276,11 +274,11 @@ export function useGetApiAdminContentsPendingInfinite<TData = InfiniteData<Await
           TError,
           Awaited<ReturnType<typeof getApiAdminContentsPending>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAdminContentsPendingInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAdminContentsPending>>, GetApiAdminContentsPendingParams['page']>, TError = ErrorType<unknown>>(
- params?: GetApiAdminContentsPendingParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAdminContentsPending>>, TError, TData, QueryKey, GetApiAdminContentsPendingParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+ params?: GetApiAdminContentsPendingParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAdminContentsPending>>, TError, TData, QueryKey, GetApiAdminContentsPendingParams['page']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -288,7 +286,7 @@ export function useGetApiAdminContentsPendingInfinite<TData = InfiniteData<Await
  */
 
 export function useGetApiAdminContentsPendingInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiAdminContentsPending>>, GetApiAdminContentsPendingParams['page']>, TError = ErrorType<unknown>>(
- params?: GetApiAdminContentsPendingParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAdminContentsPending>>, TError, TData, QueryKey, GetApiAdminContentsPendingParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+ params?: GetApiAdminContentsPendingParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiAdminContentsPending>>, TError, TData, QueryKey, GetApiAdminContentsPendingParams['page']>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -304,16 +302,16 @@ export function useGetApiAdminContentsPendingInfinite<TData = InfiniteData<Await
 
 
 
-export const getGetApiAdminContentsPendingQueryOptions = <TData = Awaited<ReturnType<typeof getApiAdminContentsPending>>, TError = ErrorType<unknown>>(params?: GetApiAdminContentsPendingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAdminContentsPending>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiAdminContentsPendingQueryOptions = <TData = Awaited<ReturnType<typeof getApiAdminContentsPending>>, TError = ErrorType<unknown>>(params?: GetApiAdminContentsPendingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAdminContentsPending>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiAdminContentsPendingQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAdminContentsPending>>> = ({ signal }) => getApiAdminContentsPending(params, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAdminContentsPending>>> = ({ signal }) => getApiAdminContentsPending(params, signal);
 
       
 
@@ -333,7 +331,7 @@ export function useGetApiAdminContentsPending<TData = Awaited<ReturnType<typeof 
           TError,
           Awaited<ReturnType<typeof getApiAdminContentsPending>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAdminContentsPending<TData = Awaited<ReturnType<typeof getApiAdminContentsPending>>, TError = ErrorType<unknown>>(
@@ -343,11 +341,11 @@ export function useGetApiAdminContentsPending<TData = Awaited<ReturnType<typeof 
           TError,
           Awaited<ReturnType<typeof getApiAdminContentsPending>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiAdminContentsPending<TData = Awaited<ReturnType<typeof getApiAdminContentsPending>>, TError = ErrorType<unknown>>(
- params?: GetApiAdminContentsPendingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAdminContentsPending>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ params?: GetApiAdminContentsPendingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAdminContentsPending>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -355,7 +353,7 @@ export function useGetApiAdminContentsPending<TData = Awaited<ReturnType<typeof 
  */
 
 export function useGetApiAdminContentsPending<TData = Awaited<ReturnType<typeof getApiAdminContentsPending>>, TError = ErrorType<unknown>>(
- params?: GetApiAdminContentsPendingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAdminContentsPending>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ params?: GetApiAdminContentsPendingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAdminContentsPending>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -377,7 +375,7 @@ export function useGetApiAdminContentsPending<TData = Awaited<ReturnType<typeof 
 export const putApiAdminContentsContentIdReview = (
     contentId: string,
     putApiAdminContentsContentIdReviewBody: BodyType<PutApiAdminContentsContentIdReviewBody>,
- options?: SecondParameter<typeof mainInstance>,) => {
+ ) => {
       
       
       return mainInstance<PutApiAdminContentsContentIdReview200>(
@@ -385,21 +383,21 @@ export const putApiAdminContentsContentIdReview = (
       headers: {'Content-Type': 'application/json', },
       data: putApiAdminContentsContentIdReviewBody
     },
-      options);
+      );
     }
   
 
 
 export const getPutApiAdminContentsContentIdReviewMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiAdminContentsContentIdReview>>, TError,{contentId: string;data: BodyType<PutApiAdminContentsContentIdReviewBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiAdminContentsContentIdReview>>, TError,{contentId: string;data: BodyType<PutApiAdminContentsContentIdReviewBody>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof putApiAdminContentsContentIdReview>>, TError,{contentId: string;data: BodyType<PutApiAdminContentsContentIdReviewBody>}, TContext> => {
 
 const mutationKey = ['putApiAdminContentsContentIdReview'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -407,7 +405,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiAdminContentsContentIdReview>>, {contentId: string;data: BodyType<PutApiAdminContentsContentIdReviewBody>}> = (props) => {
           const {contentId,data} = props ?? {};
 
-          return  putApiAdminContentsContentIdReview(contentId,data,requestOptions)
+          return  putApiAdminContentsContentIdReview(contentId,data,)
         }
 
         
@@ -423,7 +421,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Duyệt hoặc từ chối nội dung
  */
 export const usePutApiAdminContentsContentIdReview = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiAdminContentsContentIdReview>>, TError,{contentId: string;data: BodyType<PutApiAdminContentsContentIdReviewBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiAdminContentsContentIdReview>>, TError,{contentId: string;data: BodyType<PutApiAdminContentsContentIdReviewBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putApiAdminContentsContentIdReview>>,
         TError,

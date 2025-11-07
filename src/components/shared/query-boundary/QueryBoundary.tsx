@@ -28,6 +28,7 @@ const QueryBoundary = <T,>({
   }
 
   if (query.isError || isError) {
+    console.error("Query error:", query.error || error);
     const errors = [query.error, error];
     const axiosError = errors.find((err) => isAxiosError(err));
 
@@ -58,13 +59,13 @@ const DefaultLoader = () => (
 );
 
 const DefaultErrorView = () => (
-  <div className="text-primary text-2xl">
+  <div className="text-primary text-xl flex items-center justify-center">
     Đã xảy ra lỗi trong quá trình xử lí dữ liệu
   </div>
 );
 
 const DefaultForbiddenView = () => (
-  <div className="text-primary text-2xl">
+  <div className="text-primary text-xl flex items-center justify-center">
     Bạn không đủ quyền để truy cập dữ liệu này
   </div>
 );

@@ -36,8 +36,6 @@ import type { ErrorType , BodyType } from '../mutator/custom-instance';
 
 
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
 
 
 /**
@@ -45,7 +43,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  */
 export const postApiPayments = (
     createPaymentInput: BodyType<CreatePaymentInput>,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -54,21 +52,21 @@ export const postApiPayments = (
       headers: {'Content-Type': 'application/json', },
       data: createPaymentInput, signal
     },
-      options);
+      );
     }
   
 
 
 export const getPostApiPaymentsMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiPayments>>, TError,{data: BodyType<CreatePaymentInput>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiPayments>>, TError,{data: BodyType<CreatePaymentInput>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiPayments>>, TError,{data: BodyType<CreatePaymentInput>}, TContext> => {
 
 const mutationKey = ['postApiPayments'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -76,7 +74,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiPayments>>, {data: BodyType<CreatePaymentInput>}> = (props) => {
           const {data} = props ?? {};
 
-          return  postApiPayments(data,requestOptions)
+          return  postApiPayments(data,)
         }
 
         
@@ -92,7 +90,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Tạo yêu cầu thanh toán mới
  */
 export const usePostApiPayments = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiPayments>>, TError,{data: BodyType<CreatePaymentInput>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiPayments>>, TError,{data: BodyType<CreatePaymentInput>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiPayments>>,
         TError,
@@ -109,14 +107,14 @@ export const usePostApiPayments = <TError = ErrorType<unknown>,
  */
 export const getApiPaymentsPaymentId = (
     paymentId: string,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
       return mainInstance<GetApiPaymentsPaymentId200>(
       {url: `/api/payments/${paymentId}`, method: 'GET', signal
     },
-      options);
+      );
     }
   
 
@@ -135,16 +133,16 @@ export const getGetApiPaymentsPaymentIdQueryKey = (paymentId?: string,) => {
     }
 
     
-export const getGetApiPaymentsPaymentIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>>, TError = ErrorType<unknown>>(paymentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiPaymentsPaymentIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>>, TError = ErrorType<unknown>>(paymentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiPaymentsPaymentIdInfiniteQueryKey(paymentId);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>> = ({ signal }) => getApiPaymentsPaymentId(paymentId, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>> = ({ signal }) => getApiPaymentsPaymentId(paymentId, signal);
 
       
 
@@ -164,7 +162,7 @@ export function useGetApiPaymentsPaymentIdInfinite<TData = InfiniteData<Awaited<
           TError,
           Awaited<ReturnType<typeof getApiPaymentsPaymentId>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiPaymentsPaymentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>>, TError = ErrorType<unknown>>(
@@ -174,11 +172,11 @@ export function useGetApiPaymentsPaymentIdInfinite<TData = InfiniteData<Awaited<
           TError,
           Awaited<ReturnType<typeof getApiPaymentsPaymentId>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiPaymentsPaymentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>>, TError = ErrorType<unknown>>(
- paymentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ paymentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -186,7 +184,7 @@ export function useGetApiPaymentsPaymentIdInfinite<TData = InfiniteData<Awaited<
  */
 
 export function useGetApiPaymentsPaymentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>>, TError = ErrorType<unknown>>(
- paymentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ paymentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -202,16 +200,16 @@ export function useGetApiPaymentsPaymentIdInfinite<TData = InfiniteData<Awaited<
 
 
 
-export const getGetApiPaymentsPaymentIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiPaymentsPaymentId>>, TError = ErrorType<unknown>>(paymentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiPaymentsPaymentIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiPaymentsPaymentId>>, TError = ErrorType<unknown>>(paymentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiPaymentsPaymentIdQueryKey(paymentId);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>> = ({ signal }) => getApiPaymentsPaymentId(paymentId, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>> = ({ signal }) => getApiPaymentsPaymentId(paymentId, signal);
 
       
 
@@ -231,7 +229,7 @@ export function useGetApiPaymentsPaymentId<TData = Awaited<ReturnType<typeof get
           TError,
           Awaited<ReturnType<typeof getApiPaymentsPaymentId>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiPaymentsPaymentId<TData = Awaited<ReturnType<typeof getApiPaymentsPaymentId>>, TError = ErrorType<unknown>>(
@@ -241,11 +239,11 @@ export function useGetApiPaymentsPaymentId<TData = Awaited<ReturnType<typeof get
           TError,
           Awaited<ReturnType<typeof getApiPaymentsPaymentId>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiPaymentsPaymentId<TData = Awaited<ReturnType<typeof getApiPaymentsPaymentId>>, TError = ErrorType<unknown>>(
- paymentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ paymentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -253,7 +251,7 @@ export function useGetApiPaymentsPaymentId<TData = Awaited<ReturnType<typeof get
  */
 
 export function useGetApiPaymentsPaymentId<TData = Awaited<ReturnType<typeof getApiPaymentsPaymentId>>, TError = ErrorType<unknown>>(
- paymentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ paymentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsPaymentId>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -274,7 +272,7 @@ export function useGetApiPaymentsPaymentId<TData = Awaited<ReturnType<typeof get
  */
 export const getApiPaymentsHistory = (
     params?: GetApiPaymentsHistoryParams,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -282,7 +280,7 @@ export const getApiPaymentsHistory = (
       {url: `/api/payments/history`, method: 'GET',
         params, signal
     },
-      options);
+      );
     }
   
 
@@ -301,16 +299,16 @@ export const getGetApiPaymentsHistoryQueryKey = (params?: GetApiPaymentsHistoryP
     }
 
     
-export const getGetApiPaymentsHistoryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsHistory>>, GetApiPaymentsHistoryParams['page']>, TError = ErrorType<unknown>>(params?: GetApiPaymentsHistoryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsHistory>>, TError, TData, QueryKey, GetApiPaymentsHistoryParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiPaymentsHistoryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsHistory>>, GetApiPaymentsHistoryParams['page']>, TError = ErrorType<unknown>>(params?: GetApiPaymentsHistoryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsHistory>>, TError, TData, QueryKey, GetApiPaymentsHistoryParams['page']>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiPaymentsHistoryInfiniteQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPaymentsHistory>>, QueryKey, GetApiPaymentsHistoryParams['page']> = ({ signal, pageParam }) => getApiPaymentsHistory({...params, 'page': pageParam || params?.['page']}, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPaymentsHistory>>, QueryKey, GetApiPaymentsHistoryParams['page']> = ({ signal, pageParam }) => getApiPaymentsHistory({...params, 'page': pageParam || params?.['page']}, signal);
 
       
 
@@ -330,7 +328,7 @@ export function useGetApiPaymentsHistoryInfinite<TData = InfiniteData<Awaited<Re
           TError,
           Awaited<ReturnType<typeof getApiPaymentsHistory>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiPaymentsHistoryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsHistory>>, GetApiPaymentsHistoryParams['page']>, TError = ErrorType<unknown>>(
@@ -340,11 +338,11 @@ export function useGetApiPaymentsHistoryInfinite<TData = InfiniteData<Awaited<Re
           TError,
           Awaited<ReturnType<typeof getApiPaymentsHistory>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiPaymentsHistoryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsHistory>>, GetApiPaymentsHistoryParams['page']>, TError = ErrorType<unknown>>(
- params?: GetApiPaymentsHistoryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsHistory>>, TError, TData, QueryKey, GetApiPaymentsHistoryParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+ params?: GetApiPaymentsHistoryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsHistory>>, TError, TData, QueryKey, GetApiPaymentsHistoryParams['page']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -352,7 +350,7 @@ export function useGetApiPaymentsHistoryInfinite<TData = InfiniteData<Awaited<Re
  */
 
 export function useGetApiPaymentsHistoryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsHistory>>, GetApiPaymentsHistoryParams['page']>, TError = ErrorType<unknown>>(
- params?: GetApiPaymentsHistoryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsHistory>>, TError, TData, QueryKey, GetApiPaymentsHistoryParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+ params?: GetApiPaymentsHistoryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsHistory>>, TError, TData, QueryKey, GetApiPaymentsHistoryParams['page']>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -368,16 +366,16 @@ export function useGetApiPaymentsHistoryInfinite<TData = InfiniteData<Awaited<Re
 
 
 
-export const getGetApiPaymentsHistoryQueryOptions = <TData = Awaited<ReturnType<typeof getApiPaymentsHistory>>, TError = ErrorType<unknown>>(params?: GetApiPaymentsHistoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsHistory>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiPaymentsHistoryQueryOptions = <TData = Awaited<ReturnType<typeof getApiPaymentsHistory>>, TError = ErrorType<unknown>>(params?: GetApiPaymentsHistoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsHistory>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiPaymentsHistoryQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPaymentsHistory>>> = ({ signal }) => getApiPaymentsHistory(params, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPaymentsHistory>>> = ({ signal }) => getApiPaymentsHistory(params, signal);
 
       
 
@@ -397,7 +395,7 @@ export function useGetApiPaymentsHistory<TData = Awaited<ReturnType<typeof getAp
           TError,
           Awaited<ReturnType<typeof getApiPaymentsHistory>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiPaymentsHistory<TData = Awaited<ReturnType<typeof getApiPaymentsHistory>>, TError = ErrorType<unknown>>(
@@ -407,11 +405,11 @@ export function useGetApiPaymentsHistory<TData = Awaited<ReturnType<typeof getAp
           TError,
           Awaited<ReturnType<typeof getApiPaymentsHistory>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiPaymentsHistory<TData = Awaited<ReturnType<typeof getApiPaymentsHistory>>, TError = ErrorType<unknown>>(
- params?: GetApiPaymentsHistoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsHistory>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ params?: GetApiPaymentsHistoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsHistory>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -419,7 +417,7 @@ export function useGetApiPaymentsHistory<TData = Awaited<ReturnType<typeof getAp
  */
 
 export function useGetApiPaymentsHistory<TData = Awaited<ReturnType<typeof getApiPaymentsHistory>>, TError = ErrorType<unknown>>(
- params?: GetApiPaymentsHistoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsHistory>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ params?: GetApiPaymentsHistoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsHistory>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 

@@ -1,5 +1,3 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Category } from "@/api/models/category";
 import {
@@ -12,7 +10,6 @@ import {
   ShoppingBag,
   TreePine,
   Zap,
-  MoreHorizontal,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -23,7 +20,6 @@ interface CategoryItemProps {
   className?: string;
 }
 
-// Icon mapping for different category types
 const getCategoryIcon = (categoryName: string, slug: string) => {
   const name = categoryName.toLowerCase();
   const slugLower = slug.toLowerCase();
@@ -77,10 +73,9 @@ const getCategoryIcon = (categoryName: string, slug: string) => {
   ) {
     return Zap;
   }
-  return Building2; // Default icon
+  return Building2;
 };
 
-// Minimal color scheme - simple and clean
 const getCategoryColors = () => {
   return {
     bg: "bg-white",
@@ -113,19 +108,18 @@ const CategoryItem = ({
     onClick?.(category);
   };
 
-  // Minimal design - clean and simple with fixed height
   return (
     <Card
       className={cn(
-        "group cursor-pointer transition-all duration-200",
+        "border",
         "h-full flex flex-col",
+        "group cursor-pointer transition-all duration-200",
         colors.bg,
         colors.border,
         colors.hover.bg,
         colors.hover.border,
         colors.hover.shadow,
         colors.hover.transform,
-        "border",
         className
       )}
       onClick={handleClick}

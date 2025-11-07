@@ -1,21 +1,18 @@
 import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-  type CarouselApi,
 } from "@/components/ui/carousel";
 import { Category } from "@/api/models/category";
 import { CategoryItem } from "./components";
 import Autoplay from "embla-carousel-autoplay";
-import { Grid3X3, ArrowRight, Sparkles } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Grid3X3, ArrowRight } from "lucide-react";
 import { useGetApiCategories } from "@/api/endpoints/categories";
 import { Response } from "@/api/types/base";
+import { QueryBoundary } from "@/components/shared";
+import { UseQueryResult } from "@tanstack/react-query";
 
 const mockCategories: Category[] = [
   {
@@ -93,20 +90,26 @@ const mockCategories: Category[] = [
 ];
 
 const CategoriesSection = () => {
-  const { topRowCategories, bottomRowCategories } = useMemo(() => {
-    const half = Math.ceil(mockCategories.length / 2);
-    return {
-      topRowCategories: mockCategories.slice(0, half),
-      bottomRowCategories: mockCategories.slice(half),
-    };
-  }, []);
-
   // Queries
-  const getCategoryListQuery = useGetApiCategories({
+  const getCategoryListQuery = useGetApiCategories<{
+    topRowCategories: Category[];
+    bottomRowCategories: Category[];
+  }>({
     query: {
-      select: (data) => (data as unknown as Response<Category[]>).responseData,
+      select: (data) => {
+        const categories = data as unknown as Category[];
+        const half = Math.ceil(categories.length / 2);
+
+        return {
+          topRowCategories: categories.slice(0, half),
+          bottomRowCategories: categories.slice(half),
+        };
+      },
     },
-  });
+  }) as UseQueryResult<{
+    topRowCategories: Category[];
+    bottomRowCategories: Category[];
+  }>;
 
   // Methods
   const handleCategoryClick = (category: Category) => {
@@ -119,7 +122,7 @@ const CategoriesSection = () => {
 
   // Template
   return (
-    <section className="py-16 bg-linear-to-b from-background to-secondary/20">
+    <section className="py-16">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-12">
@@ -144,72 +147,76 @@ const CategoriesSection = () => {
         </div>
 
         {/* Dual Carousel Layout */}
-        <div className="space-y-8">
-          {/* Top Row Carousel - Moving Left to Right */}
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-            }}
-            plugins={[
-              Autoplay({
-                delay: 3000,
-                stopOnInteraction: false,
-              }),
-            ]}
-            className="w-full"
-          >
-            <CarouselContent className="-ml-2 md:-ml-4">
-              {topRowCategories.map((category) => (
-                <CarouselItem
-                  key={category._id}
-                  className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 lg:basis-1/4"
-                >
-                  <div className="animate-in slide-in-from-left-10 duration-700">
-                    <CategoryItem
-                      category={category}
-                      onClick={handleCategoryClick}
-                      className="h-full"
-                    />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
+        <QueryBoundary query={getCategoryListQuery}>
+          {(categories) => (
+            <div className="space-y-2 md:space-y-4">
+              {/* Top Row Carousel - Moving Left to Right */}
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                plugins={[
+                  Autoplay({
+                    delay: 3000,
+                    stopOnInteraction: false,
+                  }),
+                ]}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-2 md:-ml-4">
+                  {categories.topRowCategories.map((category) => (
+                    <CarouselItem
+                      key={category._id}
+                      className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 lg:basis-1/4"
+                    >
+                      <div className="animate-in slide-in-from-left-10 duration-700">
+                        <CategoryItem
+                          category={category}
+                          onClick={handleCategoryClick}
+                          className="h-full"
+                        />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+              </Carousel>
 
-          {/* Bottom Row Carousel - Moving Right to Left (Reversed) */}
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-              direction: "rtl", // Right to Left direction
-            }}
-            plugins={[
-              Autoplay({
-                delay: 4000,
-                stopOnInteraction: false,
-              }),
-            ]}
-            className="w-full"
-          >
-            <CarouselContent className="-ml-2 md:-ml-4 flex-row-reverse">
-              {bottomRowCategories.map((category) => (
-                <CarouselItem
-                  key={category._id}
-                  className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 lg:basis-1/4"
-                >
-                  <div className="animate-in slide-in-from-right-10 duration-700">
-                    <CategoryItem
-                      category={category}
-                      onClick={handleCategoryClick}
-                      className="h-full"
-                    />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
-        </div>
+              {/* Bottom Row Carousel - Moving Right to Left (Reversed) */}
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                  direction: "rtl",
+                }}
+                plugins={[
+                  Autoplay({
+                    delay: 3000,
+                    stopOnInteraction: false,
+                  }),
+                ]}
+                className="w-full px-16 md:px-32"
+              >
+                <CarouselContent className="-ml-2 md:-ml-4 flex-row-reverse">
+                  {categories.bottomRowCategories.map((category) => (
+                    <CarouselItem
+                      key={category._id}
+                      className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 "
+                    >
+                      <div className="animate-in slide-in-from-right-10 duration-700">
+                        <CategoryItem
+                          category={category}
+                          onClick={handleCategoryClick}
+                          className="h-full"
+                        />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+              </Carousel>
+            </div>
+          )}
+        </QueryBoundary>
 
         {/* Mobile View All Button */}
         <div className="flex justify-center mt-8 md:hidden">
