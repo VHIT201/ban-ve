@@ -71,7 +71,7 @@ export const AdminSidebar: React.FC = () => {
                 isCollapsed ? 'justify-center' : 'justify-start'
               )}
             >
-              <item.icon className={cn("h-5 w-5 flex-shrink-0", !isCollapsed && 'mr-3')} />
+              <item.icon className={cn("size-5", !isCollapsed && 'mr-3')} />
               {!isCollapsed && <span>{item.name}</span>}
             </Link>
           ))}
