@@ -1,20 +1,20 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi,
+} from "@/components/ui/carousel";
 import { Category } from "@/api/models/category";
 import { CategoryItem } from "./components";
-import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Grid3X3,
-  ArrowRight,
-  Sparkles,
-} from "lucide-react";
+import { Grid3X3, ArrowRight, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Mock data - replace with your API call
 const mockCategories: Category[] = [
   {
     _id: "1",
@@ -91,55 +91,20 @@ const mockCategories: Category[] = [
 ];
 
 const CategoriesSection = () => {
-  // Carousel setup
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    {
-      loop: true,
-      slidesToScroll: 1,
-      breakpoints: {
-        "(min-width: 768px)": { slidesToScroll: 2 },
-        "(min-width: 1024px)": { slidesToScroll: 3 },
-      },
-    },
-    [Autoplay({ delay: 4000, stopOnInteraction: false })]
-  );
-
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
-
-  const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev();
-  }, [emblaApi]);
-
-  const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext();
-  }, [emblaApi]);
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-    setCanScrollPrev(emblaApi.canScrollPrev());
-    setCanScrollNext(emblaApi.canScrollNext());
-  }, [emblaApi]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    onSelect();
-    emblaApi.on("select", onSelect);
-    return () => {
-      emblaApi.off("select", onSelect);
+  const { topRowCategories, bottomRowCategories } = useMemo(() => {
+    const half = Math.ceil(mockCategories.length / 2);
+    return {
+      topRowCategories: mockCategories.slice(0, half),
+      bottomRowCategories: mockCategories.slice(half),
     };
-  }, [emblaApi, onSelect]);
+  }, []);
 
   const handleCategoryClick = (category: Category) => {
     console.log("Category selected:", category);
-    // Navigate to category page or filter products
   };
 
   const handleViewAll = () => {
     console.log("View all categories");
-    // Navigate to categories page
   };
 
   return (
@@ -148,15 +113,6 @@ const CategoriesSection = () => {
         {/* Section Header */}
         <div className="flex items-center justify-between mb-12">
           <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <Badge
-                variant="secondary"
-                className="bg-primary/10 text-primary border-primary/20"
-              >
-                <Sparkles className="w-3 h-3 mr-1" />
-                Danh mục phổ biến
-              </Badge>
-            </div>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">
               Khám phá theo
               <span className="text-primary ml-2">Danh mục</span>
@@ -180,75 +136,104 @@ const CategoriesSection = () => {
           </div>
         </div>
 
-        {/* Categories Carousel */}
-        <div className="relative">
-          <div className="overflow-hidden" ref={emblaRef}>
-            <div className="flex gap-6">
-              {mockCategories.map((category) => (
-                <div
+        {/* Dual Carousel Layout */}
+        <div className="space-y-8">
+          {/* Top Row Carousel - Moving Left to Right */}
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            plugins={[
+              Autoplay({
+                delay: 3000,
+                stopOnInteraction: false,
+              }),
+            ]}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-2 md:-ml-4">
+              {topRowCategories.map((category) => (
+                <CarouselItem
                   key={category._id}
-                  className="flex-[0_0_100%] min-w-0 sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] xl:flex-[0_0_25%]"
+                  className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 lg:basis-1/4"
                 >
-                  <CategoryItem
-                    category={category}
-                    onClick={handleCategoryClick}
-                    className="h-full"
-                  />
-                </div>
+                  <div className="animate-in slide-in-from-left-10 duration-700">
+                    <CategoryItem
+                      category={category}
+                      onClick={handleCategoryClick}
+                      className="h-full"
+                    />
+                  </div>
+                </CarouselItem>
               ))}
-            </div>
-          </div>
+            </CarouselContent>
 
-          {/* Navigation Arrows */}
-          <Button
-            variant="outline"
-            size="icon"
-            className={cn(
-              "absolute left-4 top-1/2 -translate-y-1/2 z-10",
-              "w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm",
-              "border-border/40 hover:bg-accent hover:border-border/60",
-              "transition-all duration-200 shadow-lg",
-              !canScrollPrev && "opacity-50 cursor-not-allowed"
-            )}
-            onClick={scrollPrev}
-            disabled={!canScrollPrev}
+            {/* Navigation for top carousel */}
+            <CarouselPrevious
+              className={cn(
+                "left-2 w-10 h-10 bg-background/80 backdrop-blur-sm",
+                "border-border/40 hover:bg-accent hover:border-border/60",
+                "transition-all duration-200 shadow-md"
+              )}
+            />
+            <CarouselNext
+              className={cn(
+                "right-2 w-10 h-10 bg-background/80 backdrop-blur-sm",
+                "border-border/40 hover:bg-accent hover:border-border/60",
+                "transition-all duration-200 shadow-md"
+              )}
+            />
+          </Carousel>
+
+          {/* Bottom Row Carousel - Moving Right to Left (Reversed) */}
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+              direction: "rtl", // Right to Left direction
+            }}
+            plugins={[
+              Autoplay({
+                delay: 4000,
+                stopOnInteraction: false,
+              }),
+            ]}
+            className="w-full"
           >
-            <ChevronLeft className="w-5 h-5" />
-          </Button>
+            <CarouselContent className="-ml-2 md:-ml-4 flex-row-reverse">
+              {bottomRowCategories.map((category) => (
+                <CarouselItem
+                  key={category._id}
+                  className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 lg:basis-1/4"
+                >
+                  <div className="animate-in slide-in-from-right-10 duration-700">
+                    <CategoryItem
+                      category={category}
+                      onClick={handleCategoryClick}
+                      className="h-full"
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
 
-          <Button
-            variant="outline"
-            size="icon"
-            className={cn(
-              "absolute right-4 top-1/2 -translate-y-1/2 z-10",
-              "w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm",
-              "border-border/40 hover:bg-accent hover:border-border/60",
-              "transition-all duration-200 shadow-lg",
-              !canScrollNext && "opacity-50 cursor-not-allowed"
-            )}
-            onClick={scrollNext}
-            disabled={!canScrollNext}
-          >
-            <ChevronRight className="w-5 h-5" />
-          </Button>
-        </div>
-
-        {/* Dots Indicator */}
-        <div className="flex justify-center mt-8 gap-2">
-          {Array.from({ length: Math.ceil(mockCategories.length / 3) }).map(
-            (_, index) => (
-              <button
-                key={index}
-                className={cn(
-                  "w-2 h-2 rounded-full transition-all duration-300",
-                  selectedIndex === index
-                    ? "bg-primary w-6"
-                    : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
-                )}
-                onClick={() => emblaApi?.scrollTo(index)}
-              />
-            )
-          )}
+            {/* Navigation for bottom carousel */}
+            <CarouselPrevious
+              className={cn(
+                "left-2 w-10 h-10 bg-background/80 backdrop-blur-sm",
+                "border-border/40 hover:bg-accent hover:border-border/60",
+                "transition-all duration-200 shadow-md"
+              )}
+            />
+            <CarouselNext
+              className={cn(
+                "right-2 w-10 h-10 bg-background/80 backdrop-blur-sm",
+                "border-border/40 hover:bg-accent hover:border-border/60",
+                "transition-all duration-200 shadow-md"
+              )}
+            />
+          </Carousel>
         </div>
 
         {/* Mobile View All Button */}

@@ -72,8 +72,9 @@ const RegisterVerifyForm: FC<Props> = (props) => {
       });
 
       setCountdown(30);
+      toast.success("Gửi lại mã OTP thành công. Vui lòng kiểm tra email.");
     } catch {
-      // Handle error
+      toast.error("Gửi lại mã OTP thất bại. Vui lòng thử lại.");
     }
   };
 
@@ -88,8 +89,10 @@ const RegisterVerifyForm: FC<Props> = (props) => {
 
       toast.success("Xác thực thành công");
       navigate(BASE_PATHS.auth.login.path);
+
+      toast.success("Bạn có thể đăng nhập ngay bây giờ.");
     } catch {
-      // Handle error
+      toast.error("Xác thực thất bại. Vui lòng thử lại.");
     }
   };
 

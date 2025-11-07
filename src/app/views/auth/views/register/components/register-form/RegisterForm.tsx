@@ -25,6 +25,7 @@ import {
 import { Link } from "react-router-dom";
 import { BASE_PATHS } from "@/constants/paths";
 import { usePostApiAuthRegister } from "@/api/endpoints/auth";
+import { toast } from "sonner";
 
 const RegisterForm: FC<Props> = (props) => {
   // Props
@@ -54,6 +55,7 @@ const RegisterForm: FC<Props> = (props) => {
       });
 
       onSubmit(values);
+      toast.success("Đăng ký thành công! Vui lòng kiểm tra email để xác thực.");
     } catch (error) {
       throw error;
     }

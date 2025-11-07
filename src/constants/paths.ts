@@ -5,7 +5,14 @@ export const ROUTE_PATHS = {
     register: { path: "register" },
   },
 
-  app: { path: "/" },
+  app: {
+    path: "/",
+    profile: {
+      path: "profile",
+      personal: { path: "personal" },
+      history: { path: "history" },
+    },
+  },
 };
 
 export const BASE_PATHS = {
@@ -15,7 +22,14 @@ export const BASE_PATHS = {
     register: { path: "/auth/register" },
     forgot: { path: "/auth/forgot" },
   },
-  app: { path: "/" },
+  app: {
+    path: "/",
+    profile: {
+      path: "/profile",
+      personal: { path: "/profile/personal" },
+      history: { path: "/profile/history" },
+    },
+  },
   home: { path: "/" },
   checkout: { path: "/checkout" },
   upload: { path: "/upload" },

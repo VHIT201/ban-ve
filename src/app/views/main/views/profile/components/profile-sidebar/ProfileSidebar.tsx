@@ -1,0 +1,66 @@
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { SIDEBAR_MENU } from "./lib/constants";
+import { cn } from "@/lib/utils";
+import { useLocation } from "react-router-dom";
+
+// Mock data
+const mockUser = {
+  name: "Jenny Wilson",
+  email: "jenny.wilson@example.com",
+  phone: "+1 (555) 123-4567",
+  avatar: "/api/placeholder/80/80",
+  joinDate: "March 2023",
+  totalOrders: 24,
+  rating: 4.8,
+};
+
+const ProfileSidebar = () => {
+  // Hooks
+  const location = useLocation();
+
+  return (
+    <Card className="border-0 shadow-sm">
+      <CardContent className="p-6">
+        {/* User Profile */}
+        <div className="text-center mb-8">
+          <Avatar className="w-20 h-20 mx-auto mb-4">
+            <AvatarImage src={mockUser.avatar} alt={mockUser.name} />
+            <AvatarFallback className="text-lg font-medium bg-gray-100">
+              {mockUser.name
+                .split(" ")
+                .map((n) => n[0])
+                .join("")}
+            </AvatarFallback>
+          </Avatar>
+          <h3 className="font-semibold text-lg text-gray-900 mb-1">
+            {mockUser.name}
+          </h3>
+          <p className="text-sm text-gray-500">{mockUser.email}</p>
+        </div>
+
+        {/* Navigation */}
+        <nav className="space-y-2">
+          {SIDEBAR_MENU.map((item) => {
+            return (
+              <button
+                key={item.title}
+                className={cn(
+                  "w-full flex items-center gap-3 px-3 py-2.5 text-left rounded-lg transition-colors",
+                  item.active || activeTab === item.label
+                    ? "bg-blue-50 text-blue-700 border border-blue-200"
+                    : "text-gray-600 hover:bg-gray-50"
+                )}
+              >
+                <item.icon className="w-5 h-5" />
+                <span className="text-sm font-medium">{item.title}</span>
+              </button>
+            );
+          })}
+        </nav>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default ProfileSidebar;
