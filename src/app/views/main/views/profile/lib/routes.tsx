@@ -31,7 +31,6 @@ const profileRoutes: RouteObject = {
   },
   children: [
     {
-      index: true,
       path: profile.personal.path,
       lazy: async () => {
         const { default: Personal } = await import("../views/personal/page");

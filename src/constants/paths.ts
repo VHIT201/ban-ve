@@ -16,6 +16,7 @@ export const ROUTE_PATHS = {
 };
 
 export const BASE_PATHS = {
+  admin: { path: "/admin" },
   auth: {
     path: "/auth",
     login: { path: "/auth/login" },
@@ -29,6 +30,7 @@ export const BASE_PATHS = {
       personal: { path: "/profile/personal" },
       history: { path: "/profile/history" },
     },
+    setting: { path: "/setting" },
   },
   home: { path: "/" },
   checkout: { path: "/checkout" },

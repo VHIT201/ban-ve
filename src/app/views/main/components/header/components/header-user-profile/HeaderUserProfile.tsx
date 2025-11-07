@@ -1,17 +1,18 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { ChevronDown, Settings, LogOut, Shield, User } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/stores";
+import { useAuthStore, useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
+import { HEADER_USER_PROFILE_MENU } from "./lib/constant";
+import { UserRole } from "@/enums/roles";
 
 // Types
 interface UserData {
@@ -28,6 +29,7 @@ interface MenuItemProps {
   variant?: "default" | "destructive";
   asChild?: boolean;
   children?: React.ReactNode;
+  to?: string;
 }
 
 const userData: UserData = {
@@ -43,13 +45,32 @@ const MenuItem = ({
   variant = "default",
   asChild,
   children,
+  to,
 }: MenuItemProps) => {
   const buttonClass = cn(
-    "w-full justify-start gap-3 px-3 py-2.5 h-auto text-sm font-medium rounded-lg transition-all duration-200",
+    "w-full justify-start gap-3 flex px-3 py-2.5 hover:text-white h-auto text-sm font-medium rounded-lg transition-all duration-200",
     variant === "destructive"
       ? "text-destructive hover:text-destructive hover:bg-destructive/10 focus:bg-destructive/10"
       : "text-foreground hover:bg-primary focus:bg-primary focus:text-white"
   );
+
+  if (to) {
+    return (
+      <NavLink
+        to={to}
+        className={({ isActive }) =>
+          cn(
+            buttonClass,
+            isActive && variant !== "destructive" ? "bg-primary text-white" : ""
+          )
+        }
+        onClick={onClick}
+      >
+        {icon}
+        <span>{label}</span>
+      </NavLink>
+    );
+  }
 
   if (asChild && children) {
     return (
@@ -69,11 +90,16 @@ const MenuItem = ({
 
 const MenuDivider = () => <div className="h-px bg-border/60 mx-2 my-1" />;
 
-// Main Component
 const HeaderUserProfile = () => {
   const authStore = useAuthStore(
     useShallow(({ resetStore }) => ({
       resetStore,
+    }))
+  );
+
+  const profileStore = useProfileStore(
+    useShallow(({ role }) => ({
+      role,
     }))
   );
 
@@ -140,31 +166,21 @@ const HeaderUserProfile = () => {
         <MenuDivider />
 
         <div className="p-2 space-y-1">
-          <MenuItem
-            icon={<User className="w-4 h-4" />}
-            label="Hồ sơ cá nhân"
-            onClick={() => handleItemClick()}
-          />
+          {HEADER_USER_PROFILE_MENU.map((item) => {
+            if (item.roles.includes(profileStore.role as UserRole)) {
+              return (
+                <MenuItem
+                  key={item.label}
+                  icon={<item.icon className="size-4" />}
+                  label={item.label}
+                  to={item.path}
+                  onClick={() => handleItemClick()}
+                />
+              );
+            }
 
-          <MenuItem
-            icon={<Settings className="w-4 h-4" />}
-            label="Cài đặt"
-            onClick={() => handleItemClick()}
-          />
-
-          {userData.isAdmin && (
-            <MenuItem
-              icon={<Shield className="w-4 h-4" />}
-              label="Quản trị hệ thống"
-              asChild
-              onClick={() => handleItemClick()}
-            >
-              <Link to="/admin">
-                <Shield className="w-4 h-4" />
-                <span>Quản trị hệ thống</span>
-              </Link>
-            </MenuItem>
-          )}
+            return null;
+          })}
         </div>
 
         <MenuDivider />
