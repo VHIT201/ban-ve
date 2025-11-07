@@ -153,7 +153,7 @@ const RegisterForm: FC<Props> = (props) => {
 
         <Button
           type="submit"
-          className="w-full mt-6"
+          className="w-full mt-6 h-10"
           disabled={form.formState.isSubmitting}
         >
           {form.formState.isSubmitting ? (

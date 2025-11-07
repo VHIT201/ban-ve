@@ -16,6 +16,8 @@ const carouselData = [
     description:
       "Tạo ra những bản thiết kế đẹp mắt với bộ công cụ mạnh mẽ và trực quan.",
     highlight: "10,000+ templates",
+    bgImage: "/auth/bg_1.jpg",
+    color: "primary",
   },
   {
     id: 2,
@@ -24,14 +26,8 @@ const carouselData = [
     description:
       "Làm việc cùng nhau một cách hiệu quả, chia sẻ ý tưởng và phản hồi tức thời.",
     highlight: "Realtime sync",
-  },
-  {
-    id: 3,
-    icon: Sparkles,
-    title: "AI-Powered",
-    description:
-      "Sử dụng trí tuệ nhân tạo để tối ưu hóa quy trình thiết kế của bạn.",
-    highlight: "Smart suggestions",
+    bgImage: "/auth/bg_2.webp",
+    color: "primary",
   },
   {
     id: 4,
@@ -40,6 +36,8 @@ const carouselData = [
     description:
       "Chia sẻ và xuất bản thiết kế của bạn chỉ với vài cú click đơn giản.",
     highlight: "One-click export",
+    bgImage: "/auth/bg_3.webp",
+    color: "white",
   },
 ];
 
@@ -69,30 +67,40 @@ const AuthBanners = () => {
   }, [api]);
 
   return (
-    <div className="relative flex flex-col justify-between w-full h-full px-8 py-8 lg:px-12 lg:py-12">
+    <div className="relative flex flex-col justify-between w-full h-full">
       {/* Carousel Content */}
       <div className="flex-1 flex items-center justify-center">
-        <div className="w-full max-w-lg">
+        <div className="relative w-full h-full">
           <Carousel setApi={setApi} opts={{ align: "center", loop: true }}>
             <CarouselContent>
               {carouselData.map((item) => {
-                const IconComponent = item.icon;
                 return (
-                  <CarouselItem key={item.id}>
+                  <CarouselItem
+                    key={item.id}
+                    style={{
+                      backgroundImage: `url(${item.bgImage})`,
+                      backgroundSize: "cover",
+                    }}
+                    className="h-dvh flex items-center justify-center"
+                  >
                     <div className="text-center space-y-6 px-4">
                       {/* Content */}
                       <div className="space-y-4">
-                        <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm">
-                          <span className="text-white/90 text-sm font-medium">
+                        <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary text-white backdrop-blur-sm">
+                          <span className="text-sm font-medium">
                             {item.highlight}
                           </span>
                         </div>
 
-                        <h2 className="text-3xl lg:text-4xl font-bold text-white leading-tight">
+                        <h2
+                          className={`text-3xl lg:text-4xl font-bold text-${item.color} leading-tight`}
+                        >
                           {item.title}
                         </h2>
 
-                        <p className="text-white/80 text-lg leading-relaxed max-w-md mx-auto">
+                        <p
+                          className={`text-${item.color} text-lg leading-relaxed max-w-md mx-auto`}
+                        >
                           {item.description}
                         </p>
                       </div>
@@ -104,32 +112,19 @@ const AuthBanners = () => {
           </Carousel>
 
           {/* Dots Indicator */}
-          <div className="flex justify-center mt-8 space-x-2">
+          <div className=" absolute bottom-4 left-1/2 transform -translate-x-1/2 flex justify-center mt-8 space-x-2">
             {carouselData.map((_, index) => (
               <button
                 key={index}
                 onClick={() => api?.scrollTo(index)}
                 className={`w-2 h-2 rounded-full transition-all duration-300 ${
                   index === current
-                    ? "bg-white w-6"
-                    : "bg-white/40 hover:bg-white/60"
+                    ? "bg-primary w-6"
+                    : "bg-primary/40 hover:bg-primary/60"
                 }`}
               />
             ))}
           </div>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-2 sm:space-y-0 text-white/60 text-sm mt-8">
-        <span>© 2025 BanVẽ Platform</span>
-        <div className="flex items-center space-x-4">
-          <button className="hover:text-white/90 transition-colors">
-            Chính sách bảo mật
-          </button>
-          <button className="hover:text-white/90 transition-colors">
-            Điều khoản
-          </button>
         </div>
       </div>
     </div>

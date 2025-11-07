@@ -191,14 +191,14 @@ const RegisterVerifyForm: FC<Props> = (props) => {
               type="button"
               variant="outline"
               onClick={onCancel}
-              className="flex-1"
+              className="flex-1 h-10"
             >
               <ArrowLeftIcon className="mr-2 h-4 w-4" />
               Quay lại
             </Button>
             <Button
               type="submit"
-              className="flex-1"
+              className="flex-1 h-10"
               disabled={form.formState.isSubmitting}
             >
               {form.formState.isSubmitting ? (

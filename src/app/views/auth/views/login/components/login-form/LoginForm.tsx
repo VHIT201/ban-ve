@@ -132,7 +132,7 @@ const LoginForm: FC<Props> = () => {
         <Button
           type="submit"
           disabled={form.formState.isSubmitting}
-          className="w-full mt-4"
+          className="w-full mt-4 h-10"
         >
           {form.formState.isSubmitting ? (
             <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
