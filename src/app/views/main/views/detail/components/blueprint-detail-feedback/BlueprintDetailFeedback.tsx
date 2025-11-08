@@ -3,7 +3,7 @@ import { CommentList } from "@/components/modules/comments/comment-provider/shar
 
 const BlueprintDetailFeedback = () => {
   return (
-    <div>
+    <div className="space-y-6">
       <h1>ĐÁNH GIÁ BẢN VẼ :</h1>
 
       <CommentProvider postId="blueprint-detail-001">

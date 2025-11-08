@@ -1,5 +1,4 @@
-import { AvatarAccount } from '@/components/shared'
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 import {
   ChevronDownIcon,
   ChevronUpIcon,
@@ -7,128 +6,121 @@ import {
   EllipsisIcon,
   ReplyIcon,
   ThumbsUpIcon,
-  Trash2Icon
-} from 'lucide-react'
-import { FC, useState } from 'react'
-import { ContentStatus, Props } from './lib/types'
-import { formatTimeAgo } from '@/utils/time'
-import CommentCreationForm from '../../../comment-editor-form'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { useCommentSectionContext } from '../../../../lib/hooks'
-import { useProfileStore } from '@/stores'
-import { useShallow } from 'zustand/react/shallow'
-import { cn } from '@/utils/ui'
-import { CommentMediaList } from './components'
-import { InteractionStatus } from '@/enums/interaction'
+  Trash2Icon,
+} from "lucide-react";
+import { FC, useState } from "react";
+import { ContentStatus, Props } from "./lib/types";
+import CommentCreationForm from "../../../comment-editor-form";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useCommentSectionContext } from "../../../../lib/hooks";
+import { useProfileStore } from "@/stores";
+import { useShallow } from "zustand/react/shallow";
+import { cn } from "@/utils/ui";
+import { CommentMediaList } from "./components";
 
-const MAX_CONTENT_LENGTH = 100
+const MAX_CONTENT_LENGTH = 100;
 
 const CommentItem: FC<Props> = (props) => {
   // Props
-  const { likeComment } = useCommentSectionContext()
-  const { postId, comment, isReply: isReplyDefault = false, parentId } = props
+  const { likeComment } = useCommentSectionContext();
+  const { postId, comment, isReply: isReplyDefault = false, parentId } = props;
 
   // Stores
-  const profileStore = useProfileStore(useShallow(({ id }) => ({ profileId: id })))
+  const profileStore = useProfileStore(
+    useShallow(({ id }) => ({ profileId: id }))
+  );
 
   // Hooks
-  const { selectCommentIdToDelete } = useCommentSectionContext()
+  const { selectCommentIdToDelete } = useCommentSectionContext();
 
   // States
-  const [likeStatus, setLikeStatus] = useState<InteractionStatus>(InteractionStatus.None)
-  const [isEdit, setIsEdit] = useState(false)
-  const [isReply, setIsReply] = useState(false)
-  const [isSeeReplies, setIsSeeReplies] = useState(false)
-  const [isDisplayContentSeeMore, setIsDisplayContentSeeMore] = useState<ContentStatus>(() => {
-    return comment.content.split('').length > MAX_CONTENT_LENGTH ? ContentStatus.COLLAPSE : ContentStatus.NONE
-  })
+  const [isEdit, setIsEdit] = useState(false);
+  const [isReply, setIsReply] = useState(false);
+  const [isSeeReplies, setIsSeeReplies] = useState(false);
+  const [isDisplayContentSeeMore, setIsDisplayContentSeeMore] =
+    useState<ContentStatus>(() => {
+      return comment.content.split("").length > MAX_CONTENT_LENGTH
+        ? ContentStatus.COLLAPSE
+        : ContentStatus.NONE;
+    });
 
   // Methods
   const handleToggleReply = () => {
-    setIsReply((prev) => !prev)
-  }
+    setIsReply((prev) => !prev);
+  };
 
   const handleToggleExpandContent = () => {
     setIsDisplayContentSeeMore((prevStatus) =>
-      prevStatus === ContentStatus.COLLAPSE ? ContentStatus.EXPAND : ContentStatus.COLLAPSE
-    )
-  }
-
-  const handleLikeComment = async () => {
-    setLikeStatus(InteractionStatus.Pending)
-    await likeComment?.(comment.commentId, likeStatus === InteractionStatus.None)
-    setLikeStatus(likeStatus === InteractionStatus.None ? InteractionStatus.Completed : InteractionStatus.None)
-  }
+      prevStatus === ContentStatus.COLLAPSE
+        ? ContentStatus.EXPAND
+        : ContentStatus.COLLAPSE
+    );
+  };
 
   // Memos
   const contentCollapsed =
     isDisplayContentSeeMore === ContentStatus.EXPAND
       ? comment.content
-          .split('')
+          .split("")
           .slice(0, MAX_CONTENT_LENGTH / 2)
-          .join('') + '...'
-      : comment.content
-  const isMyComment = comment.commentUser?.userId === profileStore.profileId
+          .join("") + "..."
+      : comment.content;
+  const isMyComment = comment.commentUser?.userId === profileStore.profileId;
 
   // Template
   return (
-    <div className={`${isReplyDefault ? 'mt-3 w-full pl-6' : ''}`}>
-      <div className='flex space-x-3'>
-        <AvatarAccount className='h-8 w-8 flex-shrink-0' />
-
-        <div className='flex-1 space-y-2'>
+    <div className={`${isReplyDefault ? "mt-3 w-full pl-6" : ""}`}>
+      <div className="flex space-x-3">
+        <div className="flex-1 space-y-2">
           {!isEdit ? (
-            <div className='flex flex-nowrap'>
-              <div className='flex-1'>
-                <div className='flex items-center space-x-2'>
-                  <span className='text-sm font-semibold'>{comment.commentUser?.userName ?? 'Unknown'}</span>
-                  <span className='text-muted-foreground text-sm'>•</span>
-                  <span className='text-muted-foreground text-xs'>{formatTimeAgo(comment.createdAt)}</span>
+            <div className="flex flex-nowrap">
+              <div className="flex-1">
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm font-semibold">
+                    {comment.commentUser?.userName ?? "Unknown"}
+                  </span>
+                  <span className="text-muted-foreground text-sm">•</span>
+                  <span className="text-xs text-muted-foreground">
+                    {comment.createdAt}
+                  </span>
                 </div>
                 <div>
-                  <p className={cn('text-sm leading-relaxed whitespace-pre-wrap')}>{contentCollapsed}</p>
+                  <p
+                    className={cn(
+                      "text-sm leading-relaxed whitespace-pre-wrap"
+                    )}
+                  >
+                    {contentCollapsed}
+                  </p>
                   {isDisplayContentSeeMore !== ContentStatus.NONE && (
                     <Button
-                      variant='link'
-                      className='text-primary mt-1 h-auto p-0 text-xs'
+                      variant="link"
+                      className="text-primary mt-1 h-auto p-0 text-xs"
                       onClick={handleToggleExpandContent}
                     >
-                      {isDisplayContentSeeMore === ContentStatus.COLLAPSE ? 'Thu gọn' : 'Xem thêm'}
+                      {isDisplayContentSeeMore === ContentStatus.COLLAPSE
+                        ? "Thu gọn"
+                        : "Xem thêm"}
                     </Button>
                   )}
                 </div>
 
                 <CommentMediaList media={comment.mediaList} />
 
-                <div className='flex items-center gap-2 pt-1'>
+                <div className="flex items-center gap-2 pt-1">
                   <Button
-                    size='sm'
-                    variant='ghost'
-                    loading={likeStatus === InteractionStatus.Pending}
-                    onClick={handleLikeComment}
-                    className={cn(
-                      'text-muted-foreground hover:text-primary h-8 gap-1.5 px-2',
-                      likeStatus === InteractionStatus.Completed && 'text-primary fill-primary'
-                    )}
-                    classNames={{ loader: 'text-primary' }}
-                  >
-                    {likeStatus !== InteractionStatus.Pending && (
-                      <ThumbsUpIcon
-                        className={cn('h-4 w-4', likeStatus === InteractionStatus.Completed && 'fill-current')}
-                      />
-                    )}
-                    <span className='text-xs'>
-                      {likeStatus === InteractionStatus.Completed ? comment.likeCount + 1 : comment.likeCount}
-                    </span>
-                  </Button>
-                  <Button
-                    size='sm'
-                    variant='ghost'
+                    size="sm"
+                    variant="ghost"
                     onClick={handleToggleReply}
-                    className='text-muted-foreground hover:text-foreground h-8 gap-1.5 px-2'
+                    className="text-muted-foreground hover:text-foreground h-8 gap-1.5 px-2"
                   >
-                    <ReplyIcon className='h-4 w-4' />
-                    <span className='text-xs'>Phản hồi</span>
+                    <ReplyIcon className="h-4 w-4" />
+                    <span className="text-xs">Phản hồi</span>
                   </Button>
                 </div>
               </div>
@@ -136,19 +128,22 @@ const CommentItem: FC<Props> = (props) => {
                 {isMyComment && (
                   <DropdownMenu>
                     <DropdownMenuTrigger>
-                      <Button size='icon' variant='ghost'>
-                        <EllipsisIcon className='size-4' />
+                      <Button size="icon" variant="ghost">
+                        <EllipsisIcon className="size-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align='end'>
+                    <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={() => setIsEdit(true)}>
-                        <Edit3Icon className='group-hover:text-primary' />
+                        <Edit3Icon className="group-hover:text-primary" />
                         Chỉnh sửa
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        variant='destructive'
+                        variant="destructive"
                         onClick={() =>
-                          selectCommentIdToDelete?.({ commentId: comment.commentId, parentCommentId: parentId })
+                          selectCommentIdToDelete?.({
+                            commentId: comment.commentId,
+                            parentCommentId: parentId,
+                          })
                         }
                       >
                         <Trash2Icon />
@@ -161,7 +156,7 @@ const CommentItem: FC<Props> = (props) => {
             </div>
           ) : (
             <CommentCreationForm
-              mode='edit'
+              mode="edit"
               postId={postId}
               commentId={comment.commentId}
               commentParentId={parentId}
@@ -171,9 +166,9 @@ const CommentItem: FC<Props> = (props) => {
           )}
 
           {isReply && (
-            <div className='mt-3 space-y-2'>
+            <div className="mt-3 space-y-2">
               <CommentCreationForm
-                mode='reply'
+                mode="reply"
                 postId={postId}
                 commentId={comment.commentId}
                 commentParentId={isReplyDefault ? parentId : comment.commentId}
@@ -183,23 +178,23 @@ const CommentItem: FC<Props> = (props) => {
           )}
 
           {comment.children.length > 0 && (
-            <div className='mt-3'>
+            <div className="mt-3">
               <Button
-                variant='ghost'
-                size='sm'
+                variant="ghost"
+                size="sm"
                 onClick={() => setIsSeeReplies((prev) => !prev)}
-                className='text-muted-foreground h-8 px-2'
+                className="text-muted-foreground h-8 px-2"
               >
                 {isSeeReplies ? (
-                  <ChevronUpIcon className='mr-1 h-4 w-4' />
+                  <ChevronUpIcon className="mr-1 h-4 w-4" />
                 ) : (
-                  <ChevronDownIcon className='mr-1 h-4 w-4' />
+                  <ChevronDownIcon className="mr-1 h-4 w-4" />
                 )}
                 {comment.children.length} phản hồi
               </Button>
 
               {isSeeReplies && (
-                <div className='mt-2'>
+                <div className="mt-2">
                   {comment.children.map((reply) => (
                     <CommentItem
                       isReply={true}
@@ -216,7 +211,7 @@ const CommentItem: FC<Props> = (props) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CommentItem
+export default CommentItem;
