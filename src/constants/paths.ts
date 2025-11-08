@@ -12,6 +12,7 @@ export const ROUTE_PATHS = {
       personal: { path: "personal" },
       history: { path: "history" },
     },
+    detail: { path: "detail/:id" },
   },
 };
 

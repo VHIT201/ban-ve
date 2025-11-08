@@ -27,6 +27,15 @@ const mainRoutes: RouteObject = {
         };
       },
     },
+    {
+      path: app.detail.path,
+      lazy: async () => {
+        const { default: Detail } = await import("../views/detail/page");
+        return {
+          element: <Detail />,
+        };
+      },
+    },
     { ...profileRoutes },
   ],
 };
