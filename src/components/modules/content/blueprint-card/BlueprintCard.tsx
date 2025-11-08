@@ -79,11 +79,13 @@ const BlueprintCard: FC<Props> = (props) => {
       </Button>
       <Card className="border-none relative z-20">
         <CardHeader>
-          <CardTitle className="text-lg md:text-xl">
+          <CardTitle className="text-lg md:text-xl line-clamp-1">
             {blueprint.title}
           </CardTitle>
         </CardHeader>
-        <CardContent>{blueprint.description}</CardContent>
+        <CardContent className="line-clamp-2 h-12">
+          {blueprint.description}
+        </CardContent>
         <CardFooter className="justify-between gap-3 max-sm:flex-col max-sm:items-stretch">
           <div className="flex flex-col">
             <span className="text-xl font-semibold">
