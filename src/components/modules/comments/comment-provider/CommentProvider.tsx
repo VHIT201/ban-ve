@@ -19,9 +19,6 @@ const CommentProvider: FC<Props> = (props) => {
     deleteComment,
   } = useCommentList(postId);
 
-  // Mutations
-  // const postActionMutation = usePostApiPostactionCreate()
-
   // States
   const [selectCommentIdDeleted, setSelectCommentIdDeleted] = useState<{
     commentId: string;
@@ -36,29 +33,6 @@ const CommentProvider: FC<Props> = (props) => {
     setSelectCommentIdDeleted(commentSelectedIds);
   };
 
-  const handleLikeComment = useCallback(
-    async (commentId: string, isLike: boolean) => {
-      try {
-        // await postActionMutation.mutateAsync({
-        //   data: {
-        //     target: 'comment',
-        //     targetId: commentId,
-        //     actionType: 'like',
-        //     actionDetails: {
-        //       reactionStatus: isLike,
-        //       saveStatus: false,
-        //       reportType: 'spam'
-        //     }
-        //   }
-        // })
-      } catch (errorResponse) {
-        // sonner({ title: "Thất bại", error: errorResponse });
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
-
   return (
     <COMMENT_SECTION_CONTEXT.Provider
       value={{
@@ -72,7 +46,6 @@ const CommentProvider: FC<Props> = (props) => {
         createComment,
         updateComment,
         deleteComment,
-        likeComment: handleLikeComment,
         selectCommentIdToDelete: handleSelectCommentIdToDelete,
       }}
     >

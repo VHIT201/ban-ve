@@ -1,13 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  ChevronDownIcon,
-  ChevronUpIcon,
-  Edit3Icon,
-  EllipsisIcon,
-  ReplyIcon,
-  ThumbsUpIcon,
-  Trash2Icon,
-} from "lucide-react";
+import { Edit3Icon, EllipsisIcon, ReplyIcon, Trash2Icon } from "lucide-react";
 import { FC, useState } from "react";
 import { ContentStatus, Props } from "./lib/types";
 import CommentCreationForm from "../../../comment-editor-form";
@@ -41,10 +33,10 @@ const CommentItem: FC<Props> = (props) => {
   // States
   const [isEdit, setIsEdit] = useState(false);
   const [isReply, setIsReply] = useState(false);
-  const [isSeeReplies, setIsSeeReplies] = useState(false);
+  // const [isSeeReplies, setIsSeeReplies] = useState(false);
   const [isDisplayContentSeeMore, setIsDisplayContentSeeMore] =
     useState<ContentStatus>(() => {
-      return comment.content.split("").length > MAX_CONTENT_LENGTH
+      return (comment?.content?.split("")?.length ?? 0) > MAX_CONTENT_LENGTH
         ? ContentStatus.COLLAPSE
         : ContentStatus.NONE;
     });
@@ -65,12 +57,13 @@ const CommentItem: FC<Props> = (props) => {
   // Memos
   const contentCollapsed =
     isDisplayContentSeeMore === ContentStatus.EXPAND
-      ? comment.content
-          .split("")
+      ? comment?.content
+          ?.split("")
           .slice(0, MAX_CONTENT_LENGTH / 2)
           .join("") + "..."
-      : comment.content;
-  const isMyComment = comment.commentUser?.userId === profileStore.profileId;
+      : comment?.content;
+
+  const isMyComment = comment?.userId?._id === profileStore.profileId;
 
   // Template
   return (
@@ -82,11 +75,11 @@ const CommentItem: FC<Props> = (props) => {
               <div className="flex-1">
                 <div className="flex items-center space-x-2">
                   <span className="text-sm font-semibold">
-                    {comment.commentUser?.userName ?? "Unknown"}
+                    {comment?.userId?.username ?? "Unknown"}
                   </span>
                   <span className="text-muted-foreground text-sm">•</span>
                   <span className="text-xs text-muted-foreground">
-                    {comment.createdAt}
+                    {comment?.createdAt}
                   </span>
                 </div>
                 <div>
@@ -110,8 +103,6 @@ const CommentItem: FC<Props> = (props) => {
                   )}
                 </div>
 
-                <CommentMediaList media={comment.mediaList} />
-
                 <div className="flex items-center gap-2 pt-1">
                   <Button
                     size="sm"
@@ -125,7 +116,7 @@ const CommentItem: FC<Props> = (props) => {
                 </div>
               </div>
               <div>
-                {isMyComment && (
+                {isMyComment && comment?._id && (
                   <DropdownMenu>
                     <DropdownMenuTrigger>
                       <Button size="icon" variant="ghost">
@@ -141,7 +132,7 @@ const CommentItem: FC<Props> = (props) => {
                         variant="destructive"
                         onClick={() =>
                           selectCommentIdToDelete?.({
-                            commentId: comment.commentId,
+                            commentId: comment._id ?? "",
                             parentCommentId: parentId,
                           })
                         }
@@ -158,7 +149,7 @@ const CommentItem: FC<Props> = (props) => {
             <CommentCreationForm
               mode="edit"
               postId={postId}
-              commentId={comment.commentId}
+              commentId={comment._id ?? ""}
               commentParentId={parentId}
               defaultValues={{ content: comment.content }}
               onClose={() => setIsEdit(false)}
@@ -170,14 +161,15 @@ const CommentItem: FC<Props> = (props) => {
               <CommentCreationForm
                 mode="reply"
                 postId={postId}
-                commentId={comment.commentId}
-                commentParentId={isReplyDefault ? parentId : comment.commentId}
+                commentId={comment._id ?? ""}
+                commentParentId={isReplyDefault ? parentId : comment._id ?? ""}
                 onClose={() => setIsReply(false)}
               />
             </div>
           )}
 
-          {comment.children.length > 0 && (
+          {/* Comments Children */}
+          {/* {comment.children.length > 0 && (
             <div className="mt-3">
               <Button
                 variant="ghost"
@@ -207,7 +199,7 @@ const CommentItem: FC<Props> = (props) => {
                 </div>
               )}
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>

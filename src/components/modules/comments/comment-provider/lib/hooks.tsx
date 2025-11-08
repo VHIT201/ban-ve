@@ -7,21 +7,8 @@ import {
   useInfiniteQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-
-// Internal
-interface FilterData<T> {
-  data: T[];
-  pageNumber: number;
-  pageSize: number;
-  totalCount: number;
-}
-
-interface CommentResponseOfList {
-  data: CommentItem[];
-  pageNumber: number;
-  pageSize: number;
-  totalCount: number;
-}
+import { getApiContentsContentIdComments } from "@/api/endpoints/comments";
+import { Comment, GetApiContentsContentIdComments200 } from "@/api/models";
 
 // Hook useExamContext
 export const useCommentSectionContext = () => {
@@ -42,20 +29,26 @@ export const useCommentList = (postId: string) => {
   const queryKey = ["/api/comment", postId];
 
   const getCommentInfiniteQuery = useInfiniteQuery<
-    FilterData<CommentResponseOfList>,
+    GetApiContentsContentIdComments200,
     Error,
-    InfiniteData<CommentResponseOfList[], number>,
+    InfiniteData<Comment[], number>,
     typeof queryKey,
     number
   >({
     queryKey,
     queryFn: async ({ pageParam }) => {
-      return null as unknown as FilterData<CommentResponseOfList>;
+      const res = await getApiContentsContentIdComments(postId);
+
+      return res as unknown as GetApiContentsContentIdComments200;
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       console.log(lastPage, allPages);
-      if (lastPage.pageNumber * lastPage.pageSize >= lastPage.totalCount)
+      if (
+        (lastPage.pagination?.totalPages ?? 0) *
+          (lastPage.pagination?.itemsPerPage ?? 0) >=
+        (lastPage?.pagination?.total ?? 0)
+      )
         return undefined;
       return allPages.length + 1;
     },
@@ -63,7 +56,7 @@ export const useCommentList = (postId: string) => {
   });
 
   const updateCache = (updater: (old: CommentItem[]) => CommentItem[]) => {
-    queryClient.setQueryData<InfiniteData<CommentResponseOfList[], number>>(
+    queryClient.setQueryData<InfiniteData<Comment[], number>>(
       queryKey,
       (oldData) => {
         if (!oldData) return oldData;
@@ -104,13 +97,14 @@ export const useCommentList = (postId: string) => {
         if (parentCommentId) {
           return oldComments
             .flatMap(
-              (page) => (page as unknown as FilterData<CommentItem>).data
+              (page) =>
+                (page as unknown as GetApiContentsContentIdComments200).data ??
+                []
             )
             .map((comment) => {
-              if (comment.commentId === parentCommentId) {
+              if (comment._id === parentCommentId) {
                 return {
                   ...comment,
-                  children: [newCommentItem, ...(comment.children || [])],
                 };
               }
               return comment;
@@ -119,7 +113,8 @@ export const useCommentList = (postId: string) => {
         return [
           newCommentItem,
           ...oldComments.flatMap(
-            (page) => (page as unknown as FilterData<CommentItem>).data
+            (page) =>
+              (page as unknown as GetApiContentsContentIdComments200).data ?? []
           ),
         ];
       });
@@ -141,17 +136,14 @@ export const useCommentList = (postId: string) => {
         if (parentCommentId) {
           return oldComments
             .flatMap(
-              (page) => (page as unknown as FilterData<CommentItem>).data
+              (page) =>
+                (page as unknown as GetApiContentsContentIdComments200).data ??
+                []
             )
             .map((comment) => {
-              if (comment.commentId === parentCommentId) {
+              if (comment._id === parentCommentId) {
                 return {
                   ...comment,
-                  children: comment.children?.map((child: CommentItem) =>
-                    child.commentId === updatedCommentItem.commentId
-                      ? updatedCommentItem
-                      : child
-                  ),
                 };
               }
               return comment;
@@ -159,8 +151,10 @@ export const useCommentList = (postId: string) => {
         }
 
         return oldComments.flatMap((page) =>
-          (page as unknown as FilterData<CommentItem>).data.map((comment) =>
-            comment.commentId === updatedCommentItem.commentId
+          (
+            (page as unknown as GetApiContentsContentIdComments200).data ?? []
+          ).map((comment) =>
+            comment._id === updatedCommentItem._id
               ? updatedCommentItem
               : comment
           )
@@ -184,15 +178,15 @@ export const useCommentList = (postId: string) => {
         if (parentCommentId) {
           return oldComments
             .flatMap(
-              (page) => (page as unknown as FilterData<CommentItem>).data
+              (page) =>
+                (page as unknown as GetApiContentsContentIdComments200).data ??
+                []
             )
+            .filter((comment) => comment._id !== commentId)
             .map((comment) => {
-              if (comment.commentId === parentCommentId) {
+              if (comment._id === parentCommentId) {
                 return {
                   ...comment,
-                  children: comment.children?.filter(
-                    (child: CommentItem) => child.commentId !== commentId
-                  ),
                 };
               }
               return comment;
@@ -200,9 +194,9 @@ export const useCommentList = (postId: string) => {
         }
 
         return oldComments.flatMap((page) =>
-          (page as unknown as FilterData<CommentItem>).data.filter(
-            (comment) => comment.commentId !== commentId
-          )
+          (
+            (page as unknown as GetApiContentsContentIdComments200).data ?? []
+          ).filter((comment) => comment._id !== commentId)
         );
       });
     },
@@ -212,7 +206,8 @@ export const useCommentList = (postId: string) => {
 
   const commentList =
     getCommentInfiniteQuery.data?.pages.flatMap(
-      (page) => (page as unknown as FilterData<CommentItem>).data
+      (page) =>
+        (page as unknown as GetApiContentsContentIdComments200).data ?? []
     ) || [];
 
   return {

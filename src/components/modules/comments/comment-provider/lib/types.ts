@@ -1,11 +1,11 @@
-import { CommentResponseOfList } from '@/api/types/comment'
-import { ReactNode } from 'react'
+import { Comment } from "@/api/models";
+import { ReactNode } from "react";
 
-export type CommentItem = CommentResponseOfList & {
-  isLiked?: boolean
-}
+export type CommentItem = Comment & {
+  isLiked?: boolean;
+};
 
 export interface Props {
-  postId: string
-  children?: ReactNode
+  postId: string;
+  children?: ReactNode;
 }
