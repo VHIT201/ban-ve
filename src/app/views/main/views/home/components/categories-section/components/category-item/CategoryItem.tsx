@@ -76,25 +76,6 @@ const getCategoryIcon = (categoryName: string, slug: string) => {
   return Building2;
 };
 
-const getCategoryColors = () => {
-  return {
-    bg: "bg-white",
-    border: "border-gray-200/60",
-    icon: "text-white",
-    iconBg: "bg-primary",
-    title: "text-gray-900",
-    description: "text-gray-600",
-    hover: {
-      shadow: "hover:shadow-sm",
-      icon: "group-hover:text-white",
-      iconBg: "group-hover:-translate-y-2 transition-transform duration-500",
-      border: "hover:border-gray-300/60",
-      transform: "hover:-translate-y-0.5",
-      bg: "hover:bg-primary/30 backdrop-blur-sm",
-    },
-  };
-};
-
 const CategoryItem = ({
   category,
   onClick,
@@ -102,7 +83,6 @@ const CategoryItem = ({
   className,
 }: CategoryItemProps) => {
   const IconComponent = getCategoryIcon(category.name, category.slug);
-  const colors = getCategoryColors();
 
   const handleClick = () => {
     onClick?.(category);
@@ -111,63 +91,60 @@ const CategoryItem = ({
   return (
     <Card
       className={cn(
-        "border",
-        "h-full flex flex-col",
-        "group cursor-pointer transition-all duration-200",
-        colors.bg,
-        colors.border,
-        colors.hover.bg,
-        colors.hover.border,
-        colors.hover.shadow,
-        colors.hover.transform,
+        "relative overflow-hidden border-0 bg-white/50 backdrop-blur-sm",
+        "h-full group cursor-pointer transition-all duration-300 ease-out",
+        "hover:bg-white hover:shadow-xl hover:shadow-gray-200/30",
+        "before:absolute before:inset-0 before:bg-gradient-to-br before:from-gray-50/80 before:to-gray-100/40",
+        "before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100",
         className
       )}
       onClick={handleClick}
     >
-      <CardContent className="p-5 flex flex-col h-full items-center justify-center">
-        {/* Icon */}
-        <div
-          className={cn(
-            "mb-4 shadow-lg size-12 flex items-center justify-center mx-auto",
-            "p-2.5 rounded-full",
-            colors.iconBg,
-            colors.hover.iconBg
-          )}
-        >
-          <IconComponent
-            className={cn("w-5 h-5", colors.icon, colors.hover.icon)}
-          />
+      {/* Decorative elements */}
+      <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-gray-100/60 to-gray-200/30 rounded-full blur-2xl -translate-y-8 translate-x-8 transition-all duration-500 group-hover:scale-150 group-hover:bg-gradient-to-br group-hover:from-gray-200/40 group-hover:to-gray-300/20" />
+      <div className="absolute bottom-0 left-0 w-16 h-16 bg-linear-to-tr from-gray-50/40 to-gray-100/20 rounded-full blur-xl translate-y-4 -translate-x-4 transition-all duration-500 group-hover:scale-125" />
+
+      <CardContent className="relative z-10 p-6 flex flex-col h-full">
+        {/* Icon Container */}
+        <div className="mb-6 relative">
+          <div className="size-16 flex items-center justify-center mx-auto relative">
+            {/* Icon background with gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-gray-700 rounded-full transition-all duration-300 group-hover:rotate-3 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-gray-400/20" />
+
+            {/* Icon */}
+            <IconComponent className="relative z-10 w-7 h-7 text-white transition-all duration-300 group-hover:scale-110" />
+
+            {/* Shine effect */}
+            <div className="absolute inset-0 bg-linear-to-tr from-white/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </div>
         </div>
 
-        {/* Title */}
-        <h3
-          className={cn(
-            "font-semibold text-base mb-2",
-            colors.title,
-            "line-clamp-2 leading-tight"
-          )}
-        >
-          {category.name}
-        </h3>
+        {/* Content */}
+        <div className="flex-1 flex flex-col text-center">
+          {/* Title */}
+          <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2 leading-tight transition-colors duration-300 group-hover:text-gray-800">
+            {category.name}
+          </h3>
 
-        {/* Description - flexible height */}
-        <div className="flex-1 mb-4  ">
-          {showDescription && category.description && (
-            <p
-              className={cn(
-                "text-sm leading-relaxed line-clamp-2 text-center",
-                colors.description
-              )}
-            >
-              {category.description}
-            </p>
-          )}
+          {/* Description */}
+          <div className="flex-1 mb-4">
+            {showDescription && category.description && (
+              <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 transition-colors duration-300 group-hover:text-gray-700">
+                {category.description}
+              </p>
+            )}
+          </div>
+
+          {/* Action indicator */}
+          <div className="flex items-center justify-center mt-auto pt-2">
+            <div className="flex items-center gap-2 text-xs font-medium text-gray-500 transition-all duration-300 group-hover:text-gray-700 group-hover:gap-3">
+              <span>Khám phá</span>
+              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </div>
+          </div>
         </div>
 
-        {/* Subtle arrow indicator - always at bottom */}
-        <div className="flex justify-end mt-auto">
-          <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-0.5 transition-all duration-200 opacity-0 group-hover:opacity-100" />
-        </div>
+        {/* Hover border effect */}
       </CardContent>
     </Card>
   );

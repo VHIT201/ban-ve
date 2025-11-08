@@ -125,25 +125,13 @@ const CategoriesSection = () => {
     <section className="py-16">
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="flex items-center justify-between mb-12">
-          <div className="space-y-3">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-              Danh mục
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl">
-              Tìm kiếm bản vẽ kiến trúc phù hợp với dự án của bạn
-            </p>
-          </div>
-
-          <div className="hidden md:flex items-center gap-3">
-            <Button
-              onClick={handleViewAll}
-              className="group gap-2 hover:bg-primary hover:text-primary-foreground transition-all duration-200"
-            >
-              Xem tất cả
-              <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform duration-200" />
-            </Button>
-          </div>
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            Danh mục bản vẽ
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Tìm kiếm bản vẽ kiến trúc phù hợp với dự án của bạn
+          </p>
         </div>
 
         {/* Dual Carousel Layout */}

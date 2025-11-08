@@ -10,7 +10,8 @@ import {
 import { Lens } from "@/components/ui/lens";
 import { formatFileSize } from "@/utils/file";
 import { DownloadIcon, ShoppingCartIcon, StarIcon } from "lucide-react";
-import { useState } from "react";
+import { FC, useState } from "react";
+import { Props } from "./lib/types";
 
 const mockProduct: ContentResponse = {
   _id: "1",
@@ -49,7 +50,11 @@ const MOCK_IMAGE_LIST = [
   "https://images.pexels.com/photos/1404948/pexels-photo-1404948.jpeg",
 ];
 
-const BlueprintDetailView = () => {
+const BlueprintDetailView: FC<Props> = (props) => {
+  // Props
+  const { content } = props;
+
+  // States
   const [selectedImage, setSelectedImage] = useState(0);
   const [rating] = useState(4);
 
@@ -119,7 +124,7 @@ const BlueprintDetailView = () => {
       <div className="space-y-6">
         {/* Brand & Title */}
         <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 leading-tight">
-          {mockProduct.title}
+          {content.title}
         </h1>
 
         {/* Price & Rating */}
@@ -128,7 +133,7 @@ const BlueprintDetailView = () => {
             {new Intl.NumberFormat("vi-VN", {
               style: "currency",
               currency: "VND",
-            }).format(mockProduct.price)}
+            }).format(content.price)}
           </div>
 
           {/* Rating Stars */}
@@ -160,7 +165,7 @@ const BlueprintDetailView = () => {
           <div className="space-y-2">
             <div className="text-sm text-gray-600">File Size:</div>
             <div className="font-medium">
-              {formatFileSize(mockProduct.file_id.size)}
+              {formatFileSize(content.file_id.size)}
             </div>
           </div>
           <div className="space-y-2">
@@ -169,15 +174,13 @@ const BlueprintDetailView = () => {
           </div>
           <div className="space-y-2">
             <div className="text-sm text-gray-600">Category:</div>
-            <div className="font-medium">{mockProduct.category_id.name}</div>
+            <div className="font-medium">{content.category_id.name}</div>
           </div>
         </div>
 
         {/* Description */}
         <div className="space-y-2">
-          <p className="text-gray-700 leading-relaxed">
-            {mockProduct.description}
-          </p>
+          <p className="text-gray-700 leading-relaxed">{content.description}</p>
         </div>
 
         {/* Action Buttons */}

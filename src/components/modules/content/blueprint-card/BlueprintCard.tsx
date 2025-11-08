@@ -31,17 +31,6 @@ import { cn } from "@/utils/ui";
 const BlueprintCard: FC<Props> = (props) => {
   const { blueprint, onViewDetails, onAddToCart } = props;
 
-  const handleGetFileTypeIcon = (fileType: string) => {
-    switch (fileType.toUpperCase()) {
-      case "RVT":
-      case "DWG":
-      case "DXF":
-        return <FileText className="w-4 h-4" />;
-      default:
-        return <Download className="w-4 h-4" />;
-    }
-  };
-
   return (
     <div
       className="group/container relative max-w-md rounded-xl bg-linear-to-r from-neutral-600 to-neutral-300 pt-0 shadow-lg overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-2 cursor-pointer"
@@ -54,7 +43,10 @@ const BlueprintCard: FC<Props> = (props) => {
       }}
     >
       <div className="h-60 relative">
-        <div className="cursor-pointer group/view z-20 flex flex-col items-center justify-center opacity-0 group-hover/container:opacity-100 absolute left-1/2 top-1/2 -translate-1/2  rounded-full transition-opacity duration-300">
+        <div
+          onClick={() => onViewDetails(blueprint)}
+          className="cursor-pointer group/view z-20 flex flex-col items-center justify-center opacity-0 group-hover/container:opacity-100 absolute left-1/2 top-1/2 -translate-1/2  rounded-full transition-opacity duration-300"
+        >
           <EyeIcon
             className={cn(
               "size-8 stroke-white group-hover/view:scale-110 transition-transform duration-300"

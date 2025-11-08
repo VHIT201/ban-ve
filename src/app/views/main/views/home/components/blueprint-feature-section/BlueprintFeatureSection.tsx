@@ -25,10 +25,11 @@ import { useGetApiContent } from "@/api/endpoints/content";
 import { GetApiContent200Pagination } from "@/api/models";
 import { QueryBoundary } from "@/components/shared";
 import { UseQueryResult } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 const BlueprintFeatureSection = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 9;
+  // Hooks
+  const navigate = useNavigate();
 
   // Queries
   const getBluerintListQuery = useGetApiContent<{
@@ -50,8 +51,7 @@ const BlueprintFeatureSection = () => {
     pagination?: GetApiContent200Pagination;
   }>;
   const handleViewDetails = (blueprint: ContentResponse) => {
-    console.log("View details:", blueprint);
-    // TODO: Implement navigation to detail page
+    navigate(`/detail/${blueprint._id}`);
   };
 
   const handleAddToCart = (blueprint: ContentResponse) => {

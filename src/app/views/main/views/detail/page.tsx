@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -27,6 +27,10 @@ import {
 import { ContentResponse } from "@/api/types/content";
 import { Lens } from "@/components/ui/lens";
 import { BlueprintDetailFeedback, BlueprintDetailView } from "./components";
+import { useGetApiContentId } from "@/api/endpoints/content";
+import { useRequiredPathParams } from "@/hooks";
+import { QueryBoundary } from "@/components/shared";
+import { UseQueryResult } from "@tanstack/react-query";
 
 // Mock data - replace with actual data from props/API
 const mockProduct: ContentResponse = {
@@ -67,11 +71,27 @@ const MOCK_IMAGE_LIST = [
 ];
 
 const Detail = () => {
+  // Hooks
+  const { id } = useRequiredPathParams(["id"]);
+
+  // Queries
+  const getContentDetailQuery = useGetApiContentId(id, {
+    query: {
+      select: (data) => data as unknown as ContentResponse,
+    },
+  }) as UseQueryResult<ContentResponse>;
+
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4 py-8 space-y-8">
-        <BlueprintDetailView />
-        <BlueprintDetailFeedback />
+        <QueryBoundary query={getContentDetailQuery}>
+          {(content) => (
+            <Fragment>
+              <BlueprintDetailView content={content} />
+              <BlueprintDetailFeedback content={content} />
+            </Fragment>
+          )}
+        </QueryBoundary>
       </div>
     </div>
   );
