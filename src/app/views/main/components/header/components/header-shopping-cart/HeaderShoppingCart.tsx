@@ -1,4 +1,3 @@
-import { CartItem } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -9,6 +8,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import {
   ShoppingCart as CartIcon,
   Plus,
@@ -17,42 +17,40 @@ import {
   CheckCircle,
 } from "@phosphor-icons/react";
 import { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { useCartStore } from "@/stores/use-cart-store";
+import { useNavigate } from "react-router-dom";
+import { generateImageRandom } from "@/utils/image";
 
-interface ShoppingCartProps {
-  items: CartItem[];
-  onUpdateQuantity: (blueprintId: string, quantity: number) => void;
-  onRemoveItem: (blueprintId: string) => void;
-  onCheckout: () => void;
-}
+function HeaderShoppingCart() {
+  const navigate = useNavigate();
 
-function HeaderShoppingCart({
-  items,
-  onUpdateQuantity,
-  onRemoveItem,
-  onCheckout,
-}: ShoppingCartProps) {
-  const [open, setOpen] = useState(false);
-  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
-  const [orderId, setOrderId] = useState("");
+  // Zustand store hooks
+  const items = useCartStore((state) => state.items);
+  const isOpen = useCartStore((state) => state.isOpen);
+  const totalItems = useCartStore((state) => state.totalItems());
+  const totalPrice = useCartStore((state) => state.totalPrice());
+  const incrementQuantity = useCartStore((state) => state.incrementQuantity);
+  const decrementQuantity = useCartStore((state) => state.decrementQuantity);
+  const removeItem = useCartStore((state) => state.removeItem);
+  const clearCart = useCartStore((state) => state.clearCart);
+  const closeCart = useCartStore((state) => state.closeCart);
+  const openCart = useCartStore((state) => state.openCart);
 
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce(
-    (sum, item) => sum + item.blueprint.price * item.quantity,
-    0
-  );
+  const handleCheckout = () => {
+    closeCart();
+    navigate("/payment");
+  };
 
-  // Tạo orderId mới khi mở giỏ hàng
-  useEffect(() => {
-    if (open) {
-      setOrderId(`ORDER-${uuidv4().substring(0, 8).toUpperCase()}`);
-    } else {
-      setShowPaymentDialog(false); // Đảm bảo đóng hộp thoại thanh toán khi đóng giỏ hàng
-    }
-  }, [open]);
+  const handleContinueShopping = () => {
+    closeCart();
+    navigate("/category");
+  };
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet
+      open={isOpen}
+      onOpenChange={(open) => (open ? openCart() : closeCart())}
+    >
       <SheetTrigger asChild>
         <Button variant="outline" size="icon" className="relative size-10">
           <CartIcon size={20} weight="bold" />
@@ -90,9 +88,11 @@ function HeaderShoppingCart({
                 Giỏ hàng của bạn đang trống
               </h3>
               <p className="text-sm text-muted-foreground mb-6">
-                Hãy thêm sản phẩm vào giỏ hàng
+                Hãy thêm sản phẩm vào giỏ hàng để tiếp tục mua sắm
               </p>
-              <Button onClick={() => setOpen(false)}>Xem danh mục</Button>
+              <Button onClick={handleContinueShopping}>
+                Khám phá sản phẩm
+              </Button>
             </div>
           ) : (
             <>
@@ -100,84 +100,130 @@ function HeaderShoppingCart({
                 <div className="space-y-4 pr-2">
                   {items.map((item) => (
                     <div
-                      key={item.blueprint.id}
-                      className="flex gap-4 p-4 rounded-lg border bg-card"
+                      key={item.product._id}
+                      className="flex gap-4 p-4 rounded-lg border bg-card hover:shadow-md transition-shadow"
                     >
-                      <img
-                        src={item.blueprint.imageUrl}
-                        alt={item.blueprint.title}
-                        className="w-20 h-20 object-cover rounded"
-                      />
+                      <div className="w-20 h-20 rounded overflow-hidden bg-gray-100 shrink-0">
+                        <img
+                          src={generateImageRandom()}
+                          alt={item.product.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-sm line-clamp-1 mb-1">
-                          {item.blueprint.title}
+                        <h4 className="font-semibold text-sm line-clamp-2 mb-1">
+                          {item.product.title}
                         </h4>
-                        <p className="text-sm text-muted-foreground mb-2">
-                          ${item.blueprint.price}
+                        <p className="text-xs text-muted-foreground mb-2">
+                          {item.product.category_id.name}
+                        </p>
+                        <p className="text-sm font-semibold text-primary mb-3">
+                          {new Intl.NumberFormat("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }).format(item.product.price)}
                         </p>
                         <div className="flex items-center gap-2">
                           <Button
                             variant="outline"
                             size="icon"
                             className="h-7 w-7"
-                            onClick={() =>
-                              onUpdateQuantity(
-                                item.blueprint.id,
-                                Math.max(1, item.quantity - 1)
-                              )
-                            }
+                            onClick={() => decrementQuantity(item.product._id)}
                           >
                             <Minus size={14} weight="bold" />
                           </Button>
-                          <span className="w-8 text-center font-semibold tabular-nums">
+                          <span className="w-8 text-center font-semibold tabular-nums text-sm">
                             {item.quantity}
                           </span>
                           <Button
                             variant="outline"
                             size="icon"
                             className="h-7 w-7"
-                            onClick={() =>
-                              onUpdateQuantity(
-                                item.blueprint.id,
-                                item.quantity + 1
-                              )
-                            }
+                            onClick={() => incrementQuantity(item.product._id)}
                           >
                             <Plus size={14} weight="bold" />
                           </Button>
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-7 w-7 ml-auto text-destructive"
-                            onClick={() => onRemoveItem(item.blueprint.id)}
+                            className="h-7 w-7 ml-auto text-destructive hover:text-destructive hover:bg-destructive/10"
+                            onClick={() => removeItem(item.product._id)}
                           >
                             <Trash size={14} weight="bold" />
                           </Button>
                         </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-semibold">
+                          {new Intl.NumberFormat("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }).format(item.product.price * item.quantity)}
+                        </p>
                       </div>
                     </div>
                   ))}
                 </div>
               </ScrollArea>
 
-              <div className="p-6 border-t bg-background">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="font-medium">Tổng cộng:</span>
-                  <span className="text-lg font-bold">
-                    {new Intl.NumberFormat("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    }).format(totalPrice)}
-                  </span>
+              <div className="p-6 border-t bg-background space-y-4">
+                {/* Subtotal & Total */}
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-muted-foreground">
+                      Tạm tính ({totalItems} sản phẩm):
+                    </span>
+                    <span className="font-medium">
+                      {new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(totalPrice)}
+                    </span>
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-base">Tổng cộng:</span>
+                    <span className="text-xl font-bold text-primary">
+                      {new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(totalPrice)}
+                    </span>
+                  </div>
                 </div>
-                <Button
-                  className="w-full"
-                  size="lg"
-                  onClick={onCheckout}
-                  disabled={items.length === 0}
-                >
-                  Tiến hành thanh toán
-                </Button>
+
+                {/* Action Buttons */}
+                <div className="space-y-2">
+                  <Button className="w-full" size="lg" onClick={handleCheckout}>
+                    <CheckCircle size={20} weight="bold" className="mr-2" />
+                    Tiến hành thanh toán
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    size="sm"
+                    onClick={handleContinueShopping}
+                  >
+                    Tiếp tục mua sắm
+                  </Button>
+                </div>
+
+                {/* Clear Cart */}
+                {items.length > 0 && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
+                    onClick={() => {
+                      if (confirm("Bạn có chắc muốn xóa toàn bộ giỏ hàng?")) {
+                        clearCart();
+                      }
+                    }}
+                  >
+                    <Trash size={16} weight="bold" className="mr-2" />
+                    Xóa toàn bộ giỏ hàng
+                  </Button>
+                )}
               </div>
             </>
           )}

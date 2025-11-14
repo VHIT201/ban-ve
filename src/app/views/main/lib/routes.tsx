@@ -36,6 +36,26 @@ const mainRoutes: RouteObject = {
         };
       },
     },
+    {
+      path: app.collections.path,
+      lazy: async () => {
+        const { default: Collections } = await import(
+          "../views/collections/page"
+        );
+        return {
+          element: <Collections />,
+        };
+      },
+    },
+    {
+      path: app.payment.path,
+      lazy: async () => {
+        const { default: Payment } = await import("../views/payment/page");
+        return {
+          element: <Payment />,
+        };
+      },
+    },
     { ...profileRoutes },
   ],
 };

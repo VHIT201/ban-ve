@@ -17,8 +17,9 @@ import {
   Eye,
   HeartIcon,
   EyeIcon,
+  Check,
 } from "lucide-react";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Props } from "./lib/types";
 import {
   formatDate,
@@ -27,16 +28,54 @@ import {
   getStatusText,
 } from "./lib/utils";
 import { cn } from "@/utils/ui";
+import { generateImageRandom } from "@/utils/image";
+import { useCartStore } from "@/stores/use-cart-store";
 
 const BlueprintCard: FC<Props> = (props) => {
   const { blueprint, onViewDetails, onAddToCart } = props;
+  const [isAdding, setIsAdding] = useState(false);
+  const [justAdded, setJustAdded] = useState(false);
+
+  const addItem = useCartStore((state) => state.addItem);
+  const isInCart = useCartStore((state) => state.isInCart(blueprint._id));
+  const openCart = useCartStore((state) => state.openCart);
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (isInCart) {
+      // If already in cart, open cart drawer
+      openCart();
+      return;
+    }
+
+    setIsAdding(true);
+
+    try {
+      // Simulate async operation (can be replaced with API call)
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // Add to cart
+      addItem(blueprint);
+
+      // Call parent callback if provided
+      onAddToCart?.(blueprint);
+
+      // Show success state
+      setJustAdded(true);
+      setTimeout(() => setJustAdded(false), 2000);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    } finally {
+      setIsAdding(false);
+    }
+  };
 
   return (
     <div
       className="group/container relative max-w-md rounded-xl bg-linear-to-r from-neutral-600 to-neutral-300 pt-0 shadow-lg overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-2 cursor-pointer"
       style={{
-        backgroundImage:
-          "url(https://images.pexels.com/photos/4458210/pexels-photo-4458210.jpeg)",
+        backgroundImage: `url(${generateImageRandom()})`,
         objectFit: "cover",
         backgroundPosition: "center",
         backgroundSize: "cover",
@@ -87,7 +126,38 @@ const BlueprintCard: FC<Props> = (props) => {
               }).format(blueprint.price)}
             </span>
           </div>
-          <Button size="lg">Thêm vào giỏ</Button>
+          <Button
+            size="lg"
+            onClick={handleAddToCart}
+            disabled={isAdding}
+            className={cn(
+              "transition-all duration-300",
+              isInCart && "bg-green-600 hover:bg-green-700",
+              justAdded && "bg-green-600"
+            )}
+          >
+            {isAdding ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                Đang thêm...
+              </>
+            ) : justAdded ? (
+              <>
+                <Check className="w-4 h-4 mr-2" />
+                Đã thêm!
+              </>
+            ) : isInCart ? (
+              <>
+                <ShoppingCart className="w-4 h-4 mr-2" />
+                Xem giỏ hàng
+              </>
+            ) : (
+              <>
+                <ShoppingCart className="w-4 h-4 mr-2" />
+                Thêm vào giỏ
+              </>
+            )}
+          </Button>
         </CardFooter>
       </Card>
     </div>

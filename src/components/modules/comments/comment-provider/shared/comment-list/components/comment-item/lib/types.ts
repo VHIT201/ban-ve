@@ -1,4 +1,4 @@
-import { CommentItem } from '@/components/modules/comments/comment-section/lib/types'
+import { CommentItem } from '@/components/modules/comments/comment-provider/lib/types'
 
 export enum ContentStatus {
   EXPAND,

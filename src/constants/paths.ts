@@ -13,6 +13,8 @@ export const ROUTE_PATHS = {
       history: { path: "history" },
     },
     detail: { path: "detail/:id" },
+    collections: { path: "collections" },
+    payment: { path: "payment" },
   },
 };
 
