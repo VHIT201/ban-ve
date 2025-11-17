@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,24 +12,41 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Lock,
   CreditCard,
   HelpCircle,
   MoreVertical,
   ShieldCheck,
+  AlertCircle,
+  X,
 } from "lucide-react";
-
-// Mock cart item
-const mockCartItem = {
-  id: "1",
-  name: "Procreate & Photoshop Sketchy Patterns Brushset",
-  price: 5.99,
-  quantity: 1,
-  image: "/api/placeholder/80/80",
-};
+import { useCartStore } from "@/stores/use-cart-store";
+import { useNavigate } from "react-router-dom";
+import { generateImageRandom } from "@/utils/image";
+import { useAuthStore } from "@/stores";
+import { useShallow } from "zustand/shallow";
+import paymentWallet from "@/assets/payment/wallet-payment.png";
+import { BASE_PATHS } from "@/constants/paths";
 
 const PaymentPage = () => {
+  // Stores
+  const authStore = useAuthStore(
+    useShallow((state) => ({ isSignedIn: state.isSignedIn }))
+  );
+
+  // Hooks
+  const navigate = useNavigate();
+
+  // Cart store
+  const items = useCartStore((state) => state.items);
+  const totalPrice = useCartStore((state) => state.totalPrice());
+  const totalItems = useCartStore((state) => state.totalItems());
+  const removeItem = useCartStore((state) => state.removeItem);
+  const clearCart = useCartStore((state) => state.clearCart);
+
+  const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
     email: "nguyenduybach12a11@gmail.com",
     cardNumber: "",
@@ -47,19 +64,116 @@ const PaymentPage = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  // Redirect if cart is empty
+  useEffect(() => {
+    if (items.length === 0) {
+      navigate("/category");
+    }
+  }, [items.length, navigate]);
+
   const handleApplyDiscount = () => {
     console.log("Apply discount:", formData.discountCode);
     // TODO: Implement discount logic
   };
 
-  const handleSubmitPayment = (e: React.FormEvent) => {
+  const handleSubmitPayment = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submit payment:", formData);
-    // TODO: Implement payment processing
+
+    if (items.length === 0) {
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      // Simulate payment processing
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      console.log("Payment data:", {
+        formData,
+        items,
+        totalPrice,
+      });
+
+      // TODO: Implement actual payment processing with API
+
+      // Clear cart after successful payment
+      clearCart();
+
+      // Redirect to success page
+      alert("Thanh toán thành công! Cảm ơn bạn đã mua hàng.");
+      navigate("/");
+    } catch (error) {
+      console.error("Payment error:", error);
+      alert("Có lỗi xảy ra khi xử lý thanh toán. Vui lòng thử lại.");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
-  const subtotal = mockCartItem.price * mockCartItem.quantity;
-  const total = subtotal;
+  const subtotal = totalPrice;
+  const shipping = 0;
+  const tax = 0;
+  const discount = 0;
+  const total = subtotal + shipping + tax - discount;
+
+  if (items.length === 0) {
+    return null;
+  }
+
+  if (!authStore.isSignedIn) {
+    return (
+      <div className="bg-gradient-to-br from-gray-50 via-blue-50 to-gray-50 flex items-center justify-center p-4">
+        <Card className="overflow-hidden max-w-lg w-full border-0 shadow-2xl p-0">
+          <CardContent className="p-0">
+            {/* Image Section */}
+            <div className="relative flex justify-center items-center bg-gradient-to-br from-primary/10 to-gray-200 h-64">
+              <img
+                src={paymentWallet}
+                alt="Payment required"
+                className="w-64 h-64 object-contain drop-shadow-2xl relative z-10 animate-in fade-in-0 zoom-in-95 duration-500"
+              />
+            </div>
+            {/* Content Section */}
+            <div className="p-8 space-y-6">
+              <div className="text-center space-y-3">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Yêu cầu đăng nhập
+                </h2>
+
+                <p className="text-gray-600 text-base leading-relaxed">
+                  Bạn cần đăng nhập để tiếp tục thanh toán và hoàn tất đơn hàng
+                  của mình.
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-center gap-4">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full h-12 font-medium"
+                  onClick={() => navigate("/")}
+                >
+                  Quay về trang chủ
+                </Button>
+                <Button
+                  size="lg"
+                  className="w-full bg-linear-to-r from-primary/70 to-primary/80 hover:from-primary/70 hover:to-primary/80 text-white shadow-lg shadow-primary/30 h-12 font-semibold"
+                  onClick={() => {
+                    navigate(BASE_PATHS.auth.login.path);
+                  }}
+                >
+                  <Lock className="w-4 h-4 mr-2" />
+                  Đăng nhập ngay
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -245,9 +359,20 @@ const PaymentPage = () => {
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white h-12"
+                    disabled={isProcessing || items.length === 0}
+                    className="w-full bg-primary/60 hover:bg-primary/70 text-white h-12"
                   >
-                    Pay now
+                    {isProcessing ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                        Đang xử lý...
+                      </>
+                    ) : (
+                      `Thanh toán ${new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(total)}`
+                    )}
                   </Button>
                 </div>
               </form>
@@ -257,28 +382,56 @@ const PaymentPage = () => {
             <div className="lg:sticky lg:top-8 h-fit">
               <Card className="border-0 shadow-lg">
                 <CardContent className="p-6 space-y-6">
-                  {/* Cart Item */}
-                  <div className="flex items-start gap-4">
-                    <div className="relative flex-shrink-0">
-                      <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden border">
-                        <img
-                          src={mockCartItem.image}
-                          alt={mockCartItem.name}
-                          className="w-full h-full object-cover"
-                        />
+                  {/* Order Summary Header */}
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Đơn hàng ({totalItems} sản phẩm)
+                    </h3>
+                  </div>
+
+                  <Separator />
+
+                  {/* Cart Items */}
+                  <div className="space-y-4 max-h-[400px] overflow-y-auto">
+                    {items.map((item) => (
+                      <div
+                        key={item.product._id}
+                        className="flex items-start gap-4 group"
+                      >
+                        <div className="relative shrink-0">
+                          <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden border">
+                            <img
+                              src={generateImageRandom()}
+                              alt={item.product.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <Badge className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gray-800 text-white flex items-center justify-center p-0 text-xs">
+                            {item.quantity}
+                          </Badge>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-1">
+                            {item.product.title}
+                          </h3>
+                          <p className="text-xs text-gray-500 mb-2">
+                            {item.product.category_id.name}
+                          </p>
+                          <p className="text-sm font-semibold text-gray-900">
+                            {new Intl.NumberFormat("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            }).format(item.product.price * item.quantity)}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => removeItem(item.product._id)}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-red-500"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
                       </div>
-                      <Badge className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gray-800 text-white flex items-center justify-center p-0 text-xs">
-                        {mockCartItem.quantity}
-                      </Badge>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-medium text-gray-900 line-clamp-2">
-                        {mockCartItem.name}
-                      </h3>
-                    </div>
-                    <div className="text-sm font-medium text-gray-900 whitespace-nowrap">
-                      ${mockCartItem.price.toFixed(2)}
-                    </div>
+                    ))}
                   </div>
 
                   <Separator />
@@ -306,16 +459,49 @@ const PaymentPage = () => {
 
                   <Separator />
 
-                  {/* Total */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-lg font-semibold">
-                      <span className="text-gray-900">Total</span>
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-xs text-gray-500 font-normal">
-                          USD
+                  {/* Price Breakdown */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Tạm tính:</span>
+                      <span className="font-medium text-gray-900">
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(subtotal)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Phí vận chuyển:</span>
+                      <span className="font-medium text-green-600">
+                        {shipping === 0
+                          ? "Miễn phí"
+                          : new Intl.NumberFormat("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            }).format(shipping)}
+                      </span>
+                    </div>
+                    {discount > 0 && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-600">Giảm giá:</span>
+                        <span className="font-medium text-green-600">
+                          -
+                          {new Intl.NumberFormat("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }).format(discount)}
                         </span>
+                      </div>
+                    )}
+                    <Separator />
+                    <div className="flex items-center justify-between text-lg font-semibold">
+                      <span className="text-gray-900">Tổng cộng:</span>
+                      <div className="flex items-baseline gap-2">
                         <span className="text-2xl text-gray-900">
-                          ${total.toFixed(2)}
+                          {new Intl.NumberFormat("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }).format(total)}
                         </span>
                       </div>
                     </div>
@@ -326,10 +512,21 @@ const PaymentPage = () => {
                     <Button
                       type="submit"
                       size="lg"
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white h-12"
+                      disabled={isProcessing || items.length === 0}
+                      className="w-full bg-primary/60 hover:bg-primary/70 text-white h-12"
                       onClick={handleSubmitPayment}
                     >
-                      Pay now
+                      {isProcessing ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                          Đang xử lý...
+                        </>
+                      ) : (
+                        `Thanh toán ${new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(total)}`
+                      )}
                     </Button>
                   </div>
 

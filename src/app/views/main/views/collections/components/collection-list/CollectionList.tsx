@@ -1,7 +1,8 @@
 import { useGetApiContent } from "@/api/endpoints/content";
-import { Category } from "@/api/models";
+import { Category, GetApiContent200Pagination } from "@/api/models";
 import { ContentResponse } from "@/api/types/content";
 import { BlueprintCard } from "@/components/modules/content";
+import { QueryBoundary } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -11,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { UseQueryResult } from "@tanstack/react-query";
 import { useState } from "react";
 
 const mockCategories: Category[] = [
@@ -85,12 +87,24 @@ const CollectionList = () => {
     console.log("Add to cart:", product);
   };
 
-  const getContentList = useGetApiContent(
+  const getBlueprintListQuery = useGetApiContent<{
+    data: ContentResponse[];
+    pagination?: GetApiContent200Pagination;
+  }>(
     {},
     {
-      query: {},
+      query: {
+        select: (data) =>
+          data as unknown as {
+            data: ContentResponse[];
+            pagination?: GetApiContent200Pagination;
+          },
+      },
     }
-  );
+  ) as UseQueryResult<{
+    data: ContentResponse[];
+    pagination?: GetApiContent200Pagination;
+  }>;
 
   return (
     <div className="space-y-6">
@@ -119,14 +133,18 @@ const CollectionList = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {mockProducts.map((product) => (
-          <BlueprintCard
-            key={product._id}
-            blueprint={product}
-            onViewDetails={handleViewDetails}
-            onAddToCart={handleAddToCart}
-          />
-        ))}
+        <QueryBoundary query={getBlueprintListQuery}>
+          {(blueprints) => {
+            return blueprints.data.map((blueprint) => (
+              <BlueprintCard
+                key={blueprint._id}
+                blueprint={blueprint}
+                onViewDetails={handleViewDetails}
+                onAddToCart={handleAddToCart}
+              />
+            ));
+          }}
+        </QueryBoundary>
       </div>
 
       {/* Pagination - Optional */}

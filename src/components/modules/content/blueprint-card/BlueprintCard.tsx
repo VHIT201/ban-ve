@@ -117,7 +117,7 @@ const BlueprintCard: FC<Props> = (props) => {
         <CardContent className="line-clamp-2 h-12">
           {blueprint.description}
         </CardContent>
-        <CardFooter className="justify-between gap-3 max-sm:flex-col max-sm:items-stretch">
+        <CardFooter className="justify-between gap-3 max-sm:flex-col max-sm:items-stretch flex-wrap">
           <div className="flex flex-col">
             <span className="text-xl font-semibold">
               {new Intl.NumberFormat("vi-VN", {
@@ -131,6 +131,7 @@ const BlueprintCard: FC<Props> = (props) => {
             onClick={handleAddToCart}
             disabled={isAdding}
             className={cn(
+              "ml-auto",
               "transition-all duration-300",
               isInCart && "bg-green-600 hover:bg-green-700",
               justAdded && "bg-green-600"

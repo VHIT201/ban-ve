@@ -13,6 +13,7 @@ import { useGetApiCategories } from "@/api/endpoints/categories";
 import { Response } from "@/api/types/base";
 import { QueryBoundary } from "@/components/shared";
 import { UseQueryResult } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 const mockCategories: Category[] = [
   {
@@ -90,6 +91,9 @@ const mockCategories: Category[] = [
 ];
 
 const CategoriesSection = () => {
+  // Hooks
+  const navigate = useNavigate();
+
   // Queries
   const getCategoryListQuery = useGetApiCategories<{
     topRowCategories: Category[];
@@ -113,11 +117,11 @@ const CategoriesSection = () => {
 
   // Methods
   const handleCategoryClick = (category: Category) => {
-    console.log("Category selected:", category);
+    navigate(`/collections?category=${category._id}`);
   };
 
   const handleViewAll = () => {
-    console.log("View all categories");
+    navigate("/collections");
   };
 
   // Template
