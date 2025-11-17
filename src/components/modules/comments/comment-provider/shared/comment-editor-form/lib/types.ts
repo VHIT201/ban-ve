@@ -1,4 +1,5 @@
 export interface Props {
+  editableCommentId?: string;
   defaultValues?: {
     content?: string;
     mediaPathList?: string;

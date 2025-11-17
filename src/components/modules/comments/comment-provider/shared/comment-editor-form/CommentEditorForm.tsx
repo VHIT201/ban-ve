@@ -21,6 +21,7 @@ import { useShallow } from "zustand/shallow";
 const CommentCreationForm: FC<Props> = (props) => {
   // Props
   const {
+    editableCommentId,
     mode = "create",
     defaultValues,
     className,
@@ -35,8 +36,6 @@ const CommentCreationForm: FC<Props> = (props) => {
       username,
     }))
   );
-
-  console.log("Store ", profileStore);
 
   // Hooks
   const { contentId, createComment, updateComment } =
@@ -74,9 +73,16 @@ const CommentCreationForm: FC<Props> = (props) => {
         createComment?.({
           newCommentItem: commentData,
         });
+
+        toast.success("Bình luận của bạn đã được gửi thành công");
       } else if (mode === "edit") {
+        if (!editableCommentId) {
+          toast.warning("Không tìm thấy bình luận để chỉnh sửa.");
+          return;
+        }
+
         const commentResponse = await editCommentMutation.mutateAsync({
-          id: defaultValues?.content ?? "",
+          id: editableCommentId,
           data: {
             content: commentContent,
           },
@@ -88,14 +94,15 @@ const CommentCreationForm: FC<Props> = (props) => {
         updateComment?.({ updatedCommentItem: commentData });
       }
 
+      toast.success("Bình luận của bạn đã chỉnh sửa thành công");
+
       // Success - clear form
       if (mode === "create" || mode === "reply") {
         setCommentMediaList([]);
         setCommentContent("");
       }
       onClose?.();
-    } catch (errorResponse) {
-      // sonner({ title: 'Bình luận thất bại', error: errorResponse })
+    } catch {
       toast.warning("Gửi bình luận thất bại. Vui lòng thử lại.");
     }
   };

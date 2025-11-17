@@ -3,6 +3,7 @@ import { Props } from "./lib/types";
 import { useCommentList } from "./lib/hooks";
 import { COMMENT_SECTION_CONTEXT } from "./lib/constants";
 import { CommentDeleteDialog } from "./components";
+import { useDeleteApiCommentsId } from "@/api/endpoints/comments";
 
 const CommentProvider: FC<Props> = (props) => {
   // Props
@@ -24,6 +25,9 @@ const CommentProvider: FC<Props> = (props) => {
     commentId: string;
     parentCommentId?: string;
   } | null>(null);
+
+  // Mutations
+  const deleteCommentMutation = useDeleteApiCommentsId();
 
   // Methods
   const handleSelectCommentIdToDelete = (commentSelectedIds: {

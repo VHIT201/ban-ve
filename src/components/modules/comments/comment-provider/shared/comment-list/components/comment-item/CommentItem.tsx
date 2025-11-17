@@ -32,9 +32,7 @@ const CommentItem: FC<Props> = (props) => {
   const { comment, isReply: isReplyDefault = false } = props;
 
   // Stores
-  const profileStore = useProfileStore(
-    useShallow(({ id }) => ({ profileId: id }))
-  );
+  const profileStore = useProfileStore(useShallow(({ email }) => ({ email })));
 
   // Hooks
   const { selectCommentIdToDelete } = useCommentSectionContext();
@@ -80,7 +78,7 @@ const CommentItem: FC<Props> = (props) => {
           .join("") + "..."
       : comment?.content;
 
-  const isMyComment = comment?.userId?._id === profileStore.profileId;
+  const isMyComment = comment.email === profileStore.email;
 
   // Get user initials for avatar fallback
   const getUserInitials = (name: string) => {
@@ -234,6 +232,7 @@ const CommentItem: FC<Props> = (props) => {
           ) : (
             <CommentCreationForm
               mode="edit"
+              editableCommentId={comment._id}
               defaultValues={{ content: comment.content }}
               onClose={() => setIsEdit(false)}
             />

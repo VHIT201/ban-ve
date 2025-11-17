@@ -11,6 +11,8 @@ import { FC } from "react";
 import { Props } from "./lib/types";
 import { useCommentSectionContext } from "../../lib/hooks";
 import { Trash2Icon } from "lucide-react";
+import { useDeleteApiCommentsId } from "@/api/endpoints/comments";
+import { toast } from "sonner";
 
 const DeleteCommentDialog: FC<Props> = (props) => {
   // Props
@@ -20,22 +22,21 @@ const DeleteCommentDialog: FC<Props> = (props) => {
   const { deleteComment } = useCommentSectionContext();
 
   // Mutations
+  const deleteCommentMutation = useDeleteApiCommentsId();
 
   // Methods
   const handleDeleteComment = async () => {
     try {
       if (!commentId) return;
 
-      // await deleteCommentMutation.mutateAsync({
-      //   params: {
-      //     id: commentId
-      //   }
-      // })
+      await deleteCommentMutation.mutateAsync({
+        id: commentId,
+      });
 
       deleteComment?.({ commentId, parentCommentId });
-      // sonner({ status: 'success', title: 'Xóa bình luận thành công', description: 'Bình luận đã được xóa thành công' })
+      toast.success("Xóa bình luận thành công");
     } catch (errorResponse) {
-      // sonner({ title: 'Xóa bình luận thất bại', error: errorResponse })
+      toast.error("Đã có lỗi xảy ra. Vui lòng thử lại.");
     } finally {
       onOpenChange(false);
     }
@@ -56,7 +57,11 @@ const DeleteCommentDialog: FC<Props> = (props) => {
           >
             Hủy
           </Button>
-          <Button variant="destructive" onClick={handleDeleteComment}>
+          <Button
+            variant="destructive"
+            onClick={handleDeleteComment}
+            loading={deleteCommentMutation.isPending}
+          >
             <Trash2Icon className="h-4 w-4" />
             Xóa
           </Button>
