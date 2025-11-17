@@ -7,3 +7,9 @@ export interface Response<Data = unknown> {
   statusCode: number;
   timeStamp: Date;
 }
+
+export interface MutationData<Data = unknown> {
+  success: boolean;
+  message: string;
+  data: Data;
+}

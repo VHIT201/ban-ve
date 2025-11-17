@@ -9,11 +9,13 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { ErrorFallback } from "@/ErrorFallback";
 import queryClient from "@/configs/query-client";
 import { AuthGate } from "@/components/modules/auth";
+import { ScrollToTop } from "./components";
 
 // Component
 const App = () => {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <ScrollToTop />
       <Toaster richColors position="bottom-right" />
       <QueryClientProvider client={queryClient}>
         <AuthGate>

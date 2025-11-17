@@ -1,5 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Edit3Icon, EllipsisIcon, ReplyIcon, Trash2Icon } from "lucide-react";
+import {
+  Edit3Icon,
+  EllipsisIcon,
+  ReplyIcon,
+  Trash2Icon,
+  Heart,
+  MessageCircle,
+} from "lucide-react";
 import { FC, useState } from "react";
 import { ContentStatus, Props } from "./lib/types";
 import CommentCreationForm from "../../../comment-editor-form";
@@ -13,14 +20,16 @@ import { useCommentSectionContext } from "../../../../lib/hooks";
 import { useProfileStore } from "@/stores";
 import { useShallow } from "zustand/react/shallow";
 import { cn } from "@/utils/ui";
-import { CommentMediaList } from "./components";
+import { formatRelativeTimeWithFallback } from "@/utils/date";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 
 const MAX_CONTENT_LENGTH = 100;
 
 const CommentItem: FC<Props> = (props) => {
   // Props
   const { likeComment } = useCommentSectionContext();
-  const { postId, comment, isReply: isReplyDefault = false, parentId } = props;
+  const { comment, isReply: isReplyDefault = false } = props;
 
   // Stores
   const profileStore = useProfileStore(
@@ -33,6 +42,8 @@ const CommentItem: FC<Props> = (props) => {
   // States
   const [isEdit, setIsEdit] = useState(false);
   const [isReply, setIsReply] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
   // const [isSeeReplies, setIsSeeReplies] = useState(false);
   const [isDisplayContentSeeMore, setIsDisplayContentSeeMore] =
     useState<ContentStatus>(() => {
@@ -44,6 +55,12 @@ const CommentItem: FC<Props> = (props) => {
   // Methods
   const handleToggleReply = () => {
     setIsReply((prev) => !prev);
+  };
+
+  const handleToggleLike = () => {
+    setIsLiked((prev) => !prev);
+    setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
+    // TODO: Call API to like/unlike comment
   };
 
   const handleToggleExpandContent = () => {
@@ -65,104 +82,168 @@ const CommentItem: FC<Props> = (props) => {
 
   const isMyComment = comment?.userId?._id === profileStore.profileId;
 
+  // Get user initials for avatar fallback
+  const getUserInitials = (name: string) => {
+    const words = name.trim().split(" ");
+    if (words.length >= 2) {
+      return `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  };
+
   // Template
   return (
-    <div className={`${isReplyDefault ? "mt-3 w-full pl-6" : ""}`}>
-      <div className="flex space-x-3">
-        <div className="flex-1 space-y-2">
+    <div
+      className={cn(
+        "group transition-all duration-200",
+        isReplyDefault
+          ? "mt-3 w-full pl-12"
+          : "hover:bg-gray-50/50 rounded-xl p-3 -mx-3"
+      )}
+    >
+      <div className="flex gap-3">
+        {/* Avatar */}
+        <Avatar className="w-10 h-10 border-2 border-white shadow-sm shrink-0">
+          <AvatarImage
+            src={`https://api.dicebear.com/7.x/initials/svg?seed=${comment.guestName}`}
+          />
+          <AvatarFallback className="bg-linear-to-br from-blue-500 to-purple-600 text-white text-sm font-semibold">
+            {getUserInitials(comment.guestName ?? "U")}
+          </AvatarFallback>
+        </Avatar>
+
+        <div className="flex-1 min-w-0 space-y-2">
           {!isEdit ? (
-            <div className="flex flex-nowrap">
-              <div className="flex-1">
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm font-semibold">
-                    {comment?.userId?.username ?? "Unknown"}
+            <>
+              {/* Comment Header */}
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-sm font-semibold text-gray-900">
+                    {comment.guestName ?? "Unknown"}
                   </span>
-                  <span className="text-muted-foreground text-sm">•</span>
-                  <span className="text-xs text-muted-foreground">
-                    {comment?.createdAt}
-                  </span>
-                </div>
-                <div>
-                  <p
-                    className={cn(
-                      "text-sm leading-relaxed whitespace-pre-wrap"
-                    )}
-                  >
-                    {contentCollapsed}
-                  </p>
-                  {isDisplayContentSeeMore !== ContentStatus.NONE && (
-                    <Button
-                      variant="link"
-                      className="text-primary mt-1 h-auto p-0 text-xs"
-                      onClick={handleToggleExpandContent}
+                  {isMyComment && (
+                    <Badge
+                      variant="secondary"
+                      className="text-xs px-2 py-0 h-5"
                     >
-                      {isDisplayContentSeeMore === ContentStatus.COLLAPSE
-                        ? "Thu gọn"
-                        : "Xem thêm"}
-                    </Button>
+                      Bạn
+                    </Badge>
                   )}
+                  <span className="text-xs text-gray-400">
+                    {formatRelativeTimeWithFallback(
+                      comment?.createdAt ?? new Date(),
+                      7
+                    )}
+                  </span>
                 </div>
 
-                <div className="flex items-center gap-2 pt-1">
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={handleToggleReply}
-                    className="text-muted-foreground hover:text-foreground h-8 gap-1.5 px-2"
-                  >
-                    <ReplyIcon className="h-4 w-4" />
-                    <span className="text-xs">Phản hồi</span>
-                  </Button>
-                </div>
-              </div>
-              <div>
+                {/* Actions Menu */}
                 {isMyComment && comment?._id && (
                   <DropdownMenu>
-                    <DropdownMenuTrigger>
-                      <Button size="icon" variant="ghost">
-                        <EllipsisIcon className="size-4" />
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100"
+                      >
+                        <EllipsisIcon className="w-4 h-4 text-gray-500" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => setIsEdit(true)}>
-                        <Edit3Icon className="group-hover:text-primary" />
-                        Chỉnh sửa
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem
+                        onClick={() => setIsEdit(true)}
+                        className="gap-2 cursor-pointer"
+                      >
+                        <Edit3Icon className="w-4 h-4" />
+                        <span>Chỉnh sửa</span>
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         variant="destructive"
                         onClick={() =>
                           selectCommentIdToDelete?.({
                             commentId: comment._id ?? "",
-                            parentCommentId: parentId,
                           })
                         }
+                        className="gap-2 cursor-pointer"
                       >
-                        <Trash2Icon />
-                        Xóa
+                        <Trash2Icon className="w-4 h-4" />
+                        <span>Xóa</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 )}
               </div>
-            </div>
+
+              {/* Comment Content */}
+              <div className="space-y-2">
+                <p
+                  className={cn(
+                    "text-sm text-gray-700 leading-relaxed whitespace-pre-wrap wrap-break-word"
+                  )}
+                >
+                  {contentCollapsed}
+                </p>
+
+                {isDisplayContentSeeMore !== ContentStatus.NONE && (
+                  <Button
+                    variant="link"
+                    className="h-auto p-0 text-xs text-blue-600 hover:text-blue-700 font-medium"
+                    onClick={handleToggleExpandContent}
+                  >
+                    {isDisplayContentSeeMore === ContentStatus.COLLAPSE
+                      ? "Thu gọn"
+                      : "Xem thêm"}
+                  </Button>
+                )}
+              </div>
+
+              {/* Comment Actions */}
+              <div className="flex items-center gap-1 pt-1">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={handleToggleLike}
+                  className={cn(
+                    "h-8 gap-1.5 px-3 text-xs font-medium transition-all",
+                    isLiked
+                      ? "text-red-600 hover:text-red-700 hover:bg-red-50"
+                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                  )}
+                >
+                  <Heart
+                    className={cn(
+                      "w-4 h-4 transition-all",
+                      isLiked && "fill-current"
+                    )}
+                  />
+                  {likeCount > 0 && <span>{likeCount}</span>}
+                  <span>Thích</span>
+                </Button>
+
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={handleToggleReply}
+                  className="h-8 gap-1.5 px-3 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>Phản hồi</span>
+                </Button>
+              </div>
+            </>
           ) : (
             <CommentCreationForm
               mode="edit"
-              postId={postId}
-              commentId={comment._id ?? ""}
-              commentParentId={parentId}
               defaultValues={{ content: comment.content }}
               onClose={() => setIsEdit(false)}
             />
           )}
 
+          {/* Reply Form */}
           {isReply && (
-            <div className="mt-3 space-y-2">
+            <div className="mt-3 pt-3 border-t border-gray-100">
               <CommentCreationForm
                 mode="reply"
-                postId={postId}
-                commentId={comment._id ?? ""}
-                commentParentId={isReplyDefault ? parentId : comment._id ?? ""}
                 onClose={() => setIsReply(false)}
               />
             </div>

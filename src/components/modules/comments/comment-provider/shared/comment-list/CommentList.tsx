@@ -32,13 +32,7 @@ const CommentList: FC<Props> = (props) => {
     <div className={className}>
       <ul className="flex flex-col gap-4 p-1">
         {commentList.map((comment) => (
-          <CommentItem
-            key={comment._id}
-            postId={comment.contentId!}
-            comment={comment}
-            isReply={false}
-            parentId={undefined}
-          />
+          <CommentItem key={comment._id} comment={comment} isReply={false} />
         ))}
       </ul>
     </div>

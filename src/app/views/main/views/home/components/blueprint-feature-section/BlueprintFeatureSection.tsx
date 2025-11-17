@@ -50,6 +50,7 @@ const BlueprintFeatureSection = () => {
     data: ContentResponse[];
     pagination?: GetApiContent200Pagination;
   }>;
+
   const handleViewDetails = (blueprint: ContentResponse) => {
     navigate(`/detail/${blueprint._id}`);
   };

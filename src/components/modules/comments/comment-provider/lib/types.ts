@@ -6,6 +6,6 @@ export type CommentItem = Comment & {
 };
 
 export interface Props {
-  postId: string;
+  contentId: string;
   children?: ReactNode;
 }

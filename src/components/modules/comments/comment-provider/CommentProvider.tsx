@@ -6,7 +6,7 @@ import { CommentDeleteDialog } from "./components";
 
 const CommentProvider: FC<Props> = (props) => {
   // Props
-  const { postId, children } = props;
+  const { contentId, children } = props;
 
   // Hooks
   const {
@@ -17,7 +17,7 @@ const CommentProvider: FC<Props> = (props) => {
     createComment,
     updateComment,
     deleteComment,
-  } = useCommentList(postId);
+  } = useCommentList(contentId);
 
   // States
   const [selectCommentIdDeleted, setSelectCommentIdDeleted] = useState<{
@@ -37,6 +37,7 @@ const CommentProvider: FC<Props> = (props) => {
     <COMMENT_SECTION_CONTEXT.Provider
       value={{
         // Props
+        contentId,
         commentList,
         isFetching,
         hasNextPage,
