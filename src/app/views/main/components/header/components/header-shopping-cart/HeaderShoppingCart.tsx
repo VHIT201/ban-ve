@@ -16,10 +16,11 @@ import {
   Trash,
   CheckCircle,
 } from "@phosphor-icons/react";
-import { useState, useEffect } from "react";
 import { useCartStore } from "@/stores/use-cart-store";
 import { useNavigate } from "react-router-dom";
 import { generateImageRandom } from "@/utils/image";
+
+const CATEGORY_ALL_ID_DEFAULT = "6907769cf2f9f06e5df9c89e";
 
 function HeaderShoppingCart() {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ function HeaderShoppingCart() {
 
   const handleContinueShopping = () => {
     closeCart();
-    navigate("/category");
+    navigate(`/collections`);
   };
 
   return (

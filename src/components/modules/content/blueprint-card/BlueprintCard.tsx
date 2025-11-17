@@ -98,7 +98,7 @@ const BlueprintCard: FC<Props> = (props) => {
       </div>
       <div className="opacity-0 group-hover/container:opacity-100 transition-opacity duration-300 absolute inset-0 bg-linear-to-b from-gray-400/50 to-gray-300/20 z-10" />
       <Badge className="absolute top-4 left-4 rounded-full z-20">
-        Xây dựng
+        {blueprint.category_id.name}
       </Badge>
 
       <Button

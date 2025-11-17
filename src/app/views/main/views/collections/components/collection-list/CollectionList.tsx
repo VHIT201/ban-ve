@@ -1,4 +1,7 @@
-import { useGetApiContent } from "@/api/endpoints/content";
+import {
+  getGetApiContentQueryKey,
+  useGetApiContent,
+} from "@/api/endpoints/content";
 import { Category, GetApiContent200Pagination } from "@/api/models";
 import { ContentResponse } from "@/api/types/content";
 import { BlueprintCard } from "@/components/modules/content";
@@ -13,70 +16,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { UseQueryResult } from "@tanstack/react-query";
-import { useState } from "react";
+import { FC, useState } from "react";
+import { Props } from "./lib/types";
 
-const mockCategories: Category[] = [
-  { _id: "1", name: "Cad", slug: "cad", description: "CAD files" },
-  {
-    _id: "2",
-    name: "Flat Vector",
-    slug: "flat-vector",
-    description: "Flat vector graphics",
-  },
-  {
-    _id: "3",
-    name: "Axonometric Vector",
-    slug: "axonometric-vector",
-    description: "Axonometric views",
-  },
-  { _id: "4", name: "3D Model", slug: "3d-model", description: "3D models" },
-  { _id: "5", name: "Cutout", slug: "cutout", description: "Cutout graphics" },
-  {
-    _id: "6",
-    name: "Brush & Swatch",
-    slug: "brush-swatch",
-    description: "Brushes and swatches",
-  },
-  { _id: "7", name: "Other", slug: "other", description: "Other files" },
-];
+const CollectionList: FC<Props> = (props) => {
+  // States
+  const { filter } = props;
 
-const mockProducts: ContentResponse[] = Array.from({ length: 12 }, (_, i) => ({
-  _id: `${i + 1}`,
-  title:
-    i === 0
-      ? "Photoshop Brush Sanaá People"
-      : i === 1
-      ? "Student Starter Kit - Extended"
-      : i === 2
-      ? "Procreate Architectural Annotations Brushset"
-      : `Product ${i + 1}`,
-  description: `Description for product ${i + 1}`,
-  category_id: {
-    _id: `cat${i + 1}`,
-    name: mockCategories[i % mockCategories.length].name,
-    slug: mockCategories[i % mockCategories.length].slug,
-    description: mockCategories[i % mockCategories.length].description || "",
-  },
-  file_id: {
-    _id: `file${i + 1}`,
-    name: `product-${i + 1}.dwg`,
-    url: `/uploads/product-${i + 1}.dwg`,
-    type: "DWG",
-    size: 5242880 + i * 1000000,
-  },
-  price:
-    i === 0 ? 93000 : i === 1 ? 93000 : i === 2 ? 124000 : 150000 + i * 50000,
-  status: "approved",
-  createdBy: {
-    _id: `user${i + 1}`,
-    username: `user${i + 1}`,
-    email: `user${i + 1}@example.com`,
-  },
-  createdAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
-  updatedAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
-}));
-
-const CollectionList = () => {
   const [sortBy, setSortBy] = useState("best-selling");
 
   const handleViewDetails = (product: ContentResponse) => {
@@ -87,6 +33,36 @@ const CollectionList = () => {
     console.log("Add to cart:", product);
   };
 
+  // Sort function
+  const sortProducts = (products: ContentResponse[]) => {
+    const sorted = [...products];
+
+    switch (sortBy) {
+      case "newest":
+        return sorted.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+
+      case "price-low":
+        return sorted.sort((a, b) => a.price - b.price);
+
+      case "price-high":
+        return sorted.sort((a, b) => b.price - a.price);
+
+      case "name-az":
+        return sorted.sort((a, b) => a.title.localeCompare(b.title, "vi"));
+
+      case "name-za":
+        return sorted.sort((a, b) => b.title.localeCompare(a.title, "vi"));
+
+      case "best-selling":
+      default:
+        // Keep original order or implement best-selling logic
+        return sorted;
+    }
+  };
+
   const getBlueprintListQuery = useGetApiContent<{
     data: ContentResponse[];
     pagination?: GetApiContent200Pagination;
@@ -94,11 +70,60 @@ const CollectionList = () => {
     {},
     {
       query: {
-        select: (data) =>
-          data as unknown as {
+        queryKey: [...getGetApiContentQueryKey(), filter, sortBy],
+        select: (data) => {
+          console.log("Filtered : ", filter);
+
+          const filteredValue = (
+            data as unknown as {
+              data: ContentResponse[];
+              pagination?: GetApiContent200Pagination;
+            }
+          ).data.filter((item) => {
+            if (
+              filter.categories.length > 0 &&
+              !filter.categories.includes(item.category_id._id)
+            ) {
+              return false;
+            }
+
+            console.log("Items ss", item);
+
+            if (
+              item.price < filter.priceRange[0] * 10000 ||
+              item.price > filter.priceRange[1] * 10000
+            ) {
+              return false;
+            }
+
+            // Search filter
+            if (filter.searchQuery && filter.searchQuery.trim() !== "") {
+              const searchLower = filter.searchQuery.toLowerCase();
+              const titleMatch = item.title.toLowerCase().includes(searchLower);
+              const descMatch = item.description
+                ?.toLowerCase()
+                .includes(searchLower);
+              const categoryMatch = item.category_id.name
+                .toLowerCase()
+                .includes(searchLower);
+
+              if (!titleMatch && !descMatch && !categoryMatch) {
+                return false;
+              }
+            }
+
+            return true;
+          });
+
+          console.log("Filtered Value : ", filteredValue, data);
+
+          return {
+            data: sortProducts(filteredValue),
+          } as {
             data: ContentResponse[];
             pagination?: GetApiContent200Pagination;
-          },
+          };
+        },
       },
     }
   ) as UseQueryResult<{
@@ -111,7 +136,11 @@ const CollectionList = () => {
       {/* Header with Sort */}
       <div className="hidden lg:flex items-center justify-between mb-6">
         <div className="text-sm text-gray-600">
-          Showing {mockProducts.length} products
+          <QueryBoundary query={getBlueprintListQuery}>
+            {(blueprints) => (
+              <span>Showing {blueprints.data.length} products</span>
+            )}
+          </QueryBoundary>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
@@ -121,11 +150,12 @@ const CollectionList = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="best-selling">BEST SELLING</SelectItem>
-                <SelectItem value="newest">Newest</SelectItem>
-                <SelectItem value="price-low">Price: Low to High</SelectItem>
-                <SelectItem value="price-high">Price: High to Low</SelectItem>
-                <SelectItem value="name-az">Name: A-Z</SelectItem>
+                <SelectItem value="best-selling">Best Selling</SelectItem>
+                <SelectItem value="newest">Mới nhất</SelectItem>
+                <SelectItem value="price-low">Giá: Thấp đến Cao</SelectItem>
+                <SelectItem value="price-high">Giá: Cao đến Thấp</SelectItem>
+                <SelectItem value="name-az">Tên: A-Z</SelectItem>
+                <SelectItem value="name-za">Tên: Z-A</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -145,27 +175,6 @@ const CollectionList = () => {
             ));
           }}
         </QueryBoundary>
-      </div>
-
-      {/* Pagination - Optional */}
-      <div className="mt-12 flex justify-center">
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" disabled>
-            Previous
-          </Button>
-          <Button variant="default" size="sm">
-            1
-          </Button>
-          <Button variant="outline" size="sm">
-            2
-          </Button>
-          <Button variant="outline" size="sm">
-            3
-          </Button>
-          <Button variant="outline" size="sm">
-            Next
-          </Button>
-        </div>
       </div>
     </div>
   );

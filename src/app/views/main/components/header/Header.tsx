@@ -184,12 +184,7 @@ const Header = () => {
                   <span className="hidden sm:inline">Đăng nhập</span>
                 </Button>
               )}
-              <HeaderShoppingCart
-                items={cartItems}
-                onUpdateQuantity={handleUpdateQuantity}
-                onRemoveItem={handleRemoveItem}
-                onCheckout={handleCheckout}
-              />
+              <HeaderShoppingCart />
             </div>
           </div>
         </div>
@@ -261,12 +256,7 @@ const Header = () => {
                   <span className="hidden sm:inline">Đăng nhập</span>
                 </Button>
               )}
-              <HeaderShoppingCart
-                items={cartItems}
-                onUpdateQuantity={handleUpdateQuantity}
-                onRemoveItem={handleRemoveItem}
-                onCheckout={handleCheckout}
-              />
+              <HeaderShoppingCart />
             </div>
           </div>
         </div>

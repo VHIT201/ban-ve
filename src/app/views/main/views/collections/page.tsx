@@ -21,6 +21,8 @@ import { ContentResponse } from "@/api/types/content";
 import { Category } from "@/api/models/category";
 import { ChevronRight, ChevronDown, ChevronUp, Filter, X } from "lucide-react";
 import { CollectionFilters, CollectionList } from "./components";
+import { FilterFormValues } from "./components/collection-filters/lib/types";
+import { DEFAULT_FILTER_VALUES } from "./components/collection-filters/lib/constants";
 
 // Mock data
 const mockCategories: Category[] = [
@@ -91,46 +93,10 @@ const productViews = [
 ];
 
 const CategoryPage = () => {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedViews, setSelectedViews] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState([0, 193]);
-  const [sortBy, setSortBy] = useState("best-selling");
-  const [isCategoryOpen, setIsCategoryOpen] = useState(true);
-  const [isPriceOpen, setIsPriceOpen] = useState(true);
-  const [isViewOpen, setIsViewOpen] = useState(true);
-  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-
-  const handleCategoryToggle = (categoryId: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(categoryId)
-        ? prev.filter((id) => id !== categoryId)
-        : [...prev, categoryId]
-    );
-  };
-
-  const handleViewToggle = (viewId: string) => {
-    setSelectedViews((prev) =>
-      prev.includes(viewId)
-        ? prev.filter((id) => id !== viewId)
-        : [...prev, viewId]
-    );
-  };
-
-  const handleClearFilters = () => {
-    setSelectedCategories([]);
-    setSelectedViews([]);
-    setPriceRange([0, 193]);
-  };
-
-  const handleViewDetails = (product: ContentResponse) => {
-    console.log("View details:", product);
-  };
-
-  const handleAddToCart = (product: ContentResponse) => {
-    console.log("Add to cart:", product);
-  };
-
-  const activeFiltersCount = selectedCategories.length + selectedViews.length;
+  // States
+  const [filteredProducts, setFilteredProducts] = useState<FilterFormValues>(
+    DEFAULT_FILTER_VALUES
+  );
 
   return (
     <div className="min-h-screen bg-white">
@@ -151,49 +117,15 @@ const CategoryPage = () => {
           <span className="text-gray-900 font-medium">All Products</span>
         </div>
 
-        {/* Mobile Filter Toggle */}
-        <div className="lg:hidden mb-4 flex items-center justify-between">
-          <Button
-            variant="outline"
-            onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
-            className="gap-2"
-          >
-            <Filter className="w-4 h-4" />
-            Filters
-            {activeFiltersCount > 0 && (
-              <Badge variant="secondary" className="ml-1">
-                {activeFiltersCount}
-              </Badge>
-            )}
-          </Button>
-
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-48">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="best-selling">BEST SELLING</SelectItem>
-              <SelectItem value="newest">Newest</SelectItem>
-              <SelectItem value="price-low">Price: Low to High</SelectItem>
-              <SelectItem value="price-high">Price: High to Low</SelectItem>
-              <SelectItem value="name-az">Name: A-Z</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar Filters */}
-          <aside
-            className={`lg:w-64 shrink-0 space-y-6 ${
-              isMobileFilterOpen ? "block" : "hidden lg:block"
-            }`}
-          >
-            <CollectionFilters />
+          <aside className={`lg:w-64 shrink-0 space-y-6 md:block hidden`}>
+            <CollectionFilters onFilterChange={setFilteredProducts} />
           </aside>
 
           {/* Main Content */}
           <main className="flex-1">
-            <CollectionList />
+            <CollectionList filter={filteredProducts} />
           </main>
         </div>
       </div>
