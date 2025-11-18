@@ -5,7 +5,7 @@ import { ColumnDef } from "@tanstack/react-table";
 // App
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { ActionColumn } from "@/components/shared/data-table/shared";
+import { DataTableActionCell } from "@/components/shared/data-table/shared";
 
 // Internal
 import { CategoryTableRow, useCategoryTableColumnsDefsProps } from "./types";
@@ -108,7 +108,7 @@ export const useCategoryTableColumnsDefs = (
         cell: ({ row }) => {
           const category = row.original;
           return (
-            <ActionColumn
+            <DataTableActionCell
               rowName={category.name}
               extraActions={
                 <Fragment>

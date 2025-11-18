@@ -2,14 +2,19 @@ import { createContext, useContext, ReactNode } from "react";
 import { Table as TanStackTable } from "@tanstack/react-table";
 
 interface DataTableContextValue<TData> {
+  // Props
   table: TanStackTable<TData>;
   enableRowSelection: boolean;
   enablePagination: boolean;
   manualPagination: boolean;
+  openDeleteDialog: boolean;
   classNames?: {
     header?: string;
     footer?: string;
   };
+
+  // Actions
+  openDeleteDialogAction: (open: boolean) => void;
 }
 
 const DataTableContext = createContext<DataTableContextValue<any> | null>(null);

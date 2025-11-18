@@ -42,6 +42,8 @@ const DataTableRoot = <TData,>(props: DataTableRootProps<TData>) => {
     children,
   } = props;
 
+  // States
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>(() => {
     const initialState: RowSelectionState = {};
 
@@ -102,6 +104,11 @@ const DataTableRoot = <TData,>(props: DataTableRootProps<TData>) => {
     }
   };
 
+  const handleOpenDeleteDialog = (open: boolean) => {
+    setOpenDeleteDialog(open);
+  };
+
+  // Table
   const table = useReactTable({
     data,
     columns,
@@ -142,11 +149,16 @@ const DataTableRoot = <TData,>(props: DataTableRootProps<TData>) => {
   return (
     <DataTableProvider
       value={{
+        // Props
         table,
+        openDeleteDialog,
         enableRowSelection,
         enablePagination,
         manualPagination,
         classNames,
+
+        // Actions
+        openDeleteDialogAction: handleOpenDeleteDialog,
       }}
     >
       <div className="space-y-4 overflow-x-auto">{children}</div>
@@ -160,6 +172,7 @@ const DataTable = <TData,>(props: Props<TData>) => {
     <DataTableRoot {...props}>
       <DataTableContent<TData> />
       <DataTablePagination<TData> />
+      {props.children}
     </DataTableRoot>
   );
 };

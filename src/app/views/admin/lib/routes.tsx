@@ -16,7 +16,19 @@ const adminRoutes: RouteObject = {
       element: <Admin />,
     };
   },
-  children: [],
+  children: [
+    {
+      path: admin.categories.path,
+      lazy: async () => {
+        const { default: Categories } = await import(
+          "../views/categories/page"
+        );
+        return {
+          element: <Categories />,
+        };
+      },
+    },
+  ],
 };
 
 export default adminRoutes;

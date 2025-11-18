@@ -2,54 +2,122 @@
 import { Category } from "@/api/models";
 
 // Internal
-import { DataTable } from "@/components/shared";
+import { DataTable, QueryBoundary } from "@/components/shared";
 import { useCategoryTableColumnsDefs } from "./lib/hooks";
+import {
+  useDeleteApiCategoriesId,
+  useGetApiCategories,
+  usePutApiCategoriesId,
+} from "@/api/endpoints/categories";
+import { Response } from "@/api/types/base";
+import { UseQueryResult } from "@tanstack/react-query";
+import { Fragment, useState } from "react";
+import CategoryDialog from "../category-dialog";
+import { CategoryFormValues } from "../category-dialog/CategoryDialog";
+import { toast } from "sonner";
+import { DataTableDeleteDialog } from "@/components/shared/data-table/shared";
 
-interface CategoryTableProps {
-  data: Category[];
-  isLoading?: boolean;
-  rowCount?: number;
-  pagination?: {
-    pageIndex: number;
-    pageSize: number;
+const CategoryTable = () => {
+  // States
+  const [editSelectRow, setEditSelectRow] = useState<Category | null>(null);
+  const [deleteSelectRow, setDeleteSelectRow] = useState<Category | null>(null);
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+
+  // Queries
+  const getCategoryList = useGetApiCategories({
+    query: {
+      select: (data) => data as unknown as Category[],
+    },
+  }) as UseQueryResult<Category[]>;
+
+  // Mutations
+  const editCategoryMutation = usePutApiCategoriesId();
+  const deleteCategoryMutation = useDeleteApiCategoriesId();
+
+  // Methods
+  const handleColumnEdit = (category: Category) => {
+    setEditSelectRow(category);
   };
-  onPaginationChange?: (pagination: {
+
+  const handleEditCategory = async (values: CategoryFormValues) => {
+    if (!editSelectRow) return;
+    try {
+      await editCategoryMutation.mutateAsync({
+        id: editSelectRow._id!,
+        data: values,
+      });
+
+      setEditSelectRow(null);
+      toast.success("Cập nhật danh mục thành công.");
+    } catch (error) {
+      console.error("Failed to edit category:", error);
+      toast.error("Đã có lỗi xảy ra khi cập nhật danh mục.");
+    }
+  };
+
+  const handleColumnDelete = (category: Category) => {
+    setDeleteSelectRow(category);
+  };
+
+  const handleDeleteCategory = async () => {
+    if (!deleteSelectRow) return;
+    try {
+      await deleteCategoryMutation.mutateAsync({ id: deleteSelectRow._id! });
+
+      setDeleteSelectRow(null);
+      toast.success("Xóa danh mục thành công.");
+    } catch (error) {
+      console.error("Failed to delete category:", error);
+      toast.error("Đã có lỗi xảy ra khi xóa danh mục.");
+    }
+  };
+
+  const handlePaginationChange = (updater: {
     pageIndex: number;
     pageSize: number;
-  }) => void;
-  onEdit?: (category: Category) => void;
-  onDelete?: (category: Category) => void;
-}
-
-const CategoryTable = (props: CategoryTableProps) => {
-  const {
-    data,
-    rowCount = 0,
-    pagination = { pageIndex: 1, pageSize: 10 },
-    onPaginationChange,
-    onEdit,
-    onDelete,
-  } = props;
+  }) => {
+    setPagination(updater);
+  };
 
   // Columns
   const columns = useCategoryTableColumnsDefs({
-    onEdit,
-    onDelete,
+    onEdit: handleColumnEdit,
+    onDelete: handleColumnDelete,
   });
 
   return (
-    <DataTable
-      columns={columns}
-      data={data}
-      rowCount={rowCount}
-      manualPagination
-      enablePagination
-      state={{ pagination }}
-      onPaginationChange={onPaginationChange}
-      classNames={{
-        header: "bg-primary/90",
-      }}
-    />
+    <Fragment>
+      <QueryBoundary query={getCategoryList}>
+        {(categories) => {
+          return (
+            <DataTable
+              columns={columns}
+              data={categories}
+              rowCount={categories.length}
+              manualPagination
+              enablePagination
+              enableRowSelection
+              state={{ pagination }}
+              onPaginationChange={handlePaginationChange}
+              classNames={{
+                header: "bg-primary/90",
+              }}
+            >
+              <DataTableDeleteDialog
+                currentRow={deleteSelectRow}
+                onDelete={handleDeleteCategory}
+              />
+            </DataTable>
+          );
+        }}
+      </QueryBoundary>
+      <CategoryDialog
+        open={Boolean(editSelectRow)}
+        onOpenChange={() => setEditSelectRow(null)}
+        category={editSelectRow!}
+        onSubmit={handleEditCategory}
+      />
+    </Fragment>
   );
 };
 
