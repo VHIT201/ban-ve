@@ -16,6 +16,11 @@ export const ROUTE_PATHS = {
     collections: { path: "collections" },
     payment: { path: "payment" },
   },
+
+  admin: {
+    path: "admin",
+    categories: { path: "categories" },
+  },
 };
 
 export const BASE_PATHS = {
