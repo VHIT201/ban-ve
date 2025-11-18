@@ -11,6 +11,7 @@ import {
 } from "../components";
 import mainRoutes from "../views/main/lib/routes";
 import authRoutes from "../views/auth/lib/routes";
+import adminRoutes from "../views/admin/lib/routes";
 
 // App routes
 const appRoutes: RouteObject[] = [
@@ -25,7 +26,7 @@ const appRoutes: RouteObject[] = [
             element: <App />,
           };
         },
-        children: [mainRoutes, authRoutes],
+        children: [mainRoutes, adminRoutes, authRoutes],
       },
     ],
     errorElement: <RouterErrorBoundary />,
