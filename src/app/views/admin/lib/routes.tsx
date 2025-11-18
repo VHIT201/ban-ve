@@ -3,6 +3,7 @@ import { RouteObject } from "react-router-dom";
 
 // App
 import { ROUTE_PATHS } from "@/constants/paths";
+import contentRoutes from "../views/contents/lib/routes";
 
 // Admin route paths
 const { admin } = ROUTE_PATHS;
@@ -28,6 +29,7 @@ const adminRoutes: RouteObject = {
         };
       },
     },
+    contentRoutes,
   ],
 };
 

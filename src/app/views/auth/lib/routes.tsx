@@ -28,7 +28,6 @@ const authRoutes: RouteObject = {
   },
   children: [
     {
-      index: true,
       path: auth.login.path,
       lazy: async () => {
         const { default: Login } = await import("../views/login/page");

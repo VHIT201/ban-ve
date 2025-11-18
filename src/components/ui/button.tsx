@@ -56,7 +56,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    const Comp = asChild ? Slot : "button";
+    // Force asChild to false when loading to avoid Slot single child requirement
+    const Comp = asChild && !loading ? Slot : "button";
+
     return (
       <Comp
         className={cn(buttonVariants({ variant, size }), className)}
@@ -64,8 +66,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled || loading}
         {...props}
       >
-        {loading && <Loader2 className="animate-spin" />}
-        {children}
+        <React.Fragment>
+          {loading && <Loader2 className="animate-spin" />}
+          {children}
+        </React.Fragment>
       </Comp>
     );
   }

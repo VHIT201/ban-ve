@@ -22,7 +22,7 @@ const Admin = () => {
           <AppHeader />
 
           {/* ===== Content ===== */}
-          <AppMainContent fixed>
+          <AppMainContent>
             <Outlet />
           </AppMainContent>
         </SidebarInset>

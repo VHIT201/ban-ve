@@ -1,3 +1,5 @@
+import { create } from "domain";
+
 export const ROUTE_PATHS = {
   auth: {
     path: "auth",
@@ -20,11 +22,15 @@ export const ROUTE_PATHS = {
   admin: {
     path: "admin",
     categories: { path: "categories" },
+    contents: {
+      path: "contents",
+      create: { path: "create" },
+      detail: { path: "edit/:id" },
+    },
   },
 };
 
 export const BASE_PATHS = {
-  admin: { path: "/admin" },
   auth: {
     path: "/auth",
     login: { path: "/auth/login" },
@@ -43,4 +49,13 @@ export const BASE_PATHS = {
   home: { path: "/" },
   checkout: { path: "/checkout" },
   upload: { path: "/upload" },
+  admin: {
+    path: "/admin",
+    categories: { path: "/admin/categories" },
+    contents: {
+      path: "/admin/contents",
+      create: { path: "/admin/contents/create" },
+      detail: { path: "/admin/contents/:id" },
+    },
+  },
 };

@@ -42,7 +42,7 @@ const ActionColumn: FC<Props> = (props) => {
         </DropdownMenuLabel>
         {extraActions}
         {onEdit && (
-          <DropdownMenuItem onClick={onEdit}>Xem chi tiết</DropdownMenuItem>
+          <DropdownMenuItem onClick={onEdit}>Chỉnh sửa</DropdownMenuItem>
         )}
         {onDelete && (
           <Fragment>
