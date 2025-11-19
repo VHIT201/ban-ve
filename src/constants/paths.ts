@@ -29,6 +29,7 @@ export const ROUTE_PATHS = {
     },
     resources: { path: "resources" },
     copyRight: { path: "copy-right", detail: { path: "detail/:id" } },
+    collaborators: { path: "collaborators", detail: { path: "detail/:id" } },
   },
 };
 

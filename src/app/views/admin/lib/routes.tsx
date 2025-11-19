@@ -5,6 +5,7 @@ import { RouteObject } from "react-router-dom";
 import { ROUTE_PATHS } from "@/constants/paths";
 import contentRoutes from "../views/contents/lib/routes";
 import copyRightRoutes from "../views/copy-right/lib/routes";
+import collaboratorRoutes from "../views/collaborators/lib/routes";
 
 // Admin route paths
 const { admin } = ROUTE_PATHS;
@@ -41,6 +42,7 @@ const adminRoutes: RouteObject = {
     },
     contentRoutes,
     copyRightRoutes,
+    collaboratorRoutes,
   ],
 };
 

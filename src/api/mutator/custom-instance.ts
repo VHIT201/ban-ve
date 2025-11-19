@@ -12,7 +12,11 @@ import { extractErrorMessage } from "@/utils/error";
 
 // Internal
 import baseConfig from "../../configs/base";
-import { postApiAuthRefreshToken } from "../endpoints/auth";
+
+const getAuthRefreshFunction = async () => {
+  const { postApiAuthRefreshToken } = await import("../endpoints/auth");
+  return postApiAuthRefreshToken;
+};
 
 export const MAIN_AXIOS_INSTANCE = Axios.create({
   timeout: 60000,
@@ -82,6 +86,7 @@ MAIN_AXIOS_INSTANCE.interceptors.response.use(
         }
 
         // Gọi API refresh token
+        const postApiAuthRefreshToken = await getAuthRefreshFunction();
         const authRefreshResponse = await postApiAuthRefreshToken({
           refreshToken,
         });

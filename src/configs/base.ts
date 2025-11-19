@@ -1,6 +1,6 @@
 const baseConfig = {
-    backendDomain: 'https://architectural-bluepr.onrender.com',
-    frontendDomain: 'https://architectural-nine.vercel.app'
-}
+  backendDomain: "https://ban-ve-backend.onrender.com",
+  frontendDomain: "https://architectural-nine.vercel.app",
+};
 
-export default baseConfig
+export default baseConfig;
