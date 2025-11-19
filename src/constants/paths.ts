@@ -30,6 +30,7 @@ export const ROUTE_PATHS = {
     resources: { path: "resources" },
     copyRight: { path: "copy-right", detail: { path: "detail/:id" } },
     collaborators: { path: "collaborators", detail: { path: "detail/:id" } },
+    payments: { path: "payments" },
   },
 };
 
@@ -62,5 +63,7 @@ export const BASE_PATHS = {
     },
     resources: { path: "/admin/resources" },
     copyRight: { path: "/admin/copy-right" },
+    collaborators: { path: "/admin/collaborators" },
+    payments: { path: "/admin/payments" },
   },
 };

@@ -92,12 +92,11 @@ const CollaboratorDetail = () => {
     if (!id) return;
     rejectMutation.mutate({
       requestId: id,
-      data: { rejectionReason: rejectionReason || undefined },
+      data: { reason: rejectionReason || "" },
     });
   };
 
   const handleFormSubmit = (values: CollaboratorRequestFormValues) => {
-    // This form is view-only in detail page
     console.log("Form submitted:", values);
   };
 

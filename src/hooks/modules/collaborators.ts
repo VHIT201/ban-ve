@@ -13,12 +13,13 @@ import type {
   UseMutationOptions,
 } from "@tanstack/react-query";
 import type {
-  CollaboratorRequest,
   GetApiCollaboratorsRequests200,
   GetApiCollaboratorsRequestsParams,
   GetApiCollaboratorsStats200,
 } from "../models";
+
 import { mainInstance } from "../mutator/custom-instance";
+import { CollaboratorRequest } from "../types/collaborator";
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 

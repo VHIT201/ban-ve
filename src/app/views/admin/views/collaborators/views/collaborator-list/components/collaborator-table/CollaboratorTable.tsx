@@ -6,7 +6,6 @@ import { UseQueryResult } from "@tanstack/react-query";
 // App
 import { DataTable, QueryBoundary } from "@/components/shared";
 import { useGetApiCollaboratorsRequests } from "@/api/endpoints/collaborators";
-import { GetApiCollaboratorsRequests200 } from "@/api/models";
 
 // Internal
 import { useColumns } from "./lib/hooks";
@@ -35,7 +34,7 @@ const CollaboratorTable = () => {
     {
       query: {
         select: (data) =>
-          (data as Response<CollaboratorRequest[]>).responseData,
+          (data as unknown as Response<CollaboratorRequest[]>).responseData,
       },
     }
   ) as UseQueryResult<CollaboratorRequest[]>;

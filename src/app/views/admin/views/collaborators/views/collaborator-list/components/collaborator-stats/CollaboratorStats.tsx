@@ -5,9 +5,9 @@ import { TrendingUp, Users, Package, DollarSign } from "lucide-react";
 // App
 import { QueryBoundary } from "@/components/shared";
 import { useGetApiCollaboratorsStats } from "@/api/endpoints/collaborators";
-import { GetApiCollaboratorsStats200 } from "@/api/models";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CollaboratorStats } from "@/api/models";
 
 interface StatCardProps {
   title: string;
@@ -49,8 +49,9 @@ const StatCardSkeleton = () => {
 
 const CollaboratorStats = () => {
   // Query
-  const getStatsQuery =
-    useGetApiCollaboratorsStats() as UseQueryResult<GetApiCollaboratorsStats200>;
+  const getStatsQuery = useGetApiCollaboratorsStats() as UseQueryResult<
+    CollaboratorStats[]
+  >;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN", {
