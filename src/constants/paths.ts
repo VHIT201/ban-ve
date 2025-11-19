@@ -27,6 +27,8 @@ export const ROUTE_PATHS = {
       create: { path: "create" },
       detail: { path: "edit/:id" },
     },
+    resources: { path: "resources" },
+    copyRight: { path: "copy-right", detail: { path: "detail/:id" } },
   },
 };
 
@@ -57,5 +59,7 @@ export const BASE_PATHS = {
       create: { path: "/admin/contents/create" },
       detail: { path: "/admin/contents/:id" },
     },
+    resources: { path: "/admin/resources" },
+    copyRight: { path: "/admin/copy-right" },
   },
 };

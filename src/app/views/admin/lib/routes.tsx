@@ -4,6 +4,7 @@ import { RouteObject } from "react-router-dom";
 // App
 import { ROUTE_PATHS } from "@/constants/paths";
 import contentRoutes from "../views/contents/lib/routes";
+import copyRightRoutes from "../views/copy-right/lib/routes";
 
 // Admin route paths
 const { admin } = ROUTE_PATHS;
@@ -29,7 +30,17 @@ const adminRoutes: RouteObject = {
         };
       },
     },
+    {
+      path: admin.resources.path,
+      lazy: async () => {
+        const { default: Resources } = await import("../views/resources/page");
+        return {
+          element: <Resources />,
+        };
+      },
+    },
     contentRoutes,
+    copyRightRoutes,
   ],
 };
 

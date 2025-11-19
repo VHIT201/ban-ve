@@ -9,6 +9,8 @@ import {
   LayoutDashboard,
   ChartNetworkIcon,
   InboxIcon,
+  FolderIcon,
+  CopyrightIcon,
 } from "lucide-react";
 import { type SidebarData } from "./types";
 import { BASE_PATHS } from "@/constants/paths";
@@ -37,6 +39,16 @@ export const SIDEBAR_MENU: SidebarData = {
           title: "Nội dung",
           url: BASE_PATHS.admin.contents.path,
           icon: InboxIcon,
+        },
+        {
+          title: "Bản quyền",
+          url: BASE_PATHS.admin.copyRight.path,
+          icon: CopyrightIcon,
+        },
+        {
+          title: "Tài nguyên",
+          url: BASE_PATHS.admin.resources.path,
+          icon: FolderIcon,
         },
       ],
     },
