@@ -13,7 +13,11 @@ import { useKV } from "@github/spark/hooks";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { HeaderShoppingCart, HeaderUserProfile } from "./components";
+import {
+  HeaderSearchBar,
+  HeaderShoppingCart,
+  HeaderUserProfile,
+} from "./components";
 import { useAuthStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
 import { Link } from "react-router-dom";
@@ -75,7 +79,6 @@ const Header = () => {
         item.blueprint.id === blueprintId ? { ...item, quantity } : item
       );
 
-      // Cập nhật localStorage
       updateLocalCart(newCart);
       return newCart;
     });
@@ -218,24 +221,10 @@ const Header = () => {
                 </p>
               </div>
             </Link>
+
             {/* Search Section */}
-            <div className="flex-1 max-w-xl mx-6">
-              <div className="relative group">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors duration-200" />
-                <Input
-                  type="search"
-                  placeholder="Tìm kiếm bản vẽ..."
-                  className={cn(
-                    "pl-10 pr-4 h-10 rounded-full border-border/40 bg-background/50",
-                    "focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/40",
-                    "placeholder:text-muted-foreground/60 transition-all duration-200",
-                    "hover:border-border/60 hover:bg-background/80"
-                  )}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </div>
+            <HeaderSearchBar />
+
             {/* Actions Section */}
             <div className="flex items-center gap-3">
               {authStore.isSignedIn ? (
