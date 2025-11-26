@@ -145,19 +145,21 @@ const CollectionList: FC<Props> = (props) => {
         <div className="text-sm text-gray-600">
           <QueryBoundary query={getBlueprintListQuery}>
             {(blueprints) => (
-              <span>Showing {blueprints.data.length} products</span>
+              <span className=" tracking-wider">
+                Hiển thị {blueprints.data.length} sản phẩm
+              </span>
             )}
           </QueryBoundary>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Sort by:</span>
+            <span className="text-sm text-gray-600">Sắp xếp theo:</span>
             <Select value={sortBy} onValueChange={setSortBy}>
               <SelectTrigger className="w-48 border-0 bg-transparent font-medium">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="best-selling">Best Selling</SelectItem>
+                <SelectItem value="best-selling">Bán chạy nhất</SelectItem>
                 <SelectItem value="newest">Mới nhất</SelectItem>
                 <SelectItem value="price-low">Giá: Thấp đến Cao</SelectItem>
                 <SelectItem value="price-high">Giá: Cao đến Thấp</SelectItem>

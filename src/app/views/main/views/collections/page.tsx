@@ -1,22 +1,4 @@
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { BlueprintCard } from "@/components/modules/content";
 import { ContentResponse } from "@/api/types/content";
 import { Category } from "@/api/models/category";
 import { ChevronRight, ChevronDown, ChevronUp, Filter, X } from "lucide-react";
@@ -104,17 +86,17 @@ const CategoryPage = () => {
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
           <a href="/" className="hover:text-gray-900 transition-colors">
-            Home
+            Trang chủ
           </a>
           <ChevronRight className="w-4 h-4" />
           <a
             href="/collections"
             className="hover:text-gray-900 transition-colors"
           >
-            Collections
+            Sản phẩm
           </a>
           <ChevronRight className="w-4 h-4" />
-          <span className="text-gray-900 font-medium">All Products</span>
+          <span className="text-gray-900 font-medium">Tất cả sản phẩm</span>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">

@@ -89,7 +89,7 @@ const CollaboratorStats = () => {
                 trend={`${statsData.data?.length || 0} đang hoạt động`}
               />
               <StatCard
-                title="Tổng tài nguyên"
+                title="Tổng sản phẩm"
                 value={summary.totalResources || 0}
                 icon={Package}
                 trend="Từ tất cả cộng tác viên"

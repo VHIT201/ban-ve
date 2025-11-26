@@ -5,7 +5,7 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
   Select,
@@ -783,12 +783,14 @@ const PaymentPage = () => {
                 </div>
 
                 {/* Billing Address */}
-                <div>
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-                    Thông tin người nhận
-                  </h2>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-2xl font-semibold text-gray-900 mb-6">
+                      Thông tin người nhận
+                    </CardTitle>
+                  </CardHeader>
 
-                  <div className="space-y-4">
+                  <CardContent className="space-y-4">
                     {/* Country */}
                     <FormField
                       control={form.control}
@@ -861,8 +863,8 @@ const PaymentPage = () => {
                         </FormItem>
                       )}
                     />
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
 
                 {/* Submit Button - Mobile only */}
                 <div className="lg:hidden">
@@ -897,7 +899,7 @@ const PaymentPage = () => {
                 <Separator />
 
                 {/* Cart Items */}
-                <div className="space-y-4 max-h-[400px] overflow-y-auto">
+                <div className="space-y-4 py-2 max-h-[400px] overflow-y-auto">
                   {items.map((item) => (
                     <div
                       key={item.product._id}

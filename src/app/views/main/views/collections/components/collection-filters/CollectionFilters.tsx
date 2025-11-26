@@ -147,7 +147,7 @@ const CollectionFilters = ({ onFilterChange }: Props) => {
         {/* Category Filter */}
         <Collapsible open={isCategoryOpen} onOpenChange={setIsCategoryOpen}>
           <CollapsibleTrigger className="flex items-center justify-between w-full pb-3 border-b">
-            <h3 className="font-medium text-gray-900">Category</h3>
+            <h3 className="font-medium text-gray-900">Danh mục</h3>
             {isCategoryOpen ? (
               <ChevronUpIcon className="w-4 h-4 text-gray-500" />
             ) : (
@@ -190,7 +190,7 @@ const CollectionFilters = ({ onFilterChange }: Props) => {
         {/* Price Filter */}
         <Collapsible open={isPriceOpen} onOpenChange={setIsPriceOpen}>
           <CollapsibleTrigger className="flex items-center justify-between w-full pb-3 border-b">
-            <h3 className="font-medium text-gray-900">Price</h3>
+            <h3 className="font-medium text-gray-900">Giá</h3>
             {isPriceOpen ? (
               <ChevronUpIcon className="w-4 h-4 text-gray-500" />
             ) : (

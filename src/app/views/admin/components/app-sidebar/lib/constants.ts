@@ -68,11 +68,11 @@ export const SIDEBAR_MENU: SidebarData = {
       title: "Khác",
       items: [
         {
-          title: "Settings",
+          title: "Cài đặt",
           icon: Settings,
           items: [
             {
-              title: "Profile",
+              title: "Hồ sơ",
               url: "/settings",
               icon: UserCog,
             },
@@ -99,7 +99,7 @@ export const SIDEBAR_MENU: SidebarData = {
           ],
         },
         {
-          title: "Help Center",
+          title: "Trợ giúp",
           url: "/help-center",
           icon: HelpCircle,
         },
