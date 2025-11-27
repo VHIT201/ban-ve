@@ -40,8 +40,6 @@ import type { ErrorType , BodyType } from '../mutator/custom-instance';
 
 
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
 
 
 /**
@@ -51,7 +49,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 export const postApiContentsContentIdComments = (
     contentId: string,
     postApiContentsContentIdCommentsBody: BodyType<PostApiContentsContentIdCommentsBody>,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -60,21 +58,21 @@ export const postApiContentsContentIdComments = (
       headers: {'Content-Type': 'application/json', },
       data: postApiContentsContentIdCommentsBody, signal
     },
-      options);
+      );
     }
   
 
 
 export const getPostApiContentsContentIdCommentsMutationOptions = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiContentsContentIdComments>>, TError,{contentId: string;data: BodyType<PostApiContentsContentIdCommentsBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiContentsContentIdComments>>, TError,{contentId: string;data: BodyType<PostApiContentsContentIdCommentsBody>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiContentsContentIdComments>>, TError,{contentId: string;data: BodyType<PostApiContentsContentIdCommentsBody>}, TContext> => {
 
 const mutationKey = ['postApiContentsContentIdComments'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -82,7 +80,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiContentsContentIdComments>>, {contentId: string;data: BodyType<PostApiContentsContentIdCommentsBody>}> = (props) => {
           const {contentId,data} = props ?? {};
 
-          return  postApiContentsContentIdComments(contentId,data,requestOptions)
+          return  postApiContentsContentIdComments(contentId,data,)
         }
 
         
@@ -98,7 +96,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Tạo bình luận mới
  */
 export const usePostApiContentsContentIdComments = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiContentsContentIdComments>>, TError,{contentId: string;data: BodyType<PostApiContentsContentIdCommentsBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiContentsContentIdComments>>, TError,{contentId: string;data: BodyType<PostApiContentsContentIdCommentsBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiContentsContentIdComments>>,
         TError,
@@ -116,7 +114,7 @@ export const usePostApiContentsContentIdComments = <TError = ErrorType<void>,
 export const getApiContentsContentIdComments = (
     contentId: string,
     params?: GetApiContentsContentIdCommentsParams,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -124,7 +122,7 @@ export const getApiContentsContentIdComments = (
       {url: `/api/contents/${contentId}/comments`, method: 'GET',
         params, signal
     },
-      options);
+      );
     }
   
 
@@ -146,16 +144,16 @@ export const getGetApiContentsContentIdCommentsQueryKey = (contentId?: string,
 
     
 export const getGetApiContentsContentIdCommentsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, GetApiContentsContentIdCommentsParams['page']>, TError = ErrorType<unknown>>(contentId: string,
-    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData, QueryKey, GetApiContentsContentIdCommentsParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData, QueryKey, GetApiContentsContentIdCommentsParams['page']>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiContentsContentIdCommentsInfiniteQueryKey(contentId,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, QueryKey, GetApiContentsContentIdCommentsParams['page']> = ({ signal, pageParam }) => getApiContentsContentIdComments(contentId,{...params, 'page': pageParam || params?.['page']}, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, QueryKey, GetApiContentsContentIdCommentsParams['page']> = ({ signal, pageParam }) => getApiContentsContentIdComments(contentId,{...params, 'page': pageParam || params?.['page']}, signal);
 
       
 
@@ -176,7 +174,7 @@ export function useGetApiContentsContentIdCommentsInfinite<TData = InfiniteData<
           TError,
           Awaited<ReturnType<typeof getApiContentsContentIdComments>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiContentsContentIdCommentsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, GetApiContentsContentIdCommentsParams['page']>, TError = ErrorType<unknown>>(
@@ -187,12 +185,12 @@ export function useGetApiContentsContentIdCommentsInfinite<TData = InfiniteData<
           TError,
           Awaited<ReturnType<typeof getApiContentsContentIdComments>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiContentsContentIdCommentsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, GetApiContentsContentIdCommentsParams['page']>, TError = ErrorType<unknown>>(
  contentId: string,
-    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData, QueryKey, GetApiContentsContentIdCommentsParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData, QueryKey, GetApiContentsContentIdCommentsParams['page']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -201,7 +199,7 @@ export function useGetApiContentsContentIdCommentsInfinite<TData = InfiniteData<
 
 export function useGetApiContentsContentIdCommentsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, GetApiContentsContentIdCommentsParams['page']>, TError = ErrorType<unknown>>(
  contentId: string,
-    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData, QueryKey, GetApiContentsContentIdCommentsParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData, QueryKey, GetApiContentsContentIdCommentsParams['page']>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -218,16 +216,16 @@ export function useGetApiContentsContentIdCommentsInfinite<TData = InfiniteData<
 
 
 export const getGetApiContentsContentIdCommentsQueryOptions = <TData = Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError = ErrorType<unknown>>(contentId: string,
-    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiContentsContentIdCommentsQueryKey(contentId,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiContentsContentIdComments>>> = ({ signal }) => getApiContentsContentIdComments(contentId,params, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiContentsContentIdComments>>> = ({ signal }) => getApiContentsContentIdComments(contentId,params, signal);
 
       
 
@@ -248,7 +246,7 @@ export function useGetApiContentsContentIdComments<TData = Awaited<ReturnType<ty
           TError,
           Awaited<ReturnType<typeof getApiContentsContentIdComments>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiContentsContentIdComments<TData = Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError = ErrorType<unknown>>(
@@ -259,12 +257,12 @@ export function useGetApiContentsContentIdComments<TData = Awaited<ReturnType<ty
           TError,
           Awaited<ReturnType<typeof getApiContentsContentIdComments>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiContentsContentIdComments<TData = Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError = ErrorType<unknown>>(
  contentId: string,
-    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -273,7 +271,7 @@ export function useGetApiContentsContentIdComments<TData = Awaited<ReturnType<ty
 
 export function useGetApiContentsContentIdComments<TData = Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError = ErrorType<unknown>>(
  contentId: string,
-    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -295,7 +293,7 @@ export function useGetApiContentsContentIdComments<TData = Awaited<ReturnType<ty
  */
 export const postApiComments = (
     createCommentInput: BodyType<CreateCommentInput>,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -304,21 +302,21 @@ export const postApiComments = (
       headers: {'Content-Type': 'application/json', },
       data: createCommentInput, signal
     },
-      options);
+      );
     }
   
 
 
 export const getPostApiCommentsMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiComments>>, TError,{data: BodyType<CreateCommentInput>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiComments>>, TError,{data: BodyType<CreateCommentInput>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiComments>>, TError,{data: BodyType<CreateCommentInput>}, TContext> => {
 
 const mutationKey = ['postApiComments'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -326,7 +324,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiComments>>, {data: BodyType<CreateCommentInput>}> = (props) => {
           const {data} = props ?? {};
 
-          return  postApiComments(data,requestOptions)
+          return  postApiComments(data,)
         }
 
         
@@ -342,7 +340,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Tạo bình luận mới
  */
 export const usePostApiComments = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiComments>>, TError,{data: BodyType<CreateCommentInput>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiComments>>, TError,{data: BodyType<CreateCommentInput>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiComments>>,
         TError,
@@ -360,7 +358,7 @@ export const usePostApiComments = <TError = ErrorType<unknown>,
 export const putApiCommentsId = (
     id: string,
     updateCommentInput: BodyType<UpdateCommentInput>,
- options?: SecondParameter<typeof mainInstance>,) => {
+ ) => {
       
       
       return mainInstance<PutApiCommentsId200>(
@@ -368,21 +366,21 @@ export const putApiCommentsId = (
       headers: {'Content-Type': 'application/json', },
       data: updateCommentInput
     },
-      options);
+      );
     }
   
 
 
 export const getPutApiCommentsIdMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCommentsId>>, TError,{id: string;data: BodyType<UpdateCommentInput>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCommentsId>>, TError,{id: string;data: BodyType<UpdateCommentInput>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof putApiCommentsId>>, TError,{id: string;data: BodyType<UpdateCommentInput>}, TContext> => {
 
 const mutationKey = ['putApiCommentsId'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -390,7 +388,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiCommentsId>>, {id: string;data: BodyType<UpdateCommentInput>}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  putApiCommentsId(id,data,requestOptions)
+          return  putApiCommentsId(id,data,)
         }
 
         
@@ -406,7 +404,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Cập nhật bình luận
  */
 export const usePutApiCommentsId = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCommentsId>>, TError,{id: string;data: BodyType<UpdateCommentInput>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCommentsId>>, TError,{id: string;data: BodyType<UpdateCommentInput>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putApiCommentsId>>,
         TError,
@@ -423,27 +421,27 @@ export const usePutApiCommentsId = <TError = ErrorType<unknown>,
  */
 export const deleteApiCommentsId = (
     id: string,
- options?: SecondParameter<typeof mainInstance>,) => {
+ ) => {
       
       
       return mainInstance<DeleteApiCommentsId200>(
       {url: `/api/comments/${id}`, method: 'DELETE'
     },
-      options);
+      );
     }
   
 
 
 export const getDeleteApiCommentsIdMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiCommentsId>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiCommentsId>>, TError,{id: string}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteApiCommentsId>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['deleteApiCommentsId'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -451,7 +449,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiCommentsId>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteApiCommentsId(id,requestOptions)
+          return  deleteApiCommentsId(id,)
         }
 
         
@@ -467,7 +465,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Xóa bình luận
  */
 export const useDeleteApiCommentsId = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiCommentsId>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiCommentsId>>, TError,{id: string}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteApiCommentsId>>,
         TError,

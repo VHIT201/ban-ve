@@ -24,7 +24,13 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  File
+  File,
+  FileUploadResponse,
+  GetApiFile401,
+  PostApiFileUpload400,
+  PostApiFileUpload401,
+  PostApiFileUpload500,
+  PostApiFileUploadBody
 } from '../models';
 
 import { mainInstance } from '../mutator/custom-instance';
@@ -32,47 +38,63 @@ import type { ErrorType , BodyType } from '../mutator/custom-instance';
 
 
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
 
 
 /**
- * @summary Tạo mới file
+ * Tải lên file lên máy chủ và lưu thông tin vào cơ sở dữ liệu.
+Yêu cầu phải đăng nhập với quyền admin hoặc cộng tác viên.
+Hỗ trợ các định dạng: 3D, PDF, hình ảnh, tài liệu văn bản, v.v.
+
+ * @summary Tải lên file (Yêu cầu quyền admin hoặc cộng tác viên)
  */
-export const postApiFile = (
-    file: BodyType<File>,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+export const postApiFileUpload = (
+    postApiFileUploadBody: BodyType<PostApiFileUploadBody>,
+ signal?: AbortSignal
 ) => {
       
-      
-      return mainInstance<File>(
-      {url: `/api/file`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: file, signal
+      const formData = new FormData();
+formData.append(`file`, postApiFileUploadBody.file)
+if(postApiFileUploadBody.filename !== undefined) {
+ formData.append(`filename`, postApiFileUploadBody.filename)
+ }
+if(postApiFileUploadBody.dir !== undefined) {
+ formData.append(`dir`, postApiFileUploadBody.dir)
+ }
+if(postApiFileUploadBody.private !== undefined) {
+ formData.append(`private`, postApiFileUploadBody.private.toString())
+ }
+if(postApiFileUploadBody.compress !== undefined) {
+ formData.append(`compress`, postApiFileUploadBody.compress.toString())
+ }
+
+      return mainInstance<FileUploadResponse>(
+      {url: `/api/file/upload`, method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData, signal
     },
-      options);
+      );
     }
   
 
 
-export const getPostApiFileMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiFile>>, TError,{data: BodyType<File>}, TContext>, request?: SecondParameter<typeof mainInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiFile>>, TError,{data: BodyType<File>}, TContext> => {
+export const getPostApiFileUploadMutationOptions = <TError = ErrorType<PostApiFileUpload400 | PostApiFileUpload401 | PostApiFileUpload500>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiFileUpload>>, TError,{data: BodyType<PostApiFileUploadBody>}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiFileUpload>>, TError,{data: BodyType<PostApiFileUploadBody>}, TContext> => {
 
-const mutationKey = ['postApiFile'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const mutationKey = ['postApiFileUpload'];
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiFile>>, {data: BodyType<File>}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiFileUpload>>, {data: BodyType<PostApiFileUploadBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  postApiFile(data,requestOptions)
+          return  postApiFileUpload(data,)
         }
 
         
@@ -80,39 +102,39 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type PostApiFileMutationResult = NonNullable<Awaited<ReturnType<typeof postApiFile>>>
-    export type PostApiFileMutationBody = BodyType<File>
-    export type PostApiFileMutationError = ErrorType<unknown>
+    export type PostApiFileUploadMutationResult = NonNullable<Awaited<ReturnType<typeof postApiFileUpload>>>
+    export type PostApiFileUploadMutationBody = BodyType<PostApiFileUploadBody>
+    export type PostApiFileUploadMutationError = ErrorType<PostApiFileUpload400 | PostApiFileUpload401 | PostApiFileUpload500>
 
     /**
- * @summary Tạo mới file
+ * @summary Tải lên file (Yêu cầu quyền admin hoặc cộng tác viên)
  */
-export const usePostApiFile = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiFile>>, TError,{data: BodyType<File>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+export const usePostApiFileUpload = <TError = ErrorType<PostApiFileUpload400 | PostApiFileUpload401 | PostApiFileUpload500>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiFileUpload>>, TError,{data: BodyType<PostApiFileUploadBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postApiFile>>,
+        Awaited<ReturnType<typeof postApiFileUpload>>,
         TError,
-        {data: BodyType<File>},
+        {data: BodyType<PostApiFileUploadBody>},
         TContext
       > => {
 
-      const mutationOptions = getPostApiFileMutationOptions(options);
+      const mutationOptions = getPostApiFileUploadMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }
     /**
- * @summary Lấy danh sách tất cả file
+ * @summary Lấy danh sách tất cả file (Yêu cầu đăng nhập)
  */
 export const getApiFile = (
     
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
       return mainInstance<File[]>(
       {url: `/api/file`, method: 'GET', signal
     },
-      options);
+      );
     }
   
 
@@ -131,16 +153,16 @@ export const getGetApiFileQueryKey = () => {
     }
 
     
-export const getGetApiFileInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiFile>>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFile>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiFileInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiFile>>>, TError = ErrorType<GetApiFile401>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFile>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiFileInfiniteQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiFile>>> = ({ signal }) => getApiFile(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiFile>>> = ({ signal }) => getApiFile(signal);
 
       
 
@@ -150,39 +172,39 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GetApiFileInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiFile>>>
-export type GetApiFileInfiniteQueryError = ErrorType<unknown>
+export type GetApiFileInfiniteQueryError = ErrorType<GetApiFile401>
 
 
-export function useGetApiFileInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFile>>>, TError = ErrorType<unknown>>(
+export function useGetApiFileInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFile>>>, TError = ErrorType<GetApiFile401>>(
   options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFile>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFile>>,
           TError,
           Awaited<ReturnType<typeof getApiFile>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiFileInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFile>>>, TError = ErrorType<unknown>>(
+export function useGetApiFileInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFile>>>, TError = ErrorType<GetApiFile401>>(
   options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFile>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFile>>,
           TError,
           Awaited<ReturnType<typeof getApiFile>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiFileInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFile>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFile>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export function useGetApiFileInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFile>>>, TError = ErrorType<GetApiFile401>>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFile>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Lấy danh sách tất cả file
+ * @summary Lấy danh sách tất cả file (Yêu cầu đăng nhập)
  */
 
-export function useGetApiFileInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFile>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFile>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export function useGetApiFileInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFile>>>, TError = ErrorType<GetApiFile401>>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFile>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -198,16 +220,16 @@ export function useGetApiFileInfinite<TData = InfiniteData<Awaited<ReturnType<ty
 
 
 
-export const getGetApiFileQueryOptions = <TData = Awaited<ReturnType<typeof getApiFile>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFile>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiFileQueryOptions = <TData = Awaited<ReturnType<typeof getApiFile>>, TError = ErrorType<GetApiFile401>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFile>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiFileQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiFile>>> = ({ signal }) => getApiFile(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiFile>>> = ({ signal }) => getApiFile(signal);
 
       
 
@@ -217,39 +239,39 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GetApiFileQueryResult = NonNullable<Awaited<ReturnType<typeof getApiFile>>>
-export type GetApiFileQueryError = ErrorType<unknown>
+export type GetApiFileQueryError = ErrorType<GetApiFile401>
 
 
-export function useGetApiFile<TData = Awaited<ReturnType<typeof getApiFile>>, TError = ErrorType<unknown>>(
+export function useGetApiFile<TData = Awaited<ReturnType<typeof getApiFile>>, TError = ErrorType<GetApiFile401>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFile>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFile>>,
           TError,
           Awaited<ReturnType<typeof getApiFile>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiFile<TData = Awaited<ReturnType<typeof getApiFile>>, TError = ErrorType<unknown>>(
+export function useGetApiFile<TData = Awaited<ReturnType<typeof getApiFile>>, TError = ErrorType<GetApiFile401>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFile>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFile>>,
           TError,
           Awaited<ReturnType<typeof getApiFile>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiFile<TData = Awaited<ReturnType<typeof getApiFile>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFile>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export function useGetApiFile<TData = Awaited<ReturnType<typeof getApiFile>>, TError = ErrorType<GetApiFile401>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFile>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Lấy danh sách tất cả file
+ * @summary Lấy danh sách tất cả file (Yêu cầu đăng nhập)
  */
 
-export function useGetApiFile<TData = Awaited<ReturnType<typeof getApiFile>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFile>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export function useGetApiFile<TData = Awaited<ReturnType<typeof getApiFile>>, TError = ErrorType<GetApiFile401>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFile>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -266,18 +288,18 @@ export function useGetApiFile<TData = Awaited<ReturnType<typeof getApiFile>>, TE
 
 
 /**
- * @summary Lấy thông tin chi tiết file
+ * @summary Lấy thông tin chi tiết file (Yêu cầu đăng nhập)
  */
 export const getApiFileId = (
     id: string,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
       return mainInstance<File>(
       {url: `/api/file/${id}`, method: 'GET', signal
     },
-      options);
+      );
     }
   
 
@@ -296,16 +318,16 @@ export const getGetApiFileIdQueryKey = (id?: string,) => {
     }
 
     
-export const getGetApiFileIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiFileId>>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFileId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiFileIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiFileId>>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFileId>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiFileIdInfiniteQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiFileId>>> = ({ signal }) => getApiFileId(id, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiFileId>>> = ({ signal }) => getApiFileId(id, signal);
 
       
 
@@ -325,7 +347,7 @@ export function useGetApiFileIdInfinite<TData = InfiniteData<Awaited<ReturnType<
           TError,
           Awaited<ReturnType<typeof getApiFileId>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFileIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFileId>>>, TError = ErrorType<void>>(
@@ -335,19 +357,19 @@ export function useGetApiFileIdInfinite<TData = InfiniteData<Awaited<ReturnType<
           TError,
           Awaited<ReturnType<typeof getApiFileId>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFileIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFileId>>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFileId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFileId>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Lấy thông tin chi tiết file
+ * @summary Lấy thông tin chi tiết file (Yêu cầu đăng nhập)
  */
 
 export function useGetApiFileIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFileId>>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFileId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFileId>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -363,16 +385,16 @@ export function useGetApiFileIdInfinite<TData = InfiniteData<Awaited<ReturnType<
 
 
 
-export const getGetApiFileIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiFileId>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFileId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiFileIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiFileId>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFileId>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiFileIdQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiFileId>>> = ({ signal }) => getApiFileId(id, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiFileId>>> = ({ signal }) => getApiFileId(id, signal);
 
       
 
@@ -392,7 +414,7 @@ export function useGetApiFileId<TData = Awaited<ReturnType<typeof getApiFileId>>
           TError,
           Awaited<ReturnType<typeof getApiFileId>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFileId<TData = Awaited<ReturnType<typeof getApiFileId>>, TError = ErrorType<void>>(
@@ -402,19 +424,19 @@ export function useGetApiFileId<TData = Awaited<ReturnType<typeof getApiFileId>>
           TError,
           Awaited<ReturnType<typeof getApiFileId>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiFileId<TData = Awaited<ReturnType<typeof getApiFileId>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFileId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFileId>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Lấy thông tin chi tiết file
+ * @summary Lấy thông tin chi tiết file (Yêu cầu đăng nhập)
  */
 
 export function useGetApiFileId<TData = Awaited<ReturnType<typeof getApiFileId>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFileId>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFileId>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -431,31 +453,31 @@ export function useGetApiFileId<TData = Awaited<ReturnType<typeof getApiFileId>>
 
 
 /**
- * @summary Xóa file
+ * @summary Xóa file (Yêu cầu đăng nhập)
  */
 export const deleteApiFileId = (
     id: string,
- options?: SecondParameter<typeof mainInstance>,) => {
+ ) => {
       
       
       return mainInstance<File>(
       {url: `/api/file/${id}`, method: 'DELETE'
     },
-      options);
+      );
     }
   
 
 
 export const getDeleteApiFileIdMutationOptions = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiFileId>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiFileId>>, TError,{id: string}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteApiFileId>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['deleteApiFileId'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -463,7 +485,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiFileId>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteApiFileId(id,requestOptions)
+          return  deleteApiFileId(id,)
         }
 
         
@@ -476,10 +498,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type DeleteApiFileIdMutationError = ErrorType<void>
 
     /**
- * @summary Xóa file
+ * @summary Xóa file (Yêu cầu đăng nhập)
  */
 export const useDeleteApiFileId = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiFileId>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiFileId>>, TError,{id: string}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteApiFileId>>,
         TError,

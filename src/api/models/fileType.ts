@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 /**
- * Loại file
+ * Định dạng/loại file
  */
 export type FileType = typeof FileType[keyof typeof FileType];
 

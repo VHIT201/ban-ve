@@ -38,8 +38,6 @@ import type { ErrorType , BodyType } from '../mutator/custom-instance';
 
 
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
 
 
 /**
@@ -47,14 +45,14 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  */
 export const getApiResources = (
     
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
       return mainInstance<GetApiResources200>(
       {url: `/api/resources`, method: 'GET', signal
     },
-      options);
+      );
     }
   
 
@@ -73,16 +71,16 @@ export const getGetApiResourcesQueryKey = () => {
     }
 
     
-export const getGetApiResourcesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiResources>>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiResourcesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiResources>>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiResourcesInfiniteQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiResources>>> = ({ signal }) => getApiResources(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiResources>>> = ({ signal }) => getApiResources(signal);
 
       
 
@@ -102,7 +100,7 @@ export function useGetApiResourcesInfinite<TData = InfiniteData<Awaited<ReturnTy
           TError,
           Awaited<ReturnType<typeof getApiResources>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiResourcesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiResources>>>, TError = ErrorType<unknown>>(
@@ -112,11 +110,11 @@ export function useGetApiResourcesInfinite<TData = InfiniteData<Awaited<ReturnTy
           TError,
           Awaited<ReturnType<typeof getApiResources>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiResourcesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiResources>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -124,7 +122,7 @@ export function useGetApiResourcesInfinite<TData = InfiniteData<Awaited<ReturnTy
  */
 
 export function useGetApiResourcesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiResources>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -140,16 +138,16 @@ export function useGetApiResourcesInfinite<TData = InfiniteData<Awaited<ReturnTy
 
 
 
-export const getGetApiResourcesQueryOptions = <TData = Awaited<ReturnType<typeof getApiResources>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiResourcesQueryOptions = <TData = Awaited<ReturnType<typeof getApiResources>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiResourcesQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiResources>>> = ({ signal }) => getApiResources(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiResources>>> = ({ signal }) => getApiResources(signal);
 
       
 
@@ -169,7 +167,7 @@ export function useGetApiResources<TData = Awaited<ReturnType<typeof getApiResou
           TError,
           Awaited<ReturnType<typeof getApiResources>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiResources<TData = Awaited<ReturnType<typeof getApiResources>>, TError = ErrorType<unknown>>(
@@ -179,11 +177,11 @@ export function useGetApiResources<TData = Awaited<ReturnType<typeof getApiResou
           TError,
           Awaited<ReturnType<typeof getApiResources>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiResources<TData = Awaited<ReturnType<typeof getApiResources>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -191,7 +189,7 @@ export function useGetApiResources<TData = Awaited<ReturnType<typeof getApiResou
  */
 
 export function useGetApiResources<TData = Awaited<ReturnType<typeof getApiResources>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -212,7 +210,7 @@ export function useGetApiResources<TData = Awaited<ReturnType<typeof getApiResou
  */
 export const postApiResources = (
     createResourceInput: BodyType<CreateResourceInput>,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -221,21 +219,21 @@ export const postApiResources = (
       headers: {'Content-Type': 'application/json', },
       data: createResourceInput, signal
     },
-      options);
+      );
     }
   
 
 
 export const getPostApiResourcesMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiResources>>, TError,{data: BodyType<CreateResourceInput>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiResources>>, TError,{data: BodyType<CreateResourceInput>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiResources>>, TError,{data: BodyType<CreateResourceInput>}, TContext> => {
 
 const mutationKey = ['postApiResources'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -243,7 +241,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiResources>>, {data: BodyType<CreateResourceInput>}> = (props) => {
           const {data} = props ?? {};
 
-          return  postApiResources(data,requestOptions)
+          return  postApiResources(data,)
         }
 
         
@@ -259,7 +257,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Thêm mới tài nguyên phần mềm (Admin)
  */
 export const usePostApiResources = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiResources>>, TError,{data: BodyType<CreateResourceInput>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiResources>>, TError,{data: BodyType<CreateResourceInput>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiResources>>,
         TError,
@@ -276,7 +274,7 @@ export const usePostApiResources = <TError = ErrorType<unknown>,
  */
 export const getApiResourcesSuggest = (
     params: GetApiResourcesSuggestParams,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -284,7 +282,7 @@ export const getApiResourcesSuggest = (
       {url: `/api/resources/suggest`, method: 'GET',
         params, signal
     },
-      options);
+      );
     }
   
 
@@ -303,16 +301,16 @@ export const getGetApiResourcesSuggestQueryKey = (params?: GetApiResourcesSugges
     }
 
     
-export const getGetApiResourcesSuggestInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiResourcesSuggest>>, GetApiResourcesSuggestParams['page']>, TError = ErrorType<unknown>>(params: GetApiResourcesSuggestParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResourcesSuggest>>, TError, TData, QueryKey, GetApiResourcesSuggestParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiResourcesSuggestInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiResourcesSuggest>>, GetApiResourcesSuggestParams['page']>, TError = ErrorType<unknown>>(params: GetApiResourcesSuggestParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResourcesSuggest>>, TError, TData, QueryKey, GetApiResourcesSuggestParams['page']>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiResourcesSuggestInfiniteQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiResourcesSuggest>>, QueryKey, GetApiResourcesSuggestParams['page']> = ({ signal, pageParam }) => getApiResourcesSuggest({...params, 'page': pageParam || params?.['page']}, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiResourcesSuggest>>, QueryKey, GetApiResourcesSuggestParams['page']> = ({ signal, pageParam }) => getApiResourcesSuggest({...params, 'page': pageParam || params?.['page']}, signal);
 
       
 
@@ -332,7 +330,7 @@ export function useGetApiResourcesSuggestInfinite<TData = InfiniteData<Awaited<R
           TError,
           Awaited<ReturnType<typeof getApiResourcesSuggest>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiResourcesSuggestInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiResourcesSuggest>>, GetApiResourcesSuggestParams['page']>, TError = ErrorType<unknown>>(
@@ -342,11 +340,11 @@ export function useGetApiResourcesSuggestInfinite<TData = InfiniteData<Awaited<R
           TError,
           Awaited<ReturnType<typeof getApiResourcesSuggest>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiResourcesSuggestInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiResourcesSuggest>>, GetApiResourcesSuggestParams['page']>, TError = ErrorType<unknown>>(
- params: GetApiResourcesSuggestParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResourcesSuggest>>, TError, TData, QueryKey, GetApiResourcesSuggestParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+ params: GetApiResourcesSuggestParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResourcesSuggest>>, TError, TData, QueryKey, GetApiResourcesSuggestParams['page']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -354,7 +352,7 @@ export function useGetApiResourcesSuggestInfinite<TData = InfiniteData<Awaited<R
  */
 
 export function useGetApiResourcesSuggestInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiResourcesSuggest>>, GetApiResourcesSuggestParams['page']>, TError = ErrorType<unknown>>(
- params: GetApiResourcesSuggestParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResourcesSuggest>>, TError, TData, QueryKey, GetApiResourcesSuggestParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+ params: GetApiResourcesSuggestParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResourcesSuggest>>, TError, TData, QueryKey, GetApiResourcesSuggestParams['page']>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -370,16 +368,16 @@ export function useGetApiResourcesSuggestInfinite<TData = InfiniteData<Awaited<R
 
 
 
-export const getGetApiResourcesSuggestQueryOptions = <TData = Awaited<ReturnType<typeof getApiResourcesSuggest>>, TError = ErrorType<unknown>>(params: GetApiResourcesSuggestParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResourcesSuggest>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiResourcesSuggestQueryOptions = <TData = Awaited<ReturnType<typeof getApiResourcesSuggest>>, TError = ErrorType<unknown>>(params: GetApiResourcesSuggestParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResourcesSuggest>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiResourcesSuggestQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiResourcesSuggest>>> = ({ signal }) => getApiResourcesSuggest(params, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiResourcesSuggest>>> = ({ signal }) => getApiResourcesSuggest(params, signal);
 
       
 
@@ -399,7 +397,7 @@ export function useGetApiResourcesSuggest<TData = Awaited<ReturnType<typeof getA
           TError,
           Awaited<ReturnType<typeof getApiResourcesSuggest>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiResourcesSuggest<TData = Awaited<ReturnType<typeof getApiResourcesSuggest>>, TError = ErrorType<unknown>>(
@@ -409,11 +407,11 @@ export function useGetApiResourcesSuggest<TData = Awaited<ReturnType<typeof getA
           TError,
           Awaited<ReturnType<typeof getApiResourcesSuggest>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiResourcesSuggest<TData = Awaited<ReturnType<typeof getApiResourcesSuggest>>, TError = ErrorType<unknown>>(
- params: GetApiResourcesSuggestParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResourcesSuggest>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ params: GetApiResourcesSuggestParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResourcesSuggest>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -421,7 +419,7 @@ export function useGetApiResourcesSuggest<TData = Awaited<ReturnType<typeof getA
  */
 
 export function useGetApiResourcesSuggest<TData = Awaited<ReturnType<typeof getApiResourcesSuggest>>, TError = ErrorType<unknown>>(
- params: GetApiResourcesSuggestParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResourcesSuggest>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ params: GetApiResourcesSuggestParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResourcesSuggest>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -443,7 +441,7 @@ export function useGetApiResourcesSuggest<TData = Awaited<ReturnType<typeof getA
 export const putApiResourcesId = (
     id: string,
     createResourceInput: BodyType<CreateResourceInput>,
- options?: SecondParameter<typeof mainInstance>,) => {
+ ) => {
       
       
       return mainInstance<PutApiResourcesId200>(
@@ -451,21 +449,21 @@ export const putApiResourcesId = (
       headers: {'Content-Type': 'application/json', },
       data: createResourceInput
     },
-      options);
+      );
     }
   
 
 
 export const getPutApiResourcesIdMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiResourcesId>>, TError,{id: string;data: BodyType<CreateResourceInput>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiResourcesId>>, TError,{id: string;data: BodyType<CreateResourceInput>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof putApiResourcesId>>, TError,{id: string;data: BodyType<CreateResourceInput>}, TContext> => {
 
 const mutationKey = ['putApiResourcesId'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -473,7 +471,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiResourcesId>>, {id: string;data: BodyType<CreateResourceInput>}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  putApiResourcesId(id,data,requestOptions)
+          return  putApiResourcesId(id,data,)
         }
 
         
@@ -489,7 +487,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Cập nhật tài nguyên (Admin)
  */
 export const usePutApiResourcesId = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiResourcesId>>, TError,{id: string;data: BodyType<CreateResourceInput>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiResourcesId>>, TError,{id: string;data: BodyType<CreateResourceInput>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putApiResourcesId>>,
         TError,
@@ -506,27 +504,27 @@ export const usePutApiResourcesId = <TError = ErrorType<unknown>,
  */
 export const deleteApiResourcesId = (
     id: string,
- options?: SecondParameter<typeof mainInstance>,) => {
+ ) => {
       
       
       return mainInstance<DeleteApiResourcesId200>(
       {url: `/api/resources/${id}`, method: 'DELETE'
     },
-      options);
+      );
     }
   
 
 
 export const getDeleteApiResourcesIdMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiResourcesId>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiResourcesId>>, TError,{id: string}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteApiResourcesId>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['deleteApiResourcesId'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -534,7 +532,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiResourcesId>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteApiResourcesId(id,requestOptions)
+          return  deleteApiResourcesId(id,)
         }
 
         
@@ -550,7 +548,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Xóa tài nguyên (Admin)
  */
 export const useDeleteApiResourcesId = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiResourcesId>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiResourcesId>>, TError,{id: string}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteApiResourcesId>>,
         TError,

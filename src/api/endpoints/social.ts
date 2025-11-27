@@ -38,8 +38,6 @@ import type { ErrorType , BodyType } from '../mutator/custom-instance';
 
 
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
 
 
 /**
@@ -48,7 +46,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 export const postApiSocialContentContentIdView = (
     contentId: string,
     postApiSocialContentContentIdViewBody: BodyType<PostApiSocialContentContentIdViewBody>,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -57,21 +55,21 @@ export const postApiSocialContentContentIdView = (
       headers: {'Content-Type': 'application/json', },
       data: postApiSocialContentContentIdViewBody, signal
     },
-      options);
+      );
     }
   
 
 
 export const getPostApiSocialContentContentIdViewMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiSocialContentContentIdView>>, TError,{contentId: string;data: BodyType<PostApiSocialContentContentIdViewBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiSocialContentContentIdView>>, TError,{contentId: string;data: BodyType<PostApiSocialContentContentIdViewBody>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiSocialContentContentIdView>>, TError,{contentId: string;data: BodyType<PostApiSocialContentContentIdViewBody>}, TContext> => {
 
 const mutationKey = ['postApiSocialContentContentIdView'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -79,7 +77,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiSocialContentContentIdView>>, {contentId: string;data: BodyType<PostApiSocialContentContentIdViewBody>}> = (props) => {
           const {contentId,data} = props ?? {};
 
-          return  postApiSocialContentContentIdView(contentId,data,requestOptions)
+          return  postApiSocialContentContentIdView(contentId,data,)
         }
 
         
@@ -95,7 +93,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Ghi nhận lượt xem nội dung
  */
 export const usePostApiSocialContentContentIdView = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiSocialContentContentIdView>>, TError,{contentId: string;data: BodyType<PostApiSocialContentContentIdViewBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiSocialContentContentIdView>>, TError,{contentId: string;data: BodyType<PostApiSocialContentContentIdViewBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiSocialContentContentIdView>>,
         TError,
@@ -113,7 +111,7 @@ export const usePostApiSocialContentContentIdView = <TError = ErrorType<unknown>
 export const postApiSocialContentContentIdShare = (
     contentId: string,
     postApiSocialContentContentIdShareBody: BodyType<PostApiSocialContentContentIdShareBody>,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -122,21 +120,21 @@ export const postApiSocialContentContentIdShare = (
       headers: {'Content-Type': 'application/json', },
       data: postApiSocialContentContentIdShareBody, signal
     },
-      options);
+      );
     }
   
 
 
 export const getPostApiSocialContentContentIdShareMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiSocialContentContentIdShare>>, TError,{contentId: string;data: BodyType<PostApiSocialContentContentIdShareBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiSocialContentContentIdShare>>, TError,{contentId: string;data: BodyType<PostApiSocialContentContentIdShareBody>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiSocialContentContentIdShare>>, TError,{contentId: string;data: BodyType<PostApiSocialContentContentIdShareBody>}, TContext> => {
 
 const mutationKey = ['postApiSocialContentContentIdShare'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -144,7 +142,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiSocialContentContentIdShare>>, {contentId: string;data: BodyType<PostApiSocialContentContentIdShareBody>}> = (props) => {
           const {contentId,data} = props ?? {};
 
-          return  postApiSocialContentContentIdShare(contentId,data,requestOptions)
+          return  postApiSocialContentContentIdShare(contentId,data,)
         }
 
         
@@ -160,7 +158,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Ghi nhận lượt chia sẻ nội dung
  */
 export const usePostApiSocialContentContentIdShare = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiSocialContentContentIdShare>>, TError,{contentId: string;data: BodyType<PostApiSocialContentContentIdShareBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiSocialContentContentIdShare>>, TError,{contentId: string;data: BodyType<PostApiSocialContentContentIdShareBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiSocialContentContentIdShare>>,
         TError,
@@ -177,14 +175,14 @@ export const usePostApiSocialContentContentIdShare = <TError = ErrorType<unknown
  */
 export const getApiSocialContentContentIdStats = (
     contentId: string,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
       return mainInstance<GetApiSocialContentContentIdStats200>(
       {url: `/api/social/content/${contentId}/stats`, method: 'GET', signal
     },
-      options);
+      );
     }
   
 
@@ -203,16 +201,16 @@ export const getGetApiSocialContentContentIdStatsQueryKey = (contentId?: string,
     }
 
     
-export const getGetApiSocialContentContentIdStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>>, TError = ErrorType<unknown>>(contentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiSocialContentContentIdStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>>, TError = ErrorType<unknown>>(contentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiSocialContentContentIdStatsInfiniteQueryKey(contentId);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>> = ({ signal }) => getApiSocialContentContentIdStats(contentId, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>> = ({ signal }) => getApiSocialContentContentIdStats(contentId, signal);
 
       
 
@@ -232,7 +230,7 @@ export function useGetApiSocialContentContentIdStatsInfinite<TData = InfiniteDat
           TError,
           Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSocialContentContentIdStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>>, TError = ErrorType<unknown>>(
@@ -242,11 +240,11 @@ export function useGetApiSocialContentContentIdStatsInfinite<TData = InfiniteDat
           TError,
           Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSocialContentContentIdStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>>, TError = ErrorType<unknown>>(
- contentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ contentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -254,7 +252,7 @@ export function useGetApiSocialContentContentIdStatsInfinite<TData = InfiniteDat
  */
 
 export function useGetApiSocialContentContentIdStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>>, TError = ErrorType<unknown>>(
- contentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ contentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -270,16 +268,16 @@ export function useGetApiSocialContentContentIdStatsInfinite<TData = InfiniteDat
 
 
 
-export const getGetApiSocialContentContentIdStatsQueryOptions = <TData = Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>, TError = ErrorType<unknown>>(contentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiSocialContentContentIdStatsQueryOptions = <TData = Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>, TError = ErrorType<unknown>>(contentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiSocialContentContentIdStatsQueryKey(contentId);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>> = ({ signal }) => getApiSocialContentContentIdStats(contentId, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>> = ({ signal }) => getApiSocialContentContentIdStats(contentId, signal);
 
       
 
@@ -299,7 +297,7 @@ export function useGetApiSocialContentContentIdStats<TData = Awaited<ReturnType<
           TError,
           Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSocialContentContentIdStats<TData = Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>, TError = ErrorType<unknown>>(
@@ -309,11 +307,11 @@ export function useGetApiSocialContentContentIdStats<TData = Awaited<ReturnType<
           TError,
           Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSocialContentContentIdStats<TData = Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>, TError = ErrorType<unknown>>(
- contentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ contentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -321,7 +319,7 @@ export function useGetApiSocialContentContentIdStats<TData = Awaited<ReturnType<
  */
 
 export function useGetApiSocialContentContentIdStats<TData = Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>, TError = ErrorType<unknown>>(
- contentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ contentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSocialContentContentIdStats>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -342,7 +340,7 @@ export function useGetApiSocialContentContentIdStats<TData = Awaited<ReturnType<
  */
 export const getApiSocialPopular = (
     params?: GetApiSocialPopularParams,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -350,7 +348,7 @@ export const getApiSocialPopular = (
       {url: `/api/social/popular`, method: 'GET',
         params, signal
     },
-      options);
+      );
     }
   
 
@@ -369,16 +367,16 @@ export const getGetApiSocialPopularQueryKey = (params?: GetApiSocialPopularParam
     }
 
     
-export const getGetApiSocialPopularInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiSocialPopular>>, GetApiSocialPopularParams['page']>, TError = ErrorType<unknown>>(params?: GetApiSocialPopularParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSocialPopular>>, TError, TData, QueryKey, GetApiSocialPopularParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiSocialPopularInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiSocialPopular>>, GetApiSocialPopularParams['page']>, TError = ErrorType<unknown>>(params?: GetApiSocialPopularParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSocialPopular>>, TError, TData, QueryKey, GetApiSocialPopularParams['page']>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiSocialPopularInfiniteQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiSocialPopular>>, QueryKey, GetApiSocialPopularParams['page']> = ({ signal, pageParam }) => getApiSocialPopular({...params, 'page': pageParam || params?.['page']}, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiSocialPopular>>, QueryKey, GetApiSocialPopularParams['page']> = ({ signal, pageParam }) => getApiSocialPopular({...params, 'page': pageParam || params?.['page']}, signal);
 
       
 
@@ -398,7 +396,7 @@ export function useGetApiSocialPopularInfinite<TData = InfiniteData<Awaited<Retu
           TError,
           Awaited<ReturnType<typeof getApiSocialPopular>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSocialPopularInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSocialPopular>>, GetApiSocialPopularParams['page']>, TError = ErrorType<unknown>>(
@@ -408,11 +406,11 @@ export function useGetApiSocialPopularInfinite<TData = InfiniteData<Awaited<Retu
           TError,
           Awaited<ReturnType<typeof getApiSocialPopular>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSocialPopularInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSocialPopular>>, GetApiSocialPopularParams['page']>, TError = ErrorType<unknown>>(
- params?: GetApiSocialPopularParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSocialPopular>>, TError, TData, QueryKey, GetApiSocialPopularParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+ params?: GetApiSocialPopularParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSocialPopular>>, TError, TData, QueryKey, GetApiSocialPopularParams['page']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -420,7 +418,7 @@ export function useGetApiSocialPopularInfinite<TData = InfiniteData<Awaited<Retu
  */
 
 export function useGetApiSocialPopularInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSocialPopular>>, GetApiSocialPopularParams['page']>, TError = ErrorType<unknown>>(
- params?: GetApiSocialPopularParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSocialPopular>>, TError, TData, QueryKey, GetApiSocialPopularParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+ params?: GetApiSocialPopularParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSocialPopular>>, TError, TData, QueryKey, GetApiSocialPopularParams['page']>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -436,16 +434,16 @@ export function useGetApiSocialPopularInfinite<TData = InfiniteData<Awaited<Retu
 
 
 
-export const getGetApiSocialPopularQueryOptions = <TData = Awaited<ReturnType<typeof getApiSocialPopular>>, TError = ErrorType<unknown>>(params?: GetApiSocialPopularParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSocialPopular>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiSocialPopularQueryOptions = <TData = Awaited<ReturnType<typeof getApiSocialPopular>>, TError = ErrorType<unknown>>(params?: GetApiSocialPopularParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSocialPopular>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiSocialPopularQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiSocialPopular>>> = ({ signal }) => getApiSocialPopular(params, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiSocialPopular>>> = ({ signal }) => getApiSocialPopular(params, signal);
 
       
 
@@ -465,7 +463,7 @@ export function useGetApiSocialPopular<TData = Awaited<ReturnType<typeof getApiS
           TError,
           Awaited<ReturnType<typeof getApiSocialPopular>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSocialPopular<TData = Awaited<ReturnType<typeof getApiSocialPopular>>, TError = ErrorType<unknown>>(
@@ -475,11 +473,11 @@ export function useGetApiSocialPopular<TData = Awaited<ReturnType<typeof getApiS
           TError,
           Awaited<ReturnType<typeof getApiSocialPopular>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSocialPopular<TData = Awaited<ReturnType<typeof getApiSocialPopular>>, TError = ErrorType<unknown>>(
- params?: GetApiSocialPopularParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSocialPopular>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ params?: GetApiSocialPopularParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSocialPopular>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -487,7 +485,7 @@ export function useGetApiSocialPopular<TData = Awaited<ReturnType<typeof getApiS
  */
 
 export function useGetApiSocialPopular<TData = Awaited<ReturnType<typeof getApiSocialPopular>>, TError = ErrorType<unknown>>(
- params?: GetApiSocialPopularParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSocialPopular>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ params?: GetApiSocialPopularParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSocialPopular>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 

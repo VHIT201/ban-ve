@@ -35,8 +35,6 @@ import type { ErrorType , BodyType } from '../mutator/custom-instance';
 
 
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
 
 
 /**
@@ -44,7 +42,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  */
 export const getApiSearch = (
     params: GetApiSearchParams,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -52,7 +50,7 @@ export const getApiSearch = (
       {url: `/api/search`, method: 'GET',
         params, signal
     },
-      options);
+      );
     }
   
 
@@ -71,16 +69,16 @@ export const getGetApiSearchQueryKey = (params?: GetApiSearchParams,) => {
     }
 
     
-export const getGetApiSearchInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiSearch>>, GetApiSearchParams['page']>, TError = ErrorType<unknown>>(params: GetApiSearchParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSearch>>, TError, TData, QueryKey, GetApiSearchParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiSearchInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiSearch>>, GetApiSearchParams['page']>, TError = ErrorType<unknown>>(params: GetApiSearchParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSearch>>, TError, TData, QueryKey, GetApiSearchParams['page']>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiSearchInfiniteQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiSearch>>, QueryKey, GetApiSearchParams['page']> = ({ signal, pageParam }) => getApiSearch({...params, 'page': pageParam || params?.['page']}, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiSearch>>, QueryKey, GetApiSearchParams['page']> = ({ signal, pageParam }) => getApiSearch({...params, 'page': pageParam || params?.['page']}, signal);
 
       
 
@@ -100,7 +98,7 @@ export function useGetApiSearchInfinite<TData = InfiniteData<Awaited<ReturnType<
           TError,
           Awaited<ReturnType<typeof getApiSearch>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSearchInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSearch>>, GetApiSearchParams['page']>, TError = ErrorType<unknown>>(
@@ -110,11 +108,11 @@ export function useGetApiSearchInfinite<TData = InfiniteData<Awaited<ReturnType<
           TError,
           Awaited<ReturnType<typeof getApiSearch>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSearchInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSearch>>, GetApiSearchParams['page']>, TError = ErrorType<unknown>>(
- params: GetApiSearchParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSearch>>, TError, TData, QueryKey, GetApiSearchParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+ params: GetApiSearchParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSearch>>, TError, TData, QueryKey, GetApiSearchParams['page']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -122,7 +120,7 @@ export function useGetApiSearchInfinite<TData = InfiniteData<Awaited<ReturnType<
  */
 
 export function useGetApiSearchInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSearch>>, GetApiSearchParams['page']>, TError = ErrorType<unknown>>(
- params: GetApiSearchParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSearch>>, TError, TData, QueryKey, GetApiSearchParams['page']>>, request?: SecondParameter<typeof mainInstance>}
+ params: GetApiSearchParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSearch>>, TError, TData, QueryKey, GetApiSearchParams['page']>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -138,16 +136,16 @@ export function useGetApiSearchInfinite<TData = InfiniteData<Awaited<ReturnType<
 
 
 
-export const getGetApiSearchQueryOptions = <TData = Awaited<ReturnType<typeof getApiSearch>>, TError = ErrorType<unknown>>(params: GetApiSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSearch>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+export const getGetApiSearchQueryOptions = <TData = Awaited<ReturnType<typeof getApiSearch>>, TError = ErrorType<unknown>>(params: GetApiSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSearch>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiSearchQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiSearch>>> = ({ signal }) => getApiSearch(params, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiSearch>>> = ({ signal }) => getApiSearch(params, signal);
 
       
 
@@ -167,7 +165,7 @@ export function useGetApiSearch<TData = Awaited<ReturnType<typeof getApiSearch>>
           TError,
           Awaited<ReturnType<typeof getApiSearch>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSearch<TData = Awaited<ReturnType<typeof getApiSearch>>, TError = ErrorType<unknown>>(
@@ -177,11 +175,11 @@ export function useGetApiSearch<TData = Awaited<ReturnType<typeof getApiSearch>>
           TError,
           Awaited<ReturnType<typeof getApiSearch>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof mainInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSearch<TData = Awaited<ReturnType<typeof getApiSearch>>, TError = ErrorType<unknown>>(
- params: GetApiSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSearch>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ params: GetApiSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSearch>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -189,7 +187,7 @@ export function useGetApiSearch<TData = Awaited<ReturnType<typeof getApiSearch>>
  */
 
 export function useGetApiSearch<TData = Awaited<ReturnType<typeof getApiSearch>>, TError = ErrorType<unknown>>(
- params: GetApiSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSearch>>, TError, TData>>, request?: SecondParameter<typeof mainInstance>}
+ params: GetApiSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSearch>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -210,7 +208,7 @@ export function useGetApiSearch<TData = Awaited<ReturnType<typeof getApiSearch>>
  */
 export const postApiSearchSemantic = (
     postApiSearchSemanticBody: BodyType<PostApiSearchSemanticBody>,
- options?: SecondParameter<typeof mainInstance>,signal?: AbortSignal
+ signal?: AbortSignal
 ) => {
       
       
@@ -219,21 +217,21 @@ export const postApiSearchSemantic = (
       headers: {'Content-Type': 'application/json', },
       data: postApiSearchSemanticBody, signal
     },
-      options);
+      );
     }
   
 
 
 export const getPostApiSearchSemanticMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiSearchSemantic>>, TError,{data: BodyType<PostApiSearchSemanticBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiSearchSemantic>>, TError,{data: BodyType<PostApiSearchSemanticBody>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiSearchSemantic>>, TError,{data: BodyType<PostApiSearchSemanticBody>}, TContext> => {
 
 const mutationKey = ['postApiSearchSemantic'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
       
 
@@ -241,7 +239,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiSearchSemantic>>, {data: BodyType<PostApiSearchSemanticBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  postApiSearchSemantic(data,requestOptions)
+          return  postApiSearchSemantic(data,)
         }
 
         
@@ -257,7 +255,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Tìm kiếm nội dung bằng mô tả (AI sau này)
  */
 export const usePostApiSearchSemantic = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiSearchSemantic>>, TError,{data: BodyType<PostApiSearchSemanticBody>}, TContext>, request?: SecondParameter<typeof mainInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiSearchSemantic>>, TError,{data: BodyType<PostApiSearchSemanticBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiSearchSemantic>>,
         TError,

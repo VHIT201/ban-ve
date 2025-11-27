@@ -1,21 +1,16 @@
-import { createRoot } from 'react-dom/client'
-import { ErrorBoundary } from "react-error-boundary";
-import "@github/spark/spark"
+// Core
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { RouterProvider } from "react-router-dom";
 
-import { AppRouter } from './AppRouter';
-import { ErrorFallback } from './ErrorFallback.tsx'
+// Internal
+import "./main.css";
+import "./index.css";
+import "./styles/theme.css";
+import router from "./routes";
 
-import "./main.css"
-import "./styles/theme.css"
-import "./index.css"
-
-import React from 'react';
-import { AuthProvider } from '@/contexts/AuthContext';
-
-createRoot(document.getElementById('root')!).render(
-  <ErrorBoundary FallbackComponent={ErrorFallback}>
-    <AuthProvider>
-      <AppRouter />
-    </AuthProvider>
-  </ErrorBoundary>
-)
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <RouterProvider router={router} />
+  </StrictMode>
+);

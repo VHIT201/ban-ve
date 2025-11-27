@@ -4,16 +4,16 @@ import type { FileType } from './fileType';
 export interface File {
   /** ID của file */
   _id?: string;
-  /** Tên file */
-  name?: string;
-  /** Đường dẫn đến file */
-  url?: string;
-  /** Loại file */
-  type?: FileType;
-  /** Kích thước file (bytes) */
+  /** Tên gốc của file */
+  name: string;
+  /** Đường dẫn đầy đủ để truy cập file */
+  url: string;
+  /** Định dạng/loại file */
+  type: FileType;
+  /** Kích thước file (tính bằng bytes) */
   size?: number;
-  /** Thời gian tạo */
+  /** Thời điểm tạo bản ghi */
   createdAt?: string;
-  /** Thời gian cập nhật */
+  /** Thời điểm cập nhật lần cuối */
   updatedAt?: string;
 }
