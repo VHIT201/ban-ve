@@ -1,5 +1,5 @@
 const baseConfig = {
-  backendDomain: "https://ban-ve-backend.onrender.com",
+  backendDomain: "http://103.57.222.104:3001",
   frontendDomain: "https://architectural-nine.vercel.app",
 };
 
