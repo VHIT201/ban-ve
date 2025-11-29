@@ -2,7 +2,7 @@
     "rewrites": [
         {
             "source": "/api/:path*",
-            "destination": "http://103.57.222.104:3001/api/:path*"
+            "destination": "https://giangvien.org/gateway/ban-ve/api/:path*"
         }
     ]
 }
