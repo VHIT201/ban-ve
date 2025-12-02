@@ -8,6 +8,12 @@ export interface Response<Data = unknown> {
   timeStamp: Date;
 }
 
+export interface QueryData<Data = unknown> {
+  success: boolean;
+  message_en: string;
+  responseData: Data;
+}
+
 export interface MutationData<Data = unknown> {
   success: boolean;
   message: string;
