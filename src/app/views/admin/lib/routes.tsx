@@ -8,6 +8,7 @@ import copyRightRoutes from "../views/copy-right/lib/routes";
 import collaboratorRoutes from "../views/collaborators/lib/routes";
 import paymentRoutes from "../views/payment/lib/routes";
 
+import { Settings  } from "lucide-react";
 // Admin route paths
 const { admin } = ROUTE_PATHS;
 
@@ -45,6 +46,50 @@ const adminRoutes: RouteObject = {
     contentRoutes,
     copyRightRoutes,
     collaboratorRoutes,
+    {
+      path: "social",
+      lazy: async () => {
+        const { default: Social } = await import("../views/social/page");
+        return {
+          element: <Social />,
+        };
+      },
+    },
+    {
+      path: "settings",
+      children: [
+        {
+          path: "",
+          lazy: async () => ({
+            Component: (await import("../views/settings/page")).default,
+          }),
+        },
+        {
+          path: "account",
+          lazy: async () => ({
+            Component: (await import("../views/settings/account/page")).default,
+          }),
+        },
+        {
+          path: "appearance",
+          lazy: async () => ({
+            Component: (await import("../views/settings/appearance/page")).default,
+          }),
+        },
+        {
+          path: "notifications",
+          lazy: async () => ({
+            Component: (await import("../views/settings/notifications/page")).default,
+          }),
+        },
+        {
+          path: "display",
+          lazy: async () => ({
+            Component: (await import("../views/settings/display/page")).default,
+          }),
+        },
+      ],
+    },
   ],
 };
 
