@@ -13,6 +13,7 @@ import {
   CopyrightIcon,
   GroupIcon,
   HistoryIcon,
+  Share2,
 } from "lucide-react";
 import { type SidebarData } from "./types";
 import { BASE_PATHS } from "@/constants/paths";
@@ -73,30 +74,35 @@ export const SIDEBAR_MENU: SidebarData = {
           items: [
             {
               title: "Hồ sơ",
-              url: "/settings",
+              url: `${BASE_PATHS.admin.path}/settings`,
               icon: UserCog,
             },
             {
-              title: "Account",
-              url: "/settings/account",
+              title: "Tài khoản",
+              url: `${BASE_PATHS.admin.path}/settings/account`,
               icon: Wrench,
             },
             {
-              title: "Appearance",
-              url: "/settings/appearance",
+              title: "Giao diện",
+              url: `${BASE_PATHS.admin.path}/settings/appearance`,
               icon: Palette,
             },
             {
-              title: "Notifications",
-              url: "/settings/notifications",
+              title: "Thông báo",
+              url: `${BASE_PATHS.admin.path}/settings/notifications`,
               icon: Bell,
             },
             {
-              title: "Display",
-              url: "/settings/display",
+              title: "Hiển thị",
+              url: `${BASE_PATHS.admin.path}/settings/display`,
               icon: Monitor,
             },
           ],
+        },
+        {
+          title: "Mạng xã hội",
+          url: `${BASE_PATHS.admin.path}/social`,
+          icon: Share2,
         },
         {
           title: "Trợ giúp",

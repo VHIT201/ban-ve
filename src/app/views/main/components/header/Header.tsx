@@ -9,10 +9,8 @@ import {
   UserIcon,
 } from "lucide-react";
 import { CartItem } from "@/lib/types";
-import { useKV } from "@github/spark/hooks";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import {
   HeaderSearchBar,
   HeaderShoppingCart,
@@ -33,8 +31,6 @@ const Header = () => {
   );
 
   // Hooks
-  const [cart, setCart] = useKV<CartItem[]>("blueprint-cart", []);
-  const cartItems = cart ?? [];
   const [searchQuery, setSearchQuery] = useState("");
   const [isSlideDown, setIsSlideDown] = useState(false);
 
@@ -72,51 +68,7 @@ const Header = () => {
     }
   };
 
-  const handleUpdateQuantity = (blueprintId: string, quantity: number) => {
-    setCart((currentCart) => {
-      const cartItems = Array.isArray(currentCart) ? [...currentCart] : [];
-      const newCart = cartItems.map((item) =>
-        item.blueprint.id === blueprintId ? { ...item, quantity } : item
-      );
-
-      updateLocalCart(newCart);
-      return newCart;
-    });
-  };
-
-  const handleRemoveItem = (blueprintId: string) => {
-    setCart((currentCart) => {
-      const cartItems = Array.isArray(currentCart) ? [...currentCart] : [];
-      const newCart = cartItems.filter(
-        (item) => item.blueprint.id !== blueprintId
-      );
-
-      // Cập nhật localStorage
-      updateLocalCart(newCart);
-
-      // Hiển thị thông báo
-      const removedItem = cartItems.find(
-        (item) => item.blueprint.id === blueprintId
-      );
-      if (removedItem) {
-        toast.info("Đã xóa khỏi giỏ hàng", {
-          description: removedItem.blueprint.title,
-        });
-      }
-
-      return newCart;
-    });
-  };
-
   const navigate = useNavigate();
-
-  const handleCheckout = () => {
-    if (cartItems.length === 0) {
-      toast.error("Giỏ hàng của bạn đang trống");
-      return;
-    }
-    navigate("/checkout");
-  };
 
   return (
     <header>

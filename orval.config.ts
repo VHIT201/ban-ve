@@ -6,7 +6,7 @@ const orvalConfig = async () => {
   const { backendDomain, frontendDomain } = baseConfig;
 
   const [mainApiSwagger, fileUploadServiceSwagger] = await Promise.all([
-    axios.get(`${backendDomain}/api-docs.json`, {
+    axios.get(`${backendDomain}api-docs.json`, {
       headers: { Origin: frontendDomain },
     }),
     axios
