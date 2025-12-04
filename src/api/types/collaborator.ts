@@ -21,6 +21,18 @@ export interface CollaboratorRequest {
   updatedAt: string;
 }
 
+export interface CollaboratorMe {
+  commissionRate: number;
+  isApproved: boolean;
+  _id: string;
+  username: string;
+  email: string;
+  role: string;
+  isActive: boolean;
+  createdAt: string; // hoặc Date nếu bạn parse ra dạng Date
+  updatedAt: string; // hoặc Date
+}
+
 export interface CollaboratorStats {
   _id: string;
   username: string;

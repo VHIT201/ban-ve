@@ -2,50 +2,51 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { generateImageRandom } from "@/utils/image";
 import { CalendarIcon, Edit3Icon, StarIcon } from "lucide-react";
 import React from "react";
 
 const mockOrders = [
   {
     id: 1,
-    title: "Apple Watch Series 8 GPS 45mm Silver Aluminium Case with Sport...",
+    title: "Bản vẽ máy bay Boeing 787 Dreamliner",
     status: "Reviewed",
     date: "12 Jul 2023",
     rating: 4,
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "Bản vẽ chi tiết của máy bay Boeing 787 Dreamliner, bao gồm các thông số kỹ thuật và thiết kế cấu trúc. Bản vẽ này được sử dụng để hướng dẫn quá trình sản xuất và lắp ráp máy bay, đảm bảo tính chính xác và hiệu suất tối ưu của sản phẩm cuối cùng.",
     images: [
-      "/api/placeholder/60/60",
-      "/api/placeholder/60/60",
-      "/api/placeholder/60/60",
+      generateImageRandom(),
+      generateImageRandom(),
+      generateImageRandom(),
     ],
   },
   {
     id: 2,
-    title: "Apple Watch Series 8 GPS 45mm Silver Aluminium Case with Sport...",
+    title: "Bản vẽ máy bay Boeing 787 Dreamliner",
     status: "Reviewed",
     date: "12 Jul 2023",
     rating: 4,
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "Bản vẽ chi tiết của máy bay Boeing 787 Dreamliner, bao gồm các thông số kỹ thuật và thiết kế cấu trúc. Bản vẽ này được sử dụng để hướng dẫn quá trình sản xuất và lắp ráp máy bay, đảm bảo tính chính xác và hiệu suất tối ưu của sản phẩm cuối cùng.",
     images: [
-      "/api/placeholder/60/60",
-      "/api/placeholder/60/60",
-      "/api/placeholder/60/60",
+      generateImageRandom(),
+      generateImageRandom(),
+      generateImageRandom(),
     ],
   },
   {
     id: 3,
-    title: "Apple Watch Series 8 GPS 45mm Silver Aluminium Case with Sport...",
+    title: "Bản vẽ máy bay Boeing 787 Dreamliner",
     status: "Reviewed",
     date: "12 Jul 2023",
     rating: 4,
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "Bản vẽ chi tiết của máy bay Boeing 787 Dreamliner, bao gồm các thông số kỹ thuật và thiết kế cấu trúc. Bản vẽ này được sử dụng để hướng dẫn quá trình sản xuất và lắp ráp máy bay, đảm bảo tính chính xác và hiệu suất tối ưu của sản phẩm cuối cùng.",
     images: [
-      "/api/placeholder/60/60",
-      "/api/placeholder/60/60",
-      "/api/placeholder/60/60",
+      generateImageRandom(),
+      generateImageRandom(),
+      generateImageRandom(),
     ],
   },
 ];

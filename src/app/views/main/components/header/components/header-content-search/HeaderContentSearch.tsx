@@ -248,7 +248,7 @@ const HeaderContentSearch = () => {
   const handleSearch = useCallback(
     (query: string) => {
       if (query.trim()) {
-        navigate(`/search?q=${encodeURIComponent(query)}`);
+        navigate(`/collections?search=${encodeURIComponent(query)}`);
         setIsOpen(false);
         setSearchQuery("");
         setDebouncedQuery("");
@@ -260,7 +260,7 @@ const HeaderContentSearch = () => {
 
   const handleResultClick = useCallback(
     (contentId: string) => {
-      navigate(`/content/${contentId}`);
+      navigate(`/detail/${contentId}`);
       setIsOpen(false);
       setSearchQuery("");
       setDebouncedQuery("");

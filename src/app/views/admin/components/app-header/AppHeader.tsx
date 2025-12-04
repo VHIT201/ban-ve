@@ -50,7 +50,7 @@ const AppHeader = ({ className, fixed, children, ...props }: HeaderProps) => {
           <SidebarTrigger variant="outline" className="max-md:scale-125" />
           <Separator orientation="vertical" className="h-6" />
         </div>
-        <div>
+        <div className="flex items-center gap-2">
           <HeaderConfigDrawer />
           <HeaderThemeSwitch />
           <HeaderProfileDropdown />

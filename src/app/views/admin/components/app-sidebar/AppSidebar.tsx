@@ -20,7 +20,7 @@ const AppSidebar = () => {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={SIDEBAR_MENU.user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

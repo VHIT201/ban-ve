@@ -43,7 +43,7 @@ export const INITIAL_STATES: States = {
   username: "Unknown User",
   email: "Unknown Email",
   fullName: "Unknown Full Name",
-  avatar: "https://via.placeholder.com/150",
+  avatar: "",
   role: null,
   createdAt: null,
   updatedAt: null,

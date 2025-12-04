@@ -24,18 +24,26 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
+import { useAuthStore, useProfileStore } from "@/stores";
+import { useShallow } from "zustand/shallow";
+import { BASE_PATHS } from "@/constants/paths";
 
-type NavUserProps = {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-};
-
-const NavUser = ({ user }: NavUserProps) => {
+const NavUser = () => {
   const { isMobile } = useSidebar();
   const [open, setOpen] = useDialogState();
+
+  const profileStore = useProfileStore(
+    useShallow(({ fullName, email, avatar }) => ({ fullName, email, avatar }))
+  );
+
+  const authStore = useAuthStore(
+    useShallow(({ resetStore }) => ({ resetStore }))
+  );
+
+  const handleLogout = () => {
+    authStore.resetStore();
+    window.location.href = BASE_PATHS.auth.login.path;
+  };
 
   return (
     <>
@@ -48,12 +56,17 @@ const NavUser = ({ user }: NavUserProps) => {
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarImage
+                    src={profileStore.avatar}
+                    alt={profileStore.fullName}
+                  />
                   <AvatarFallback className="rounded-lg">SN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-start text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-semibold">
+                    {profileStore.fullName}
+                  </span>
+                  <span className="truncate text-xs">{profileStore.email}</span>
                 </div>
                 <ChevronsUpDown className="ms-auto size-4" />
               </SidebarMenuButton>
@@ -67,12 +80,19 @@ const NavUser = ({ user }: NavUserProps) => {
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                   <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src={user.avatar} alt={user.name} />
+                    <AvatarImage
+                      src={profileStore.avatar}
+                      alt={profileStore.fullName}
+                    />
                     <AvatarFallback className="rounded-lg">SN</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-start text-sm leading-tight">
-                    <span className="truncate font-semibold">{user.name}</span>
-                    <span className="truncate text-xs">{user.email}</span>
+                    <span className="truncate font-semibold">
+                      {profileStore.fullName}
+                    </span>
+                    <span className="truncate text-xs">
+                      {profileStore.email}
+                    </span>
                   </div>
                 </div>
               </DropdownMenuLabel>
@@ -80,28 +100,7 @@ const NavUser = ({ user }: NavUserProps) => {
               <DropdownMenuGroup>
                 <DropdownMenuItem>
                   <Sparkles />
-                  Upgrade to Pro
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem asChild>
-                  <Link to="/settings/account">
-                    <BadgeCheck />
-                    Account
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/settings">
-                    <CreditCard />
-                    Billing
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/settings/notifications">
-                    <Bell />
-                    Notifications
-                  </Link>
+                  Nâng cấp pro
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
@@ -110,7 +109,7 @@ const NavUser = ({ user }: NavUserProps) => {
                 onClick={() => setOpen(true)}
               >
                 <LogOut />
-                Sign out
+                Đăng xuất
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
