@@ -77,7 +77,7 @@ const HeaderContentSearch = () => {
   const handleSearch = useCallback(
     (query: string) => {
       if (query.trim()) {
-        navigate(`/search?q=${encodeURIComponent(query)}`);
+        navigate(`/collections?search=${encodeURIComponent(query)}`);
         setIsOpen(false);
         setSearchQuery("");
         setDebouncedQuery("");
