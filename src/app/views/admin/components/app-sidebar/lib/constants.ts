@@ -30,7 +30,11 @@ export const SIDEBAR_MENU: SidebarData = {
       items: [
         {
           title: "Thống kê",
+<<<<<<< HEAD
           url: "/admin",
+=======
+          url: BASE_PATHS.admin.dashboard.path,
+>>>>>>> f3d9de04b1b448df4608c3d96bab3be327a98779
           icon: LayoutDashboard,
         },
         {
@@ -103,11 +107,6 @@ export const SIDEBAR_MENU: SidebarData = {
           title: "Mạng xã hội",
           url: `${BASE_PATHS.admin.path}/social`,
           icon: Share2,
-        },
-        {
-          title: "Trợ giúp",
-          url: "/help-center",
-          icon: HelpCircle,
         },
       ],
     },

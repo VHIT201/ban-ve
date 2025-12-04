@@ -1,5 +1,5 @@
 // Core
-import { RouteObject } from "react-router-dom";
+import { RouteObject, Navigate } from "react-router-dom";
 
 // App
 import { ROUTE_PATHS } from "@/constants/paths";
@@ -55,6 +55,7 @@ const adminRoutes: RouteObject = {
     contentRoutes,
     copyRightRoutes,
     collaboratorRoutes,
+
     {
       path: "social",
       lazy: async () => {

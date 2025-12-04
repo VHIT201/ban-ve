@@ -3,6 +3,7 @@ export const ROUTE_PATHS = {
     path: "auth",
     login: { path: "login" },
     register: { path: "register" },
+    forgot: { path: "forgot" },
   },
 
   app: {
@@ -16,10 +17,13 @@ export const ROUTE_PATHS = {
     detail: { path: "detail/:id" },
     collections: { path: "collections" },
     payment: { path: "payment" },
+    setting: { path: "setting" },
+    search: { path: "search" },
   },
 
   admin: {
     path: "admin",
+    dashboard: { path: "dashboard" },
     categories: { path: "categories" },
     contents: {
       path: "contents",
@@ -30,8 +34,17 @@ export const ROUTE_PATHS = {
     copyRight: { path: "copy-right", detail: { path: "detail/:id" } },
     collaborators: { path: "collaborators", detail: { path: "detail/:id" } },
     payments: { path: "payments" },
-    settings: { path: "settings" },
   },
+
+  collaborator: {
+    path: "collaborator",
+    upload: { path: "upload" },
+    documents: { path: "documents" },
+    salesStats: { path: "sales-stats" },
+    earnings: { path: "earnings" },
+    payments: { path: "payments" },
+    settings: { path: "settings" }
+  }
 };
 
 export const BASE_PATHS = {
@@ -56,6 +69,7 @@ export const BASE_PATHS = {
   upload: { path: "/upload" },
   admin: {
     path: "/admin",
+    dashboard: { path: "/admin" },
     categories: { path: "/admin/categories" },
     contents: {
       path: "/admin/contents",
@@ -66,5 +80,12 @@ export const BASE_PATHS = {
     copyRight: { path: "/admin/copy-right" },
     collaborators: { path: "/admin/collaborators" },
     payments: { path: "/admin/payments" },
+    
+  },
+  collaborator: {
+    path: "/collaborator",
+    upload: { path: "/collaborator/upload" },
+    documents: { path: "/collaborator/documents" },
+    salesStats: { path: "/collaborator/sales-stats" },
   },
 };
