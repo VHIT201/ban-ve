@@ -1,19 +1,12 @@
-// Core
+// In d:\banve\ban-ve\src\app\lib\routes.tsx
 import { RouteObject } from "react-router-dom";
-
-// App
 import { ROUTE_PATHS } from "@/constants/paths";
-
-// Internal
-import {
-  RouterErrorBoundary,
-  RouterHydrateFallbackElement,
-} from "../components";
+import { RouterErrorBoundary, RouterHydrateFallbackElement } from "../components";
 import mainRoutes from "../views/main/lib/routes";
 import authRoutes from "../views/auth/lib/routes";
 import adminRoutes from "../views/admin/lib/routes";
+import collaboratorRoutes from "../views/collaborator/lib/routes"; // Add this import
 
-// App routes
 const appRoutes: RouteObject[] = [
   {
     children: [
@@ -26,7 +19,7 @@ const appRoutes: RouteObject[] = [
             element: <App />,
           };
         },
-        children: [mainRoutes, adminRoutes, authRoutes],
+        children: [mainRoutes, adminRoutes, authRoutes, collaboratorRoutes], // Add collaboratorRoutes here
       },
     ],
     errorElement: <RouterErrorBoundary />,

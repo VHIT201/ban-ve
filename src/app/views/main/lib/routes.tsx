@@ -48,6 +48,24 @@ const mainRoutes: RouteObject = {
       },
     },
     {
+      path: app.search.path,
+      lazy: async () => {
+        const { default: SearchResults } = await import("../views/search/SearchResults");
+        return {
+          element: <SearchResults />,
+        };
+      },
+    },
+    {
+      path: app.setting.path,
+      lazy: async () => {
+        const { default: Settings } = await import("../pages/setting/page");
+        return {
+          element: <Settings />,
+        };
+      },
+    },
+    {
       path: app.payment.path,
       lazy: async () => {
         const { default: Payment } = await import("../views/payment/page");

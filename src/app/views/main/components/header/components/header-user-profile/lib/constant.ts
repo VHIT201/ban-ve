@@ -1,19 +1,25 @@
 import { BASE_PATHS } from "@/constants/paths";
 import { UserRole } from "@/enums/roles";
-import { CogIcon, UserCogIcon, UserIcon } from "lucide-react";
+import { BarChart2, CogIcon, Upload, UserCogIcon, UserIcon } from "lucide-react";
 
 export const HEADER_USER_PROFILE_MENU = [
   {
     icon: UserIcon,
-    roles: [UserRole.USER, UserRole.ADMIN],
+    roles: [UserRole.USER, UserRole.ADMIN, UserRole.COLLABORATOR],
     label: "Trang cá nhân",
     path: BASE_PATHS.app.profile.personal.path,
   },
   {
     icon: CogIcon,
-    roles: [UserRole.USER, UserRole.ADMIN],
+    roles: [UserRole.USER, UserRole.ADMIN, UserRole.COLLABORATOR],
     label: "Cài đặt",
     path: BASE_PATHS.app.setting.path,
+  },
+  {
+    icon: BarChart2,
+    roles: [UserRole.COLLABORATOR],
+    label: "Quản lý tài liệu",
+    path: BASE_PATHS.collaborator.documents.path,
   },
   {
     icon: UserCogIcon,
