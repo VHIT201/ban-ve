@@ -1,29 +1,5 @@
 import React, { Fragment, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import {
-  Star,
-  ShoppingCart,
-  Download,
-  Heart,
-  Share2,
-  Package,
-  Info,
-  CheckCircle,
-  Zap,
-  MonitorIcon,
-  DollarSignIcon,
-} from "lucide-react";
+
 import { ContentResponse } from "@/api/types/content";
 import { Lens } from "@/components/ui/lens";
 import { BlueprintDetailFeedback, BlueprintDetailView } from "./components";

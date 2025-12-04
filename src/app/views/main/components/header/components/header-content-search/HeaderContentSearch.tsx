@@ -89,7 +89,7 @@ const HeaderContentSearch = () => {
 
   const handleResultClick = useCallback(
     (contentId: string) => {
-      navigate(`/content/${contentId}`);
+      navigate(`/detail/${contentId}`);
       setIsOpen(false);
       setSearchQuery("");
       setDebouncedQuery("");
