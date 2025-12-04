@@ -9,6 +9,8 @@ import {
   TrendingUpIcon,
   XIcon,
   LoaderCircle,
+  MicIcon,
+  MicOffIcon,
 } from "lucide-react";
 
 // App
@@ -22,8 +24,50 @@ import {
 } from "@/components/ui/popover";
 import { GetApiSearch200 } from "@/api/models";
 import { cn } from "@/utils/ui";
+import { toast } from "sonner";
 
 // Types
+declare global {
+  interface SpeechRecognition extends EventTarget {
+    continuous: boolean;
+    interimResults: boolean;
+    lang: string;
+    onresult: (event: SpeechRecognitionEvent) => void;
+    onerror: (event: Event) => void;
+    onend: () => void;
+    start: () => void;
+    stop: () => void;
+  }
+
+  interface Window {
+    SpeechRecognition: new () => SpeechRecognition;
+    webkitSpeechRecognition: new () => SpeechRecognition;
+  }
+}
+
+interface SpeechRecognitionEvent extends Event {
+  results: SpeechRecognitionResultList;
+  resultIndex: number;
+}
+
+interface SpeechRecognitionResultList {
+  length: number;
+  item(index: number): SpeechRecognitionResult;
+  [index: number]: SpeechRecognitionResult;
+}
+
+interface SpeechRecognitionResult {
+  isFinal: boolean;
+  length: number;
+  item(index: number): SpeechRecognitionAlternative;
+  [index: number]: SpeechRecognitionAlternative;
+}
+
+interface SpeechRecognitionAlternative {
+  transcript: string;
+  confidence: number;
+}
+
 interface SearchResult {
   _id?: string;
   title?: string;
@@ -42,6 +86,11 @@ const HeaderContentSearch = () => {
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [isListening, setIsListening] = useState(false);
+  const [isSpeechSupported, setIsSpeechSupported] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const silenceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const recognitionRef = useRef<any>(null);
 
   // Debounced search handler
   const debouncedSearch = useMemo(
@@ -72,6 +121,128 @@ const HeaderContentSearch = () => {
 
   const searchResults = (getSearchContentQuery.data as SearchResult[]) || [];
   const isLoading = getSearchContentQuery.isFetching;
+
+  // Reset silence timer
+  const resetSilenceTimer = useCallback(() => {
+    if (silenceTimerRef.current) {
+      clearTimeout(silenceTimerRef.current);
+    }
+    
+    silenceTimerRef.current = setTimeout(() => {
+      if (recognitionRef.current) recognitionRef.current.stop();
+      setIsListening(false);
+      setIsProcessing(false);
+    }, 3000); // Auto-stop after 3 seconds of silence
+  }, []);
+
+  // Initialize speech recognition
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      setIsSpeechSupported(true);
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.lang = 'vi-VN';
+
+      recognition.onresult = (event: any) => {
+        setIsProcessing(false);
+        const results = event.results;
+        const transcript = Array.from({ length: results.length }, (_, i) => results[i])
+          .map((result) => result[0])
+          .map((result) => result.transcript)
+          .join('');
+        
+        // Reset the silence timer whenever we get new speech input
+        if (transcript.trim()) {
+          // Stop listening and clean up
+          if (recognitionRef.current) {
+            recognitionRef.current.stop();
+          }
+          setIsListening(false);
+          setIsProcessing(false);
+          if (silenceTimerRef.current) {
+            clearInterval(silenceTimerRef.current);
+            silenceTimerRef.current = null;
+          }
+          
+          // Update search query and show success message
+          setSearchQuery(transcript);
+          debouncedSearch(transcript);
+          
+          // No toast on successful recognition to be less intrusive
+        }
+      };
+
+      recognition.onerror = (event: Event) => {
+        console.error('Speech recognition error', event);
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        if (isListening) {
+          recognition.start();
+        }
+      };
+
+      recognitionRef.current = recognition;
+    }
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      if (silenceTimerRef.current) {
+        clearTimeout(silenceTimerRef.current);
+      }
+    };
+  }, [debouncedSearch, isListening]);
+
+  // Toggle speech recognition
+  const toggleSpeechRecognition = useCallback(() => {
+    if (!recognitionRef.current) {
+      toast.error('Trình duyệt không hỗ trợ nhận dạng giọng nói');
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+      setIsProcessing(false);
+      if (silenceTimerRef.current) {
+        clearInterval(silenceTimerRef.current);
+        silenceTimerRef.current = null;
+      }
+      // No toast when stopping manually
+    } else {
+      try {
+        recognitionRef.current.start();
+        setIsListening(true);
+        setIsProcessing(true);
+        resetSilenceTimer();
+        
+        // No toast when starting to listen, visual indicator is enough
+      } catch (error) {
+        console.error('Speech recognition error:', error);
+        setIsListening(false);
+        setIsProcessing(false);
+        // Only show error toast for actual errors
+        toast.error('Không nhận dạng được giọng nói. Vui lòng thử lại.', {
+          position: 'bottom-center',
+          style: {
+            marginBottom: '1rem',
+            zIndex: 100,
+            background: '#fff',
+            color: '#ef4444',
+            border: '1px solid #fecaca',
+            padding: '8px 12px',
+            borderRadius: '6px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          }
+        });
+      }
+    }
+  }, [isListening]);
 
   // Methods
   const handleSearch = useCallback(
@@ -178,7 +349,7 @@ const HeaderContentSearch = () => {
               type="text"
               placeholder="Tìm kiếm bản vẽ theo tên, lĩnh vực..."
               className={cn(
-                "pl-10 pr-10 h-10 rounded-full border-border/40 bg-background/50",
+                "pl-10 pr-20 h-10 rounded-full border-border/40 bg-background/50",
                 "focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/40",
                 "placeholder:text-muted-foreground/60 transition-all duration-200",
                 "hover:border-border/60 hover:bg-background/80"
@@ -193,22 +364,51 @@ const HeaderContentSearch = () => {
               onKeyDown={handleKeyDown}
             />
 
-            {/* Loading or Clear Button */}
-            {searchQuery && (
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 z-10">
-                {isLoading ? (
+            {/* Action Buttons */}
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 z-10 flex items-center gap-1">
+              {searchQuery && (
+                <button
+                  onClick={handleClear}
+                  className="hover:bg-muted rounded-full p-1.5 transition-colors"
+                  type="button"
+                >
+                  <XIcon className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
+                </button>
+              )}
+              
+              {isSpeechSupported && (
+                <button
+                  type="button"
+                  onClick={toggleSpeechRecognition}
+                  className={cn(
+                    "rounded-full p-1.5 transition-all duration-300 relative",
+                    isListening 
+                      ? "text-white bg-red-500 shadow-lg shadow-red-500/30" 
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted",
+                    isListening && "ring-2 ring-offset-2 ring-red-500"
+                  )}
+                  disabled={isLoading}
+                  title={isListening ? "Đang nghe..." : "Nhấn để nói"}
+                >
+                  <div className="relative">
+                    {isListening ? (
+                      <div className="relative">
+                        <div className="absolute -inset-1.5 bg-red-500/20 rounded-full animate-ping"></div>
+                        <MicOffIcon className="h-4 w-4 relative" />
+                      </div>
+                    ) : (
+                      <MicIcon className="h-4 w-4" />
+                    )}
+                  </div>
+                </button>
+              )}
+              
+              {isLoading && (
+                <div className="p-1.5">
                   <LoaderCircle className="h-4 w-4 animate-spin text-primary" />
-                ) : (
-                  <button
-                    onClick={handleClear}
-                    className="hover:bg-muted rounded-full p-1 transition-colors"
-                    type="button"
-                  >
-                    <XIcon className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                  </button>
-                )}
-              </div>
-            )}
+                </div>
+              )}
+            </div>
           </div>
         </PopoverTrigger>
 
