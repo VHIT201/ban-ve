@@ -30,7 +30,7 @@ export const SIDEBAR_MENU: SidebarData = {
       items: [
         {
           title: "Thống kê",
-          url: "/",
+          url: "/admin",
           icon: LayoutDashboard,
         },
         {

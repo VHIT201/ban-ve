@@ -1,21 +1,21 @@
 // Internal
-import { useState } from "react";
 import { PlusIcon } from "lucide-react";
 
 // App
 import { Button } from "@/components/ui/button";
+import ContentTable from "@/components/modules/content/content-table";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
 // Internal
-import { ContentTable } from "./components";
-import { useNavigate } from "react-router-dom";
 
 const ContentList = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="space-y-6">
+    <Card className="space-y-6">
       {/* Category Header */}
-      <div className="flex flex-wrap items-end justify-between gap-2">
+      <CardHeader className="flex flex-wrap items-end justify-between gap-2">
         <div>
           <h2 className="text-2xl font-bold tracking-wider">
             Danh sách nội dung
@@ -24,15 +24,17 @@ const ContentList = () => {
             Quản lý các nội dung trong hệ thống
           </p>
         </div>
-        <Button onClick={() => navigate("create")}>
+        <Button onClick={() => navigate("content-create")}>
           <PlusIcon className="mr-2 size-4" />
           Thêm mới
         </Button>
-      </div>
+      </CardHeader>
 
       {/* Content Table */}
-      <ContentTable />
-    </div>
+      <CardContent>
+        <ContentTable />
+      </CardContent>
+    </Card>
   );
 };
 

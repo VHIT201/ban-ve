@@ -12,6 +12,7 @@ import { extractErrorMessage } from "@/utils/error";
 
 // Internal
 import baseConfig from "../../configs/base";
+import { isUndefined } from "lodash-es";
 
 const getAuthRefreshFunction = async () => {
   const { postApiAuthRefreshToken } = await import("../endpoints/auth");
@@ -60,6 +61,10 @@ MAIN_AXIOS_INSTANCE.interceptors.response.use(
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
     };
+
+    if (isUndefined(error.response)) {
+      return Promise.reject(error);
+    }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {

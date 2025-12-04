@@ -13,6 +13,7 @@ import { useAuthStore, useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
 import { HEADER_USER_PROFILE_MENU } from "./lib/constant";
 import { UserRole } from "@/enums/roles";
+import { BASE_PATHS } from "@/constants/paths";
 
 // Types
 interface UserData {
@@ -112,7 +113,7 @@ const HeaderUserProfile = () => {
 
   const handleLogout = () => {
     authStore.resetStore();
-    window.location.reload();
+    window.location.href = BASE_PATHS.auth.login.path;
   };
 
   const handleGetUsername = (name: string) => {

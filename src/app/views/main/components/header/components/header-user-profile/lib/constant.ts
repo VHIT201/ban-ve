@@ -5,19 +5,13 @@ import { CogIcon, UserCogIcon, UserIcon } from "lucide-react";
 export const HEADER_USER_PROFILE_MENU = [
   {
     icon: UserIcon,
-    roles: [UserRole.USER, UserRole.ADMIN],
+    roles: [UserRole.USER, UserRole.ADMIN, UserRole.COLLABORATOR],
     label: "Trang cá nhân",
     path: BASE_PATHS.app.profile.personal.path,
   },
   {
-    icon: CogIcon,
-    roles: [UserRole.USER, UserRole.ADMIN],
-    label: "Cài đặt",
-    path: BASE_PATHS.app.setting.path,
-  },
-  {
     icon: UserCogIcon,
-    roles: [UserRole.ADMIN],
+    roles: [UserRole.ADMIN, UserRole.COLLABORATOR],
     label: "Quản lý hệ thống",
     path: BASE_PATHS.admin.path,
   },

@@ -59,6 +59,7 @@ const ContentDetail = () => {
               description: contentDetail.description,
               category_id: contentDetail.category_id._id,
             }}
+            isLoading={editContentMutation.isPending}
             onSubmit={() => handleApproveContent(contentDetail._id)}
           />
         )}
