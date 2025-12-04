@@ -5,6 +5,7 @@ export const ROUTE_PATHS = {
     path: "auth",
     login: { path: "login" },
     register: { path: "register" },
+    forgot: { path: "forgot" },
   },
 
   app: {
@@ -17,10 +18,13 @@ export const ROUTE_PATHS = {
     detail: { path: "detail/:id" },
     collections: { path: "collections" },
     payment: { path: "payment" },
+    setting: { path: "setting" },
+    search: { path: "search" },
   },
 
   admin: {
     path: "admin",
+    dashboard: { path: "dashboard" },
     categories: { path: "categories" },
     contents: {
       path: "contents",
@@ -56,6 +60,7 @@ export const BASE_PATHS = {
   upload: { path: "/upload" },
   admin: {
     path: "/admin",
+    dashboard: { path: "/admin" },
     categories: { path: "/admin/categories" },
     contents: {
       path: "/admin/contents",

@@ -45,6 +45,16 @@ const authRoutes: RouteObject = {
         };
       },
     },
+    {
+      path: auth.forgot.path,
+      lazy: async () => {
+        const { default: ForgotPassword } = await import("../views/forgot/page");
+        return {
+          element: <ForgotPassword />,
+        };
+      },
+    },
+   
   ],
 };
 

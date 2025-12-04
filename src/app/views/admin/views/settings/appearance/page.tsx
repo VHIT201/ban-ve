@@ -16,16 +16,14 @@ export default function AppearanceSettings() {
   }, []);
 
   const handleThemeChange = async (newTheme: string) => {
-    // Cập nhật theme ngay lập tức
     document.documentElement.classList.remove('light', 'dark');
     if (newTheme !== 'system') {
       document.documentElement.classList.add(newTheme);
     } else {
-      // Nếu chọn system, sử dụng prefers-color-scheme
+
       const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       document.documentElement.classList.add(isDark ? 'dark' : 'light');
     }
-    // Cập nhật state theme
     setTheme(newTheme);
   };
 
