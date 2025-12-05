@@ -41,6 +41,9 @@ const CommentCreationForm: FC<Props> = (props) => {
   const { contentId, createComment, updateComment } =
     useCommentSectionContext();
 
+  // Constants
+  const MAX_COMMENT_LENGTH = 500;
+
   // States
   const [commentContent, setCommentContent] = useState<string>(
     defaultValues?.content ?? ""
@@ -52,7 +55,15 @@ const CommentCreationForm: FC<Props> = (props) => {
 
   // Methods
   const handleSubmit = async () => {
-    if (commentContent.trim() === "") return;
+    if (commentContent.trim() === "") {
+      toast.warning("Vui lòng nhập nội dung bình luận");
+      return;
+    }
+    
+    if (commentContent.length > MAX_COMMENT_LENGTH) {
+      toast.warning(`Bình luận không được vượt quá ${MAX_COMMENT_LENGTH} ký tự`);
+      return;
+    }
 
     if (!contentId) return;
 
@@ -137,8 +148,6 @@ const CommentCreationForm: FC<Props> = (props) => {
 
   const isSubmitting =
     createCommentMutation.isPending || editCommentMutation.isPending;
-
-  // Template
   return (
     <div className={cn("w-full", className)}>
       <div
@@ -146,7 +155,6 @@ const CommentCreationForm: FC<Props> = (props) => {
           "relative rounded-2xl border-2 bg-white transition-all duration-200"
         )}
       >
-        {/* Header - Show only when editing or replying */}
         {(mode === "edit" || mode === "reply") && (
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
             <div className="flex items-center gap-2">
@@ -168,9 +176,7 @@ const CommentCreationForm: FC<Props> = (props) => {
           </div>
         )}
 
-        {/* Main Content Area */}
         <div className="flex gap-3 p-4">
-          {/* Avatar - only for create mode */}
           {mode === "create" && (
             <Avatar className="w-10 h-10 border-2 border-gray-100">
               <AvatarImage src="https://github.com/shadcn.png" />
@@ -180,21 +186,28 @@ const CommentCreationForm: FC<Props> = (props) => {
             </Avatar>
           )}
 
-          {/* Input Area */}
           <div className="flex-1 space-y-3">
-            {/* Textarea */}
-            <Textarea
-              value={commentContent}
-              onChange={(e) => setCommentContent(e.target.value)}
-              placeholder={placeholder}
-              className={cn(
-                "min-h-[80px] resize-none border-0  focus-visible:ring-0 focus-visible:ring-offset-0 text-base",
-                classNames?.textarea
-              )}
-              disabled={isSubmitting}
-            />
+            <div className="relative">
+              <Textarea
+                value={commentContent}
+                onChange={(e) => {
+                  if (e.target.value.length <= MAX_COMMENT_LENGTH) {
+                    setCommentContent(e.target.value);
+                  }
+                }}
+                placeholder={placeholder}
+                className={cn(
+                  "min-h-[80px] resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-base pr-16",
+                  classNames?.textarea,
+                  commentContent.length > MAX_COMMENT_LENGTH ? "border-red-500" : ""
+                )}
+                disabled={isSubmitting}
+              />
+              <div className="absolute bottom-2 right-2 text-xs text-gray-500">
+                {commentContent.length}/{MAX_COMMENT_LENGTH}
+              </div>
+            </div>
 
-            {/* Image Preview Grid */}
             {commentMediaList.length > 0 && (
               <div className="grid grid-cols-4 gap-2">
                 {commentMediaList.map((file, index) => (
@@ -218,28 +231,10 @@ const CommentCreationForm: FC<Props> = (props) => {
                 ))}
               </div>
             )}
-
-            {/* Character Counter */}
-            {commentContent.length > 0 && (
-              <div className="flex justify-end">
-                <span
-                  className={cn(
-                    "text-xs",
-                    commentContent.length > 500
-                      ? "text-red-500"
-                      : "text-gray-400"
-                  )}
-                >
-                  {commentContent.length} / 500
-                </span>
-              </div>
-            )}
           </div>
         </div>
 
-        {/* Footer Actions */}
         <div className="flex items-center justify-end px-4 pb-4 pt-2">
-          {/* Action Buttons */}
           <div className="flex items-center justify-end gap-2">
             {(mode === "edit" || mode === "reply") && (
               <Button
