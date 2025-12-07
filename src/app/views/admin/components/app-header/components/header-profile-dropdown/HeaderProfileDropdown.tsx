@@ -12,8 +12,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
+import { useAuthStore, useProfileStore } from "@/stores";
+import { useShallow } from "zustand/shallow";
+import { BASE_PATHS } from "@/constants/paths";
 
 const HeaderProfileDropdown = () => {
+  const authStore = useAuthStore(
+    useShallow(({ resetStore }) => ({ resetStore }))
+  );
+
+  const profileStore = useProfileStore(
+    useShallow(({ fullName, email, avatar }) => ({ fullName, email, avatar }))
+  );
+
+  const handleLogout = () => {
+    authStore.resetStore();
+    window.location.href = BASE_PATHS.auth.login.path;
+  };
+
   return (
     <>
       <DropdownMenu modal={false}>
@@ -28,37 +44,32 @@ const HeaderProfileDropdown = () => {
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col gap-1.5">
-              <p className="text-sm leading-none font-medium">satnaing</p>
+              <p className="text-sm leading-none font-medium">
+                {profileStore.fullName}
+              </p>
               <p className="text-muted-foreground text-xs leading-none">
-                satnaingdev@gmail.com
+                {profileStore.email}
               </p>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
-              <Link to="/settings">
-                Profile
+              <Link to="/">
+                Trang chủ
                 <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link to="/settings">
-                Billing
-                <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+              <Link to="/admin/settings">
+                Hồ sơ
+                <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to="/settings">
-                Settings
-                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>New Team</DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">
-            Sign out
+          <DropdownMenuItem variant="destructive" onClick={handleLogout}>
+            Đăng xuất
             <DropdownMenuShortcut className="text-current">
               ⇧⌘Q
             </DropdownMenuShortcut>

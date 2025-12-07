@@ -17,5 +17,11 @@ export interface QueryData<Data = unknown> {
 export interface MutationData<Data = unknown> {
   success: boolean;
   message: string;
+  responseData: Data;
+}
+
+export interface MutationDataResult<Data = unknown> {
+  success: boolean;
+  message: string;
   data: Data;
 }

@@ -1,6 +1,12 @@
 import { BASE_PATHS } from "@/constants/paths";
 import { UserRole } from "@/enums/roles";
-import { BarChart2, CogIcon, Upload, UserCogIcon, UserIcon } from "lucide-react";
+import {
+  BarChart2,
+  CogIcon,
+  Upload,
+  UserCogIcon,
+  UserIcon,
+} from "lucide-react";
 
 export const HEADER_USER_PROFILE_MENU = [
   {
@@ -23,7 +29,7 @@ export const HEADER_USER_PROFILE_MENU = [
   },
   {
     icon: UserCogIcon,
-    roles: [UserRole.ADMIN],
+    roles: [UserRole.ADMIN, UserRole.COLLABORATOR],
     label: "Quản lý hệ thống",
     path: BASE_PATHS.admin.path,
   },

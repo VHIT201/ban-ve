@@ -12,7 +12,7 @@ import {
   usePostApiContentsContentIdComments,
   usePutApiCommentsId,
 } from "@/api/endpoints/comments";
-import { MutationData } from "@/api/types/base";
+import { MutationDataResult } from "@/api/types/base";
 import { CommentItem } from "../../lib/types";
 import { toast } from "sonner";
 import { useProfileStore } from "@/stores";
@@ -79,7 +79,7 @@ const CommentCreationForm: FC<Props> = (props) => {
         });
 
         const commentData = (
-          commentResponse as unknown as MutationData<CommentItem>
+          commentResponse as unknown as MutationDataResult<CommentItem>
         ).data;
         createComment?.({
           newCommentItem: commentData,
@@ -100,7 +100,7 @@ const CommentCreationForm: FC<Props> = (props) => {
         });
 
         const commentData = (
-          commentResponse as unknown as MutationData<CommentItem>
+          commentResponse as unknown as MutationDataResult<CommentItem>
         ).data;
         updateComment?.({ updatedCommentItem: commentData });
       }

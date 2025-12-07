@@ -40,6 +40,39 @@ const profileRoutes: RouteObject = {
       },
     },
     {
+      path: profile.collaborator.path,
+      lazy: async () => {
+        const { default: Collaborator } = await import(
+          "../views/collaborator/page"
+        );
+        return {
+          element: <Collaborator />,
+        };
+      },
+    },
+    {
+      path: `${profile.collaborator.path}/content-create`,
+      lazy: async () => {
+        const { default: CollaboratorContentCreate } = await import(
+          "../views/collaborator-content-create/page"
+        );
+        return {
+          element: <CollaboratorContentCreate />,
+        };
+      },
+    },
+    {
+      path: `${profile.collaborator.path}/content-edit/:id`,
+      lazy: async () => {
+        const { default: CollaboratorContentEdit } = await import(
+          "../views/collaborator-content-edit/page"
+        );
+        return {
+          element: <CollaboratorContentEdit />,
+        };
+      },
+    },
+    {
       path: profile.history.path,
       lazy: async () => {
         const { default: History } = await import("../views/history/page");

@@ -7,8 +7,11 @@ import { Button } from "@/components/ui/button";
 
 // Internal
 import { ContentTable } from "./components";
+import { useNavigate } from "react-router-dom";
 
 const ContentList = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-6">
       {/* Category Header */}
@@ -21,7 +24,7 @@ const ContentList = () => {
             Quản lý các nội dung trong hệ thống
           </p>
         </div>
-        <Button>
+        <Button onClick={() => navigate("create")}>
           <PlusIcon className="mr-2 size-4" />
           Thêm mới
         </Button>

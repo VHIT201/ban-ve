@@ -46,7 +46,7 @@ const CollectionFilters = ({ onFilterChange }: Props) => {
   const form = useForm<FilterFormValues>({
     resolver: zodResolver(FILTER_SCHEMA),
     defaultValues: {
-      searchQuery: "",
+      searchQuery: searchParams.get("search") || "",
       categories: [searchParams.get("category") || ""].filter(Boolean),
       priceRange: [0, 10000000],
       minPrice: 0,

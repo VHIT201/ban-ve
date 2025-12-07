@@ -1,5 +1,3 @@
-import { create } from "domain";
-
 export const ROUTE_PATHS = {
   auth: {
     path: "auth",
@@ -13,6 +11,7 @@ export const ROUTE_PATHS = {
     profile: {
       path: "profile",
       personal: { path: "personal" },
+      collaborator: { path: "collaborator" },
       history: { path: "history" },
     },
     detail: { path: "detail/:id" },
@@ -60,6 +59,7 @@ export const BASE_PATHS = {
     profile: {
       path: "/profile",
       personal: { path: "/profile/personal" },
+      collaborator: { path: "/profile/collaborator" },
       history: { path: "/profile/history" },
     },
     setting: { path: "/setting" },
