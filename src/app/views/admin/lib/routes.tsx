@@ -1,5 +1,5 @@
 // Core
-import { RouteObject } from "react-router-dom";
+import { RouteObject, Navigate } from "react-router-dom";
 
 // App
 import { ROUTE_PATHS } from "@/constants/paths";
@@ -22,6 +22,19 @@ const adminRoutes: RouteObject = {
     };
   },
   children: [
+    {
+      index: true,
+      lazy: async () => {
+        const { default: Dashboard } = await import("../views/dashboard/page");
+        return {
+          element: <Dashboard />,
+        };
+      },
+    },
+    {
+      path: admin.dashboard.path,
+      element: <Navigate to="/admin" replace />,
+    },
     {
       path: admin.categories.path,
       lazy: async () => {
@@ -46,6 +59,7 @@ const adminRoutes: RouteObject = {
     contentRoutes,
     copyRightRoutes,
     collaboratorRoutes,
+    
     {
       path: "social",
       lazy: async () => {
