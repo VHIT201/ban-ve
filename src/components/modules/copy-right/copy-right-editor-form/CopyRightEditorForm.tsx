@@ -77,7 +77,7 @@ interface CopyrightReportEditorFormProps {
   mode?: "create" | "view";
   defaultValues?: Partial<CopyrightReportFormValues>;
   onSubmit: (values: CopyrightReportFormValues) => void | Promise<void>;
-  isLoading?: boolean;
+  loading?: boolean;
   error?: string | null;
   onCancel?: () => void;
 }
@@ -117,7 +117,7 @@ const CopyRightEditorForm = ({
   mode = "create",
   defaultValues,
   onSubmit,
-  isLoading = false,
+  loading = false,
   error = null,
   onCancel,
 }: CopyrightReportEditorFormProps) => {
@@ -230,7 +230,7 @@ const CopyRightEditorForm = ({
                     placeholder="Nhập ID nội dung (24 ký tự)..."
                     className="pl-10 font-mono"
                     {...field}
-                    disabled={isLoading || isViewMode}
+                    disabled={loading || isViewMode}
                     maxLength={24}
                   />
                 </div>
@@ -257,7 +257,7 @@ const CopyRightEditorForm = ({
                     placeholder="Nhập ID nội dung gốc (nếu có)..."
                     className="pl-10 font-mono"
                     {...field}
-                    disabled={isLoading || isViewMode}
+                    disabled={loading || isViewMode}
                     maxLength={24}
                   />
                 </div>
@@ -282,7 +282,7 @@ const CopyRightEditorForm = ({
               <Select
                 onValueChange={field.onChange}
                 defaultValue={field.value}
-                disabled={isLoading || isViewMode}
+                disabled={loading || isViewMode}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -294,14 +294,11 @@ const CopyRightEditorForm = ({
                     const Icon = option.icon;
                     return (
                       <SelectItem key={option.value} value={option.value}>
-                        <div className="flex items-start gap-2 py-1">
-                          <Icon className={`w-4 h-4 mt-0.5 ${option.color}`} />
-                          <div className="flex flex-col">
-                            <span className="font-medium">{option.label}</span>
-                            <span className="text-xs text-gray-500">
-                              {option.description}
-                            </span>
-                          </div>
+                        <div className="flex flex-col">
+                          <span className="font-medium">{option.label}</span>
+                          <span className="text-xs text-gray-500">
+                            {option.description}
+                          </span>
                         </div>
                       </SelectItem>
                     );
@@ -352,7 +349,7 @@ const CopyRightEditorForm = ({
                   placeholder="Mô tả chi tiết về vi phạm, bao gồm: cách thức vi phạm, thời điểm phát hiện, ảnh hưởng của vi phạm..."
                   className="min-h-[150px] resize-none"
                   {...field}
-                  disabled={isLoading || isViewMode}
+                  disabled={loading || isViewMode}
                 />
               </FormControl>
               <FormDescription>
@@ -406,14 +403,14 @@ const CopyRightEditorForm = ({
                               handleAddEvidence();
                             }
                           }}
-                          disabled={isLoading}
+                          disabled={loading}
                         />
                       </div>
                       <Button
                         type="button"
                         variant="outline"
                         onClick={handleAddEvidence}
-                        disabled={isLoading || !evidenceInput.trim()}
+                        disabled={loading || !evidenceInput.trim()}
                       >
                         <Plus className="w-4 h-4 mr-1" />
                         Thêm
@@ -464,7 +461,7 @@ const CopyRightEditorForm = ({
                                   variant="ghost"
                                   size="sm"
                                   onClick={() => handleRemoveEvidence(index)}
-                                  disabled={isLoading}
+                                  disabled={loading}
                                 >
                                   <X className="w-4 h-4" />
                                 </Button>
@@ -522,27 +519,25 @@ const CopyRightEditorForm = ({
                 type="button"
                 variant="outline"
                 onClick={onCancel}
-                disabled={isLoading}
+                disabled={loading}
               >
                 Hủy
               </Button>
             )}
             <Button
               type="submit"
-              disabled={isLoading}
-              loading={isLoading}
+              variant="destructive"
+              disabled={loading}
+              loading={loading}
               className="ml-auto"
             >
-              {isLoading ? (
+              {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   Đang gửi báo cáo...
                 </>
               ) : (
-                <>
-                  <Shield className="w-4 h-4 mr-2" />
-                  Gửi báo cáo vi phạm
-                </>
+                <>Gửi báo cáo vi phạm</>
               )}
             </Button>
           </div>

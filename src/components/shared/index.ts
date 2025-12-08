@@ -4,3 +4,4 @@ export { default as DynamicFilter } from "./dynamic-filter";
 export { default as QueryBoundary } from "./query-boundary";
 export { default as ConfirmDialog } from "./confirm-dialog";
 export { default as DeleteDialog } from "./delete-dialog";
+export { default as ReportDialog } from "./report-dialog";
