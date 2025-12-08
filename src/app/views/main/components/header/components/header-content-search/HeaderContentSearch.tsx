@@ -92,6 +92,12 @@ const HeaderContentSearch = () => {
   const silenceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const recognitionRef = useRef<any>(null);
 
+  // Check for speech recognition support on mount
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    setIsSpeechSupported(!!SpeechRecognition);
+  }, []);
+
   // Debounced search handler
   const debouncedSearch = useMemo(
     () =>
@@ -135,112 +141,90 @@ const HeaderContentSearch = () => {
     }, 3000); // Auto-stop after 3 seconds of silence
   }, []);
 
-  // Initialize speech recognition
-  useEffect(() => {
+  const initSpeechRecognition = useCallback(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      setIsSpeechSupported(true);
+    if (!SpeechRecognition) {
+      setIsSpeechSupported(false);
+      return null;
+    }
+
+    try {
       const recognition = new SpeechRecognition();
       recognition.continuous = false;
       recognition.interimResults = true;
       recognition.lang = 'vi-VN';
-
-      recognition.onresult = (event: any) => {
-        setIsProcessing(false);
-        const results = event.results;
-        const transcript = Array.from({ length: results.length }, (_, i) => results[i])
-          .map((result) => result[0])
-          .map((result) => result.transcript)
-          .join('');
-        
-        // Reset the silence timer whenever we get new speech input
-        if (transcript.trim()) {
-          // Stop listening and clean up
-          if (recognitionRef.current) {
-            recognitionRef.current.stop();
-          }
-          setIsListening(false);
-          setIsProcessing(false);
-          if (silenceTimerRef.current) {
-            clearInterval(silenceTimerRef.current);
-            silenceTimerRef.current = null;
-          }
-          
-          // Update search query and show success message
-          setSearchQuery(transcript);
-          debouncedSearch(transcript);
-          
-          // No toast on successful recognition to be less intrusive
-        }
-      };
-
-      recognition.onerror = (event: Event) => {
-        console.error('Speech recognition error', event);
-        setIsListening(false);
-      };
-
-      recognition.onend = () => {
-        if (isListening) {
-          recognition.start();
-        }
-      };
-
-      recognitionRef.current = recognition;
+      return recognition;
+    } catch (error) {
+      console.error('Khởi tạo nhận dạng giọng nói thất bại:', error);
+      return null;
     }
+  }, []);
 
-    return () => {
+  const toggleSpeechRecognition = useCallback(async () => {
+    if (isListening) {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
-      if (silenceTimerRef.current) {
-        clearTimeout(silenceTimerRef.current);
-      }
-    };
-  }, [debouncedSearch, isListening]);
-
-  // Toggle speech recognition
-  const toggleSpeechRecognition = useCallback(() => {
-    if (!recognitionRef.current) {
-      toast.error('Trình duyệt không hỗ trợ nhận dạng giọng nói');
+      setIsListening(false);
+      setIsProcessing(false);
       return;
     }
 
-    if (isListening) {
-      recognitionRef.current.stop();
+    try {
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (error) {
+      console.error('Microphone access denied:', error);
+      return;
+    }
+
+    const recognition = initSpeechRecognition();
+    if (!recognition) return;
+
+    recognition.onresult = (event: any) => {
+      const transcript = Array.from(event.results)
+        .map((result: any) => result[0]?.transcript || '')
+        .join('')
+        .trim();
+
+      if (transcript) {
+        setSearchQuery(transcript);
+        debouncedSearch(transcript);
+      }
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error('Speech recognition error:', event.error);
       setIsListening(false);
       setIsProcessing(false);
-      if (silenceTimerRef.current) {
-        clearInterval(silenceTimerRef.current);
-        silenceTimerRef.current = null;
-      }
-      // No toast when stopping manually
-    } else {
-      try {
-        recognitionRef.current.start();
-        setIsListening(true);
-        setIsProcessing(true);
-        resetSilenceTimer();
-        
-        // No toast when starting to listen, visual indicator is enough
-      } catch (error) {
-        console.error('Speech recognition error:', error);
-        setIsListening(false);
-        setIsProcessing(false);
-        // Only show error toast for actual errors
-        toast.error('Không nhận dạng được giọng nói. Vui lòng thử lại.', {
-          position: 'bottom-center',
-          style: {
-            marginBottom: '1rem',
-            zIndex: 100,
-            background: '#fff',
-            color: '#ef4444',
-            border: '1px solid #fecaca',
-            padding: '8px 12px',
-            borderRadius: '6px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-          }
-        });
-      }
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+      setIsProcessing(false);
+    };
+
+    recognitionRef.current = recognition;
+    try {
+      setSearchQuery('');
+      setDebouncedQuery('');
+      debouncedSearch.cancel();
+      
+      recognition.start();
+      setIsListening(true);
+      setIsProcessing(true);
+      
+      setTimeout(() => {
+        if (isListening) {
+          recognition.stop();
+          setIsListening(false);
+          setIsProcessing(false);
+        }
+      }, 10000);
+      
+    } catch (error) {
+      console.error('Failed to start speech recognition:', error);
+      setIsListening(false);
+      setIsProcessing(false);
     }
   }, [isListening]);
 
