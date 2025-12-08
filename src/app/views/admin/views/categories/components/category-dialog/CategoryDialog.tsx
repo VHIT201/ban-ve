@@ -2,7 +2,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 
 // App
 import {
@@ -26,22 +25,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Category } from "@/api/models";
-
-// Zod schema
-const categorySchema = z.object({
-  name: z
-    .string()
-    .min(1, "Tên danh mục không được để trống")
-    .max(100, "Tên danh mục không được vượt quá 100 ký tự"),
-  slug: z.string().min(1, "Slug không được để trống"),
-  description: z
-    .string()
-    .max(500, "Mô tả không được vượt quá 500 ký tự")
-    .optional()
-    .or(z.literal("")),
-});
-
-export type CategoryFormValues = z.infer<typeof categorySchema>;
+import { CATEGORY_SCHEMA, DEFAULT_CATEGORY_FORM_VALUES } from "./lib/constants";
+import { generateSlug } from "@/utils/slug";
+import { CategoryFormValues } from "./lib/types";
 
 interface CategoryDialogProps {
   open: boolean;
@@ -49,44 +35,28 @@ interface CategoryDialogProps {
   category?: Category;
   mode?: "create" | "edit";
   onSubmit: (data: CategoryFormValues) => void | Promise<void>;
-  isLoading?: boolean;
+  loading?: boolean;
 }
 
 const CategoryDialog = (props: CategoryDialogProps) => {
+  console.log("Rerender CategoryDialog", props.category);
+
+  // Props
   const {
     open,
     onOpenChange,
-    category,
+    category = DEFAULT_CATEGORY_FORM_VALUES,
     mode = "create",
     onSubmit,
-    isLoading = false,
+    loading = false,
   } = props;
 
   // Form
   const form = useForm<CategoryFormValues>({
-    resolver: zodResolver(categorySchema),
-    defaultValues: {
-      name: "",
-      slug: "",
-      description: "",
-    },
+    resolver: zodResolver(CATEGORY_SCHEMA),
+    defaultValues: category,
   });
 
-  // Auto-generate slug from name
-  const generateSlug = (name: string) => {
-    return name
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/đ/g, "d")
-      .replace(/Đ/g, "D")
-      .replace(/[^a-z0-9\s-]/g, "")
-      .trim()
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-");
-  };
-
-  // Watch name field to auto-generate slug
   const watchName = form.watch("name");
 
   useEffect(() => {
@@ -98,26 +68,14 @@ const CategoryDialog = (props: CategoryDialogProps) => {
   // Reset form when dialog opens/closes or category changes
   useEffect(() => {
     if (open && category && mode === "edit") {
-      form.reset({
-        name: category.name || "",
-        slug: category.slug || "",
-        description: category.description || "",
-      });
+      form.reset(category);
     } else if (!open) {
-      form.reset({
-        name: "",
-        slug: "",
-        description: "",
-      });
+      form.reset(DEFAULT_CATEGORY_FORM_VALUES);
     }
   }, [open, category, mode, form]);
 
   const handleSubmit = async (data: CategoryFormValues) => {
     await onSubmit(data);
-    if (!isLoading) {
-      form.reset();
-      onOpenChange(false);
-    }
   };
 
   return (
@@ -172,11 +130,7 @@ const CategoryDialog = (props: CategoryDialogProps) => {
                     Slug <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="slug-tu-dong-tao"
-                      {...field}
-                      disabled={mode === "edit"}
-                    />
+                    <Input placeholder="slug-tu-dong-tao" {...field} disabled />
                   </FormControl>
                   <FormDescription>
                     {mode === "create"
@@ -215,11 +169,11 @@ const CategoryDialog = (props: CategoryDialogProps) => {
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                disabled={isLoading}
+                disabled={loading}
               >
                 Hủy
               </Button>
-              <Button type="submit" loading={isLoading}>
+              <Button type="submit" loading={loading}>
                 {mode === "create" ? "Tạo danh mục" : "Cập nhật"}
               </Button>
             </DialogFooter>

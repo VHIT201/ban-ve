@@ -32,6 +32,7 @@ import {
   CopyrightReportTableRow,
   useCopyrightReportTableColumnsDefsProps,
 } from "./types";
+import { cn } from "@/utils/ui";
 
 const getStatusConfig = (status?: string) => {
   switch (status?.toLowerCase()) {
@@ -178,20 +179,19 @@ export const useColumns = (props: useCopyrightReportTableColumnsDefsProps) => {
       },
       {
         accessorKey: "violationType",
+        width: 150,
         header: "Loại vi phạm",
         cell: ({ row }) => {
           const violationType = row.getValue("violationType") as
             | string
             | undefined;
           const config = getViolationTypeConfig(violationType);
-          const Icon = config.icon;
 
           return (
             <Badge
               variant="outline"
-              className={`${config.color} flex items-center gap-1 w-fit`}
+              className={`${config.color} text-center flex items-center gap-1 min-w-[130px]`}
             >
-              <Icon className="w-3 h-3" />
               {config.label}
             </Badge>
           );
@@ -293,11 +293,11 @@ export const useColumns = (props: useCopyrightReportTableColumnsDefsProps) => {
         cell: ({ row }) => {
           const status = row.getValue("status") as string | undefined;
           const config = getStatusConfig(status);
-          const Icon = config.icon;
-
           return (
-            <Badge variant={config.variant} className={config.className}>
-              <Icon className="w-3 h-3 mr-1" />
+            <Badge
+              variant={config.variant}
+              className={cn(config.className, "min-w-[80px]")}
+            >
               {config.label}
             </Badge>
           );

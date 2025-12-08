@@ -35,47 +35,65 @@ import {
   AlertCircle,
   X,
 } from "lucide-react";
+import { isUndefined } from "lodash-es";
 
 // Schema validation
-const contentFormSchema = z.object({
-  title: z
-    .string()
-    .min(3, "Tiêu đề phải có ít nhất 3 ký tự")
-    .max(200, "Tiêu đề không được vượt quá 200 ký tự"),
-  description: z
-    .string()
-    .min(10, "Mô tả phải có ít nhất 10 ký tự")
-    .max(1000, "Mô tả không được vượt quá 1000 ký tự"),
-  category_id: z.string().min(1, "Vui lòng chọn danh mục"),
-  price: z
-    .number({
-      required_error: "Vui lòng nhập giá",
-      invalid_type_error: "Giá phải là số",
-    })
-    .min(0, "Giá không được âm")
-    .max(1000000000, "Giá không được vượt quá 1 tỷ VNĐ"),
-  file: z
-    .instanceof(File, { message: "Vui lòng chọn file" })
-    .refine(
-      (file) => file.size <= 50 * 1024 * 1024,
-      "Kích thước file không được vượt quá 50MB"
-    )
-    .refine((file) => {
-      const validTypes = [
-        "application/pdf",
-        "application/acad",
-        "application/x-acad",
-        "application/autocad_dwg",
-        "image/x-dwg",
-        "application/dwg",
-        "application/x-dwg",
-        "application/x-autocad",
-        "image/vnd.dwg",
-        "drawing/dwg",
-      ];
-      return validTypes.includes(file.type) || file.name.endsWith(".dwg");
-    }, "Chỉ chấp nhận file PDF hoặc DWG"),
-});
+const contentFormSchema = z
+  .object({
+    title: z
+      .string()
+      .min(3, "Tiêu đề phải có ít nhất 3 ký tự")
+      .max(200, "Tiêu đề không được vượt quá 200 ký tự"),
+    description: z
+      .string()
+      .min(10, "Mô tả phải có ít nhất 10 ký tự")
+      .max(1000, "Mô tả không được vượt quá 1000 ký tự"),
+    category_id: z.string().min(1, "Vui lòng chọn danh mục"),
+    price: z
+      .number({
+        required_error: "Vui lòng nhập giá",
+        invalid_type_error: "Giá phải là số",
+      })
+      .min(0, "Giá không được âm")
+      .max(1000000000, "Giá không được vượt quá 1 tỷ VNĐ"),
+    file: z
+      .instanceof(File)
+      .refine(
+        (file) => file.size <= 50 * 1024 * 1024,
+        "Kích thước file không được vượt quá 50MB"
+      )
+      .refine((file) => {
+        const validTypes = [
+          "application/pdf",
+          "application/acad",
+          "application/x-acad",
+          "application/autocad_dwg",
+          "image/x-dwg",
+          "application/dwg",
+          "application/x-dwg",
+          "application/x-autocad",
+          "image/vnd.dwg",
+          "drawing/dwg",
+        ];
+        return validTypes.includes(file.type) || file.name.endsWith(".dwg");
+      }, "Chỉ chấp nhận file PDF hoặc DWG")
+      .optional(),
+    content_file: z
+      .object({
+        _id: z.string(),
+        name: z.string(),
+        type: z.string(),
+        size: z.number(),
+      })
+      .optional(),
+  })
+  .refine(
+    (data) => data.file !== undefined || data.content_file !== undefined,
+    {
+      message: "Vui lòng chọn file hoặc giữ file hiện tại",
+      path: ["file"],
+    }
+  );
 
 export type ContentFormValues = z.infer<typeof contentFormSchema>;
 
@@ -111,11 +129,13 @@ const ContentEditorForm = ({
       category_id: defaultValues?.category_id || "",
       price: defaultValues?.price || 0,
       file: defaultValues?.file,
+      content_file: defaultValues?.content_file,
     },
   });
 
   // Watch file changes
   const selectedFile = form.watch("file");
+  const contentFile = form.watch("content_file");
 
   // Reset form when mode changes
   useEffect(() => {
@@ -126,6 +146,7 @@ const ContentEditorForm = ({
         category_id: defaultValues.category_id || "",
         price: defaultValues.price || 0,
         file: defaultValues.file,
+        content_file: defaultValues.content_file,
       });
     }
   }, [defaultValues, form, mode]);
@@ -302,6 +323,7 @@ const ContentEditorForm = ({
         />
 
         {/* File Upload */}
+
         <FormField
           control={form.control}
           name="file"
@@ -312,6 +334,26 @@ const ContentEditorForm = ({
               </FormLabel>
               <FormControl>
                 <div className="space-y-3">
+                  {/* Current File Display (Edit Mode) */}
+                  {!selectedFile && contentFile && (
+                    <div className="flex items-center gap-3 p-4 border border-blue-200 rounded-lg bg-blue-50">
+                      <div className="flex items-center justify-center w-10 h-10 rounded bg-blue-100">
+                        <FileText className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">
+                          {contentFile.name}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {formatFileSize(contentFile.size)} • File hiện tại
+                        </p>
+                      </div>
+                      <Badge variant="outline" className="text-xs">
+                        {contentFile.type}
+                      </Badge>
+                    </div>
+                  )}
+
                   {/* Upload Button */}
                   {!selectedFile && (
                     <div className="flex items-center justify-center w-full">
@@ -323,7 +365,9 @@ const ContentEditorForm = ({
                           <Upload className="w-8 h-8 mb-2 text-gray-500" />
                           <p className="mb-2 text-sm text-gray-500">
                             <span className="font-semibold">
-                              Nhấn để chọn file
+                              {contentFile
+                                ? "Chọn file mới"
+                                : "Nhấn để chọn file"}
                             </span>{" "}
                             hoặc kéo thả
                           </p>
@@ -349,18 +393,18 @@ const ContentEditorForm = ({
                     </div>
                   )}
 
-                  {/* File Preview */}
+                  {/* New File Preview */}
                   {selectedFile && (
-                    <div className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg bg-white">
-                      <div className="flex items-center justify-center w-10 h-10 rounded bg-blue-100">
-                        <FileText className="w-5 h-5 text-blue-600" />
+                    <div className="flex items-center gap-3 p-4 border border-green-200 rounded-lg bg-green-50">
+                      <div className="flex items-center justify-center w-10 h-10 rounded bg-green-100">
+                        <FileText className="w-5 h-5 text-green-600" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate">
                           {selectedFile.name}
                         </p>
                         <p className="text-xs text-gray-500">
-                          {formatFileSize(selectedFile.size)}
+                          {formatFileSize(selectedFile.size)} • File mới
                         </p>
                       </div>
                       <Button
@@ -383,7 +427,9 @@ const ContentEditorForm = ({
                 </div>
               </FormControl>
               <FormDescription>
-                Chỉ chấp nhận file PDF hoặc DWG, kích thước tối đa 50MB
+                {contentFile && !selectedFile
+                  ? "Đang sử dụng file hiện tại. Upload file mới để thay thế."
+                  : "Chỉ chấp nhận file PDF hoặc DWG, kích thước tối đa 50MB"}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -404,7 +450,7 @@ const ContentEditorForm = ({
           )}
           <Button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || form.formState.isDirty === false}
             loading={isLoading}
             className="ml-auto"
           >

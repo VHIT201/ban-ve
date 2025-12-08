@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AlertTriangle } from "lucide-react";
+import { Trash2Icon, TrashIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,15 +24,22 @@ const DataTableDeleteDialog = <TData,>({
 
   const [value, setValue] = useState("");
 
+  const handleDelete = () => {
+    if (currentRow && value === currentRow.name) {
+      onDelete(currentRow);
+    }
+  };
+
   return (
     <ConfirmDialog
+      disabled={value !== currentRow?.name}
       isLoading={deleting}
       open={openDeleteDialog && currentRow !== null}
       onOpenChange={openDeleteDialogAction}
-      handleConfirm={() => currentRow && onDelete(currentRow)}
+      handleConfirm={handleDelete}
       title={
         <span className="text-destructive">
-          <AlertTriangle
+          <Trash2Icon
             className="stroke-destructive me-1 inline-block"
             size={18}
           />{" "}
@@ -43,18 +50,19 @@ const DataTableDeleteDialog = <TData,>({
         <div className="space-y-4">
           <p className="mb-2">
             Bạn chắc chắn xóa{" "}
-            <span className="font-bold">{currentRow?.name}</span>?
+            <span className="font-bold ml-1 text-destructive">
+              {currentRow?.name}
+            </span>
             <br />
-            Hành động này không thể hoàn tác. Vui lòng nhập tên người dùng để
-            xác nhận.
+            Hành động này không thể hoàn tác. Vui lòng nhập tên giá trị để xác
+            nhận.
           </p>
 
           <Label className="my-2">
-            Tên người dùng:
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder="Nhập tên người dùng để xác nhận việc xóa."
+              placeholder="Nhập tên giá trị để xác nhận việc xóa."
               disabled={deleting}
             />
           </Label>

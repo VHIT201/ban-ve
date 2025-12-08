@@ -92,7 +92,7 @@ function SidebarMenuCollapsible({
   return (
     <Collapsible
       asChild
-      defaultOpen={checkIsActive(href, item, true)}
+      defaultOpen={checkIsActive(href, item)}
       className="group/collapsible"
     >
       <SidebarMenuItem>
@@ -173,15 +173,13 @@ function SidebarMenuCollapsedDropdown({
   );
 }
 
-function checkIsActive(href: string, item: NavItem, mainNav = false) {
+function checkIsActive(href: string, item: NavItem) {
   const itemUrl = typeof item.url === "string" ? item.url : "";
   return (
-    href === item.url || // /endpint?search=param
-    href.split("?")[0] === item.url || // endpoint
-    !!item?.items?.filter((i) => i.url === href).length || // if child nav is active
-    (mainNav &&
-      href.split("/")[1] !== "" &&
-      href.split("/")[1] === itemUrl.split("/")[1])
+    href === item.url ||
+    href.split("?")[0] === item.url ||
+    !!item?.items?.filter((i) => i.url === href).length ||
+    (itemUrl !== "/admin" && href.startsWith(itemUrl + "/"))
   );
 }
 

@@ -20,7 +20,7 @@ export const DataTableContent = <TData,>() => {
       <Table>
         <TableHeader
           className={cn(
-            "dark:from-primary/70 dark:to-primary/60 bg-primary/90 backdrop-blur-md",
+            "dark:from-primary/70 dark:to-primary/60 bg-primary backdrop-blur-md",
             classNames?.header
           )}
         >

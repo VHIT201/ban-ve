@@ -5,17 +5,17 @@ import { Category } from "@/api/models";
 import { DataTable, QueryBoundary } from "@/components/shared";
 import { useCategoryTableColumnsDefs } from "./lib/hooks";
 import {
+  getGetApiCategoriesQueryKey,
   useDeleteApiCategoriesId,
   useGetApiCategories,
   usePutApiCategoriesId,
 } from "@/api/endpoints/categories";
-import { Response } from "@/api/types/base";
 import { UseQueryResult } from "@tanstack/react-query";
 import { Fragment, useState } from "react";
 import CategoryDialog from "../category-dialog";
-import { CategoryFormValues } from "../category-dialog/CategoryDialog";
 import { toast } from "sonner";
 import { DataTableDeleteDialog } from "@/components/shared/data-table/shared";
+import { CategoryFormValues } from "../category-dialog/lib/types";
 
 const CategoryTable = () => {
   // States
@@ -31,8 +31,21 @@ const CategoryTable = () => {
   }) as UseQueryResult<Category[]>;
 
   // Mutations
-  const editCategoryMutation = usePutApiCategoriesId();
-  const deleteCategoryMutation = useDeleteApiCategoriesId();
+  const editCategoryMutation = usePutApiCategoriesId({
+    mutation: {
+      meta: {
+        invalidateQueries: [getGetApiCategoriesQueryKey()],
+      },
+    },
+  });
+
+  const deleteCategoryMutation = useDeleteApiCategoriesId({
+    mutation: {
+      meta: {
+        invalidateQueries: [getGetApiCategoriesQueryKey()],
+      },
+    },
+  });
 
   // Methods
   const handleColumnEdit = (category: Category) => {
@@ -112,6 +125,7 @@ const CategoryTable = () => {
         }}
       </QueryBoundary>
       <CategoryDialog
+        mode="edit"
         open={Boolean(editSelectRow)}
         onOpenChange={() => setEditSelectRow(null)}
         category={editSelectRow!}

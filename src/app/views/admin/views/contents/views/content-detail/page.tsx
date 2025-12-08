@@ -58,6 +58,12 @@ const ContentDetail = () => {
               title: contentDetail.title,
               description: contentDetail.description,
               category_id: contentDetail.category_id._id,
+              content_file: {
+                name: contentDetail.file_id.name,
+                size: contentDetail.file_id.size,
+                type: contentDetail.file_id.type,
+                _id: contentDetail.file_id._id,
+              },
             }}
             isLoading={editContentMutation.isPending}
             onSubmit={() => handleApproveContent(contentDetail._id)}
