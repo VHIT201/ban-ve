@@ -1,20 +1,38 @@
 import { toast } from "sonner";
 import { ContentEditorForm } from "@/components/modules/content";
-import { usePostApiContentUpload } from "@/api/endpoints/content";
+import {
+  getGetApiContentQueryKey,
+  usePostApiContentUpload,
+} from "@/api/endpoints/content";
 import { ContentFormValues } from "@/components/modules/content/content-editor-form/ContentEditorForm";
 import { MutationData } from "@/api/types/base";
 import { FileResponse } from "@/api/types/file";
 import { usePostApiFileUpload } from "@/api/endpoints/files";
+import { useNavigate } from "react-router-dom";
+import { BASE_PATHS } from "@/constants/paths";
 
 const ContentDetail = () => {
-  // Mutations
-  const createContentMutation = usePostApiContentUpload();
+  // Hooks
+  const navigate = useNavigate();
 
+  // Mutations
   const uploadFileMutation = usePostApiFileUpload();
+  const createContentMutation = usePostApiContentUpload({
+    mutation: {
+      meta: {
+        invalidateQueries: [getGetApiContentQueryKey()],
+      },
+    },
+  });
 
   // Methods
   const handleSubmit = async (values: ContentFormValues) => {
     try {
+      if (!values.file) {
+        toast.error("Vui lòng chọn file để tải lên.");
+        return;
+      }
+
       const fileUploadResponse = await uploadFileMutation.mutateAsync({
         data: {
           file: values.file,
@@ -28,12 +46,12 @@ const ContentDetail = () => {
         data: {
           title: values.title,
           description: values.description,
-          fileUrl: fileData?.path || "",
-          field: values.category_id,
-          fileType: values.file.type,
+          category_id: values.category_id,
+          file_id: fileData?._id,
         },
       });
 
+      navigate(BASE_PATHS.admin.contents.path);
       toast.success("Nội dung đã được duyệt thành công.");
     } catch (error) {
       console.error("Failed to approve content:", error);

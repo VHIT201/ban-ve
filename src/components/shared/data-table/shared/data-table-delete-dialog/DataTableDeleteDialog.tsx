@@ -32,6 +32,7 @@ const DataTableDeleteDialog = <TData,>({
 
   return (
     <ConfirmDialog
+      disabled={value !== currentRow?.name}
       isLoading={deleting}
       open={openDeleteDialog && currentRow !== null}
       onOpenChange={openDeleteDialogAction}
