@@ -90,14 +90,7 @@ export const useCategoryTableColumnsDefs = (
                     })
                   : "N/A"}
               </div>
-              {isUpdated && (
-                <Badge
-                  variant="outline"
-                  className="text-xs bg-blue-50 text-blue-700 border-blue-200"
-                >
-                  Đã cập nhật
-                </Badge>
-              )}
+              {isUpdated && <Badge>Đã cập nhật</Badge>}
             </div>
           );
         },
