@@ -1,7 +1,6 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -10,26 +9,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   ShoppingCart,
-  FileText,
-  Calendar,
-  User,
-  Download,
-  Eye,
   HeartIcon,
   EyeIcon,
   Check,
 } from "lucide-react";
 import { FC, useState } from "react";
 import { Props } from "./lib/types";
-import {
-  formatDate,
-  formatFileSize,
-  getStatusColor,
-  getStatusText,
-} from "./lib/utils";
 import { cn } from "@/utils/ui";
 import { generateImageRandom } from "@/utils/image";
 import { useCartStore } from "@/stores/use-cart-store";
+import Watermark from "@uiw/react-watermark";
 
 const BlueprintCard: FC<Props> = (props) => {
   const { blueprint, onViewDetails, onAddToCart } = props;
@@ -44,28 +33,18 @@ const BlueprintCard: FC<Props> = (props) => {
     e.stopPropagation();
 
     if (isInCart) {
-      // If already in cart, open cart drawer
       openCart();
       return;
     }
 
     setIsAdding(true);
-
     try {
-      // Simulate async operation (can be replaced with API call)
       await new Promise((resolve) => setTimeout(resolve, 300));
-
-      // Add to cart
       addItem(blueprint);
-
-      // Call parent callback if provided
       onAddToCart?.(blueprint);
 
-      // Show success state
       setJustAdded(true);
       setTimeout(() => setJustAdded(false), 2000);
-    } catch (error) {
-      console.error("Error adding to cart:", error);
     } finally {
       setIsAdding(false);
     }
@@ -81,42 +60,73 @@ const BlueprintCard: FC<Props> = (props) => {
         backgroundSize: "cover",
       }}
     >
-      <div className="h-60 relative">
+      {/* IMAGE AREA + WATERMARK */}
+      <div className="h-60 relative overflow-hidden">
+        <div className="absolute inset-0 w-full h-full pointer-events-none">
+          <Watermark
+            content="TẠO BỞI BANVE.VN"
+            fontSize={22}
+            rotate={-15}
+            fontColor="rgba(255,255,255,0.5)"
+            gapX={200}
+            gapY={150}
+            width={300}
+            height={100}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              zIndex: 10,
+              pointerEvents: 'none'
+            }}
+          >
+            <div className="w-full h-full" />
+          </Watermark>
+        </div>
+
+
+        {/* Hover View Button */}
         <div
           onClick={() => onViewDetails(blueprint)}
-          className="cursor-pointer group/view z-20 flex flex-col items-center justify-center opacity-0 group-hover/container:opacity-100 absolute left-1/2 top-1/2 -translate-1/2  rounded-full transition-opacity duration-300"
+          className="cursor-pointer group/view z-20 flex flex-col items-center justify-center opacity-0 group-hover/container:opacity-100 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full transition-opacity duration-300"
         >
-          <EyeIcon
-            className={cn(
-              "size-8 stroke-white group-hover/view:scale-110 transition-transform duration-300"
-            )}
-          />
+          <EyeIcon className="size-8 stroke-white group-hover/view:scale-110 transition-transform duration-300" />
           <span className="text-white text-sm group-hover/view:scale-110 transition-transform duration-300">
             Xem chi tiết
           </span>
         </div>
       </div>
+
       <div className="opacity-0 group-hover/container:opacity-100 transition-opacity duration-300 absolute inset-0 bg-linear-to-b from-gray-400/50 to-gray-300/20 z-10" />
+
+      {/* Category Badge */}
       <Badge className="absolute top-4 left-4 rounded-full z-20">
         {blueprint.category_id.name}
       </Badge>
 
+      {/* Heart Button */}
       <Button
         size="icon"
         className="z-20 opacity-0 group-hover/container:opacity-100 bg-primary/10 hover:bg-primary/20 absolute top-4 right-4 rounded-full transition-opacity duration-300"
       >
-        <HeartIcon className={cn("size-4 stroke-white")} />
+        <HeartIcon className="size-4 stroke-white" />
         <span className="sr-only">Like</span>
       </Button>
+
+      {/* Card Content */}
       <Card className="border-none relative z-20">
         <CardHeader>
           <CardTitle className="text-lg md:text-xl line-clamp-1">
             {blueprint.title}
           </CardTitle>
         </CardHeader>
+
         <CardContent className="line-clamp-2 h-12">
           {blueprint.description}
         </CardContent>
+
         <CardFooter className="justify-between gap-3 max-sm:flex-col max-sm:items-stretch flex-wrap">
           <div className="flex flex-col">
             <span className="text-xl font-semibold">
@@ -126,13 +136,13 @@ const BlueprintCard: FC<Props> = (props) => {
               }).format(blueprint.price)}
             </span>
           </div>
+
           <Button
             size="lg"
             onClick={handleAddToCart}
             disabled={isAdding}
             className={cn(
-              "ml-auto",
-              "transition-all duration-300",
+              "ml-auto transition-all duration-300",
               isInCart && "bg-green-600 hover:bg-green-700",
               justAdded && "bg-green-600"
             )}
