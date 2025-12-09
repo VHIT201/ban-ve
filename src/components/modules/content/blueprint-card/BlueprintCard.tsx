@@ -13,21 +13,77 @@ import {
   EyeIcon,
   Check,
 } from "lucide-react";
-import { FC, useState } from "react";
+import { FC, useState, useRef, useEffect } from "react";
 import { Props } from "./lib/types";
 import { cn } from "@/utils/ui";
 import { generateImageRandom } from "@/utils/image";
 import { useCartStore } from "@/stores/use-cart-store";
-import Watermark from "@uiw/react-watermark";
 
 const BlueprintCard: FC<Props> = (props) => {
   const { blueprint, onViewDetails, onAddToCart } = props;
   const [isAdding, setIsAdding] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const addItem = useCartStore((state) => state.addItem);
   const isInCart = useCartStore((state) => state.isInCart(blueprint._id));
   const openCart = useCartStore((state) => state.openCart);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const drawWatermark = () => {
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Set canvas size to match parent
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      
+      // Add semi-transparent overlay
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw watermark text
+      ctx.save();
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(-Math.PI / 6); // -30 degrees in radians
+      
+      const text = "TẠO BỞI BANVE.VN";
+      ctx.font = 'bold 22px Arial';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      
+      // Draw multiple watermarks in a grid
+      for (let x = -canvas.width; x < canvas.width * 2; x += 200) {
+        for (let y = -canvas.height; y < canvas.height * 2; y += 150) {
+          ctx.fillText(text, x, y);
+        }
+      }
+      
+      ctx.restore();
+    };
+
+    // Initial draw
+    drawWatermark();
+
+    // Handle window resize
+    const handleResize = () => {
+      drawWatermark();
+    };
+
+    window.addEventListener('resize', handleResize);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -63,27 +119,14 @@ const BlueprintCard: FC<Props> = (props) => {
       {/* IMAGE AREA + WATERMARK */}
       <div className="h-60 relative overflow-hidden">
         <div className="absolute inset-0 w-full h-full pointer-events-none">
-          <Watermark
-            content="TẠO BỞI BANVE.VN"
-            fontSize={22}
-            rotate={-15}
-            fontColor="rgba(255,255,255,0.5)"
-            gapX={200}
-            gapY={150}
-            width={300}
-            height={100}
+          <canvas 
+            ref={canvasRef}
+            className="absolute inset-0 w-full h-full z-10 pointer-events-none"
             style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              zIndex: 10,
-              pointerEvents: 'none'
+              mixBlendMode: 'overlay',
+              pointerEvents: 'none',
             }}
-          >
-            <div className="w-full h-full" />
-          </Watermark>
+          />
         </div>
 
 
