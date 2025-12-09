@@ -19,6 +19,7 @@ export const ROUTE_PATHS = {
     payment: { path: "payment" },
     setting: { path: "setting" },
     search: { path: "search" },
+    terms: { path: "terms" },
   },
 
   admin: {
