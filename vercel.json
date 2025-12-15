@@ -3,6 +3,10 @@
         {
             "source": "/api/:path*",
             "destination": "https://giangvien.org/gateway/ban-ve/api/:path*"
+        },
+        {
+            "source": "/(.*)",
+            "destination": "/index.html"
         }
     ]
 }

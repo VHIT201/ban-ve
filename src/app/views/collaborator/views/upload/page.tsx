@@ -138,15 +138,42 @@ export default function UploadPage() {
     setUploadStatus("idle");
 
     try {
+      let fileToUpload = formData.file;
+      
+      // Kiểm tra nếu là file ảnh thì thêm watermark
+      if (formData.file.type.startsWith('image/')) {
+        try {
+          const { addWatermarkToImage } = await import('@/utils/watermark');
+          fileToUpload = await addWatermarkToImage(
+            formData.file,
+            `Bản quyền thuộc về ${formData.drawingName}`
+          );
+        } catch (error) {
+          console.error('Lỗi khi thêm watermark:', error);
+          // Nếu có lỗi khi thêm watermark, vẫn tiếp tục upload file gốc
+          toast.warning('Không thể thêm watermark, đang tải lên ảnh gốc');
+        }
+      }
+
       const formDataToSend = new FormData();
-      formDataToSend.append('file', formData.file);
+      formDataToSend.append('file', fileToUpload);
       formDataToSend.append('drawingName', formData.drawingName);
       formDataToSend.append('price', formData.price);
       formDataToSend.append('description', formData.description);
       formDataToSend.append('notes', formData.notes);
       formDataToSend.append('category', formData.category);
       
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Gọi API upload file lên server
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formDataToSend,
+      });
+      
+      if (!response.ok) {
+        throw new Error('Lỗi khi tải file lên server');
+      }
+      
+      const result = await response.json();
       
       setUploadStatus("success");
       toast.success("Tải lên thành công", {
