@@ -32,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ReportDialog } from "@/components/shared";
+import { ContentPaymentDialog } from "@/components/modules/content";
 
 const mockProduct: ContentResponse = {
   _id: "1",
@@ -78,6 +79,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
   const navigate = useNavigate();
 
   // States
+  const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
   const [openReportDialog, setOpenReportDialog] = useState(false);
 
   // Cart Store
@@ -117,7 +119,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
     if (!isInCart) {
       addItem(content, 1);
     }
-    navigate("/payment");
+    setOpenPaymentDialog(true);
   };
 
   return (
@@ -314,9 +316,16 @@ const BlueprintDetailView: FC<Props> = (props) => {
           </div>
         </div>
       </div>
+
       <ReportDialog
         open={openReportDialog}
         onOpenChange={setOpenReportDialog}
+      />
+
+      <ContentPaymentDialog
+        contentId={content._id}
+        open={openPaymentDialog}
+        onOpenChange={setOpenPaymentDialog}
       />
     </Fragment>
   );

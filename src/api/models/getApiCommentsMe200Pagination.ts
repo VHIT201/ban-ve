@@ -1,9 +1,7 @@
 // @ts-nocheck
 
-export type GetApiContentsContentIdComments200Pagination = {
+export type GetApiCommentsMe200Pagination = {
   total?: number;
-  page?: number;
-  limit?: number;
   totalPages?: number;
   currentPage?: number;
   itemsPerPage?: number;

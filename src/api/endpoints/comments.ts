@@ -27,10 +27,14 @@ import type {
   Comment,
   CreateCommentInput,
   DeleteApiCommentsId200,
-  GetApiContentsContentIdComments200,
-  GetApiContentsContentIdCommentsParams,
-  PostApiComments201,
-  PostApiContentsContentIdCommentsBody,
+  GetApiCommentsByContentContentId200,
+  GetApiCommentsByContentContentIdParams,
+  GetApiCommentsContentsContentId200,
+  GetApiCommentsContentsContentIdParams,
+  GetApiCommentsMe200,
+  GetApiCommentsMeParams,
+  PostApiCommentsContentsContentIdBody,
+  PostApiCommentsCreate201,
   PutApiCommentsId200,
   UpdateCommentInput
 } from '../models';
@@ -46,28 +50,28 @@ import type { ErrorType , BodyType } from '../mutator/custom-instance';
  * Cho phép người dùng đăng nhập hoặc khách để lại bình luận
  * @summary Tạo bình luận mới
  */
-export const postApiContentsContentIdComments = (
+export const postApiCommentsContentsContentId = (
     contentId: string,
-    postApiContentsContentIdCommentsBody: BodyType<PostApiContentsContentIdCommentsBody>,
+    postApiCommentsContentsContentIdBody: BodyType<PostApiCommentsContentsContentIdBody>,
  signal?: AbortSignal
 ) => {
       
       
       return mainInstance<Comment>(
-      {url: `/api/contents/${contentId}/comments`, method: 'POST',
+      {url: `/api/comments/contents/${contentId}`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
-      data: postApiContentsContentIdCommentsBody, signal
+      data: postApiCommentsContentsContentIdBody, signal
     },
       );
     }
   
 
 
-export const getPostApiContentsContentIdCommentsMutationOptions = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiContentsContentIdComments>>, TError,{contentId: string;data: BodyType<PostApiContentsContentIdCommentsBody>}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof postApiContentsContentIdComments>>, TError,{contentId: string;data: BodyType<PostApiContentsContentIdCommentsBody>}, TContext> => {
+export const getPostApiCommentsContentsContentIdMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiCommentsContentsContentId>>, TError,{contentId: string;data: BodyType<PostApiCommentsContentsContentIdBody>}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiCommentsContentsContentId>>, TError,{contentId: string;data: BodyType<PostApiCommentsContentsContentIdBody>}, TContext> => {
 
-const mutationKey = ['postApiContentsContentIdComments'];
+const mutationKey = ['postApiCommentsContentsContentId'];
 const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -77,10 +81,10 @@ const {mutation: mutationOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiContentsContentIdComments>>, {contentId: string;data: BodyType<PostApiContentsContentIdCommentsBody>}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiCommentsContentsContentId>>, {contentId: string;data: BodyType<PostApiCommentsContentsContentIdBody>}> = (props) => {
           const {contentId,data} = props ?? {};
 
-          return  postApiContentsContentIdComments(contentId,data,)
+          return  postApiCommentsContentsContentId(contentId,data,)
         }
 
         
@@ -88,38 +92,38 @@ const {mutation: mutationOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type PostApiContentsContentIdCommentsMutationResult = NonNullable<Awaited<ReturnType<typeof postApiContentsContentIdComments>>>
-    export type PostApiContentsContentIdCommentsMutationBody = BodyType<PostApiContentsContentIdCommentsBody>
-    export type PostApiContentsContentIdCommentsMutationError = ErrorType<void>
+    export type PostApiCommentsContentsContentIdMutationResult = NonNullable<Awaited<ReturnType<typeof postApiCommentsContentsContentId>>>
+    export type PostApiCommentsContentsContentIdMutationBody = BodyType<PostApiCommentsContentsContentIdBody>
+    export type PostApiCommentsContentsContentIdMutationError = ErrorType<void>
 
     /**
  * @summary Tạo bình luận mới
  */
-export const usePostApiContentsContentIdComments = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiContentsContentIdComments>>, TError,{contentId: string;data: BodyType<PostApiContentsContentIdCommentsBody>}, TContext>, }
+export const usePostApiCommentsContentsContentId = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiCommentsContentsContentId>>, TError,{contentId: string;data: BodyType<PostApiCommentsContentsContentIdBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postApiContentsContentIdComments>>,
+        Awaited<ReturnType<typeof postApiCommentsContentsContentId>>,
         TError,
-        {contentId: string;data: BodyType<PostApiContentsContentIdCommentsBody>},
+        {contentId: string;data: BodyType<PostApiCommentsContentsContentIdBody>},
         TContext
       > => {
 
-      const mutationOptions = getPostApiContentsContentIdCommentsMutationOptions(options);
+      const mutationOptions = getPostApiCommentsContentsContentIdMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }
     /**
  * @summary Lấy danh sách bình luận của một nội dung
  */
-export const getApiContentsContentIdComments = (
+export const getApiCommentsContentsContentId = (
     contentId: string,
-    params?: GetApiContentsContentIdCommentsParams,
+    params?: GetApiCommentsContentsContentIdParams,
  signal?: AbortSignal
 ) => {
       
       
-      return mainInstance<GetApiContentsContentIdComments200>(
-      {url: `/api/contents/${contentId}/comments`, method: 'GET',
+      return mainInstance<GetApiCommentsContentsContentId200>(
+      {url: `/api/comments/contents/${contentId}`, method: 'GET',
         params, signal
     },
       );
@@ -128,82 +132,82 @@ export const getApiContentsContentIdComments = (
 
 
 
-export const getGetApiContentsContentIdCommentsInfiniteQueryKey = (contentId?: string,
-    params?: GetApiContentsContentIdCommentsParams,) => {
+export const getGetApiCommentsContentsContentIdInfiniteQueryKey = (contentId?: string,
+    params?: GetApiCommentsContentsContentIdParams,) => {
     return [
-    'infinite', `/api/contents/${contentId}/comments`, ...(params ? [params]: [])
+    'infinite', `/api/comments/contents/${contentId}`, ...(params ? [params]: [])
     ] as const;
     }
 
-export const getGetApiContentsContentIdCommentsQueryKey = (contentId?: string,
-    params?: GetApiContentsContentIdCommentsParams,) => {
+export const getGetApiCommentsContentsContentIdQueryKey = (contentId?: string,
+    params?: GetApiCommentsContentsContentIdParams,) => {
     return [
-    `/api/contents/${contentId}/comments`, ...(params ? [params]: [])
+    `/api/comments/contents/${contentId}`, ...(params ? [params]: [])
     ] as const;
     }
 
     
-export const getGetApiContentsContentIdCommentsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, GetApiContentsContentIdCommentsParams['page']>, TError = ErrorType<unknown>>(contentId: string,
-    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData, QueryKey, GetApiContentsContentIdCommentsParams['page']>>, }
+export const getGetApiCommentsContentsContentIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, GetApiCommentsContentsContentIdParams['page']>, TError = ErrorType<unknown>>(contentId: string,
+    params?: GetApiCommentsContentsContentIdParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, TError, TData, QueryKey, GetApiCommentsContentsContentIdParams['page']>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiContentsContentIdCommentsInfiniteQueryKey(contentId,params);
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCommentsContentsContentIdInfiniteQueryKey(contentId,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, QueryKey, GetApiContentsContentIdCommentsParams['page']> = ({ signal, pageParam }) => getApiContentsContentIdComments(contentId,{...params, 'page': pageParam || params?.['page']}, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, QueryKey, GetApiCommentsContentsContentIdParams['page']> = ({ signal, pageParam }) => getApiCommentsContentsContentId(contentId,{...params, 'page': pageParam || params?.['page']}, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, enabled: !!(contentId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData, QueryKey, GetApiContentsContentIdCommentsParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(contentId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, TError, TData, QueryKey, GetApiCommentsContentsContentIdParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetApiContentsContentIdCommentsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiContentsContentIdComments>>>
-export type GetApiContentsContentIdCommentsInfiniteQueryError = ErrorType<unknown>
+export type GetApiCommentsContentsContentIdInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>>
+export type GetApiCommentsContentsContentIdInfiniteQueryError = ErrorType<unknown>
 
 
-export function useGetApiContentsContentIdCommentsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, GetApiContentsContentIdCommentsParams['page']>, TError = ErrorType<unknown>>(
+export function useGetApiCommentsContentsContentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, GetApiCommentsContentsContentIdParams['page']>, TError = ErrorType<unknown>>(
  contentId: string,
-    params: undefined |  GetApiContentsContentIdCommentsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData, QueryKey, GetApiContentsContentIdCommentsParams['page']>> & Pick<
+    params: undefined |  GetApiCommentsContentsContentIdParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, TError, TData, QueryKey, GetApiCommentsContentsContentIdParams['page']>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiContentsContentIdComments>>,
+          Awaited<ReturnType<typeof getApiCommentsContentsContentId>>,
           TError,
-          Awaited<ReturnType<typeof getApiContentsContentIdComments>>, QueryKey
+          Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, QueryKey
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiContentsContentIdCommentsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, GetApiContentsContentIdCommentsParams['page']>, TError = ErrorType<unknown>>(
+export function useGetApiCommentsContentsContentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, GetApiCommentsContentsContentIdParams['page']>, TError = ErrorType<unknown>>(
  contentId: string,
-    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData, QueryKey, GetApiContentsContentIdCommentsParams['page']>> & Pick<
+    params?: GetApiCommentsContentsContentIdParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, TError, TData, QueryKey, GetApiCommentsContentsContentIdParams['page']>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiContentsContentIdComments>>,
+          Awaited<ReturnType<typeof getApiCommentsContentsContentId>>,
           TError,
-          Awaited<ReturnType<typeof getApiContentsContentIdComments>>, QueryKey
+          Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, QueryKey
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiContentsContentIdCommentsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, GetApiContentsContentIdCommentsParams['page']>, TError = ErrorType<unknown>>(
+export function useGetApiCommentsContentsContentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, GetApiCommentsContentsContentIdParams['page']>, TError = ErrorType<unknown>>(
  contentId: string,
-    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData, QueryKey, GetApiContentsContentIdCommentsParams['page']>>, }
+    params?: GetApiCommentsContentsContentIdParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, TError, TData, QueryKey, GetApiCommentsContentsContentIdParams['page']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Lấy danh sách bình luận của một nội dung
  */
 
-export function useGetApiContentsContentIdCommentsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, GetApiContentsContentIdCommentsParams['page']>, TError = ErrorType<unknown>>(
+export function useGetApiCommentsContentsContentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, GetApiCommentsContentsContentIdParams['page']>, TError = ErrorType<unknown>>(
  contentId: string,
-    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData, QueryKey, GetApiContentsContentIdCommentsParams['page']>>, }
+    params?: GetApiCommentsContentsContentIdParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, TError, TData, QueryKey, GetApiCommentsContentsContentIdParams['page']>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiContentsContentIdCommentsInfiniteQueryOptions(contentId,params,options)
+  const queryOptions = getGetApiCommentsContentsContentIdInfiniteQueryOptions(contentId,params,options)
 
   const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -215,67 +219,67 @@ export function useGetApiContentsContentIdCommentsInfinite<TData = InfiniteData<
 
 
 
-export const getGetApiContentsContentIdCommentsQueryOptions = <TData = Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError = ErrorType<unknown>>(contentId: string,
-    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData>>, }
+export const getGetApiCommentsContentsContentIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, TError = ErrorType<unknown>>(contentId: string,
+    params?: GetApiCommentsContentsContentIdParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiContentsContentIdCommentsQueryKey(contentId,params);
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCommentsContentsContentIdQueryKey(contentId,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiContentsContentIdComments>>> = ({ signal }) => getApiContentsContentIdComments(contentId,params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>> = ({ signal }) => getApiCommentsContentsContentId(contentId,params, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, enabled: !!(contentId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(contentId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type GetApiContentsContentIdCommentsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiContentsContentIdComments>>>
-export type GetApiContentsContentIdCommentsQueryError = ErrorType<unknown>
+export type GetApiCommentsContentsContentIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>>
+export type GetApiCommentsContentsContentIdQueryError = ErrorType<unknown>
 
 
-export function useGetApiContentsContentIdComments<TData = Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError = ErrorType<unknown>>(
+export function useGetApiCommentsContentsContentId<TData = Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, TError = ErrorType<unknown>>(
  contentId: string,
-    params: undefined |  GetApiContentsContentIdCommentsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData>> & Pick<
+    params: undefined |  GetApiCommentsContentsContentIdParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiContentsContentIdComments>>,
+          Awaited<ReturnType<typeof getApiCommentsContentsContentId>>,
           TError,
-          Awaited<ReturnType<typeof getApiContentsContentIdComments>>
+          Awaited<ReturnType<typeof getApiCommentsContentsContentId>>
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiContentsContentIdComments<TData = Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError = ErrorType<unknown>>(
+export function useGetApiCommentsContentsContentId<TData = Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, TError = ErrorType<unknown>>(
  contentId: string,
-    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData>> & Pick<
+    params?: GetApiCommentsContentsContentIdParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiContentsContentIdComments>>,
+          Awaited<ReturnType<typeof getApiCommentsContentsContentId>>,
           TError,
-          Awaited<ReturnType<typeof getApiContentsContentIdComments>>
+          Awaited<ReturnType<typeof getApiCommentsContentsContentId>>
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiContentsContentIdComments<TData = Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError = ErrorType<unknown>>(
+export function useGetApiCommentsContentsContentId<TData = Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, TError = ErrorType<unknown>>(
  contentId: string,
-    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData>>, }
+    params?: GetApiCommentsContentsContentIdParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Lấy danh sách bình luận của một nội dung
  */
 
-export function useGetApiContentsContentIdComments<TData = Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError = ErrorType<unknown>>(
+export function useGetApiCommentsContentsContentId<TData = Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, TError = ErrorType<unknown>>(
  contentId: string,
-    params?: GetApiContentsContentIdCommentsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiContentsContentIdComments>>, TError, TData>>, }
+    params?: GetApiCommentsContentsContentIdParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiContentsContentIdCommentsQueryOptions(contentId,params,options)
+  const queryOptions = getGetApiCommentsContentsContentIdQueryOptions(contentId,params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -291,14 +295,14 @@ export function useGetApiContentsContentIdComments<TData = Awaited<ReturnType<ty
  * Cho phép người dùng đăng nhập hoặc khách để lại bình luận
  * @summary Tạo bình luận mới
  */
-export const postApiComments = (
+export const postApiCommentsCreate = (
     createCommentInput: BodyType<CreateCommentInput>,
  signal?: AbortSignal
 ) => {
       
       
-      return mainInstance<PostApiComments201>(
-      {url: `/api/comments`, method: 'POST',
+      return mainInstance<PostApiCommentsCreate201>(
+      {url: `/api/comments/create`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: createCommentInput, signal
     },
@@ -307,11 +311,11 @@ export const postApiComments = (
   
 
 
-export const getPostApiCommentsMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiComments>>, TError,{data: BodyType<CreateCommentInput>}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof postApiComments>>, TError,{data: BodyType<CreateCommentInput>}, TContext> => {
+export const getPostApiCommentsCreateMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiCommentsCreate>>, TError,{data: BodyType<CreateCommentInput>}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiCommentsCreate>>, TError,{data: BodyType<CreateCommentInput>}, TContext> => {
 
-const mutationKey = ['postApiComments'];
+const mutationKey = ['postApiCommentsCreate'];
 const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -321,10 +325,10 @@ const {mutation: mutationOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiComments>>, {data: BodyType<CreateCommentInput>}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiCommentsCreate>>, {data: BodyType<CreateCommentInput>}> = (props) => {
           const {data} = props ?? {};
 
-          return  postApiComments(data,)
+          return  postApiCommentsCreate(data,)
         }
 
         
@@ -332,27 +336,206 @@ const {mutation: mutationOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type PostApiCommentsMutationResult = NonNullable<Awaited<ReturnType<typeof postApiComments>>>
-    export type PostApiCommentsMutationBody = BodyType<CreateCommentInput>
-    export type PostApiCommentsMutationError = ErrorType<unknown>
+    export type PostApiCommentsCreateMutationResult = NonNullable<Awaited<ReturnType<typeof postApiCommentsCreate>>>
+    export type PostApiCommentsCreateMutationBody = BodyType<CreateCommentInput>
+    export type PostApiCommentsCreateMutationError = ErrorType<unknown>
 
     /**
  * @summary Tạo bình luận mới
  */
-export const usePostApiComments = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiComments>>, TError,{data: BodyType<CreateCommentInput>}, TContext>, }
+export const usePostApiCommentsCreate = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiCommentsCreate>>, TError,{data: BodyType<CreateCommentInput>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postApiComments>>,
+        Awaited<ReturnType<typeof postApiCommentsCreate>>,
         TError,
         {data: BodyType<CreateCommentInput>},
         TContext
       > => {
 
-      const mutationOptions = getPostApiCommentsMutationOptions(options);
+      const mutationOptions = getPostApiCommentsCreateMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary Lấy danh sách bình luận của một nội dung
+ */
+export const getApiCommentsByContentContentId = (
+    contentId: string,
+    params?: GetApiCommentsByContentContentIdParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<GetApiCommentsByContentContentId200>(
+      {url: `/api/comments/by-content/${contentId}`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiCommentsByContentContentIdInfiniteQueryKey = (contentId?: string,
+    params?: GetApiCommentsByContentContentIdParams,) => {
+    return [
+    'infinite', `/api/comments/by-content/${contentId}`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+export const getGetApiCommentsByContentContentIdQueryKey = (contentId?: string,
+    params?: GetApiCommentsByContentContentIdParams,) => {
+    return [
+    `/api/comments/by-content/${contentId}`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetApiCommentsByContentContentIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, GetApiCommentsByContentContentIdParams['page']>, TError = ErrorType<unknown>>(contentId: string,
+    params?: GetApiCommentsByContentContentIdParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, TError, TData, QueryKey, GetApiCommentsByContentContentIdParams['page']>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCommentsByContentContentIdInfiniteQueryKey(contentId,params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, QueryKey, GetApiCommentsByContentContentIdParams['page']> = ({ signal, pageParam }) => getApiCommentsByContentContentId(contentId,{...params, 'page': pageParam || params?.['page']}, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(contentId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, TError, TData, QueryKey, GetApiCommentsByContentContentIdParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiCommentsByContentContentIdInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>>
+export type GetApiCommentsByContentContentIdInfiniteQueryError = ErrorType<unknown>
+
+
+export function useGetApiCommentsByContentContentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, GetApiCommentsByContentContentIdParams['page']>, TError = ErrorType<unknown>>(
+ contentId: string,
+    params: undefined |  GetApiCommentsByContentContentIdParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, TError, TData, QueryKey, GetApiCommentsByContentContentIdParams['page']>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCommentsByContentContentId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, QueryKey
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCommentsByContentContentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, GetApiCommentsByContentContentIdParams['page']>, TError = ErrorType<unknown>>(
+ contentId: string,
+    params?: GetApiCommentsByContentContentIdParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, TError, TData, QueryKey, GetApiCommentsByContentContentIdParams['page']>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCommentsByContentContentId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, QueryKey
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCommentsByContentContentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, GetApiCommentsByContentContentIdParams['page']>, TError = ErrorType<unknown>>(
+ contentId: string,
+    params?: GetApiCommentsByContentContentIdParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, TError, TData, QueryKey, GetApiCommentsByContentContentIdParams['page']>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lấy danh sách bình luận của một nội dung
+ */
+
+export function useGetApiCommentsByContentContentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, GetApiCommentsByContentContentIdParams['page']>, TError = ErrorType<unknown>>(
+ contentId: string,
+    params?: GetApiCommentsByContentContentIdParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, TError, TData, QueryKey, GetApiCommentsByContentContentIdParams['page']>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiCommentsByContentContentIdInfiniteQueryOptions(contentId,params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const getGetApiCommentsByContentContentIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, TError = ErrorType<unknown>>(contentId: string,
+    params?: GetApiCommentsByContentContentIdParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCommentsByContentContentIdQueryKey(contentId,params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>> = ({ signal }) => getApiCommentsByContentContentId(contentId,params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(contentId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiCommentsByContentContentIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>>
+export type GetApiCommentsByContentContentIdQueryError = ErrorType<unknown>
+
+
+export function useGetApiCommentsByContentContentId<TData = Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, TError = ErrorType<unknown>>(
+ contentId: string,
+    params: undefined |  GetApiCommentsByContentContentIdParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCommentsByContentContentId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCommentsByContentContentId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCommentsByContentContentId<TData = Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, TError = ErrorType<unknown>>(
+ contentId: string,
+    params?: GetApiCommentsByContentContentIdParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCommentsByContentContentId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCommentsByContentContentId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCommentsByContentContentId<TData = Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, TError = ErrorType<unknown>>(
+ contentId: string,
+    params?: GetApiCommentsByContentContentIdParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lấy danh sách bình luận của một nội dung
+ */
+
+export function useGetApiCommentsByContentContentId<TData = Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, TError = ErrorType<unknown>>(
+ contentId: string,
+    params?: GetApiCommentsByContentContentIdParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsByContentContentId>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiCommentsByContentContentIdQueryOptions(contentId,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
  * @summary Cập nhật bình luận
  */
 export const putApiCommentsId = (
@@ -477,4 +660,169 @@ export const useDeleteApiCommentsId = <TError = ErrorType<unknown>,
 
       return useMutation(mutationOptions, queryClient);
     }
+    /**
+ * @summary Lấy tất cả bình luận của người dùng đang đăng nhập
+ */
+export const getApiCommentsMe = (
+    params?: GetApiCommentsMeParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<GetApiCommentsMe200>(
+      {url: `/api/comments/me`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiCommentsMeInfiniteQueryKey = (params?: GetApiCommentsMeParams,) => {
+    return [
+    'infinite', `/api/comments/me`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+export const getGetApiCommentsMeQueryKey = (params?: GetApiCommentsMeParams,) => {
+    return [
+    `/api/comments/me`, ...(params ? [params]: [])
+    ] as const;
+    }
+
     
+export const getGetApiCommentsMeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsMe>>, GetApiCommentsMeParams['page']>, TError = ErrorType<unknown>>(params?: GetApiCommentsMeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsMe>>, TError, TData, QueryKey, GetApiCommentsMeParams['page']>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCommentsMeInfiniteQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCommentsMe>>, QueryKey, GetApiCommentsMeParams['page']> = ({ signal, pageParam }) => getApiCommentsMe({...params, 'page': pageParam || params?.['page']}, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsMe>>, TError, TData, QueryKey, GetApiCommentsMeParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiCommentsMeInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCommentsMe>>>
+export type GetApiCommentsMeInfiniteQueryError = ErrorType<unknown>
+
+
+export function useGetApiCommentsMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsMe>>, GetApiCommentsMeParams['page']>, TError = ErrorType<unknown>>(
+ params: undefined |  GetApiCommentsMeParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsMe>>, TError, TData, QueryKey, GetApiCommentsMeParams['page']>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCommentsMe>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCommentsMe>>, QueryKey
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCommentsMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsMe>>, GetApiCommentsMeParams['page']>, TError = ErrorType<unknown>>(
+ params?: GetApiCommentsMeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsMe>>, TError, TData, QueryKey, GetApiCommentsMeParams['page']>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCommentsMe>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCommentsMe>>, QueryKey
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCommentsMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsMe>>, GetApiCommentsMeParams['page']>, TError = ErrorType<unknown>>(
+ params?: GetApiCommentsMeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsMe>>, TError, TData, QueryKey, GetApiCommentsMeParams['page']>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lấy tất cả bình luận của người dùng đang đăng nhập
+ */
+
+export function useGetApiCommentsMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsMe>>, GetApiCommentsMeParams['page']>, TError = ErrorType<unknown>>(
+ params?: GetApiCommentsMeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsMe>>, TError, TData, QueryKey, GetApiCommentsMeParams['page']>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiCommentsMeInfiniteQueryOptions(params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const getGetApiCommentsMeQueryOptions = <TData = Awaited<ReturnType<typeof getApiCommentsMe>>, TError = ErrorType<unknown>>(params?: GetApiCommentsMeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsMe>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCommentsMeQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCommentsMe>>> = ({ signal }) => getApiCommentsMe(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsMe>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiCommentsMeQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCommentsMe>>>
+export type GetApiCommentsMeQueryError = ErrorType<unknown>
+
+
+export function useGetApiCommentsMe<TData = Awaited<ReturnType<typeof getApiCommentsMe>>, TError = ErrorType<unknown>>(
+ params: undefined |  GetApiCommentsMeParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsMe>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCommentsMe>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCommentsMe>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCommentsMe<TData = Awaited<ReturnType<typeof getApiCommentsMe>>, TError = ErrorType<unknown>>(
+ params?: GetApiCommentsMeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsMe>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCommentsMe>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCommentsMe>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCommentsMe<TData = Awaited<ReturnType<typeof getApiCommentsMe>>, TError = ErrorType<unknown>>(
+ params?: GetApiCommentsMeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsMe>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lấy tất cả bình luận của người dùng đang đăng nhập
+ */
+
+export function useGetApiCommentsMe<TData = Awaited<ReturnType<typeof getApiCommentsMe>>, TError = ErrorType<unknown>>(
+ params?: GetApiCommentsMeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsMe>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiCommentsMeQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+

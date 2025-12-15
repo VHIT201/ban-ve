@@ -47,6 +47,10 @@ import paymentWallet from "@/assets/payment/wallet-payment.png";
 import { BASE_PATHS } from "@/constants/paths";
 import { usePostApiPayments } from "@/api/endpoints/payments";
 import { toast } from "sonner";
+import PaymentMomo from "./components/payment-momo/PaymentMomo";
+import PaymentBank from "./components/payment-bank/PaymentBank";
+import PaymentVisa from "./components/payment-visa/PaymentVisa";
+import PaymentQR from "./components/payment-qr/PaymentQR";
 
 // Zod validation schemas
 const momoSchema = z.object({
@@ -499,285 +503,20 @@ const PaymentPage = () => {
                   <Card className="overflow-hidden">
                     <CardContent className="p-6 space-y-4">
                       {/* MoMo Form */}
-                      {paymentMethod === "momo" && (
-                        <div className="space-y-4">
-                          <div className="flex items-center gap-3 p-4 bg-pink-50 border border-pink-200 rounded-lg">
-                            <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center shrink-0">
-                              <Smartphone className="w-5 h-5 text-pink-600" />
-                            </div>
-                            <div className="flex-1">
-                              <h4 className="font-semibold text-gray-900 text-sm mb-1">
-                                Thanh toán qua MoMo
-                              </h4>
-                              <p className="text-xs text-gray-600">
-                                Nhập số điện thoại MoMo để nhận thông báo thanh
-                                toán
-                              </p>
-                            </div>
-                          </div>
-                          <FormField
-                            control={form.control}
-                            name="momoPhone"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Số điện thoại MoMo</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder="Nhập số điện thoại (vd: 0912345678)"
-                                    maxLength={11}
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <Alert>
-                            <AlertCircle className="h-4 w-4" />
-                            <AlertDescription className="text-sm">
-                              Bạn sẽ nhận được thông báo từ ứng dụng MoMo để xác
-                              nhận thanh toán
-                            </AlertDescription>
-                          </Alert>
-                        </div>
-                      )}
+                      {paymentMethod === "momo" && <PaymentMomo form={form} />}
 
                       {/* Bank Transfer Form */}
                       {paymentMethod === "bank_transfer" && (
-                        <div className="space-y-4">
-                          <div className="flex items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
-                              <Building2 className="w-5 h-5 text-blue-600" />
-                            </div>
-                            <div className="flex-1">
-                              <h4 className="font-semibold text-gray-900 text-sm mb-1">
-                                Chuyển khoản ngân hàng
-                              </h4>
-                              <p className="text-xs text-gray-600">
-                                Chuyển tiền trực tiếp đến tài khoản ngân hàng
-                              </p>
-                            </div>
-                          </div>
-                          <FormField
-                            control={form.control}
-                            name="bankName"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Ngân hàng</FormLabel>
-                                <Select
-                                  onValueChange={field.onChange}
-                                  value={field.value}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Chọn ngân hàng" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value="vietcombank">
-                                      Vietcombank
-                                    </SelectItem>
-                                    <SelectItem value="techcombank">
-                                      Techcombank
-                                    </SelectItem>
-                                    <SelectItem value="mbbank">
-                                      MB Bank
-                                    </SelectItem>
-                                    <SelectItem value="acb">ACB</SelectItem>
-                                    <SelectItem value="bidv">BIDV</SelectItem>
-                                    <SelectItem value="vietinbank">
-                                      VietinBank
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="bankAccountNumber"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Số tài khoản</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder="Nhập số tài khoản ngân hàng"
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="bankAccountName"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Chủ tài khoản</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder="Nhập tên chủ tài khoản"
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <Alert>
-                            <AlertCircle className="h-4 w-4" />
-                            <AlertDescription className="text-sm">
-                              Vui lòng chuyển khoản chính xác số tiền và nội
-                              dung để đơn hàng được xử lý nhanh chóng
-                            </AlertDescription>
-                          </Alert>
-                        </div>
+                        <PaymentBank form={form} />
                       )}
 
                       {/* Credit Card Form */}
                       {paymentMethod === "credit_card" && (
-                        <div className="space-y-4">
-                          <div className="flex items-center gap-3 p-4 bg-purple-50 border border-purple-200 rounded-lg">
-                            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center shrink-0">
-                              <CreditCard className="w-5 h-5 text-purple-600" />
-                            </div>
-                            <div className="flex-1">
-                              <h4 className="font-semibold text-gray-900 text-sm mb-1">
-                                Thanh toán bằng thẻ
-                              </h4>
-                              <p className="text-xs text-gray-600">
-                                Chấp nhận Visa, Mastercard, JCB
-                              </p>
-                            </div>
-                          </div>
-                          {/* Card Number */}
-                          <FormField
-                            control={form.control}
-                            name="cardNumber"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Số thẻ</FormLabel>
-                                <FormControl>
-                                  <div className="relative">
-                                    <Input
-                                      placeholder="1234 5678 9012 3456"
-                                      maxLength={19}
-                                      className="pr-10"
-                                      {...field}
-                                    />
-                                    <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                                  </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          {/* Expiration & Security Code */}
-                          <div className="grid grid-cols-2 gap-4">
-                            <FormField
-                              control={form.control}
-                              name="expirationDate"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Ngày hết hạn</FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      placeholder="MM / YY"
-                                      maxLength={7}
-                                      {...field}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={form.control}
-                              name="securityCode"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Mã CVV</FormLabel>
-                                  <FormControl>
-                                    <div className="relative">
-                                      <Input
-                                        placeholder="CVV"
-                                        maxLength={4}
-                                        className="pr-10"
-                                        {...field}
-                                      />
-                                      <HelpCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                                    </div>
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-
-                          {/* Name on Card */}
-                          <FormField
-                            control={form.control}
-                            name="nameOnCard"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Tên trên thẻ</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder="NGUYEN VAN A"
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
+                        <PaymentVisa form={form} />
                       )}
 
                       {/* QR Code Form */}
-                      {paymentMethod === "qr_code" && (
-                        <div className="space-y-4">
-                          <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
-                            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center shrink-0">
-                              <QrCode className="w-5 h-5 text-green-600" />
-                            </div>
-                            <div className="flex-1">
-                              <h4 className="font-semibold text-gray-900 text-sm mb-1">
-                                Thanh toán bằng mã QR
-                              </h4>
-                              <p className="text-xs text-gray-600">
-                                Quét mã QR bằng ứng dụng ngân hàng
-                              </p>
-                            </div>
-                          </div>
-                          <div className="bg-white border-2 border-dashed border-gray-300 rounded-xl p-8">
-                            <div className="flex flex-col items-center gap-4">
-                              <div className="w-64 h-64 bg-gray-100 rounded-lg flex items-center justify-center">
-                                <QrCode className="w-32 h-32 text-gray-400" />
-                              </div>
-                              <div className="text-center space-y-2">
-                                <p className="text-sm font-medium text-gray-900">
-                                  Quét mã QR để thanh toán
-                                </p>
-                                <p className="text-xs text-gray-500">
-                                  Mã QR sẽ được tạo sau khi bạn xác nhận đơn
-                                  hàng
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                          <Alert>
-                            <AlertCircle className="h-4 w-4" />
-                            <AlertDescription className="text-sm">
-                              Hỗ trợ quét QR từ các ứng dụng: Banking App, MoMo,
-                              ZaloPay, ViettelPay
-                            </AlertDescription>
-                          </Alert>
-                        </div>
-                      )}
+                      {paymentMethod === "qr_code" && <PaymentQR form={form} />}
                     </CardContent>
                   </Card>
                 </div>
