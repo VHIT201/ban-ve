@@ -15,7 +15,7 @@ export const SIDEBAR_MENU = [
   },
   {
     icon: HistoryIcon,
-    title: "Lịch sử giao dịch",
+    title: "Lịch sử ",
     path: BASE_PATHS.app.profile.history.path,
   },
 ];
