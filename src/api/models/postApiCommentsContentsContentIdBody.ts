@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-export type PostApiContentsContentIdCommentsBody = {
+export type PostApiCommentsContentsContentIdBody = {
   /** Nội dung bình luận */
   content: string;
   /** Tên người dùng (bắt buộc nếu là khách) */

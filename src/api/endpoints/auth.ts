@@ -25,6 +25,7 @@ import type {
 
 import type {
   GetApiAuthMe200,
+  PostApiAuthForgotPasswordBody,
   PostApiAuthLogin200,
   PostApiAuthLoginBody,
   PostApiAuthRefreshToken200,
@@ -33,6 +34,7 @@ import type {
   PostApiAuthRegisterBody,
   PostApiAuthResendOtp200,
   PostApiAuthResendOtpBody,
+  PostApiAuthResetPasswordBody,
   PostApiAuthVerifyRegistration200,
   PostApiAuthVerifyRegistrationBody
 } from '../models';
@@ -234,6 +236,134 @@ export const usePostApiAuthResendOtp = <TError = ErrorType<void>,
       > => {
 
       const mutationOptions = getPostApiAuthResendOtpMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Yêu cầu mã OTP để đặt lại mật khẩu
+ */
+export const postApiAuthForgotPassword = (
+    postApiAuthForgotPasswordBody: BodyType<PostApiAuthForgotPasswordBody>,
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<void>(
+      {url: `/api/auth/forgot-password`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: postApiAuthForgotPasswordBody, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiAuthForgotPasswordMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthForgotPassword>>, TError,{data: BodyType<PostApiAuthForgotPasswordBody>}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiAuthForgotPassword>>, TError,{data: BodyType<PostApiAuthForgotPasswordBody>}, TContext> => {
+
+const mutationKey = ['postApiAuthForgotPassword'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiAuthForgotPassword>>, {data: BodyType<PostApiAuthForgotPasswordBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postApiAuthForgotPassword(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiAuthForgotPasswordMutationResult = NonNullable<Awaited<ReturnType<typeof postApiAuthForgotPassword>>>
+    export type PostApiAuthForgotPasswordMutationBody = BodyType<PostApiAuthForgotPasswordBody>
+    export type PostApiAuthForgotPasswordMutationError = ErrorType<void>
+
+    /**
+ * @summary Yêu cầu mã OTP để đặt lại mật khẩu
+ */
+export const usePostApiAuthForgotPassword = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthForgotPassword>>, TError,{data: BodyType<PostApiAuthForgotPasswordBody>}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiAuthForgotPassword>>,
+        TError,
+        {data: BodyType<PostApiAuthForgotPasswordBody>},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiAuthForgotPasswordMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Đặt lại mật khẩu bằng mã OTP
+ */
+export const postApiAuthResetPassword = (
+    postApiAuthResetPasswordBody: BodyType<PostApiAuthResetPasswordBody>,
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<void>(
+      {url: `/api/auth/reset-password`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: postApiAuthResetPasswordBody, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiAuthResetPasswordMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthResetPassword>>, TError,{data: BodyType<PostApiAuthResetPasswordBody>}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiAuthResetPassword>>, TError,{data: BodyType<PostApiAuthResetPasswordBody>}, TContext> => {
+
+const mutationKey = ['postApiAuthResetPassword'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiAuthResetPassword>>, {data: BodyType<PostApiAuthResetPasswordBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postApiAuthResetPassword(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiAuthResetPasswordMutationResult = NonNullable<Awaited<ReturnType<typeof postApiAuthResetPassword>>>
+    export type PostApiAuthResetPasswordMutationBody = BodyType<PostApiAuthResetPasswordBody>
+    export type PostApiAuthResetPasswordMutationError = ErrorType<void>
+
+    /**
+ * @summary Đặt lại mật khẩu bằng mã OTP
+ */
+export const usePostApiAuthResetPassword = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiAuthResetPassword>>, TError,{data: BodyType<PostApiAuthResetPasswordBody>}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiAuthResetPassword>>,
+        TError,
+        {data: BodyType<PostApiAuthResetPasswordBody>},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiAuthResetPasswordMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }
