@@ -74,6 +74,15 @@ const mainRoutes: RouteObject = {
         };
       },
     },
+    {
+      path: app.terms.path,
+      lazy: async () => {
+        const { default: Terms } = await import("../views/terms/page");
+        return {
+          element: <Terms />,
+        };
+      },
+    },
     { ...profileRoutes },
   ],
 };
