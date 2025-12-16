@@ -3,15 +3,24 @@ import { Button } from "@/components/ui/button";
 import { CategoryDialog, CategoryTable } from "./components";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
-import { usePostApiCategories } from "@/api/endpoints/categories";
-import { CategoryFormValues } from "./components/category-dialog/CategoryDialog";
+import {
+  getGetApiCategoriesQueryKey,
+  usePostApiCategories,
+} from "@/api/endpoints/categories";
 import { toast } from "sonner";
+import { CategoryFormValues } from "./components/category-dialog";
 
 const Categories = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Mutations
-  const createCategoryMutation = usePostApiCategories();
+  const createCategoryMutation = usePostApiCategories({
+    mutation: {
+      meta: {
+        invalidateQueries: [getGetApiCategoriesQueryKey()],
+      },
+    },
+  });
 
   const handleCreateCategory = async (data: CategoryFormValues) => {
     try {
@@ -49,9 +58,11 @@ const Categories = () => {
 
       {/* Add Category Dialog */}
       <CategoryDialog
+        mode="create"
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         onSubmit={handleCreateCategory}
+        loading={createCategoryMutation.isPending}
       />
     </div>
   );

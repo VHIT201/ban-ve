@@ -186,5 +186,8 @@ type SnakeToCamelCaseDeep<T> = {
     : T[K];
 };
 
-export type ErrorType<Error = any> = SnakeToCamelCaseDeep<Error>;
-export type BodyType<BodyData = any> = SnakeToCamelCaseDeep<BodyData>;
+export type ErrorType<Error = any> = Error;
+export type BodyType<BodyData = any> = BodyData;
+
+// export type ErrorType<Error = any> = SnakeToCamelCaseDeep<Error>;
+// export type BodyType<BodyData = any> = SnakeToCamelCaseDeep<BodyData>;

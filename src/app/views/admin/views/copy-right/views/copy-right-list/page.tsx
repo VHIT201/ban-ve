@@ -20,10 +20,6 @@ const CopyRightList = () => {
             Quản lý các bản quyền trong hệ thống
           </p>
         </div>
-        <Button>
-          <PlusIcon className="mr-2 size-4" />
-          Thêm mới
-        </Button>
       </div>
 
       {/* Content Table */}
