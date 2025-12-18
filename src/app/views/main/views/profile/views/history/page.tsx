@@ -4,9 +4,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CommentList } from "./components/comments/CommentList";
 import { TransactionList } from "./components/transactions/TransactionList";
+import DownloadList from "@/app/views/main/views/profile/views/history/components/downloads/DownloadList";
 import { cn } from "@/lib/utils";
 import { generateImageRandom } from "@/utils/image";
-import { CalendarIcon, Edit3Icon, CreditCardIcon, StarIcon } from "lucide-react";
+import { CalendarIcon, Edit3Icon, CreditCardIcon, DownloadIcon, StarIcon } from "lucide-react";
 import React, { useMemo } from "react";
 import { useGetApiPaymentsHistory } from "@/api/endpoints/payments";
 import { PaymentStatus } from "@/api/models/paymentStatus";
@@ -62,8 +63,12 @@ const formatCurrency = (amount: number) => {
 const History = () => {
   return (
     <div> 
-      <Tabs defaultValue="reviews" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2 max-w-xs">
+      <Tabs defaultValue="downloads" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3 max-w-md">
+          <TabsTrigger value="downloads" className="flex items-center gap-2">
+            <DownloadIcon className="h-4 w-4" />
+            Lịch sử tải file
+          </TabsTrigger>
           <TabsTrigger value="reviews" className="flex items-center gap-2">
             <Edit3Icon className="h-4 w-4" />
             Lịch sử đánh giá
@@ -73,6 +78,9 @@ const History = () => {
             Lịch sử giao dịch
           </TabsTrigger>
         </TabsList>
+        <TabsContent value="downloads" className="space-y-6">
+          <DownloadList />
+        </TabsContent>
         <TabsContent value="reviews" className="space-y-6">
           <CommentList />
         </TabsContent>

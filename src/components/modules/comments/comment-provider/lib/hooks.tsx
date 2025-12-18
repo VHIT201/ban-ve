@@ -7,8 +7,8 @@ import {
   useInfiniteQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { getApiContentsContentIdComments } from "@/api/endpoints/comments";
-import { Comment, GetApiContentsContentIdComments200 } from "@/api/models";
+import { getApiCommentsByContentContentId } from "@/api/endpoints/comments";
+import { Comment, GetApiCommentsByContentContentId200 } from "@/api/models";
 
 // Hook useExamContext
 export const useCommentSectionContext = () => {
@@ -29,7 +29,7 @@ export const useCommentList = (postId: string) => {
   const queryKey = ["/api/comment", postId];
 
   const getCommentInfiniteQuery = useInfiniteQuery<
-    GetApiContentsContentIdComments200,
+    GetApiCommentsByContentContentId200,
     Error,
     InfiniteData<Comment[], number>,
     typeof queryKey,
@@ -37,9 +37,9 @@ export const useCommentList = (postId: string) => {
   >({
     queryKey,
     queryFn: async ({ pageParam }) => {
-      const res = await getApiContentsContentIdComments(postId);
+      const res = await getApiCommentsByContentContentId(postId);
 
-      return res as unknown as GetApiContentsContentIdComments200;
+      return res as unknown as GetApiCommentsByContentContentId200;
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
@@ -98,7 +98,7 @@ export const useCommentList = (postId: string) => {
           return oldComments
             .flatMap(
               (page) =>
-                (page as unknown as GetApiContentsContentIdComments200).data ??
+                (page as unknown as GetApiCommentsByContentContentId200).data ??
                 []
             )
             .map((comment) => {
@@ -114,7 +114,7 @@ export const useCommentList = (postId: string) => {
           newCommentItem,
           ...oldComments.flatMap(
             (page) =>
-              (page as unknown as GetApiContentsContentIdComments200).data ?? []
+              (page as unknown as GetApiCommentsByContentContentId200).data ?? []
           ),
         ];
       });
@@ -137,7 +137,7 @@ export const useCommentList = (postId: string) => {
           return oldComments
             .flatMap(
               (page) =>
-                (page as unknown as GetApiContentsContentIdComments200).data ??
+                (page as unknown as GetApiCommentsByContentContentId200).data ??
                 []
             )
             .map((comment) => {
@@ -152,7 +152,7 @@ export const useCommentList = (postId: string) => {
 
         return oldComments.flatMap((page) =>
           (
-            (page as unknown as GetApiContentsContentIdComments200).data ?? []
+            (page as unknown as GetApiCommentsByContentContentId200).data ?? []
           ).map((comment) =>
             comment._id === updatedCommentItem._id
               ? updatedCommentItem
@@ -179,7 +179,7 @@ export const useCommentList = (postId: string) => {
           return oldComments
             .flatMap(
               (page) =>
-                (page as unknown as GetApiContentsContentIdComments200).data ??
+                (page as unknown as GetApiCommentsByContentContentId200).data ??
                 []
             )
             .filter((comment) => comment._id !== commentId)
@@ -195,7 +195,7 @@ export const useCommentList = (postId: string) => {
 
         return oldComments.flatMap((page) =>
           (
-            (page as unknown as GetApiContentsContentIdComments200).data ?? []
+            (page as unknown as GetApiCommentsByContentContentId200).data ?? []
           ).filter((comment) => comment._id !== commentId)
         );
       });
@@ -207,7 +207,7 @@ export const useCommentList = (postId: string) => {
   const commentList =
     getCommentInfiniteQuery.data?.pages.flatMap(
       (page) =>
-        (page as unknown as GetApiContentsContentIdComments200).data ?? []
+        (page as unknown as GetApiCommentsByContentContentId200).data ?? []
     ) || [];
 
   return {

@@ -18,7 +18,11 @@ import { Link } from "react-router-dom";
 import { BASE_PATHS } from "@/constants/paths";
 import { toast } from "sonner";
 
-const ForgotPasswordForm: FC = () => {
+interface ForgotPasswordFormProps {
+  onEmailSubmit: (email: string) => Promise<void> | void;
+}
+
+const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({ onEmailSubmit }) => {
   const form = useForm<ForgotPasswordFormValues>({
     resolver: zodResolver(FORGOT_PASSWORD_FORM_SCHEMA),
     defaultValues: FORGOT_PASSWORD_FORM_DEFAULT_VALUES,
@@ -26,9 +30,7 @@ const ForgotPasswordForm: FC = () => {
 
   const onSubmit = async (values: ForgotPasswordFormValues) => {
     try {
-      console.log("Forgot password values:", values);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      toast.success("Đã gửi liên kết đặt lại mật khẩu đến email của bạn");
+      await onEmailSubmit(values.email);
       form.reset();
     } catch (error) {
       console.error("Forgot password error:", error);
@@ -52,6 +54,7 @@ const ForgotPasswordForm: FC = () => {
                     type="email"
                     placeholder="email@vidu.com"
                     className="pl-10 h-10"
+                    autoComplete="email"
                     {...field}
                   />
                 </div>
@@ -62,14 +65,14 @@ const ForgotPasswordForm: FC = () => {
         />
 
         <Button
-          type="submit"
+          type="submit" 
           disabled={form.formState.isSubmitting}
           className="w-full mt-4 h-10"
         >
           {form.formState.isSubmitting ? (
             <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
           ) : (
-            "Gửi liên kết đặt lại"
+            "Gửi mã xác nhận"
           )}
         </Button>
 
