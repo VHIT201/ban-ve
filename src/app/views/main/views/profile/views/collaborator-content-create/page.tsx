@@ -18,6 +18,11 @@ const ContentDetail = () => {
 
   // Methods
   const handleSubmit = async (values: ContentFormValues) => {
+    if (!values.file) {
+      toast.error("Vui lòng chọn tệp tải lên.");
+      return;
+    }
+
     try {
       const fileUploadResponse = await uploadFileMutation.mutateAsync({
         data: {
@@ -32,9 +37,10 @@ const ContentDetail = () => {
         data: {
           title: values.title,
           description: values.description,
-          fileUrl: fileData?.path || "",
-          field: values.category_id,
-          fileType: values.file.type,
+          file_url: fileData.path,
+          file_id: fileData.path,
+          category_id: values.category_id,
+          file_type: values.file.type,
         },
       });
 
