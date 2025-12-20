@@ -20,8 +20,6 @@ import { useCartStore } from "@/stores/use-cart-store";
 import { useNavigate } from "react-router-dom";
 import { generateImageRandom } from "@/utils/image";
 
-const CATEGORY_ALL_ID_DEFAULT = "6907769cf2f9f06e5df9c89e";
-
 function HeaderShoppingCart() {
   const navigate = useNavigate();
 
@@ -53,10 +51,14 @@ function HeaderShoppingCart() {
       onOpenChange={(open) => (open ? openCart() : closeCart())}
     >
       <SheetTrigger asChild>
-        <Button variant="outline" size="icon" className="relative size-10">
-          <CartIcon size={20} weight="bold" />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative size-10 hover:bg-gray-100 hover:text-gray-900"
+        >
+          <CartIcon size={22} weight="bold" />
           {totalItems > 0 && (
-            <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-accent text-accent-foreground">
+            <Badge className="absolute -top-1 -right-1 h-5 min-w-5 flex items-center justify-center px-1.5 bg-gray-900 text-white text-xs font-semibold rounded-full border-2 border-white">
               {totalItems}
             </Badge>
           )}
@@ -64,127 +66,113 @@ function HeaderShoppingCart() {
       </SheetTrigger>
       <SheetContent className="flex flex-col w-full sm:max-w-lg p-0 h-full">
         <div className="flex flex-col h-full">
-          <div className="p-6 border-b">
+          {/* Header */}
+          <div className="px-6 py-5 border-b border-gray-200">
             <SheetHeader>
-              <SheetTitle className="flex items-center gap-2">
-                <CartIcon size={24} weight="bold" />
-                Giỏ hàng
-                {totalItems > 0 && (
-                  <Badge variant="secondary">
-                    {totalItems} {totalItems === 1 ? "sản phẩm" : "sản phẩm"}
-                  </Badge>
-                )}
+              <SheetTitle className="flex items-center gap-3 text-xl">
+                <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                  <CartIcon size={22} weight="bold" className="text-gray-700" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-bold text-gray-900">Giỏ hàng</div>
+                  {totalItems > 0 && (
+                    <div className="text-xs font-normal text-gray-500 mt-0.5">
+                      {totalItems} sản phẩm
+                    </div>
+                  )}
+                </div>
               </SheetTitle>
             </SheetHeader>
           </div>
 
           {items.length === 0 ? (
-            <div className="flex-1 flex flex-col items-center justify-center text-center py-12">
-              <CartIcon
-                size={64}
-                weight="thin"
-                className="text-muted-foreground mb-4"
-              />
-              <h3 className="font-semibold text-lg mb-2">
-                Giỏ hàng của bạn đang trống
+            <div className="flex-1 flex flex-col items-center justify-center text-center px-6 py-12">
+              <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-6">
+                <CartIcon size={48} weight="thin" className="text-gray-400" />
+              </div>
+              <h3 className="font-semibold text-lg text-gray-900 mb-2">
+                Giỏ hàng trống
               </h3>
-              <p className="text-sm text-muted-foreground mb-6">
-                Hãy thêm sản phẩm vào giỏ hàng để tiếp tục mua sắm
+              <p className="text-sm text-gray-500 mb-6 max-w-xs">
+                Bạn chưa có sản phẩm nào trong giỏ hàng. Hãy khám phá và thêm
+                sản phẩm yêu thích!
               </p>
-              <Button onClick={handleContinueShopping}>
+              <Button onClick={handleContinueShopping} className="gap-2">
                 Khám phá sản phẩm
               </Button>
             </div>
           ) : (
             <>
-              <ScrollArea className="flex-1 -mx-6 px-6 py-4 h-[calc(100vh-350px)]">
-                <div className="space-y-4 pr-2">
+              {/* Cart Items */}
+              <ScrollArea className="flex-1 px-6 py-4 h-96">
+                <div className="space-y-3 pr-2">
                   {items.map((item) => (
                     <div
                       key={item.product._id}
-                      className="flex gap-4 p-4 rounded-lg border bg-card hover:shadow-md transition-shadow"
+                      className="group flex gap-3 p-3 rounded-md border border-gray-200 bg-white hover:shadow-md hover:border-gray-300 transition-all duration-200"
                     >
-                      <div className="w-20 h-20 rounded overflow-hidden bg-gray-100 shrink-0">
+                      {/* Product Image */}
+                      <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-50 shrink-0 border border-gray-100">
                         <img
                           src={generateImageRandom()}
                           alt={item.product.title}
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-sm line-clamp-2 mb-1">
+
+                      {/* Product Info */}
+                      <div className="flex-1 min-w-0 flex flex-col">
+                        <h4 className="font-semibold text-sm text-gray-900 line-clamp-2 mb-1">
                           {item.product.title}
                         </h4>
-                        <p className="text-xs text-muted-foreground mb-2">
+                        <p className="text-xs text-gray-500 mb-2">
                           {item.product.category_id.name}
                         </p>
-                        <p className="text-sm font-semibold text-primary mb-3">
-                          {new Intl.NumberFormat("vi-VN", {
-                            style: "currency",
-                            currency: "VND",
-                          }).format(item.product.price)}
-                        </p>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-7 w-7"
-                            onClick={() => decrementQuantity(item.product._id)}
-                          >
-                            <Minus size={14} weight="bold" />
-                          </Button>
-                          <span className="w-8 text-center font-semibold tabular-nums text-sm">
-                            {item.quantity}
-                          </span>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-7 w-7"
-                            onClick={() => incrementQuantity(item.product._id)}
-                          >
-                            <Plus size={14} weight="bold" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 ml-auto text-destructive hover:text-destructive hover:bg-destructive/10"
-                            onClick={() => removeItem(item.product._id)}
-                          >
-                            <Trash size={14} weight="bold" />
-                          </Button>
+                        <div className="mt-auto flex items-center justify-between">
+                          <p className="text-sm font-bold text-gray-900">
+                            {new Intl.NumberFormat("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            }).format(item.product.price)}
+                          </p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm font-semibold">
-                          {new Intl.NumberFormat("vi-VN", {
-                            style: "currency",
-                            currency: "VND",
-                          }).format(item.product.price * item.quantity)}
-                        </p>
-                      </div>
+
+                      {/* Remove Button */}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 shrink-0 text-gray-400 hover:text-red-600 hover:bg-red-50"
+                        onClick={() => removeItem(item.product._id)}
+                      >
+                        <Trash size={16} weight="bold" />
+                      </Button>
                     </div>
                   ))}
                 </div>
               </ScrollArea>
 
-              <div className="p-6 border-t bg-background space-y-4">
-                {/* Subtotal & Total */}
-                <div className="space-y-2">
+              {/* Footer - Summary & Actions */}
+              <div className="px-6 py-5 border-t border-gray-200 bg-gray-50 space-y-4">
+                {/* Price Summary */}
+                <div className="space-y-3">
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-muted-foreground">
-                      Tạm tính ({totalItems} sản phẩm):
+                    <span className="text-gray-600">
+                      Tạm tính ({totalItems} sản phẩm)
                     </span>
-                    <span className="font-medium">
+                    <span className="font-semibold text-gray-900">
                       {new Intl.NumberFormat("vi-VN", {
                         style: "currency",
                         currency: "VND",
                       }).format(totalPrice)}
                     </span>
                   </div>
-                  <Separator />
+                  <Separator className="bg-gray-200" />
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold text-base">Tổng cộng:</span>
-                    <span className="text-xl font-bold text-primary">
+                    <span className="font-bold text-base text-gray-900">
+                      Tổng cộng
+                    </span>
+                    <span className="text-xl font-bold text-gray-900">
                       {new Intl.NumberFormat("vi-VN", {
                         style: "currency",
                         currency: "VND",
@@ -195,14 +183,16 @@ function HeaderShoppingCart() {
 
                 {/* Action Buttons */}
                 <div className="space-y-2">
-                  <Button className="w-full" size="lg" onClick={handleCheckout}>
+                  <Button
+                    className="w-full h-12 text-base font-semibold"
+                    onClick={handleCheckout}
+                  >
                     <CheckCircle size={20} weight="bold" className="mr-2" />
-                    Tiến hành thanh toán
+                    Thanh toán
                   </Button>
                   <Button
                     variant="outline"
-                    className="w-full"
-                    size="sm"
+                    className="w-full h-10 text-sm border-gray-300"
                     onClick={handleContinueShopping}
                   >
                     Tiếp tục mua sắm
@@ -214,7 +204,7 @@ function HeaderShoppingCart() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
+                    className="w-full text-gray-500 hover:text-red-600 hover:bg-red-50"
                     onClick={() => {
                       if (confirm("Bạn có chắc muốn xóa toàn bộ giỏ hàng?")) {
                         clearCart();
@@ -222,7 +212,7 @@ function HeaderShoppingCart() {
                     }}
                   >
                     <Trash size={16} weight="bold" className="mr-2" />
-                    Xóa toàn bộ giỏ hàng
+                    Xóa toàn bộ
                   </Button>
                 )}
               </div>
