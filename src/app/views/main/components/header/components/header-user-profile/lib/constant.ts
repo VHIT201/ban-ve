@@ -22,14 +22,8 @@ export const HEADER_USER_PROFILE_MENU = [
     path: BASE_PATHS.app.setting.path,
   },
   {
-    icon: BarChart2,
-    roles: [UserRole.COLLABORATOR],
-    label: "Quản lý tài liệu",
-    path: BASE_PATHS.collaborator.documents.path,
-  },
-  {
     icon: UserCogIcon,
-    roles: [UserRole.ADMIN, UserRole.COLLABORATOR],
+    roles: [UserRole.ADMIN],
     label: "Quản lý hệ thống",
     path: BASE_PATHS.admin.path,
   },
