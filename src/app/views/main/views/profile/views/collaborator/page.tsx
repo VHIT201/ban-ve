@@ -40,7 +40,6 @@ import {
   Percent,
 } from "lucide-react";
 import React, { useMemo } from "react";
-import { QueryBoundary } from "@/components/shared";
 import { QueryData } from "@/api/types/base";
 import { UseQueryResult } from "@tanstack/react-query";
 import { CollaboratorMe } from "@/api/types/collaborator";
