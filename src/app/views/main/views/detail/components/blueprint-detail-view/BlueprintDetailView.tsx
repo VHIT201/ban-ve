@@ -184,9 +184,9 @@ const BlueprintDetailView: FC<Props> = (props) => {
         </div>
 
         {/* Right Column - Product Info */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-6 bg-white/5 p-6 rounded-xl shadow-lg h-fit">
           {/* Header with Actions */}
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start justify-between gap-3 ">
             <h1 className="text-2xl lg:text-3xl font-bold text-white leading-tight flex-1">
               {content.title}
             </h1>
@@ -291,7 +291,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
             <div className="flex gap-3">
               <Button
                 size="lg"
-                className="flex-1 h-12 bg-white text-gray-900 hover:bg-white/90 font-semibold"
+                className="flex-1 h-12 bg-white text-gray-900 hover:bg-white/90 font-semibold hover:text-gray-900"
                 onClick={handleAddToCart}
                 disabled={isAdding}
                 variant={isInCart ? "outline" : "default"}
@@ -330,7 +330,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
             <Button
               variant="outline"
               size="lg"
-              className="w-full h-12 border-white/20 text-white hover:bg-white/10 hover:text-white"
+              className="w-full h-12 font-semibold border-white/20 text-gray-700 hover:bg-white/80 hover:text-gray-900"
             >
               <DownloadIcon className="w-5 h-5 mr-2" />
               Xem trước miễn phí

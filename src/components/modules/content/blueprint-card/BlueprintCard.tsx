@@ -21,12 +21,7 @@ import {
 } from "lucide-react";
 import { FC, useState } from "react";
 import { Props } from "./lib/types";
-import {
-  formatDate,
-  formatFileSize,
-  getStatusColor,
-  getStatusText,
-} from "./lib/utils";
+
 import { cn } from "@/utils/ui";
 import { generateImageRandom } from "@/utils/image";
 import { useCartStore } from "@/stores/use-cart-store";
@@ -73,7 +68,7 @@ const BlueprintCard: FC<Props> = (props) => {
 
   return (
     <div
-      className="group/container relative max-w-md rounded-xl bg-linear-to-r from-neutral-600 to-neutral-300 pt-0 shadow-lg overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-2 cursor-pointer"
+      className="group/container relative rounded-xl bg-linear-to-r from-neutral-600 to-neutral-300 pt-0 shadow-lg overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-2 cursor-pointer"
       style={{
         backgroundImage: `url(${generateImageRandom()})`,
         objectFit: "cover",
