@@ -7,7 +7,23 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { DownloadIcon } from "lucide-react";
+import { Download } from "lucide-react";
+
+const formatFileSize = (bytes: number): string => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+};
+
+const getFileIcon = (type: string) => {
+  if (type?.toLowerCase().includes("image")) return "🖼️";
+  if (type?.toLowerCase().includes("pdf")) return "📄";
+  if (type?.toLowerCase().includes("excel")) return "📊";
+  if (type?.toLowerCase().includes("word")) return "📝";
+  if (type?.toLowerCase().includes("powerpoint")) return "📊";
+  if (type?.toLowerCase().includes("zip") || type?.toLowerCase().includes("rar")) return "🗜️";
+  return "📁";
+};
 interface Props {
   previewItem: FileResponse | null;
   onClose: () => void;
@@ -55,7 +71,7 @@ const PreviewFileDialog = ({ previewItem, onClose }: Props) => {
                       download={previewItem.name}
                       className="inline-flex gap-1 items-center"
                     >
-                      <DownloadIcon className="size-4 mr-2" />
+                      <Download className="size-4 mr-2" />
                       Tải xuống
                     </a>
                   </Button>

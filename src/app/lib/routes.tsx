@@ -5,7 +5,7 @@ import { RouterErrorBoundary, RouterHydrateFallbackElement } from "../components
 import mainRoutes from "../views/main/lib/routes";
 import authRoutes from "../views/auth/lib/routes";
 import adminRoutes from "../views/admin/lib/routes";
-import collaboratorRoutes from "../views/collaborator/lib/routes"; // Add this import
+
 
 const appRoutes: RouteObject[] = [
   {
@@ -19,7 +19,7 @@ const appRoutes: RouteObject[] = [
             element: <App />,
           };
         },
-        children: [mainRoutes, adminRoutes, authRoutes, collaboratorRoutes], // Add collaboratorRoutes here
+        children: [mainRoutes, adminRoutes, authRoutes], 
       },
     ],
     errorElement: <RouterErrorBoundary />,

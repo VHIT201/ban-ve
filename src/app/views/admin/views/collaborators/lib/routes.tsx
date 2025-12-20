@@ -41,6 +41,17 @@ const collaboratorRoutes: RouteObject = {
         };
       },
     },
+    {
+      path: collaborators.edit.path,
+      lazy: async () => {
+        const { default: CollaboratorEdit } = await import(
+          "../views/collaborator-edit/page"
+        );
+        return {
+          element: <CollaboratorEdit />,
+        };
+      },
+    },
   ],
 };
 

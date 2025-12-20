@@ -68,8 +68,7 @@ const CollaboratorTable = () => {
       console.log("Reject collaborator:", collaborator._id);
     },
     onEdit: (collaborator) => {
-      // TODO: Implement edit logic
-      console.log("Edit collaborator:", collaborator._id);
+      navigate(`/admin/collaborators/edit/${collaborator._id}`);
     },
     onDelete: (collaborator) => {
       // TODO: Implement delete logic with mutation
