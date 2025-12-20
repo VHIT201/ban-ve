@@ -25,7 +25,9 @@ const Auth = () => {
             >
               <div className="w-4 h-4 bg-white rounded-sm"></div>
             </div>
-            <h1 className="text-xl font-semibold text-foreground">Frello</h1>
+            <h1 className="text-xl font-semibold text-foreground">
+              BLUEPRINTS
+            </h1>
           </div>
 
           <Outlet />

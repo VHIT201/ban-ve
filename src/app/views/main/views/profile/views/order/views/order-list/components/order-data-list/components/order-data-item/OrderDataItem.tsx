@@ -3,72 +3,31 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import {
-  Package,
-  CheckCircle,
-  XCircle,
-  Clock,
-  AlertCircle,
-  Eye,
-  Download,
-} from "lucide-react";
+import { Package, Eye, Download } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 import { FC } from "react";
+import { getStatusConfig } from "./lib/utils";
+import { useNavigate } from "react-router-dom";
+import { BASE_PATHS } from "@/constants/paths";
 
 interface Props {
   order: Order;
   onViewDetails?: (order: Order) => void;
 }
 
-const OrderDataItem: FC<Props> = ({ order, onViewDetails }) => {
-  const getStatusConfig = (status?: OrderStatus) => {
-    switch (status) {
-      case OrderStatus.completed:
-        return {
-          label: "Đã hoàn thành",
-          icon: CheckCircle,
-          className: "bg-green-100 text-green-700 hover:bg-green-100",
-          iconColor: "text-green-600",
-        };
-      case OrderStatus.pending:
-        return {
-          label: "Chờ xử lý",
-          icon: Clock,
-          className: "bg-yellow-100 text-yellow-700 hover:bg-yellow-100",
-          iconColor: "text-yellow-600",
-        };
-      case OrderStatus.failed:
-        return {
-          label: "Thất bại",
-          icon: XCircle,
-          className: "bg-red-100 text-red-700 hover:bg-red-100",
-          iconColor: "text-red-600",
-        };
-      case OrderStatus.cancelled:
-        return {
-          label: "Đã hủy",
-          icon: XCircle,
-          className: "bg-gray-100 text-gray-700 hover:bg-gray-100",
-          iconColor: "text-gray-600",
-        };
-      case OrderStatus.timeout:
-        return {
-          label: "Hết hạn",
-          icon: AlertCircle,
-          className: "bg-orange-100 text-orange-700 hover:bg-orange-100",
-          iconColor: "text-orange-600",
-        };
-      default:
-        return {
-          label: "Không xác định",
-          icon: AlertCircle,
-          className: "bg-gray-100 text-gray-700 hover:bg-gray-100",
-          iconColor: "text-gray-600",
-        };
-    }
+const OrderDataItem: FC<Props> = ({ order }) => {
+  // Props
+  const navigate = useNavigate();
+
+  // Methods
+  const handleViewDetail = () => {
+    navigate(
+      BASE_PATHS.app.profile.order.detail.path.replace(":id", order._id || "")
+    );
   };
 
+  // Memos
   const statusConfig = getStatusConfig(order.status);
   const StatusIcon = statusConfig.icon;
 
@@ -109,11 +68,7 @@ const OrderDataItem: FC<Props> = ({ order, onViewDetails }) => {
                   Tải xuống
                 </Button>
               )}
-              <Button
-                size="sm"
-                className=" h-9"
-                onClick={() => onViewDetails?.(order)}
-              >
+              <Button size="sm" className=" h-9" onClick={handleViewDetail}>
                 <Eye className="w-4 h-4 mr-2" />
                 Xem chi tiết
               </Button>

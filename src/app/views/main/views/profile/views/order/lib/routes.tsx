@@ -50,6 +50,15 @@ const orderRoutes: RouteObject = {
         };
       },
     },
+    {
+      path: order.detail.path,
+      lazy: async () => {
+        const { default: Detail } = await import("../views/order-detail/page");
+        return {
+          element: <Detail />,
+        };
+      },
+    },
   ],
 };
 

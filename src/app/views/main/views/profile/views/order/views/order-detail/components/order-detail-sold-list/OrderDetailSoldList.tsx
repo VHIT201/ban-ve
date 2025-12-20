@@ -41,33 +41,37 @@ const OrderDetailSoldList: FC<Props> = ({ items = [] }) => {
       </CardHeader>
       <CardContent className="pt-6">
         <div className="space-y-4">
-          {items.map((item, index) => (
-            <div key={`${item.contentId}-${index}`}>
-              <div className="flex gap-4">
-                {/* Product Image */}
-                <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0">
-                  <img
-                    src={generateImageRandom()}
-                    alt="Product"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+          {items.map((item, index) => {
+            const content = item.contentId;
+            const itemTotal = (item.price || 0) * (item.quantity || 1);
 
-                {/* Product Info */}
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-semibold text-sm text-gray-900 mb-2">
-                    Sản phẩm #{item.contentId?.slice(-8).toUpperCase()}
-                  </h4>
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Số lượng</span>
-                      <span className="font-medium text-gray-900">
-                        x{item.quantity || 1}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Đơn giá</span>
-                      <span className="font-medium text-gray-900">
+            return (
+              <div key={`${content?._id || index}`}>
+                <div className="flex gap-4">
+                  {/* Product Image */}
+                  <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0">
+                    <img
+                      src={generateImageRandom()}
+                      alt={content?.title || "Product"}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  {/* Product Info */}
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-sm text-gray-900 mb-1 line-clamp-2">
+                      {content?.title ||
+                        `Sản phẩm #${content?._id?.slice(-8).toUpperCase()}`}
+                    </h4>
+                    {content?.description && (
+                      <p className="text-xs text-gray-500 mb-2 line-clamp-1">
+                        {content.description}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-4 text-xs text-gray-600">
+                      <span>SL: x{item.quantity || 1}</span>
+                      <span>•</span>
+                      <span>
                         {new Intl.NumberFormat("vi-VN", {
                           style: "currency",
                           currency: "VND",
@@ -75,22 +79,22 @@ const OrderDetailSoldList: FC<Props> = ({ items = [] }) => {
                       </span>
                     </div>
                   </div>
+
+                  {/* Item Total */}
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-sm font-bold text-gray-900">
+                      {new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(itemTotal)}
+                    </p>
+                  </div>
                 </div>
 
-                {/* Item Total */}
-                <div className="text-right flex-shrink-0">
-                  <p className="text-sm font-bold text-gray-900">
-                    {new Intl.NumberFormat("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    }).format((item.price || 0) * (item.quantity || 1))}
-                  </p>
-                </div>
+                {index < items.length - 1 && <Separator className="mt-4" />}
               </div>
-
-              {index < items.length - 1 && <Separator className="mt-4" />}
-            </div>
-          ))}
+            );
+          })}
 
           {/* Subtotal */}
           <Separator className="my-4" />
