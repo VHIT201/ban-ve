@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-export interface CreateSepayQrPaymentInput {
+export type PostApiPaymentsSepayCreateQrPaymentBody = {
   /** ID của nội dung cần thanh toán */
   contentId: string;
-}
+};

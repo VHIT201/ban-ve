@@ -12,6 +12,5 @@ export const CreatePaymentInputPaymentMethod = {
   bank_transfer: 'bank_transfer',
   credit_card: 'credit_card',
   qr_code: 'qr_code',
-  vnpay: 'vnpay',
   sepay: 'sepay',
 } as const;
