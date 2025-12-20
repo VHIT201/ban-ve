@@ -13,6 +13,7 @@ export const ROUTE_PATHS = {
       personal: { path: "personal" },
       collaborator: { path: "collaborator" },
       history: { path: "history" },
+      order: { path: "order", list: { path: "list" } },
     },
     detail: { path: "detail/:id" },
     collections: { path: "collections" },
@@ -43,8 +44,8 @@ export const ROUTE_PATHS = {
     salesStats: { path: "sales-stats" },
     earnings: { path: "earnings" },
     payments: { path: "payments" },
-    settings: { path: "settings" }
-  }
+    settings: { path: "settings" },
+  },
 };
 
 export const BASE_PATHS = {
@@ -61,6 +62,7 @@ export const BASE_PATHS = {
       personal: { path: "/profile/personal" },
       collaborator: { path: "/profile/collaborator" },
       history: { path: "/profile/history" },
+      order: { path: "/profile/order" },
     },
     setting: { path: "/setting" },
   },
@@ -80,7 +82,6 @@ export const BASE_PATHS = {
     copyRight: { path: "/admin/copy-right" },
     collaborators: { path: "/admin/collaborators" },
     payments: { path: "/admin/payments" },
-    
   },
   collaborator: {
     path: "/collaborator",

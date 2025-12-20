@@ -202,9 +202,9 @@ function HeaderShoppingCart() {
                 {/* Clear Cart */}
                 {items.length > 0 && (
                   <Button
-                    variant="ghost"
+                    variant="link"
                     size="sm"
-                    className="w-full text-gray-500 hover:text-red-600 hover:bg-red-50"
+                    className="w-full text-gray-500 hover:text-red-600"
                     onClick={() => {
                       if (confirm("Bạn có chắc muốn xóa toàn bộ giỏ hàng?")) {
                         clearCart();

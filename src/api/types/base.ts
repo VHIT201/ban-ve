@@ -25,3 +25,14 @@ export interface MutationDataResult<Data = unknown> {
   message: string;
   data: Data;
 }
+
+interface Pagination {
+  limit: number;
+  page: number;
+  total: number;
+  totalPages: number;
+}
+
+export type FilterData<TData> = Record<string, TData> & {
+  pagination: Pagination;
+};

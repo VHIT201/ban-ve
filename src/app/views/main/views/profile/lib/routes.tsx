@@ -4,6 +4,7 @@ import { RouteObject } from "react-router-dom";
 // App
 import { ROUTE_PATHS } from "@/constants/paths";
 import { useAuthStore } from "@/stores";
+import orderRoutes from "../views/order/lib/routes";
 
 // Profile route paths
 const {
@@ -81,6 +82,7 @@ const profileRoutes: RouteObject = {
         };
       },
     },
+    orderRoutes,
   ],
 };
 
