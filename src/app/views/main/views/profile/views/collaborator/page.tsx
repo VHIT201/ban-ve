@@ -46,6 +46,8 @@ import { UseQueryResult } from "@tanstack/react-query";
 import { CollaboratorMe } from "@/api/types/collaborator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CollaboratorContents } from "./components";
+import { BarChart3, DollarSign } from "lucide-react";
+import CollaboratorRevenue from "./components/CollaboratorRevenue";
 
 const collaboratorApplySchema = z.object({
   bankAccount: z
@@ -169,6 +171,9 @@ function CollaboratorStatus({ data }: { data: any }) {
       <TabsList>
         <TabsTrigger value="info">Thông tin cộng tác viên</TabsTrigger>
         <TabsTrigger value="contents">Sản phẩm cộng tác viên</TabsTrigger>
+          <TabsTrigger value="revenue">
+          Doanh thu
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="info" className="mt-4">
@@ -249,6 +254,14 @@ function CollaboratorStatus({ data }: { data: any }) {
       </TabsContent>
       <TabsContent value="contents" className="mt-4">
         <CollaboratorContents />
+      </TabsContent>
+      
+      <TabsContent value="revenue" className="mt-4">
+        <Card className="mx-auto">
+          <CardContent className="pt-6">
+            <CollaboratorRevenue />
+          </CardContent>
+        </Card>
       </TabsContent>
     </Tabs>
   );

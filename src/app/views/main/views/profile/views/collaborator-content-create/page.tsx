@@ -7,12 +7,26 @@ import { ContentFormValues } from "@/components/modules/content/content-editor-f
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { BASE_PATHS } from "@/constants/paths";
 import { ArrowLeftIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ContentDetail = () => {
+  // Hooks
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
   // Mutations
-  const createContentMutation = usePostApiContentUpload();
+  const createContentMutation = usePostApiContentUpload({
+    mutation: {
+      onSuccess: () => {
+        // Invalidate the content list query to refresh the data
+        queryClient.invalidateQueries({ queryKey: ['/api/content'] });
+        // Navigate back to the content list
+        navigate(BASE_PATHS.app.profile.collaborator.path);
+      },
+    },
+  });
 
   const uploadFileMutation = usePostApiFileUpload();
 
@@ -38,7 +52,7 @@ const ContentDetail = () => {
           title: values.title,
           description: values.description,
           file_url: fileData.path,
-          file_id: fileData.path,
+         file_id: fileData._id,
           category_id: values.category_id,
           file_type: values.file.type,
         },
