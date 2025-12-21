@@ -81,33 +81,52 @@ const CategoryPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="container mx-auto px-4 py-6">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
-          <a href="/" className="hover:text-gray-900 transition-colors">
-            Trang chủ
-          </a>
-          <ChevronRight className="w-4 h-4" />
-          <a
-            href="/collections"
-            className="hover:text-gray-900 transition-colors"
-          >
-            Sản phẩm
-          </a>
-          <ChevronRight className="w-4 h-4" />
-          <span className="text-gray-900 font-medium">Tất cả sản phẩm</span>
-        </div>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Section with bg-primary */}
+      <div className="bg-primary">
+        <div className="container mx-auto px-4 py-8">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 text-sm text-white/70 mb-4">
+            <a href="/" className="hover:text-white transition-colors">
+              Trang chủ
+            </a>
+            <ChevronRight className="w-4 h-4" />
+            <a
+              href="/collections"
+              className="hover:text-white transition-colors"
+            >
+              Sản phẩm
+            </a>
+            <ChevronRight className="w-4 h-4" />
+            <span className="text-white font-medium">Tất cả sản phẩm</span>
+          </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Page Title */}
+          <h1 className="text-3xl lg:text-4xl font-bold text-white">
+            Khám phá bộ sưu tập
+          </h1>
+          <p className="text-white/80 mt-2 text-sm lg:text-base">
+            Tìm kiếm và lựa chọn từ hàng nghìn thiết kế chất lượng cao
+          </p>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar Filters */}
-          <aside className={`lg:w-64 shrink-0 space-y-6 md:block hidden`}>
-            <CollectionFilters onFilterChange={setFilteredProducts} />
+          <aside className="lg:w-72 shrink-0 hidden lg:block">
+            <div className="sticky top-20">
+              <CollectionFilters onFilterChange={setFilteredProducts} />
+            </div>
           </aside>
 
-          {/* Main Content */}
+          {/* Products Grid */}
           <main className="flex-1">
-            <CollectionList filter={filteredProducts} />
+            <CollectionList
+              filter={filteredProducts}
+              onClearFilters={() => setFilteredProducts(DEFAULT_FILTER_VALUES)}
+            />
           </main>
         </div>
       </div>

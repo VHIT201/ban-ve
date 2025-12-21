@@ -7,44 +7,7 @@ import { useGetApiContentId } from "@/api/endpoints/content";
 import { useRequiredPathParams } from "@/hooks";
 import { QueryBoundary } from "@/components/shared";
 import { UseQueryResult } from "@tanstack/react-query";
-
-// Mock data - replace with actual data from props/API
-const mockProduct: ContentResponse = {
-  _id: "1",
-  title: "Flat Vector Everyday Life Detailed Plan Creator Bundle",
-  description:
-    "Flat vector everyday life themed detailed plan creator bundle for your architecture & design projects.",
-  category_id: {
-    _id: "cat1",
-    name: "Thiết kế đồ họa",
-    slug: "thiet-ke-do-hoa",
-    description: "Bản vẽ thiết kế đồ họa",
-  },
-  file_id: {
-    _id: "file1",
-    name: "flat-vector-bundle.ai",
-    url: "/uploads/flat-vector-bundle.ai",
-    type: "AI",
-    size: 78643200, // 75.3 MB
-  },
-  price: 289000, // ~$11.99
-  status: "approved",
-  createdBy: {
-    _id: "user1",
-    username: "TOFFU",
-    email: "toffu@example.com",
-  },
-  createdAt: "2025-11-01T10:00:00Z",
-  updatedAt: "2025-11-08T15:30:00Z",
-};
-
-const MOCK_IMAGE_LIST = [
-  "https://images.pexels.com/photos/1404948/pexels-photo-1404948.jpeg",
-  "https://images.pexels.com/photos/1404948/pexels-photo-1404948.jpeg",
-  "https://images.pexels.com/photos/1404948/pexels-photo-1404948.jpeg",
-  "https://images.pexels.com/photos/1404948/pexels-photo-1404948.jpeg",
-  "https://images.pexels.com/photos/1404948/pexels-photo-1404948.jpeg",
-];
+import BlueprintDetailFeedbackFilter from "./components/blueprint-detail-feedback-filter";
 
 const Detail = () => {
   // Hooks
@@ -58,16 +21,26 @@ const Detail = () => {
   }) as UseQueryResult<ContentResponse>;
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="container mx-auto px-4 py-8 space-y-8">
-        <QueryBoundary query={getContentDetailQuery}>
-          {(content) => (
-            <Fragment>
-              <BlueprintDetailView content={content} />
-              <BlueprintDetailFeedback content={content} />
-            </Fragment>
-          )}
-        </QueryBoundary>
+    <div className="min-h-screen bg-gray-50">
+      {/* Product Detail Section */}
+      <div className="bg-primary">
+        <div className="container mx-auto px-4 py-12 lg:py-16">
+          <QueryBoundary query={getContentDetailQuery}>
+            {(content) => <BlueprintDetailView content={content} />}
+          </QueryBoundary>
+        </div>
+      </div>
+
+      {/* Reviews & Comments Section */}
+      <div className="bg-white border-t">
+        <div className="container mx-auto px-4 py-12 lg:py-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="col-span-2">
+            <QueryBoundary query={getContentDetailQuery}>
+              {(content) => <BlueprintDetailFeedback content={content} />}
+            </QueryBoundary>
+          </div>
+          <BlueprintDetailFeedbackFilter />
+        </div>
       </div>
     </div>
   );

@@ -1,17 +1,21 @@
 import { useDeleteApiContentId } from "@/api/endpoints/content";
-import { QueryBoundary } from "@/components/shared";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { BASE_PATHS } from "@/constants/paths";
 import { useRequiredPathParams } from "@/hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeftIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function DeleteContentPage() {
   const { id } = useRequiredPathParams(["id"]);
-  const router = useRouter();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const deleteMutation = useDeleteApiContentId({
@@ -19,11 +23,13 @@ export default function DeleteContentPage() {
       onSuccess: () => {
         toast.success("Xóa nội dung thành công");
         queryClient.invalidateQueries({ queryKey: ["content"] });
-        router.push(BASE_PATHS.app.profile.collaborator.path);
+        navigate(BASE_PATHS.app.profile.collaborator.path);
       },
       onError: (error: any) => {
         console.error("Failed to delete content:", error);
-        toast.error(`Lỗi khi xóa nội dung: ${error?.message || "Vui lòng thử lại sau"}`);
+        toast.error(
+          `Lỗi khi xóa nội dung: ${error?.message || "Vui lòng thử lại sau"}`
+        );
       },
     },
   });
@@ -48,7 +54,7 @@ export default function DeleteContentPage() {
       <CardFooter className="flex justify-between">
         <Button
           variant="outline"
-          onClick={() => router.back()}
+          onClick={() => navigate(-1)}
           disabled={deleteMutation.isPending}
         >
           <ArrowLeftIcon className="mr-2 h-4 w-4" />

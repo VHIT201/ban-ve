@@ -126,14 +126,14 @@ const CategoriesSection = () => {
 
   // Template
   return (
-    <section className="py-16">
+    <section className="py-16 bg-primary">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-white mb-4">
             Danh mục bản vẽ
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
             Tìm kiếm bản vẽ kiến trúc phù hợp với dự án của bạn
           </p>
         </div>
@@ -160,7 +160,7 @@ const CategoriesSection = () => {
                   {categories.topRowCategories.map((category) => (
                     <CarouselItem
                       key={category._id}
-                      className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 lg:basis-1/4"
+                      className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 lg:basis-1/4 py-2"
                     >
                       <div className="animate-in slide-in-from-left-10 duration-700">
                         <CategoryItem
@@ -193,7 +193,7 @@ const CategoriesSection = () => {
                   {categories.bottomRowCategories.map((category) => (
                     <CarouselItem
                       key={category._id}
-                      className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 "
+                      className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 p-2"
                     >
                       <div className="animate-in slide-in-from-right-10 duration-700">
                         <CategoryItem

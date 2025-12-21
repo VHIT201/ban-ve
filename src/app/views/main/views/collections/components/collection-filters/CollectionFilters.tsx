@@ -116,176 +116,183 @@ const CollectionFilters = ({ onFilterChange }: Props) => {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="sticky top-20 space-y-6"
-      >
-        {/* Search Filter */}
-        <div className="space-y-2">
-          <h3 className="font-medium text-gray-900 pb-3 border-b">Tìm kiếm</h3>
-          <FormField
-            control={form.control}
-            name="searchQuery"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <Input
-                      {...field}
-                      type="text"
-                      placeholder="Tìm theo tên sản phẩm..."
-                      className="pl-10"
-                    />
-                  </div>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        </div>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {/* Filter Card Header */}
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 space-y-6">
+          <div className="flex items-center gap-2 pb-4 border-b">
+            <Filter className="w-5 h-5 text-gray-700" />
+            <h2 className="font-semibold text-lg text-gray-900">Bộ lọc</h2>
+          </div>
 
-        {/* Category Filter */}
-        <Collapsible open={isCategoryOpen} onOpenChange={setIsCategoryOpen}>
-          <CollapsibleTrigger className="flex items-center justify-between w-full pb-3 border-b">
-            <h3 className="font-medium text-gray-900">Danh mục</h3>
-            {isCategoryOpen ? (
-              <ChevronUpIcon className="w-4 h-4 text-gray-500" />
-            ) : (
-              <ChevronDownIcon className="w-4 h-4 text-gray-500" />
-            )}
-          </CollapsibleTrigger>
-          <CollapsibleContent className="pt-4 space-y-3">
-            <QueryBoundary query={getCategoriesQuery}>
-              {(categories) => {
-                return categories.map((category) => (
-                  <FormField
-                    key={category._id}
-                    control={form.control}
-                    name="categories"
-                    render={() => (
-                      <FormItem className="flex items-center space-x-2 space-y-0">
-                        <FormControl>
-                          <Checkbox
-                            id={`category-${category._id}`}
-                            checked={selectedCategories.includes(category._id!)}
-                            onCheckedChange={() =>
-                              handleCategoryToggle(category._id!)
-                            }
-                          />
-                        </FormControl>
-                        <FormLabel
-                          htmlFor={`category-${category._id}`}
-                          className="text-sm text-gray-700 cursor-pointer hover:text-gray-900 transition-colors font-normal"
-                        >
-                          {category.name}
-                        </FormLabel>
-                      </FormItem>
-                    )}
-                  />
-                ));
-              }}
-            </QueryBoundary>
-          </CollapsibleContent>
-        </Collapsible>
-        {/* Price Filter */}
-        <Collapsible open={isPriceOpen} onOpenChange={setIsPriceOpen}>
-          <CollapsibleTrigger className="flex items-center justify-between w-full pb-3 border-b">
-            <h3 className="font-medium text-gray-900">Giá</h3>
-            {isPriceOpen ? (
-              <ChevronUpIcon className="w-4 h-4 text-gray-500" />
-            ) : (
-              <ChevronDownIcon className="w-4 h-4 text-gray-500" />
-            )}
-          </CollapsibleTrigger>
-          <CollapsibleContent className="pt-6 space-y-4">
+          {/* Search Filter */}
+          <div className="space-y-3">
+            <h3 className="font-medium text-sm text-gray-700">Tìm kiếm</h3>
             <FormField
               control={form.control}
-              name="priceRange"
+              name="searchQuery"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Slider
-                      value={field.value}
-                      onValueChange={handlePriceRangeChange}
-                      max={10000000}
-                      step={100000}
-                      className="w-full"
-                    />
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder="Tìm theo tên..."
+                        className="pl-10 h-10"
+                      />
+                    </div>
                   </FormControl>
                 </FormItem>
               )}
             />
-            <div className="flex items-start justify-between gap-4">
+          </div>
+
+          {/* Category Filter */}
+          <Collapsible open={isCategoryOpen} onOpenChange={setIsCategoryOpen}>
+            <CollapsibleTrigger className="flex items-center justify-between w-full group">
+              <h3 className="font-medium text-sm text-gray-700">Danh mục</h3>
+              {isCategoryOpen ? (
+                <ChevronUpIcon className="w-4 h-4 text-gray-400 group-hover:text-gray-600" />
+              ) : (
+                <ChevronDownIcon className="w-4 h-4 text-gray-400 group-hover:text-gray-600" />
+              )}
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-3 space-y-2.5">
+              <QueryBoundary query={getCategoriesQuery}>
+                {(categories) => {
+                  return categories.map((category) => (
+                    <FormField
+                      key={category._id}
+                      control={form.control}
+                      name="categories"
+                      render={() => (
+                        <FormItem className="flex items-center space-x-2.5 space-y-0">
+                          <FormControl>
+                            <Checkbox
+                              id={`category-${category._id}`}
+                              checked={selectedCategories.includes(
+                                category._id!
+                              )}
+                              onCheckedChange={() =>
+                                handleCategoryToggle(category._id!)
+                              }
+                            />
+                          </FormControl>
+                          <FormLabel
+                            htmlFor={`category-${category._id}`}
+                            className="text-sm text-gray-600 cursor-pointer hover:text-gray-900 transition-colors font-normal flex-1"
+                          >
+                            {category.name}
+                          </FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                  ));
+                }}
+              </QueryBoundary>
+            </CollapsibleContent>
+          </Collapsible>
+          {/* Price Filter */}
+          <Collapsible open={isPriceOpen} onOpenChange={setIsPriceOpen}>
+            <CollapsibleTrigger className="flex items-center justify-between w-full group">
+              <h3 className="font-medium text-sm text-gray-700">Khoảng giá</h3>
+              {isPriceOpen ? (
+                <ChevronUpIcon className="w-4 h-4 text-gray-400 group-hover:text-gray-600" />
+              ) : (
+                <ChevronDownIcon className="w-4 h-4 text-gray-400 group-hover:text-gray-600" />
+              )}
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-4 space-y-4">
               <FormField
                 control={form.control}
-                name="minPrice"
+                name="priceRange"
                 render={({ field }) => (
                   <FormItem>
-                    <div className="flex flex-col gap-1">
-                      <FormControl>
-                        <input
-                          type="number"
-                          value={field.value}
-                          onChange={(e) =>
-                            handleMinPriceChange(parseInt(e.target.value) || 0)
-                          }
-                          placeholder="0"
-                          className="w-full px-3 py-2 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-gray-200"
-                        />
-                      </FormControl>
-                      <span className="text-xs text-gray-500">
-                        {new Intl.NumberFormat("vi-VN", {
-                          style: "currency",
-                          currency: "VND",
-                        }).format(field.value)}
-                      </span>
-                    </div>
+                    <FormControl>
+                      <Slider
+                        value={field.value}
+                        onValueChange={handlePriceRangeChange}
+                        max={10000000}
+                        step={100000}
+                        className="w-full"
+                      />
+                    </FormControl>
                   </FormItem>
                 )}
               />
-              <span className="text-gray-400">-</span>
-              <FormField
-                control={form.control}
-                name="maxPrice"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-3">
+                <FormField
+                  control={form.control}
+                  name="minPrice"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
                       <FormControl>
-                        <input
-                          type="number"
-                          value={field.value}
-                          onChange={(e) =>
-                            handleMaxPriceChange(
-                              parseInt(e.target.value) || 100000000
-                            )
-                          }
-                          placeholder="100000000"
-                          className="w-full px-3 py-2 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-gray-200"
-                        />
+                        <div className="space-y-1.5">
+                          <input
+                            type="number"
+                            value={field.value}
+                            onChange={(e) =>
+                              handleMinPriceChange(
+                                parseInt(e.target.value) || 0
+                              )
+                            }
+                            placeholder="0"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                          />
+                          <span className="text-xs text-gray-500 block">
+                            {new Intl.NumberFormat("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            }).format(field.value)}
+                          </span>
+                        </div>
                       </FormControl>
-                      <span className="text-xs text-gray-500">
-                        {new Intl.NumberFormat("vi-VN", {
-                          style: "currency",
-                          currency: "VND",
-                        }).format(field.value)}
-                      </span>
-                    </div>
-                  </FormItem>
-                )}
-              />
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
+                    </FormItem>
+                  )}
+                />
+                <span className="text-gray-400 text-sm mt-[-20px]">-</span>
+                <FormField
+                  control={form.control}
+                  name="maxPrice"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormControl>
+                        <div className="space-y-1.5">
+                          <input
+                            type="number"
+                            value={field.value}
+                            onChange={(e) =>
+                              handleMaxPriceChange(
+                                parseInt(e.target.value) || 100000000
+                              )
+                            }
+                            placeholder="100000000"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                          />
+                          <span className="text-xs text-gray-500 block">
+                            {new Intl.NumberFormat("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            }).format(field.value)}
+                          </span>
+                        </div>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
 
         {/* Action Buttons */}
-        <div className="space-y-3">
-          {/* Apply Filters Button */}
-          <Button type="submit" className="w-full gap-2">
+        <div className="space-y-2">
+          <Button type="submit" className="w-full gap-2 h-11">
             <Filter className="w-4 h-4" />
             Áp dụng bộ lọc
           </Button>
 
-          {/* Clear Filters */}
           {(searchQuery ||
             selectedCategories?.length > 0 ||
             selectedViews?.length > 0) && (
@@ -293,7 +300,7 @@ const CollectionFilters = ({ onFilterChange }: Props) => {
               type="button"
               variant="outline"
               onClick={handleClearFilters}
-              className="w-full gap-2"
+              className="w-full gap-2 h-11"
             >
               <XIcon className="w-4 h-4" />
               Xóa bộ lọc

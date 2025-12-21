@@ -128,11 +128,13 @@ const BannerSection = () => {
                   <div className="max-w-2xl">
                     {/* Title */}
                     <h1 className="text-4xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-4 text-white">
-                      <span className="text-white drop-shadow-lg">
+                      <span className="text-white drop-shadow-lg leading-12 uppercase -tracking-wide italic">
                         {slide.title}
                       </span>
                       <br />
-                      <span className="drop-shadow-lg">{slide.subtitle}</span>
+                      <span className="text-white drop-shadow-lg leading-12 uppercase -tracking-wide italic">
+                        {slide.subtitle}
+                      </span>
                     </h1>
 
                     {/* Description */}

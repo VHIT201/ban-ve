@@ -32,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ReportDialog } from "@/components/shared";
+import { ContentPaymentDialog } from "@/components/modules/content";
 
 const mockProduct: ContentResponse = {
   _id: "1",
@@ -78,6 +79,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
   const navigate = useNavigate();
 
   // States
+  const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
   const [openReportDialog, setOpenReportDialog] = useState(false);
 
   // Cart Store
@@ -117,16 +119,16 @@ const BlueprintDetailView: FC<Props> = (props) => {
     if (!isInCart) {
       addItem(content, 1);
     }
-    navigate("/payment");
+    setOpenPaymentDialog(true);
   };
 
   return (
     <Fragment>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
         {/* Left Column - Image Gallery */}
-        <div className="space-y-4">
+        <div className="lg:col-span-3 space-y-4">
           {/* Main Image */}
-          <div className=" bg-gray-50 rounded-lg overflow-hidden border">
+          <div className="bg-white rounded-xl overflow-hidden shadow-lg">
             <Lens
               zoomFactor={2}
               lensSize={150}
@@ -136,10 +138,11 @@ const BlueprintDetailView: FC<Props> = (props) => {
               <img
                 src={MOCK_IMAGE_LIST[selectedImage]}
                 alt={mockProduct.title}
-                className="w-full h-[500px] object-cover"
+                className="w-full h-[400px] lg:h-[550px] object-cover"
               />
             </Lens>
           </div>
+
           {/* Thumbnail Gallery */}
           <Carousel
             opts={{
@@ -148,52 +151,56 @@ const BlueprintDetailView: FC<Props> = (props) => {
             }}
             className="w-full"
           >
-            <CarouselContent className="-ml-2 md:-ml-4">
+            <CarouselContent className="-ml-2">
               {MOCK_IMAGE_LIST.map((image, index) => (
                 <CarouselItem
                   key={index}
-                  className="pl-2 md:pl-4 basis-1/3 md:basis-1/4"
+                  className="pl-2 basis-1/4 md:basis-1/5"
                 >
                   <button
                     onClick={() => setSelectedImage(index)}
-                    className={`aspect-square bg-gray-50 rounded-lg overflow-hidden border-2 transition-all duration-200 w-full ${
+                    className={`aspect-square bg-white rounded-lg overflow-hidden border-2 transition-all duration-200 w-full ${
                       selectedImage === index
-                        ? "border-gray-900 ring-2 ring-gray-900/20"
-                        : "border-gray-200 hover:border-gray-400 hover:shadow-sm"
+                        ? "border-white ring-2 ring-white/50 shadow-md"
+                        : "border-white/20 hover:border-white/60 opacity-70 hover:opacity-100"
                     }`}
                   >
                     <img
                       src={image}
                       alt={`Preview ${index + 1}`}
-                      className="w-full h-full object-cover transition-transform duration-200 hover:scale-105"
+                      className="w-full h-full object-cover"
                     />
                   </button>
                 </CarouselItem>
               ))}
             </CarouselContent>
-            {/* Navigation buttons - only show if there are more than 4 items */}
-            {MOCK_IMAGE_LIST.length > 4 && (
+            {MOCK_IMAGE_LIST.length > 5 && (
               <>
-                <CarouselPrevious className="left-0 size-8 bg-white/80 backdrop-blur-sm border-gray-300 hover:bg-white" />
-                <CarouselNext className="right-0 size-8 bg-white/80 backdrop-blur-sm border-gray-300 hover:bg-white" />
+                <CarouselPrevious className="-left-3 size-8 bg-white/90 backdrop-blur-sm border-white/20 hover:bg-white shadow-lg" />
+                <CarouselNext className="-right-3 size-8 bg-white/90 backdrop-blur-sm border-white/20 hover:bg-white shadow-lg" />
               </>
             )}
           </Carousel>
         </div>
+
         {/* Right Column - Product Info */}
-        <div className="space-y-6">
-          {/* Brand & Title */}
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 leading-tight">
+        <div className="lg:col-span-2 space-y-6 bg-white/5 p-6 rounded-xl shadow-lg h-fit">
+          {/* Header with Actions */}
+          <div className="flex items-start justify-between gap-3 ">
+            <h1 className="text-2xl lg:text-3xl font-bold text-white leading-tight flex-1">
               {content.title}
             </h1>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button size="icon" variant="ghost">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="text-white/70 hover:text-white hover:bg-white/10"
+                >
                   <EllipsisIcon className="size-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
+              <DropdownMenuContent align="end">
                 <DropdownMenuItem>
                   <HeartIcon className="size-4 mr-2" />
                   Yêu thích
@@ -212,15 +219,15 @@ const BlueprintDetailView: FC<Props> = (props) => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+
           {/* Price & Rating */}
-          <div className="space-y-3">
-            <div className="text-3xl font-bold text-gray-900">
+          <div className="space-y-3 pb-6 border-b border-white/10">
+            <div className="text-3xl lg:text-4xl font-bold text-white">
               {new Intl.NumberFormat("vi-VN", {
                 style: "currency",
                 currency: "VND",
               }).format(content.price)}
             </div>
-            {/* Rating Stars */}
             <div className="flex items-center gap-2">
               <div className="flex items-center">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -228,50 +235,63 @@ const BlueprintDetailView: FC<Props> = (props) => {
                     key={star}
                     className={`w-4 h-4 ${
                       star <= rating
-                        ? "text-yellow-400 fill-current"
-                        : "text-gray-300"
+                        ? "text-yellow-400 fill-yellow-400"
+                        : "text-white/20"
                     }`}
                   />
                 ))}
               </div>
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-white/60">
                 {rating > 0 ? `${rating}/5` : "Chưa có đánh giá"}
               </span>
             </div>
           </div>
+
           {/* Quick Info */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <div className="text-sm text-gray-600">File Type:</div>
-              <div className="font-medium">Vector</div>
+          <div className="grid grid-cols-2 gap-4 py-6 border-b border-white/10">
+            <div className="space-y-1.5">
+              <div className="text-xs text-white/50 uppercase tracking-wide">
+                Loại file
+              </div>
+              <div className="font-medium text-white">Vector</div>
             </div>
-            <div className="space-y-2">
-              <div className="text-sm text-gray-600">File Size:</div>
-              <div className="font-medium">
+            <div className="space-y-1.5">
+              <div className="text-xs text-white/50 uppercase tracking-wide">
+                Kích thước
+              </div>
+              <div className="font-medium text-white">
                 {formatFileSize(content.file_id.size)}
               </div>
             </div>
-            <div className="space-y-2">
-              <div className="text-sm text-gray-600">Format:</div>
-              <div className="font-medium">AI, PDF, PNG</div>
+            <div className="space-y-1.5">
+              <div className="text-xs text-white/50 uppercase tracking-wide">
+                Định dạng
+              </div>
+              <div className="font-medium text-white">AI, PDF, PNG</div>
             </div>
-            <div className="space-y-2">
-              <div className="text-sm text-gray-600">Category:</div>
-              <div className="font-medium">{content.category_id.name}</div>
+            <div className="space-y-1.5">
+              <div className="text-xs text-white/50 uppercase tracking-wide">
+                Danh mục
+              </div>
+              <div className="font-medium text-white">
+                {content.category_id.name}
+              </div>
             </div>
           </div>
+
           {/* Description */}
-          <div className="space-y-2">
-            <p className="text-gray-700 leading-relaxed">
+          <div className="py-4">
+            <p className="text-white/80 leading-relaxed text-sm">
               {content.description}
             </p>
           </div>
+
           {/* Action Buttons */}
-          <div className="space-y-3 mt-auto">
+          <div className="space-y-3 pt-4">
             <div className="flex gap-3">
               <Button
                 size="lg"
-                className="flex-1 h-12"
+                className="flex-1 h-12 bg-white text-gray-900 hover:bg-white/90 font-semibold hover:text-gray-900"
                 onClick={handleAddToCart}
                 disabled={isAdding}
                 variant={isInCart ? "outline" : "default"}
@@ -283,8 +303,8 @@ const BlueprintDetailView: FC<Props> = (props) => {
                   </>
                 ) : justAdded ? (
                   <>
-                    <Check className="w-5 h-5 mr-2 text-green-600" />
-                    <span className="text-green-600">Đã thêm!</span>
+                    <Check className="w-5 h-5 mr-2" />
+                    Đã thêm!
                   </>
                 ) : isInCart ? (
                   <>
@@ -294,29 +314,40 @@ const BlueprintDetailView: FC<Props> = (props) => {
                 ) : (
                   <>
                     <ShoppingCartIcon className="w-5 h-5 mr-2" />
-                    Thêm vào giỏ hàng
+                    Thêm vào giỏ
                   </>
                 )}
               </Button>
               <Button
                 size="lg"
                 variant="destructive"
-                className="flex-1 h-12"
+                className="flex-1 h-12 font-semibold"
                 onClick={handleBuyNow}
               >
-                Mua Ngay
+                Mua ngay
               </Button>
             </div>
-            <Button variant="outline" size="lg" className="w-full h-12">
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full h-12 font-semibold border-white/20 text-gray-700 hover:bg-white/80 hover:text-gray-900"
+            >
               <DownloadIcon className="w-5 h-5 mr-2" />
-              Tải xuống miễn phí (Preview)
+              Xem trước miễn phí
             </Button>
           </div>
         </div>
       </div>
+
       <ReportDialog
         open={openReportDialog}
         onOpenChange={setOpenReportDialog}
+      />
+
+      <ContentPaymentDialog
+        contentId={content._id}
+        open={openPaymentDialog}
+        onOpenChange={setOpenPaymentDialog}
       />
     </Fragment>
   );

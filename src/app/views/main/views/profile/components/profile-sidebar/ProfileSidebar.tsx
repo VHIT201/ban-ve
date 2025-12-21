@@ -14,45 +14,56 @@ const ProfileSidebar = () => {
 
   // Template
   return (
-    <Card className="sticky top-12 border-0 shadow-sm">
-      <CardContent className="p-6">
-        {/* User Profile */}
-        <div className="text-center mb-8">
-          <Avatar className="w-20 h-20 mx-auto mb-4">
+    <Card className="sticky top-20 border border-gray-200 shadow-sm">
+      <CardContent className="p-0">
+        {/* User Profile Header */}
+        <div className="text-center p-6 border-b border-gray-100">
+          <Avatar className="w-20 h-20 mx-auto mb-4 ring-4 ring-gray-100">
             <AvatarImage
               src={profileStore.avatar}
               alt={profileStore.username}
             />
-            <AvatarFallback className="text-lg font-medium bg-gray-100">
+            <AvatarFallback className="text-lg font-semibold bg-gray-900 text-white">
               {profileStore.username
                 .split(" ")
                 .map((n) => n[0])
                 .join("")}
             </AvatarFallback>
           </Avatar>
-          <h3 className="font-semibold text-lg text-gray-900 mb-1">
+          <h3 className="font-semibold text-base text-gray-900 mb-1">
             {profileStore.username}
           </h3>
-          <p className="text-sm text-gray-500">{profileStore.email}</p>
+          <p className="text-xs text-gray-500 truncate px-2">
+            {profileStore.email}
+          </p>
         </div>
 
         {/* Navigation */}
-        <nav className="space-y-2">
+        <nav className="p-3 space-y-1">
           {SIDEBAR_MENU.map((item) => (
             <NavLink
               key={item.title}
               to={item.path}
               className={({ isActive }) =>
                 cn(
-                  "w-full cursor-pointer flex items-center gap-3 px-3 py-2.5 text-left rounded-lg transition-colors",
+                  "w-full cursor-pointer flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-all duration-200",
                   isActive
-                    ? "bg-primary text-white border border-primary/20"
-                    : "text-gray-600 hover:bg-primary/20"
+                    ? "bg-gray-900 text-white shadow-sm"
+                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                 )
               }
             >
-              <item.icon className="size-5" />
-              <span className="text-sm font-medium">{item.title}</span>
+              {({ isActive }) => (
+                <>
+                  <item.icon
+                    className={cn(
+                      "size-5 transition-transform",
+                      isActive && "scale-110"
+                    )}
+                  />
+                  <span className="text-sm font-medium">{item.title}</span>
+                </>
+              )}
             </NavLink>
           ))}
         </nav>

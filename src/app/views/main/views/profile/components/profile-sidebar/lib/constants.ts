@@ -1,6 +1,6 @@
 import { BASE_PATHS } from "@/constants/paths";
 import { TrademarkIcon } from "@phosphor-icons/react";
-import { HistoryIcon, UserIcon } from "lucide-react";
+import { HistoryIcon, ShoppingBagIcon, UserIcon } from "lucide-react";
 
 export const SIDEBAR_MENU = [
   {
@@ -12,6 +12,11 @@ export const SIDEBAR_MENU = [
     icon: TrademarkIcon,
     title: "Cộng tác viên",
     path: BASE_PATHS.app.profile.collaborator.path,
+  },
+  {
+    icon: ShoppingBagIcon,
+    title: "Đơn hàng của tôi",
+    path: BASE_PATHS.app.profile.order.path,
   },
   {
     icon: HistoryIcon,

@@ -6,11 +6,9 @@ export interface ContentInput {
   /** Mô tả (không bắt buộc) */
   description?: string;
   /** Lĩnh vực của nội dung */
-  field?: string;
+  field: string;
   /** Loại file (image, video, document, ...) */
-  file_type?: string;
+  file_type: string;
   /** Đường dẫn đến file */
-  file_url?: string;
-  category_id: string;
-  file_id: string;
+  file_url: string;
 }

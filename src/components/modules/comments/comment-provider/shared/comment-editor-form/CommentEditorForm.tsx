@@ -70,9 +70,11 @@ const CommentCreationForm: FC<Props> = (props) => {
       toast.warning("Vui lòng nhập nội dung bình luận");
       return;
     }
-    
+
     if (commentContent.length > MAX_COMMENT_LENGTH) {
-      toast.warning(`Bình luận không được vượt quá ${MAX_COMMENT_LENGTH} ký tự`);
+      toast.warning(
+        `Bình luận không được vượt quá ${MAX_COMMENT_LENGTH} ký tự`
+      );
       return;
     }
 
@@ -271,7 +273,9 @@ const CommentCreationForm: FC<Props> = (props) => {
                 className={cn(
                   "min-h-[80px] resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-base pr-16",
                   classNames?.textarea,
-                  commentContent.length > MAX_COMMENT_LENGTH ? "border-red-500" : ""
+                  commentContent.length > MAX_COMMENT_LENGTH
+                    ? "border-red-500"
+                    : ""
                 )}
                 disabled={isSubmitting}
               />

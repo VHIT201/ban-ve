@@ -75,19 +75,18 @@ const BlueprintFeatureSection = () => {
 
         <div
           className={
-            "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"
+            "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12"
           }
         >
           <QueryBoundary query={getBluerintListQuery}>
             {(blueprints) => {
               return blueprints.data.map((blueprint) => (
-                <div key={blueprint._id}>
-                  <BlueprintCard
-                    blueprint={blueprint}
-                    onViewDetails={handleViewDetails}
-                    onAddToCart={handleAddToCart}
-                  />
-                </div>
+                <BlueprintCard
+                  key={blueprint._id}
+                  blueprint={blueprint}
+                  onViewDetails={handleViewDetails}
+                  onAddToCart={handleAddToCart}
+                />
               ));
             }}
           </QueryBoundary>

@@ -31,16 +31,8 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
-import {
-  CheckCircle,
-  Clock,
-  XCircle,
-  User,
-  CreditCard,
-  Percent,
-} from "lucide-react";
+import { User, CreditCard, Percent } from "lucide-react";
 import React, { useMemo } from "react";
-import { QueryBoundary } from "@/components/shared";
 import { QueryData } from "@/api/types/base";
 import { UseQueryResult } from "@tanstack/react-query";
 import { CollaboratorMe } from "@/api/types/collaborator";
@@ -89,24 +81,32 @@ function CollaboratorForm() {
   };
 
   return (
-    <Card className="max-w-2xl mx-auto">
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Đăng ký Cộng tác viên</CardTitle>
-        <CardDescription>
+    <Card className="border border-gray-200 shadow-sm">
+      <CardHeader className="border-b border-gray-100 pb-6">
+        <CardTitle className="text-xl font-bold text-gray-900">
+          Đăng ký Cộng tác viên
+        </CardTitle>
+        <CardDescription className="text-sm text-gray-600">
           Trở thành cộng tác viên để kiếm thêm thu nhập từ việc bán bản vẽ
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <FormField
               control={form.control}
               name="bankAccount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Số tài khoản ngân hàng</FormLabel>
+                  <FormLabel className="text-sm font-medium text-gray-700">
+                    Số tài khoản ngân hàng
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="Nhập số tài khoản" {...field} />
+                    <Input
+                      placeholder="Nhập số tài khoản"
+                      className="h-10"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -118,10 +118,13 @@ function CollaboratorForm() {
               name="bankName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tên ngân hàng</FormLabel>
+                  <FormLabel className="text-sm font-medium text-gray-700">
+                    Tên ngân hàng
+                  </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="VD: Vietcombank, BIDV, ACB..."
+                      className="h-10"
                       {...field}
                     />
                   </FormControl>
@@ -135,13 +138,16 @@ function CollaboratorForm() {
               name="commissionRate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tỷ lệ hoa hồng mong muốn (%)</FormLabel>
+                  <FormLabel className="text-sm font-medium text-gray-700">
+                    Tỷ lệ hoa hồng mong muốn (%)
+                  </FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       min="0"
                       max="100"
                       placeholder="10"
+                      className="h-10"
                       {...field}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />
@@ -153,7 +159,7 @@ function CollaboratorForm() {
 
             <Button
               type="submit"
-              className="w-full"
+              className="w-full h-11 mt-6"
               disabled={applyMutation.isPending}
             >
               {applyMutation.isPending ? "Đang gửi..." : "Gửi đơn đăng ký"}
@@ -166,96 +172,153 @@ function CollaboratorForm() {
 }
 
 function CollaboratorStatus({ data }: { data: any }) {
+  const getStatusBadge = (status: CollaboratorResponseStatus) => {
+    switch (status) {
+      case CollaboratorResponseStatus.approved:
+        return (
+          <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+            Đã duyệt
+          </Badge>
+        );
+      case CollaboratorResponseStatus.rejected:
+        return (
+          <Badge className="bg-red-100 text-red-700 hover:bg-red-100">
+            Đã từ chối
+          </Badge>
+        );
+      default:
+        return (
+          <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100">
+            Chờ duyệt
+          </Badge>
+        );
+    }
+  };
+
   return (
     <Tabs defaultValue="info">
       <TabsList>
         <TabsTrigger value="info">Thông tin cộng tác viên</TabsTrigger>
         <TabsTrigger value="contents">Sản phẩm cộng tác viên</TabsTrigger>
-          <TabsTrigger value="revenue">
-          Doanh thu
-        </TabsTrigger>
+        <TabsTrigger value="revenue">Doanh thu</TabsTrigger>
       </TabsList>
 
-      <TabsContent value="info" className="mt-4">
-        <Card className="mx-auto">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Thông tin Cộng tác viên</CardTitle>
-            <CardDescription>
-              Trạng thái đơn đăng ký cộng tác viên của bạn
-            </CardDescription>
+      <TabsContent value="info" className="space-y-6">
+        <Card className="border border-gray-200 shadow-sm">
+          <CardHeader className="border-b border-gray-100">
+            <div className="flex items-start justify-between">
+              <div>
+                <CardTitle className="text-xl font-bold text-gray-900">
+                  Thông tin Cộng tác viên
+                </CardTitle>
+                <CardDescription className="text-sm text-gray-600 mt-1">
+                  Chi tiết đơn đăng ký của bạn
+                </CardDescription>
+              </div>
+              {getStatusBadge(data.status)}
+            </div>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <Separator />
-            {/* Application Info */}
-            <div className="grid gap-4">
-              <div className="flex items-center gap-3">
-                <CreditCard className="w-5 h-5 text-muted-foreground" />
-                <div>
-                  <p className="font-medium">Thông tin ngân hàng</p>
-                  <p className="text-sm text-muted-foreground">
-                    {data.bankName} - {data.bankAccount}
+          <CardContent className="pt-6">
+            <div className="space-y-5">
+              {/* Bank Info */}
+              <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center flex-shrink-0">
+                  <CreditCard className="w-5 h-5 text-gray-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-700 mb-1">
+                    Thông tin ngân hàng
+                  </p>
+                  <p className="text-sm text-gray-900 font-medium">
+                    {data.bankName}
+                  </p>
+                  <p className="text-sm text-gray-600 mt-0.5">
+                    {data.bankAccount}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <Percent className="w-5 h-5 text-muted-foreground" />
-                <div>
-                  <p className="font-medium">Tỷ lệ hoa hồng</p>
-                  <p className="text-sm text-muted-foreground">
+
+              {/* Commission Rate */}
+              <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center flex-shrink-0">
+                  <Percent className="w-5 h-5 text-gray-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-700 mb-1">
+                    Tỷ lệ hoa hồng
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900">
                     {data.commissionRate}%
                   </p>
                 </div>
               </div>
+
+              {/* Approver */}
               {data.approvedBy && (
-                <div className="flex items-center gap-3">
-                  <User className="w-5 h-5 text-muted-foreground" />
-                  <div>
-                    <p className="font-medium">Người duyệt</p>
-                    <p className="text-sm text-muted-foreground">
+                <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                  <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center flex-shrink-0">
+                    <User className="w-5 h-5 text-gray-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-700 mb-1">
+                      Người duyệt
+                    </p>
+                    <p className="text-sm text-gray-900">
                       {data.approvedBy.username || data.approvedBy.email}
                     </p>
                   </div>
                 </div>
               )}
+
+              {/* Rejection Reason */}
               {data.rejectionReason &&
                 data.status === CollaboratorResponseStatus.rejected && (
-                  <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-                    <p className="font-medium text-red-800">Lý do từ chối:</p>
-                    <p className="text-sm text-red-600">
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-sm font-semibold text-red-900 mb-1">
+                      Lý do từ chối
+                    </p>
+                    <p className="text-sm text-red-700">
                       {data.rejectionReason}
                     </p>
                   </div>
                 )}
-            </div>
-            <Separator />
-            {/* Timestamps */}
-            <div className="text-sm text-muted-foreground space-y-1">
-              {data.createdAt && (
-                <p>
-                  Ngày gửi đơn:{" "}
-                  {formatDistanceToNow(new Date(data.createdAt), {
-                    addSuffix: true,
-                    locale: vi,
-                  })}
-                </p>
-              )}
-              {data.approvedAt && (
-                <p>
-                  Ngày duyệt:{" "}
-                  {formatDistanceToNow(new Date(data.approvedAt), {
-                    addSuffix: true,
-                    locale: vi,
-                  })}
-                </p>
-              )}
+
+              {/* Timestamps */}
+              <div className="pt-4 border-t border-gray-100">
+                <div className="space-y-2 text-xs text-gray-500">
+                  {data.createdAt && (
+                    <div className="flex items-center justify-between">
+                      <span>Ngày gửi đơn</span>
+                      <span className="font-medium text-gray-700">
+                        {formatDistanceToNow(new Date(data.createdAt), {
+                          addSuffix: true,
+                          locale: vi,
+                        })}
+                      </span>
+                    </div>
+                  )}
+                  {data.approvedAt && (
+                    <div className="flex items-center justify-between">
+                      <span>Ngày duyệt</span>
+                      <span className="font-medium text-gray-700">
+                        {formatDistanceToNow(new Date(data.approvedAt), {
+                          addSuffix: true,
+                          locale: vi,
+                        })}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
       </TabsContent>
-      <TabsContent value="contents" className="mt-4">
+
+      <TabsContent value="contents">
         <CollaboratorContents />
       </TabsContent>
-      
+
       <TabsContent value="revenue" className="mt-4">
         <Card className="mx-auto">
           <CardContent className="pt-6">
@@ -280,7 +343,7 @@ const Collaborator = () => {
   }, [getCollaboratorMeQuery.data]);
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="space-y-6">
       {collaboratorMe ? (
         <CollaboratorStatus data={collaboratorMe} />
       ) : (

@@ -18,14 +18,25 @@ const BlueprintDetailFeedback: FC<Props> = (props) => {
   );
 
   return (
-    <div className="space-y-10 md:space-y-16">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">
-        ĐÁNH GIÁ BẢN VẼ :
-      </h2>
+    <div>
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          Đánh giá & Nhận xét
+        </h2>
+        <p className="text-sm text-gray-600">
+          Chia sẻ trải nghiệm của bạn về sản phẩm này
+        </p>
+      </div>
 
       <CommentProvider contentId={content._id}>
-        {authStore.isSignedIn && <CommentCreationForm />}
-        <CommentList />
+        <div className="space-y-8">
+          {authStore.isSignedIn && (
+            <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+              <CommentCreationForm />
+            </div>
+          )}
+          <CommentList />
+        </div>
       </CommentProvider>
     </div>
   );

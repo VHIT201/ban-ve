@@ -57,7 +57,7 @@ const RouterErrorBoundary = () => {
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-[#f9fafb] to-[#f0f4f8] p-4 dark:from-[#0f172a] dark:to-[#1e293b]">
       <div className="w-full max-w-4xl">
-        <div className="flex flex-col items-center justify-center overflow-hidden lg:flex-row dark:bg-gray-900">
+        <div className="flex flex-col items-center justify-center overflow-hidden lg:flex-row">
           <div
             data-aos="fade-right"
             className="flex flex-col items-center justify-center rounded-2xl bg-gray-50 p-8 md:h-[400px] md:p-12 dark:bg-gray-800"

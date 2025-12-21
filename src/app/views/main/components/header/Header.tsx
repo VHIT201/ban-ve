@@ -24,7 +24,6 @@ const Header = () => {
   );
 
   // Hooks
-  const [searchQuery, setSearchQuery] = useState("");
   const [isSlideDown, setIsSlideDown] = useState(false);
 
   useEffect(() => {

@@ -140,34 +140,34 @@ const CollectionList: FC<Props> = (props) => {
 
   return (
     <div className="space-y-6">
-      {/* Header with Sort */}
-      <div className="hidden lg:flex items-center justify-between mb-6">
-        <div className="text-sm text-gray-600">
-          <QueryBoundary query={getBlueprintListQuery}>
-            {(blueprints) => (
-              <span className=" tracking-wider">
-                Hiển thị {blueprints.data.length} sản phẩm
-              </span>
-            )}
-          </QueryBoundary>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Sắp xếp theo:</span>
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-48 border-0 bg-transparent font-medium">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="best-selling">Bán chạy nhất</SelectItem>
-                <SelectItem value="newest">Mới nhất</SelectItem>
-                <SelectItem value="price-low">Giá: Thấp đến Cao</SelectItem>
-                <SelectItem value="price-high">Giá: Cao đến Thấp</SelectItem>
-                <SelectItem value="name-az">Tên: A-Z</SelectItem>
-                <SelectItem value="name-za">Tên: Z-A</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+      {/* Header with Results Count & Sort */}
+      <div className="flex items-center justify-between bg-white rounded-lg border border-gray-200 shadow-sm px-5 py-4">
+        <QueryBoundary query={getBlueprintListQuery}>
+          {(blueprints) => (
+            <div className="text-sm font-medium text-gray-700">
+              <span className="text-gray-900">{blueprints.data.length}</span>{" "}
+              sản phẩm
+            </div>
+          )}
+        </QueryBoundary>
+
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-gray-600 hidden sm:inline">
+            Sắp xếp:
+          </span>
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="w-44 h-9 text-sm">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="best-selling">Bán chạy nhất</SelectItem>
+              <SelectItem value="newest">Mới nhất</SelectItem>
+              <SelectItem value="price-low">Giá tăng dần</SelectItem>
+              <SelectItem value="price-high">Giá giảm dần</SelectItem>
+              <SelectItem value="name-az">Tên A-Z</SelectItem>
+              <SelectItem value="name-za">Tên Z-A</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
@@ -177,48 +177,47 @@ const CollectionList: FC<Props> = (props) => {
           if (!blueprints.data || blueprints.data.length === 0) {
             return (
               <div className="flex items-center justify-center min-h-[500px]">
-                <Card className="max-w-md w-full border-0 shadow-lg">
-                  <CardContent className="p-12 text-center space-y-6">
+                <Card className="max-w-md w-full border border-gray-200 shadow-sm">
+                  <CardContent className="p-10 text-center space-y-6">
                     {/* Icon */}
                     <div className="flex justify-center">
                       <div className="relative">
-                        <div className="w-24 h-24 rounded-full bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                        <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center">
                           {hasActiveFilters ? (
-                            <SearchX className="w-12 h-12 text-gray-400" />
+                            <SearchX className="w-10 h-10 text-gray-400" />
                           ) : (
-                            <Package className="w-12 h-12 text-gray-400" />
+                            <Package className="w-10 h-10 text-gray-400" />
                           )}
                         </div>
                         {hasActiveFilters && (
-                          <div className="absolute -top-1 -right-1 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                            <FilterIcon className="w-4 h-4 text-white" />
+                          <div className="absolute -top-1 -right-1 w-7 h-7 bg-gray-900 rounded-full flex items-center justify-center">
+                            <FilterIcon className="w-3.5 h-3.5 text-white" />
                           </div>
                         )}
                       </div>
                     </div>
 
                     {/* Title & Description */}
-                    <div className="space-y-3">
-                      <h3 className="text-2xl font-bold text-gray-900">
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-bold text-gray-900">
                         {hasActiveFilters
-                          ? "Không tìm thấy sản phẩm"
+                          ? "Không tìm thấy kết quả"
                           : "Chưa có sản phẩm"}
                       </h3>
-                      <p className="text-gray-600 leading-relaxed">
+                      <p className="text-sm text-gray-600 leading-relaxed">
                         {hasActiveFilters
-                          ? "Không tìm thấy sản phẩm nào phù hợp với bộ lọc của bạn. Hãy thử điều chỉnh tiêu chí tìm kiếm."
-                          : "Hiện tại chưa có sản phẩm nào trong bộ sưu tập này. Vui lòng quay lại sau."}
+                          ? "Không có sản phẩm nào phù hợp với bộ lọc. Thử điều chỉnh tiêu chí tìm kiếm."
+                          : "Hiện tại chưa có sản phẩm nào. Vui lòng quay lại sau."}
                       </p>
                     </div>
 
                     {/* Action Buttons */}
                     {hasActiveFilters && onClearFilters && (
-                      <div className="pt-4">
+                      <div className="pt-2">
                         <Button
                           onClick={onClearFilters}
                           size="lg"
-                          className="w-full gap-2"
-                          variant="outline"
+                          className="gap-2"
                         >
                           <FilterIcon className="w-4 h-4" />
                           Xóa bộ lọc
@@ -227,12 +226,14 @@ const CollectionList: FC<Props> = (props) => {
                     )}
 
                     {/* Additional Info */}
-                    <div className="pt-6 border-t">
-                      <p className="text-sm text-gray-500">
-                        Gợi ý: Thử tìm kiếm với từ khóa khác hoặc mở rộng phạm
-                        vi giá
-                      </p>
-                    </div>
+                    {hasActiveFilters && (
+                      <div className="pt-4 border-t">
+                        <p className="text-xs text-gray-500">
+                          💡 Thử tìm kiếm với từ khóa khác hoặc mở rộng khoảng
+                          giá
+                        </p>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </div>
@@ -241,7 +242,7 @@ const CollectionList: FC<Props> = (props) => {
 
           // Products grid
           return (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
               {blueprints.data.map((blueprint) => (
                 <BlueprintCard
                   key={blueprint._id}

@@ -13,6 +13,11 @@ export const ROUTE_PATHS = {
       personal: { path: "personal" },
       collaborator: { path: "collaborator" },
       history: { path: "history" },
+      order: {
+        path: "order",
+        list: { path: "list" },
+        detail: { path: "detail/:id" },
+      },
     },
     detail: { path: "detail/:id" },
     collections: { path: "collections" },
@@ -48,8 +53,8 @@ export const ROUTE_PATHS = {
     salesStats: { path: "sales-stats" },
     earnings: { path: "earnings" },
     payments: { path: "payments" },
-    settings: { path: "settings" }
-  }
+    settings: { path: "settings" },
+  },
 };
 
 export const BASE_PATHS = {
@@ -66,6 +71,11 @@ export const BASE_PATHS = {
       personal: { path: "/profile/personal" },
       collaborator: { path: "/profile/collaborator" },
       history: { path: "/profile/history" },
+      order: {
+        path: "/profile/order",
+        list: { path: "/profile/order/list" },
+        detail: { path: "/profile/order/detail/:id" },
+      },
     },
     setting: { path: "/setting" },
   },
@@ -89,7 +99,6 @@ export const BASE_PATHS = {
       edit: { path: "/admin/collaborators/edit/:id" }
     },
     payments: { path: "/admin/payments" },
-    
   },
   
 };

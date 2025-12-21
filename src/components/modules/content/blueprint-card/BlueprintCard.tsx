@@ -7,14 +7,10 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  ShoppingCart,
-  HeartIcon,
-  EyeIcon,
-  Check,
-} from "lucide-react";
+import { ShoppingCart, HeartIcon, EyeIcon, Check } from "lucide-react";
 import { FC, useState, useRef, useEffect } from "react";
 import { Props } from "./lib/types";
+
 import { cn } from "@/utils/ui";
 import { generateImageRandom } from "@/utils/image";
 import { useCartStore } from "@/stores/use-cart-store";
@@ -33,39 +29,39 @@ const BlueprintCard: FC<Props> = (props) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     const drawWatermark = () => {
       // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       // Set canvas size to match parent
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
-      
+
       // Add semi-transparent overlay
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+      ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
+
       // Draw watermark text
       ctx.save();
       ctx.translate(canvas.width / 2, canvas.height / 2);
       ctx.rotate(-Math.PI / 6); // -30 degrees in radians
-      
+
       const text = "TẠO BỞI BANVE.VN";
-      ctx.font = 'bold 22px Arial';
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      
+      ctx.font = "bold 22px Arial";
+      ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
       // Draw multiple watermarks in a grid
       for (let x = -canvas.width; x < canvas.width * 2; x += 200) {
         for (let y = -canvas.height; y < canvas.height * 2; y += 150) {
           ctx.fillText(text, x, y);
         }
       }
-      
+
       ctx.restore();
     };
 
@@ -77,11 +73,11 @@ const BlueprintCard: FC<Props> = (props) => {
       drawWatermark();
     };
 
-    window.addEventListener('resize', handleResize);
-    
+    window.addEventListener("resize", handleResize);
+
     // Cleanup
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -108,7 +104,7 @@ const BlueprintCard: FC<Props> = (props) => {
 
   return (
     <div
-      className="group/container relative max-w-md rounded-xl bg-linear-to-r from-neutral-600 to-neutral-300 pt-0 shadow-lg overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-2 cursor-pointer"
+      className="group/container relative rounded-xl bg-linear-to-r from-neutral-600 to-neutral-300 pt-0 shadow-lg overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-2 cursor-pointer"
       style={{
         backgroundImage: `url(${generateImageRandom()})`,
         objectFit: "cover",
@@ -119,16 +115,15 @@ const BlueprintCard: FC<Props> = (props) => {
       {/* IMAGE AREA + WATERMARK */}
       <div className="h-60 relative overflow-hidden">
         <div className="absolute inset-0 w-full h-full pointer-events-none">
-          <canvas 
+          <canvas
             ref={canvasRef}
             className="absolute inset-0 w-full h-full z-10 pointer-events-none"
             style={{
-              mixBlendMode: 'overlay',
-              pointerEvents: 'none',
+              mixBlendMode: "overlay",
+              pointerEvents: "none",
             }}
           />
         </div>
-
 
         {/* Hover View Button */}
         <div
