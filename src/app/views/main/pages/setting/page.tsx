@@ -1,10 +1,4 @@
-import { Metadata } from "next";
 import { SettingsForm } from "./components/settings-form";
-
-export const metadata: Metadata = {
-  title: "Cài đặt",
-  description: "Quản lý cài đặt tài khoản của bạn",
-};
 
 export default function SettingsPage() {
   return (

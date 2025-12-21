@@ -38,7 +38,6 @@ const ContentPaymentDialog: FC<Props> = (props) => {
       const res = await createPaymentQRMutation.mutateAsync({
         data: {
           contentId: contentId,
-          amount: 1,
         },
       });
 

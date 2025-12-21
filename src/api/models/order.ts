@@ -1,6 +1,6 @@
 // @ts-nocheck
-import type { OrderItem } from "./orderItem";
-import type { OrderStatus } from "./orderStatus";
+import type { OrderItem } from './orderItem';
+import type { OrderStatus } from './orderStatus';
 
 export interface Order {
   /** ID của đơn hàng */
