@@ -5,14 +5,18 @@ import { GetApiContent200Pagination } from "@/api/models";
 // Internal
 import { useContentTableColumnsDefs } from "./lib/hooks";
 import { Fragment, useState } from "react";
-import { useGetApiContent } from "@/api/endpoints/content";
+import { getGetApiContentQueryKey, useDeleteApiContentId, useGetApiContent } from "@/api/endpoints/content";
 import { QueryBoundary } from "@/components/shared";
+import { toast } from "sonner";
 import { ContentResponse } from "@/api/types/content";
 import { UseQueryResult } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { DataTableDeleteDialog } from "@/components/shared/data-table/shared";
+
 
 const ContentTable = () => {
   // States
+    const [deleteSelectRow, setDeleteSelectRow] = useState<ContentResponse | null>(null);
   const [pagination, setPagination] = useState<{
     pageIndex: number;
     pageSize: number;
@@ -21,6 +25,13 @@ const ContentTable = () => {
   // Hooks
   const navigate = useNavigate();
 
+  const deleteContentMutation = useDeleteApiContentId({
+    mutation: {
+      meta: {
+        invalidateQueries: [getGetApiContentQueryKey()],
+      },
+    },
+  });
   // Mutations
   const getContentListQuery = useGetApiContent<{
     data: ContentResponse[];
@@ -46,8 +57,15 @@ const ContentTable = () => {
     navigate(`/admin/contents/edit/${content._id}`);
   };
 
-  const handleDelete = (content: ContentResponse) => {
-    // Delete logic here
+  const handleDelete = async (row: ContentResponse) => {
+    try {
+      await deleteContentMutation.mutateAsync({ id: row._id! });
+      setDeleteSelectRow(null);
+      toast.success("Xóa bài viết thành công.");
+    } catch (error) {
+      console.error("Failed to delete content:", error);
+      toast.error("Đã có lỗi xảy ra khi xóa bài viết.");
+    }
   };
   const handleApprove = (content: ContentResponse) => {
     // Approve logic here
@@ -90,7 +108,15 @@ const ContentTable = () => {
             classNames={{
               header: "bg-primary/90",
             }}
+            
+        >
+<DataTableDeleteDialog
+            currentRow={deleteSelectRow ? { ...deleteSelectRow, name: deleteSelectRow.title || 'bài viết này' } : null}
+            onDelete={handleDelete}
+            deleting={deleteContentMutation.isPending}
           />
+        </DataTable>
+          
         )}
       </QueryBoundary>
     </Fragment>

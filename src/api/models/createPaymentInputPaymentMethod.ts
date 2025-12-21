@@ -3,14 +3,15 @@
 /**
  * Phương thức thanh toán
  */
-export type CreatePaymentInputPaymentMethod = typeof CreatePaymentInputPaymentMethod[keyof typeof CreatePaymentInputPaymentMethod];
-
+export type CreatePaymentInputPaymentMethod =
+  (typeof CreatePaymentInputPaymentMethod)[keyof typeof CreatePaymentInputPaymentMethod];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CreatePaymentInputPaymentMethod = {
-  momo: 'momo',
-  bank_transfer: 'bank_transfer',
-  credit_card: 'credit_card',
-  qr_code: 'qr_code',
-  sepay: 'sepay',
+  momo: "momo",
+  bank_transfer: "bank_transfer",
+  credit_card: "credit_card",
+  qr_code: "qr_code",
+  vnpay: "vnpay",
+  sepay: "sepay",
 } as const;

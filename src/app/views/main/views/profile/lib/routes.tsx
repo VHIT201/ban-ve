@@ -76,7 +76,9 @@ const profileRoutes: RouteObject = {
     {
       path: profile.history.path,
       lazy: async () => {
-        const { default: History } = await import("../views/history/page");
+        const { default: History } = await import(
+          "../views/history/page"
+        );
         return {
           element: <History />,
         };

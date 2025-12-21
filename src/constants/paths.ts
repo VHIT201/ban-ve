@@ -24,6 +24,7 @@ export const ROUTE_PATHS = {
     payment: { path: "payment" },
     setting: { path: "setting" },
     search: { path: "search" },
+    terms: { path: "terms" },
   },
 
   admin: {
@@ -37,7 +38,11 @@ export const ROUTE_PATHS = {
     },
     resources: { path: "resources" },
     copyRight: { path: "copy-right", detail: { path: "detail/:id" } },
-    collaborators: { path: "collaborators", detail: { path: "detail/:id" } },
+    collaborators: { 
+      path: "collaborators", 
+      detail: { path: "detail/:id" },
+      edit: { path: "edit/:id" }
+    },
     payments: { path: "payments" },
   },
 
@@ -88,13 +93,12 @@ export const BASE_PATHS = {
     },
     resources: { path: "/admin/resources" },
     copyRight: { path: "/admin/copy-right" },
-    collaborators: { path: "/admin/collaborators" },
+    collaborators: { 
+      path: "/admin/collaborators",
+      detail: { path: "/admin/collaborators/detail/:id" },
+      edit: { path: "/admin/collaborators/edit/:id" }
+    },
     payments: { path: "/admin/payments" },
   },
-  collaborator: {
-    path: "/collaborator",
-    upload: { path: "/collaborator/upload" },
-    documents: { path: "/collaborator/documents" },
-    salesStats: { path: "/collaborator/sales-stats" },
-  },
+  
 };

@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-export interface CreateSepayQrPaymentInput {
+export interface CreateVnpayPaymentUrlInput {
   /** ID của nội dung cần thanh toán */
   contentId: string;
   /** Số tiền thanh toán */

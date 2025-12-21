@@ -115,6 +115,15 @@ const Footer = () => {
               </li>
               <li>
                 <a
+                  href="/terms"
+                  className="hover:text-primary transition-colors flex items-center gap-2 group"
+                >
+                  <span className="w-1.5 h-1.5 bg-muted-foreground/50 rounded-full group-hover:bg-primary transition-colors"></span>
+                  Điều khoản và điều kiện
+                </a>
+              </li>
+              <li>
+                <a
                   href="#"
                   className="hover:text-primary transition-colors flex items-center gap-2 group"
                 >

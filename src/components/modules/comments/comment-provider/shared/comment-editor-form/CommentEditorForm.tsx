@@ -1,5 +1,15 @@
 import { Textarea } from "@/components/ui/textarea";
-import { SendHorizontalIcon, Smile, ImageIcon, X, Loader2 } from "lucide-react";
+import { SendHorizontalIcon, Smile, ImageIcon, X, Loader2, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Props } from "./lib/types";
 import { FC, useState } from "react";
 import { cn } from "@/utils/ui";
@@ -10,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   usePostApiCommentsContentsContentId,
   usePutApiCommentsId,
+  useDeleteApiCommentsId
 } from "@/api/endpoints/comments";
 import { MutationDataResult } from "@/api/types/base";
 import { CommentItem } from "../../lib/types";
@@ -48,10 +59,11 @@ const CommentCreationForm: FC<Props> = (props) => {
     defaultValues?.content ?? ""
   );
   const [commentMediaList, setCommentMediaList] = useState<File[]>([]);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   // Mutations
   const createCommentMutation = usePostApiCommentsContentsContentId();
   const editCommentMutation = usePutApiCommentsId();
-
+  const deleteCommentMutation=useDeleteApiCommentsId();
   // Methods
   const handleSubmit = async () => {
     if (commentContent.trim() === "") {
@@ -125,6 +137,23 @@ const CommentCreationForm: FC<Props> = (props) => {
     onClose?.();
   };
 
+  const handleDelete = async () => {
+    if (!editableCommentId) return;
+    
+    try {
+      await deleteCommentMutation.mutateAsync({
+        id: editableCommentId
+      });
+      
+      toast.success("Đã xóa bình luận thành công");
+      onClose?.();
+    } catch (error) {
+      toast.error("Không thể xóa bình luận. Vui lòng thử lại sau.");
+    } finally {
+      setShowDeleteConfirm(false);
+    }
+  };
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     setCommentMediaList((prev) => [...prev, ...files]);
@@ -151,6 +180,32 @@ const CommentCreationForm: FC<Props> = (props) => {
     createCommentMutation.isPending || editCommentMutation.isPending;
   return (
     <div className={cn("w-full", className)}>
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Xác nhận xóa bình luận</AlertDialogTitle>
+            <AlertDialogDescription>
+              Bạn có chắc chắn muốn xóa bình luận này? Hành động này không thể hoàn tác.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteCommentMutation.isPending}>
+              Hủy
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={deleteCommentMutation.isPending}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {deleteCommentMutation.isPending && (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              )}
+              Xác nhận xóa
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <div
         className={cn(
           "relative rounded-2xl border-2 bg-white transition-all duration-200"
@@ -166,14 +221,32 @@ const CommentCreationForm: FC<Props> = (props) => {
                 {mode === "edit" ? "bình luận" : "đang trả lời..."}
               </span>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleClose}
-              className="h-8 w-8 p-0 hover:bg-gray-100"
-            >
-              <X className="w-4 h-4" />
-            </Button>
+            <div className="flex items-center gap-2">
+              {mode === "edit" && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  disabled={deleteCommentMutation.isPending}
+                  className="h-8 w-8 p-0 text-red-500 hover:bg-red-50 hover:text-red-600"
+                >
+                  {deleteCommentMutation.isPending ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-4 h-4" />
+                  )}
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleClose}
+                className="h-8 w-8 p-0 hover:bg-gray-100"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
         )}
 
