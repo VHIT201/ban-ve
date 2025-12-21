@@ -87,7 +87,7 @@ const ContentPaymentDialog: FC<Props> = (props) => {
             onClick={() => navigate("/payment")}
             className="mx-auto fade-in duration-500 h-12 font-semibold hover:-translate-y-2 shadow-2xl transition-all"
           >
-            Chọn Phương thức thanh toán khác
+            Chọn phương thức thanh toán khác
           </Button>
         </DialogFooter>
       </DialogContent>
