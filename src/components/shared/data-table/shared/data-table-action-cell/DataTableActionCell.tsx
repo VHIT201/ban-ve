@@ -10,7 +10,7 @@ import {
 import { MoreHorizontalIcon, Trash2Icon } from "lucide-react";
 import { FC, Fragment } from "react";
 import { Props } from "./lib/types";
-import { useDataTableContext } from "../../DataTableContext";
+import { useDataTableContext } from "../../lib/hooks";
 
 const ActionColumn: FC<Props> = (props) => {
   // Props

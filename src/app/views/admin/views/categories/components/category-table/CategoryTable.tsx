@@ -116,6 +116,11 @@ const CategoryTable = () => {
                 header: "bg-primary/90",
               }}
             >
+              <DataTable.Content>
+                <DataTable.Header />
+                <DataTable.Body />
+              </DataTable.Content>
+              <DataTable.Pagination />
               <DataTableDeleteDialog
                 currentRow={deleteSelectRow}
                 onDelete={handleDeleteCategory}

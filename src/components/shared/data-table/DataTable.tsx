@@ -21,6 +21,7 @@ import { Table } from "@/components/ui/table";
 import { assign } from "lodash-es";
 import {
   DataTableBody,
+  DataTableContent,
   DataTableHeader,
   DataTablePagination,
 } from "./components";
@@ -178,9 +179,9 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
   return (
     <DATA_TABLE_CONTEXT.Provider value={contextValues}>
       <div className="space-y-4 overflow-x-auto">
-        <Table className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800">
+        <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800">
           {children}
-        </Table>
+        </div>
       </div>
     </DATA_TABLE_CONTEXT.Provider>
   );
@@ -189,5 +190,6 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
 export default assign(DataTable, {
   Header: DataTableHeader,
   Body: DataTableBody,
+  Content: DataTableContent,
   Pagination: DataTablePagination,
 });
