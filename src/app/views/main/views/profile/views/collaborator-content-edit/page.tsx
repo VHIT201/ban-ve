@@ -55,8 +55,7 @@ const handleUpdateContent = async (contentId: string, formData: ContentInput) =>
       }
     });
   } catch (error) {
-    console.error("Failed to update content:", error);
-    toast.error("Đã có lỗi xảy ra khi cập nhật nội dung.");
+
   }
 };
 
