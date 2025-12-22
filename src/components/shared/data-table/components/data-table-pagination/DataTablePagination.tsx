@@ -18,11 +18,11 @@ import {
   PaginationEllipsis,
   PaginationItem,
 } from "@/components/ui/pagination";
-import { useDataTableContext } from "../DataTableContext";
+import { useDataTableContext } from "../../lib/hooks";
 
 const DEFAULT_PAGE_SIZE = 10;
 
-export const DataTablePagination = <TData,>() => {
+const DataTablePagination = <TData,>() => {
   const { table, enablePagination, manualPagination } =
     useDataTableContext<TData>();
 
@@ -185,3 +185,5 @@ export const DataTablePagination = <TData,>() => {
     </div>
   );
 };
+
+export default DataTablePagination;

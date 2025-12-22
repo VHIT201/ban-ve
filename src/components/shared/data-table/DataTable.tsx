@@ -1,5 +1,5 @@
 // Core
-import { useEffect, useState, ReactNode } from "react";
+import { useEffect, useState, ReactNode, useMemo } from "react";
 import {
   getCoreRowModel,
   useReactTable,
@@ -12,18 +12,25 @@ import {
 
 // Internal
 import { Props } from "./lib/types";
-import { DataTableProvider } from "./DataTableContext";
-import { DataTableContent } from "./components/DataTableContent";
-import { DataTablePagination } from "./components/DataTablePagination";
-
-const DEFAULT_PAGE_INDEX = 1;
-const DEFAULT_PAGE_SIZE = 10;
+import {
+  DATA_TABLE_CONTEXT,
+  DEFAULT_PAGE_INDEX,
+  DEFAULT_PAGE_SIZE,
+} from "./lib/constants";
+import { Table } from "@/components/ui/table";
+import { assign } from "lodash-es";
+import {
+  DataTableBody,
+  DataTableHeader,
+  DataTablePagination,
+} from "./components";
+import { Pagination } from "@/components/ui/pagination";
 
 interface DataTableRootProps<TData> extends Props<TData> {
   children: ReactNode;
 }
 
-const DataTableRoot = <TData,>(props: DataTableRootProps<TData>) => {
+const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
   // Props
   const {
     columns,
@@ -146,43 +153,41 @@ const DataTableRoot = <TData,>(props: DataTableRootProps<TData>) => {
     }
   }, [selectedRows, data, getRowId]);
 
-  return (
-    <DataTableProvider
-      value={{
-        // Props
-        table,
-        openDeleteDialog,
-        enableRowSelection,
-        enablePagination,
-        manualPagination,
-        classNames,
+  const contextValues = useMemo(
+    () => ({
+      // Props
+      table,
+      openDeleteDialog,
+      enableRowSelection,
+      enablePagination,
+      manualPagination,
+      classNames,
+      // Actions
+      openDeleteDialogAction: handleOpenDeleteDialog,
+    }),
+    [
+      table,
+      openDeleteDialog,
+      enableRowSelection,
+      enablePagination,
+      manualPagination,
+      classNames,
+    ]
+  );
 
-        // Actions
-        openDeleteDialogAction: handleOpenDeleteDialog,
-      }}
-    >
-      <div className="space-y-4 overflow-x-auto">{children}</div>
-    </DataTableProvider>
+  return (
+    <DATA_TABLE_CONTEXT.Provider value={contextValues}>
+      <div className="space-y-4 overflow-x-auto">
+        <Table className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800">
+          {children}
+        </Table>
+      </div>
+    </DATA_TABLE_CONTEXT.Provider>
   );
 };
 
-// Legacy default export for backward compatibility
-const DataTable = <TData,>(props: Props<TData>) => {
-  return (
-    <DataTableRoot {...props}>
-      <DataTableContent<TData> />
-      <DataTablePagination<TData> />
-      {props.children}
-    </DataTableRoot>
-  );
-};
-
-// Export compound components
-export {
-  DataTableRoot as Root,
-  DataTableContent as Content,
-  DataTablePagination as Pagination,
-};
-
-// Default export
-export default DataTable;
+export default assign(DataTable, {
+  Header: DataTableHeader,
+  Body: DataTableBody,
+  Pagination: DataTablePagination,
+});

@@ -1,5 +1,25 @@
-import { ColumnDef, PaginationState } from "@tanstack/react-table";
+import {
+  Table as TanStackTable,
+  ColumnDef,
+  PaginationState,
+} from "@tanstack/react-table";
 import { ReactNode } from "react";
+
+export interface DataTableContextValue<TData> {
+  // Props
+  table: TanStackTable<TData>;
+  enableRowSelection: boolean;
+  enablePagination: boolean;
+  manualPagination: boolean;
+  openDeleteDialog: boolean;
+  classNames?: {
+    header?: string;
+    footer?: string;
+  };
+
+  // Actions
+  openDeleteDialogAction: (open: boolean) => void;
+}
 
 export type Props<TData> = {
   columns: ColumnDef<TData>[];

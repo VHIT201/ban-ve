@@ -1,4 +1,5 @@
-import DataTableSkeleton from './DataTableSkeleton'
+export * from "./lib/hooks";
 
-export { DataTableSkeleton }
-export { default } from './DataTable'
+export { DataTableSkeleton };
+export { default } from "./DataTable";
+import DataTableSkeleton from "./DataTableSkeleton";
