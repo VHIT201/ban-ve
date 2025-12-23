@@ -18,11 +18,11 @@ import {
   PaginationEllipsis,
   PaginationItem,
 } from "@/components/ui/pagination";
-import { useDataTableContext } from "../DataTableContext";
+import { useDataTableContext } from "../../lib/hooks";
 
 const DEFAULT_PAGE_SIZE = 10;
 
-export const DataTablePagination = <TData,>() => {
+const DataTablePagination = <TData,>() => {
   const { table, enablePagination, manualPagination } =
     useDataTableContext<TData>();
 
@@ -67,7 +67,7 @@ export const DataTablePagination = <TData,>() => {
   const pageNumbers = generatePageNumbers();
 
   return (
-    <div className="flex flex-col gap-4 px-2 md:flex-row md:items-center md:justify-between">
+    <div className="flex flex-col gap-4 px-2 md:flex-row md:items-center md:justify-between p-2">
       <div className="text-muted-foreground flex-1 text-sm dark:text-gray-400">
         Hiển thị trang{" "}
         <span className="text-primary font-medium dark:text-gray-200">
@@ -81,8 +81,8 @@ export const DataTablePagination = <TData,>() => {
       </div>
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:space-x-6 lg:space-x-8">
-        <div className="flex items-center space-x-2">
-          <p className="min-w-[100px] text-sm font-medium text-gray-700 dark:text-gray-300">
+        <div className="flex min-w-[200px] shrink-0 items-center space-x-4">
+          <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
             Số dòng hiển thị
           </p>
           <Select
@@ -95,7 +95,7 @@ export const DataTablePagination = <TData,>() => {
             value={`${pageSize}`}
             defaultValue={`${DEFAULT_PAGE_SIZE}`}
           >
-            <SelectTrigger className="h-8 w-[70px] border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-900">
+            <SelectTrigger className="flex-1 h-8 w-[70px] border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-900">
               <SelectValue placeholder={pageSize} />
             </SelectTrigger>
             <SelectContent side="top" className="bg-white dark:bg-gray-900">
@@ -185,3 +185,5 @@ export const DataTablePagination = <TData,>() => {
     </div>
   );
 };
+
+export default DataTablePagination;

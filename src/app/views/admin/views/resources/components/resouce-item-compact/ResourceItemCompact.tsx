@@ -84,14 +84,6 @@ const ResourceItemCompact = ({ item, onClick, onDelete }: Props) => {
                 <Download className="size-4 mr-2" />
                 Tải xuống
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Copy className="size-4 mr-2" />
-                Sao chép URL
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Edit className="size-4 mr-2" />
-                Đổi tên
-              </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={(e) => {
                   e.stopPropagation();

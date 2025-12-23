@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from "react";
-import { type Table } from "@tanstack/react-table";
+import { useState, useEffect, useRef, FC } from "react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -11,11 +10,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-type DataTableBulkActionsProps<TData> = {
-  table: Table<TData>;
-  entityName: string;
-  children: React.ReactNode;
-};
+import { Props } from "./lib/types";
+import { useDataTableContext } from "../../lib/hooks";
 
 /**
  * A modular toolbar for displaying bulk actions when table rows are selected.
@@ -27,17 +23,18 @@ type DataTableBulkActionsProps<TData> = {
  * @param {React.ReactNode} props.children The action buttons to be rendered inside the toolbar.
  * @returns {React.ReactNode | null} The rendered component or null if no rows are selected.
  */
-export function DataTableBulkActions<TData>({
-  table,
-  entityName,
-  children,
-}: DataTableBulkActionsProps<TData>): React.ReactNode | null {
+const DataTableBulkActions: FC<Props> = (props) => {
+  // Props
+  const { entityName, actions } = props;
+
+  // Hooks
+  const { table } = useDataTableContext();
+
   const selectedRows = table.getFilteredSelectedRowModel().rows;
   const selectedCount = selectedRows.length;
   const toolbarRef = useRef<HTMLDivElement>(null);
   const [announcement, setAnnouncement] = useState("");
 
-  // Announce selection changes to screen readers
   useEffect(() => {
     if (selectedCount > 0) {
       const message = `${selectedCount} ${entityName}${
@@ -167,15 +164,15 @@ export function DataTableBulkActions<TData>({
                 size="icon"
                 onClick={handleClearSelection}
                 className="size-6 rounded-full"
-                aria-label="Clear selection"
-                title="Clear selection (Escape)"
+                aria-label="Đóng"
+                title="Đóng  (Escape)"
               >
                 <X />
-                <span className="sr-only">Clear selection</span>
+                <span className="sr-only">Đóng </span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Clear selection (Escape)</p>
+              <p>Đóng (Escape)</p>
             </TooltipContent>
           </Tooltip>
 
@@ -189,29 +186,46 @@ export function DataTableBulkActions<TData>({
             className="flex items-center gap-x-1 text-sm"
             id="bulk-actions-description"
           >
-            <Badge
-              variant="default"
-              className="min-w-8 rounded-lg"
-              aria-label={`${selectedCount} selected`}
-            >
+            <Badge variant="default" aria-label={`${selectedCount} selected`}>
               {selectedCount}
             </Badge>{" "}
             <span className="hidden sm:inline">
               {entityName}
               {selectedCount > 1 ? "s" : ""}
             </span>{" "}
-            selected
+            đã chọn
           </div>
 
-          <Separator
-            className="h-5"
-            orientation="vertical"
-            aria-hidden="true"
-          />
+          <Separator className="h-5! mx-2" orientation="vertical" />
 
-          {children}
+          {actions.map((action, index) => {
+            const ActionIcon = action.icon;
+
+            return (
+              <Tooltip key={`action-${action.label}-${index}`}>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant={action.variant || "default"}
+                    size="icon"
+                    onClick={action.onAction}
+                    aria-label={action.label}
+                    title={action.label}
+                    className="size-8 rounded-xl shadow-md hover:scale-105 transition-transform hover:shadow-lg duration-500"
+                  >
+                    {<ActionIcon className="size-4" />}
+                    <span className="sr-only">{action.label}</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{action.tooltip}</p>
+                </TooltipContent>
+              </Tooltip>
+            );
+          })}
         </div>
       </div>
     </>
   );
-}
+};
+
+export default DataTableBulkActions;

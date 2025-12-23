@@ -8,78 +8,31 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, HeartIcon, EyeIcon, Check } from "lucide-react";
-import { FC, useState, useRef, useEffect } from "react";
+import { FC, useState } from "react";
 import { Props } from "./lib/types";
 
 import { cn } from "@/utils/ui";
 import { generateImageRandom } from "@/utils/image";
 import { useCartStore } from "@/stores/use-cart-store";
+import { useWatermark } from "@/hooks";
 
 const BlueprintCard: FC<Props> = (props) => {
   const { blueprint, onViewDetails, onAddToCart } = props;
   const [isAdding, setIsAdding] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const addItem = useCartStore((state) => state.addItem);
   const isInCart = useCartStore((state) => state.isInCart(blueprint._id));
   const openCart = useCartStore((state) => state.openCart);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const drawWatermark = () => {
-      // Clear canvas
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Set canvas size to match parent
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-
-      // Add semi-transparent overlay
-      ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Draw watermark text
-      ctx.save();
-      ctx.translate(canvas.width / 2, canvas.height / 2);
-      ctx.rotate(-Math.PI / 6); // -30 degrees in radians
-
-      const text = "TẠO BỞI BANVE.VN";
-      ctx.font = "bold 22px Arial";
-      ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-
-      // Draw multiple watermarks in a grid
-      for (let x = -canvas.width; x < canvas.width * 2; x += 200) {
-        for (let y = -canvas.height; y < canvas.height * 2; y += 150) {
-          ctx.fillText(text, x, y);
-        }
-      }
-
-      ctx.restore();
-    };
-
-    // Initial draw
-    drawWatermark();
-
-    // Handle window resize
-    const handleResize = () => {
-      drawWatermark();
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  // Use watermark hook
+  const canvasRef = useWatermark({
+    text: "TẠO BỞI BANVE.VN",
+    rotation: -Math.PI / 6,
+    fontSize: 22,
+    overlayOpacity: 0.5,
+    textOpacity: 0.7,
+  });
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();

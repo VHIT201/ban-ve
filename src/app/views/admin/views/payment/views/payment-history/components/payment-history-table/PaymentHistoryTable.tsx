@@ -58,7 +58,6 @@ const PaymentHistoryTable = () => {
   const columns = useColumns({
     onView: handleView,
     onRefund: handleRefund,
-    onDelete: handleDelete,
   });
 
   return (
@@ -77,7 +76,14 @@ const PaymentHistoryTable = () => {
             classNames={{
               header: "bg-primary/90",
             }}
-          />
+          >
+            <DataTable.Content>
+              <DataTable.Header />
+              <DataTable.Body />
+            </DataTable.Content>
+
+            <DataTable.Pagination />
+          </DataTable>
         )}
       </QueryBoundary>
     </div>

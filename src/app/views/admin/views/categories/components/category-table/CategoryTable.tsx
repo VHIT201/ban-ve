@@ -3,7 +3,7 @@ import { Category } from "@/api/models";
 
 // Internal
 import { DataTable, QueryBoundary } from "@/components/shared";
-import { useCategoryTableColumnsDefs } from "./lib/hooks";
+import { useBulkActions, useCategoryTableColumnsDefs } from "./lib/hooks";
 import {
   getGetApiCategoriesQueryKey,
   useDeleteApiCategoriesId,
@@ -14,7 +14,10 @@ import { UseQueryResult } from "@tanstack/react-query";
 import { Fragment, useState } from "react";
 import CategoryDialog from "../category-dialog";
 import { toast } from "sonner";
-import { DataTableDeleteDialog } from "@/components/shared/data-table/shared";
+import {
+  DataTableBulkActions,
+  DataTableDeleteDialog,
+} from "@/components/shared/data-table/shared";
 import { CategoryFormValues } from "../category-dialog/lib/types";
 
 const CategoryTable = () => {
@@ -98,6 +101,9 @@ const CategoryTable = () => {
     onDelete: handleColumnDelete,
   });
 
+  // Memos
+  const bulkActionList = useBulkActions();
+
   return (
     <Fragment>
       <QueryBoundary query={getCategoryList}>
@@ -116,6 +122,15 @@ const CategoryTable = () => {
                 header: "bg-primary/90",
               }}
             >
+              <DataTable.Content>
+                <DataTable.Header />
+                <DataTable.Body />
+              </DataTable.Content>
+              <DataTable.Pagination />
+              <DataTableBulkActions
+                actions={bulkActionList}
+                entityName="danh mục"
+              />
               <DataTableDeleteDialog
                 currentRow={deleteSelectRow}
                 onDelete={handleDeleteCategory}

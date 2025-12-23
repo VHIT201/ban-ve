@@ -179,14 +179,17 @@ export const useContentTableColumnsDefs = (
       },
       {
         accessorKey: "status",
+        width: 120,
         header: "Trạng thái",
         cell: ({ row }) => {
           const status = row.getValue("status") as string | undefined;
           const config = getStatusConfig(status);
           return (
-            <Badge variant={config.variant} className={config.className}>
-              {config.label}
-            </Badge>
+            <div className="min-w-24">
+              <Badge variant={config.variant} className={config.className}>
+                {config.label}
+              </Badge>
+            </div>
           );
         },
       },
@@ -258,10 +261,9 @@ export const useContentTableColumnsDefs = (
       },
       {
         id: "actions",
-        header: "Thao tác",
+        header: () => <div className="min-w-16">Thao tác</div>,
         cell: ({ row }) => {
           const content = row.original;
-          const isPending = content.status?.toLowerCase() === "pending";
 
           return (
             <DataTableActionCell

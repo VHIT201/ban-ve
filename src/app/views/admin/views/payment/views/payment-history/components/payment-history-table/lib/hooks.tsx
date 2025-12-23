@@ -234,7 +234,6 @@ export const useColumns = (props: usePaymentTableColumnsDefsProps) => {
           return (
             <DataTableActionCell
               rowName={`GD #${payment._id?.substring(0, 8)}`}
-              onDelete={onDelete ? () => onDelete(payment) : undefined}
               extraActions={
                 actions.length > 0 ? (
                   <>
@@ -260,6 +259,6 @@ export const useColumns = (props: usePaymentTableColumnsDefsProps) => {
         },
       },
     ],
-    [onView, onRefund, onDelete]
+    [onView, onRefund]
   );
 };

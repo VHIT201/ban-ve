@@ -131,7 +131,7 @@ const Resources = () => {
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <div className="border-b bg-background px-6 py-4">
+          <div className="border-b bg-background px-0 py-4">
             {/* Filters Bar */}
             <div className="flex items-center gap-3">
               <div className="relative flex-1 max-w-sm">
@@ -176,7 +176,7 @@ const Resources = () => {
           </div>
 
           {/* Content Area */}
-          <div className="flex-1 overflow-y-auto p-6 bg-muted/20">
+          <div className="flex-1 overflow-y-auto py-6 px-0 bg-muted/20">
             <QueryBoundary query={getFileListQuery}>
               {() => (
                 <>

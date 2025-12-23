@@ -6,6 +6,7 @@ import { Fragment } from "react/jsx-runtime";
 import { useColumns } from "./lib/hooks";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { DataTableDeleteDialog } from "@/components/shared/data-table/shared";
 
 const CopyRightTable = () => {
   // Hooks
@@ -54,7 +55,14 @@ const CopyRightTable = () => {
             classNames={{
               header: "bg-primary/90",
             }}
-          />
+          >
+            <DataTable.Content>
+              <DataTable.Header />
+              <DataTable.Body />
+            </DataTable.Content>
+
+            <DataTable.Pagination />
+          </DataTable>
         )}
       </QueryBoundary>
     </Fragment>

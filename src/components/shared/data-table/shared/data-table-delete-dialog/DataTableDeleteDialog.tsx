@@ -6,7 +6,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ConfirmDialog from "@/components/shared/confirm-dialog";
-import { useDataTableContext } from "../../DataTableContext";
+import { useDataTableContext } from "../../lib/hooks";
 
 type UserDeleteDialogProps<TData> = {
   deleting?: boolean;
