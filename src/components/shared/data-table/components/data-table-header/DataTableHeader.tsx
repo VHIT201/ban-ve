@@ -28,7 +28,7 @@ const DataTableHeader = <TData,>() => {
                   table.toggleAllPageRowsSelected(!!value)
                 }
                 aria-label="Select all"
-                className="[&>span]:data-[state=checked]:text-primary [&>span]:border-white [&>span]:bg-white/10 [&>span]:data-[state=checked]:border-white [&>span]:data-[state=checked]:bg-white"
+                className="[&>span]:data-[state=checked]:text-primary [&>span]:border-white [&>span]:rounded-sm [&>span]:bg-white/10 [&>span]:data-[state=checked]:border-white [&>span]:data-[state=checked]:bg-white"
               />
             </TableHead>
           )}

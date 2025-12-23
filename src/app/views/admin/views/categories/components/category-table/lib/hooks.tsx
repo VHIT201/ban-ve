@@ -5,10 +5,12 @@ import { ColumnDef } from "@tanstack/react-table";
 // App
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableActionCell } from "@/components/shared/data-table/shared";
 
 // Internal
 import { CategoryTableRow, useCategoryTableColumnsDefsProps } from "./types";
+import { TrashIcon } from "lucide-react";
 
 export const useCategoryTableColumnsDefs = (
   props: useCategoryTableColumnsDefsProps
@@ -129,6 +131,23 @@ export const useCategoryTableColumnsDefs = (
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+};
+
+export const useBulkActions = () => {
+  return useMemo(
+    () => [
+      {
+        label: "Xóa danh mục đã chọn",
+        icon: TrashIcon,
+        tooltip: "Xóa tất cả các danh mục đã chọn",
+        variant: "destructive" as const,
+        onAction: () => {
+          console.log("Delete selected categories");
+        },
+      },
+    ],
     []
   );
 };

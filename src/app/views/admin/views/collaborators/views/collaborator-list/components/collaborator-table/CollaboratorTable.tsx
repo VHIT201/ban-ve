@@ -117,7 +117,14 @@ const CollaboratorTable = () => {
             classNames={{
               header: "bg-primary/90",
             }}
-          />
+          >
+            <DataTable.Content>
+              <DataTable.Header />
+              <DataTable.Body />
+            </DataTable.Content>
+
+            <DataTable.Pagination />
+          </DataTable>
         )}
       </QueryBoundary>
     </div>

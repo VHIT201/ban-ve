@@ -1,1 +1,1 @@
-export { default } from "./DataTableBulkAction";
+export { default } from "./DataTableBulkActions";

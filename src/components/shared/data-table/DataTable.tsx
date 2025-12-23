@@ -76,6 +76,8 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
     return initialState;
   });
 
+  console.log("DataTable Rendered", { rowSelection });
+
   // Methods
   const handlePaginationChange: OnChangeFn<PaginationState> = (updater) => {
     if (!onPaginationChange) return;
@@ -96,20 +98,22 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
   const handleRowSelectionChange = (
     updaterOrValue: Updater<RowSelectionState>
   ) => {
-    const newRowSelection =
-      typeof updaterOrValue === "function"
-        ? updaterOrValue(rowSelection)
-        : updaterOrValue;
+    setRowSelection((prev) => {
+      const newRowSelection =
+        typeof updaterOrValue === "function"
+          ? updaterOrValue(prev)
+          : updaterOrValue;
 
-    setRowSelection(newRowSelection);
+      if (onSelectedRowsChange) {
+        const selectedRowIds = Object.keys(newRowSelection).filter(
+          (id) => newRowSelection[id]
+        );
+        const selectedRows = selectedRowIds.map((id) => data[parseInt(id, 10)]);
+        onSelectedRowsChange(selectedRows);
+      }
 
-    if (onSelectedRowsChange) {
-      const selectedRowIds = Object.keys(newRowSelection).filter(
-        (id) => newRowSelection[id]
-      );
-      const selectedRows = selectedRowIds.map((id) => data[parseInt(id, 10)]);
-      onSelectedRowsChange(selectedRows);
-    }
+      return newRowSelection;
+    });
   };
 
   const handleOpenDeleteDialog = (open: boolean) => {
@@ -121,6 +125,7 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
     data,
     columns,
     rowCount,
+    getRowId,
     manualPagination,
     state: {
       pagination: state?.pagination,
@@ -141,7 +146,6 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
     if (selectedRows && getRowId) {
       const newSelection: RowSelectionState = {};
 
-      // eslint-disable-next-line react-you-might-not-need-an-effect/you-might-not-need-an-effect
       selectedRows.forEach((row) => {
         const rowId = getRowId!(row);
         const rowIndex = data.findIndex((d) => getRowId!(d) === rowId);
@@ -173,6 +177,7 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
       enablePagination,
       manualPagination,
       classNames,
+      rowSelection,
     ]
   );
 
