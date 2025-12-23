@@ -4,6 +4,8 @@ export const getRoleLabel = (role?: string) => {
       return "Quản trị viên";
     case "user":
       return "Người dùng";
+    case "collaborator":
+      return "Cộng tác viên";
     default:
       return "Không xác định";
   }
@@ -14,6 +16,8 @@ export const getRoleVariant = (role?: string) => {
     case "admin":
       return "destructive";
     case "user":
+      return "secondary";
+    case "collaborator":
       return "secondary";
     default:
       return "outline";

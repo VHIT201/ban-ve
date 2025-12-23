@@ -51,10 +51,9 @@ const ContentDetail = () => {
         data: {
           title: values.title,
           description: values.description,
-          file_url: fileData.path,
-         file_id: fileData._id,
+          file_id: fileData._id,
           category_id: values.category_id,
-          file_type: values.file.type,
+          price: values.price || 0
         },
       });
 

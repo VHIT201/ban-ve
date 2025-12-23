@@ -9,11 +9,11 @@ export interface Content {
   title?: string;
   /** Mô tả chi tiết */
   description?: string;
-  /** Lĩnh vực */
+  /** Lĩnh vực của nội dung */
   field?: string;
-  /** Loại file */
+  /** Loại file (image, video, document, ...) */
   file_type?: string;
-  /** Đường dẫn file */
+  /** Đường dẫn đến file */
   file_url?: string;
   /** Trạng thái duyệt */
   status?: ContentStatus;
@@ -21,6 +21,12 @@ export interface Content {
   createdAt?: string;
   /** Thời gian cập nhật */
   updatedAt?: string;
+  /** Giá nội dung */
+  price?: number;
+  /** ID danh mục */
+  category_id?: string;
+  /** ID file đính kèm */
+  file_id?: string;
   createdBy?: User;
   approvedBy?: User;
   approvedAt?: string;
