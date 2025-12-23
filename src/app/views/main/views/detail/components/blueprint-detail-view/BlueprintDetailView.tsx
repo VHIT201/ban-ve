@@ -38,6 +38,7 @@ import { QueryData } from "@/api/types/base";
 import { FileResponse } from "@/api/types/file";
 import { toast } from "sonner";
 import { extractErrorMessage } from "@/utils/error";
+import { useWatermark } from "@/hooks";
 
 const mockProduct: ContentResponse = {
   _id: "1",
@@ -79,6 +80,15 @@ const MOCK_IMAGE_LIST = [
 const BlueprintDetailView: FC<Props> = (props) => {
   // Props
   const { content } = props;
+
+  // Hooks
+  const canvasRef = useWatermark({
+    text: "TẠO BỞI BANVE.VN",
+    rotation: -Math.PI / 6,
+    fontSize: 22,
+    overlayOpacity: 0.5,
+    textOpacity: 0.7,
+  });
 
   // States
   const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
@@ -164,7 +174,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
             >
               <img
                 src={MOCK_IMAGE_LIST[selectedImage]}
-                alt={mockProduct.title}
+                alt={content.title}
                 className="w-full h-[400px] lg:h-[550px] object-cover"
               />
             </Lens>
