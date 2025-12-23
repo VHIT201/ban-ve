@@ -33,6 +33,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ReportDialog } from "@/components/shared";
 import { ContentPaymentDialog } from "@/components/modules/content";
+import { useGetApiFileIdDownload } from "@/api/endpoints/files";
+import { QueryData } from "@/api/types/base";
+import { FileResponse } from "@/api/types/file";
+import { toast } from "sonner";
+import { extractErrorMessage } from "@/utils/error";
 
 const mockProduct: ContentResponse = {
   _id: "1",
@@ -75,9 +80,6 @@ const BlueprintDetailView: FC<Props> = (props) => {
   // Props
   const { content } = props;
 
-  // Hooks
-  const navigate = useNavigate();
-
   // States
   const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
   const [openReportDialog, setOpenReportDialog] = useState(false);
@@ -93,7 +95,16 @@ const BlueprintDetailView: FC<Props> = (props) => {
   const [isAdding, setIsAdding] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
 
-  // Handlers
+  // Queries
+  const getDownloadFileQuery = useGetApiFileIdDownload(content.file_id._id, {
+    query: {
+      select: (data) =>
+        (data as unknown as QueryData<FileResponse>).responseData,
+      enabled: false,
+    },
+  });
+
+  // Methods
   const handleAddToCart = () => {
     if (isInCart) {
       openCart();
@@ -120,6 +131,22 @@ const BlueprintDetailView: FC<Props> = (props) => {
       addItem(content, 1);
     }
     setOpenPaymentDialog(true);
+  };
+
+  const handleDownloadPreview = async () => {
+    const downloadUrlRes = await getDownloadFileQuery.refetch();
+
+    if (downloadUrlRes.isError) {
+      toast.error(extractErrorMessage(downloadUrlRes.error));
+      return;
+    }
+
+    const downloadUrl = downloadUrlRes.data?.url;
+    if (downloadUrl) {
+      window.open(downloadUrl, "_blank");
+    } else {
+      toast.error("Không tìm thấy link tải xuống.");
+    }
   };
 
   return (
@@ -328,8 +355,10 @@ const BlueprintDetailView: FC<Props> = (props) => {
               </Button>
             </div>
             <Button
+              loading={getDownloadFileQuery.isFetching}
               variant="outline"
               size="lg"
+              onClick={handleDownloadPreview}
               className="w-full h-12 font-semibold border-white/20 text-gray-700 hover:bg-white/80 hover:text-gray-900"
             >
               <DownloadIcon className="w-5 h-5 mr-2" />

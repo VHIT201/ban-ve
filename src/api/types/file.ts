@@ -2,6 +2,7 @@ export type UploadFileType = "OTHER" | "IMAGE" | "PDF" | "EXCEL" | string;
 
 export interface FileResponse {
   _id: string;
+  url: string;
   name: string;
   path: string;
   type: UploadFileType;
