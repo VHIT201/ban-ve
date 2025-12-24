@@ -2,12 +2,29 @@ import { z } from "zod";
 
 export const REGISTER_FORM_SCHEMA = z
   .object({
-    name: z.string().min(2, "Họ tên phải có ít nhất 2 ký tự"),
+    name: z
+      .string()
+      .min(2, "Họ tên phải có ít nhất 2 ký tự")
+      .regex(
+        /^[\p{L}\s]+$/u,
+        "Họ tên không được chứa số hoặc ký tự đặc biệt"
+      ),
+    
     email: z.string().email("Email không hợp lệ"),
-    password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+    password: z
+      .string()
+      .min(6, "Mật khẩu phải có ít nhất 6 ký tự")
+      .regex(
+        /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+        "Mật khẩu phải bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt"
+      ),
     confirmPassword: z
       .string()
-      .min(6, "Xác nhận mật khẩu phải có ít nhất 6 ký tự"),
+      .min(6, "Xác nhận mật khẩu phải có ít nhất 6 ký tự")
+      .regex(
+        /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+        "Mật khẩu phải bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt"
+      ),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Mật khẩu xác nhận không khớp",

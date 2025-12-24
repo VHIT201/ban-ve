@@ -10,13 +10,9 @@ page?: number;
  */
 limit?: number;
 /**
- * Lọc theo lĩnh vực (slug của category)
+ * Lọc theo lĩnh vực
  */
 field?: string;
-/**
- * Lọc theo ID của category
- */
-category_id?: string;
 /**
  * Lọc theo loại file
  */

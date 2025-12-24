@@ -65,8 +65,10 @@ const LoginForm: FC<Props> = () => {
       toast.success("Đăng nhập thành công");
       window.location.href = BASE_PATHS.app.path;
       queryClient.clear();
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      // Hiển thị thông báo lỗi từ server nếu có
+      const errorMessage = error.response?.data?.message || 'Đăng nhập thất bại, vui lòng thử lại';
+      toast.error(errorMessage);
     }
   };
 

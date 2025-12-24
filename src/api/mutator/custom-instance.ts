@@ -67,6 +67,11 @@ MAIN_AXIOS_INSTANCE.interceptors.response.use(
     }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // Skip token refresh for login endpoint
+      if (originalRequest.url?.includes('/api/auth/login')) {
+        return Promise.reject(error);
+      }
+
       if (isRefreshing) {
         return new Promise<string>((resolve, reject) => {
           failedQueue.push({ resolve, reject });
