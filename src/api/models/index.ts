@@ -135,6 +135,7 @@ export * from './putApiCartBody';
 export * from './putApiCategoriesIdBody';
 export * from './putApiCollaboratorsRequestsRequestIdRejectBody';
 export * from './putApiCommentsId200';
+export * from './putApiContentIdBody';
 export * from './putApiReportsReportIdStatus200';
 export * from './putApiResourcesId200';
 export * from './registerInput';
