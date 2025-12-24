@@ -171,7 +171,7 @@ export const useContentTableColumnsDefs = (
         cell: ({ row }) => {
           const price = row.getValue("price") as number | undefined;
           return (
-            <div className="flex items-center gap-1.5 text-sm font-semibold text-gray-900">
+            <div className="flex items-center gap-1.5 text-sm font-semibold text-gray-900 min-w-[100px]">
               {formatCurrency(price)}
             </div>
           );
@@ -258,10 +258,9 @@ export const useContentTableColumnsDefs = (
       },
       {
         id: "actions",
-        header: "Thao tác",
+        header: () => <div className="min-w-[100px]">Thao tác</div>,
         cell: ({ row }) => {
           const content = row.original;
-          const isPending = content.status?.toLowerCase() === "pending";
 
           return (
             <DataTableActionCell
