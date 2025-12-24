@@ -19,6 +19,7 @@ import {
   DataTableDeleteDialog,
 } from "@/components/shared/data-table/shared";
 import { CategoryFormValues } from "../category-dialog/lib/types";
+import { extractErrorMessage } from "@/utils/error";
 
 const CategoryTable = () => {
   // States
@@ -67,7 +68,9 @@ const CategoryTable = () => {
       toast.success("Cập nhật danh mục thành công.");
     } catch (error) {
       console.error("Failed to edit category:", error);
-      toast.error("Đã có lỗi xảy ra khi cập nhật danh mục.");
+      toast.error(
+        extractErrorMessage(error) || "Đã có lỗi xảy ra khi cập nhật danh mục."
+      );
     }
   };
 
@@ -83,8 +86,9 @@ const CategoryTable = () => {
       setDeleteSelectRow(null);
       toast.success("Xóa danh mục thành công.");
     } catch (error) {
-      console.error("Failed to delete category:", error);
-      toast.error("Đã có lỗi xảy ra khi xóa danh mục.");
+      toast.error(
+        extractErrorMessage(error) || "Đã có lỗi xảy ra khi xóa danh mục."
+      );
     }
   };
 
@@ -127,6 +131,7 @@ const CategoryTable = () => {
                 <DataTable.Body />
               </DataTable.Content>
               <DataTable.Pagination />
+
               <DataTableBulkActions
                 actions={bulkActionList}
                 entityName="danh mục"

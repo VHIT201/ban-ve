@@ -7,6 +7,7 @@ import {
   DialogHeader,
 } from "@/components/ui/dialog";
 import Image from "@/components/ui/image";
+import { extractErrorMessage } from "@/utils/error";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { set } from "date-fns";
 import { Loader2Icon } from "lucide-react";
@@ -51,7 +52,10 @@ const ContentPaymentDialog: FC<Props> = (props) => {
 
   useEffect(() => {
     if (createPaymentQRMutation.isError) {
-      toast.error("Đã có lỗi xảy ra khi tạo đơn thanh toán QR.");
+      toast.error(
+        extractErrorMessage(createPaymentQRMutation.error) ||
+          "Đã có lỗi xảy ra khi tạo đơn thanh toán QR."
+      );
     }
 
     handleCreatePaymentQR();

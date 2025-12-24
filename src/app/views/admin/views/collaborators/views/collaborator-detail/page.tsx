@@ -30,6 +30,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { CollaboratorRequest } from "@/api/types/collaborator";
 import { Response } from "@/api/types/base";
+import { extractErrorMessage } from "@/utils/error";
 
 const CollaboratorDetail = () => {
   // Hooks
@@ -63,7 +64,9 @@ const CollaboratorDetail = () => {
         getRequestQuery.refetch();
       },
       onError: (error: any) => {
-        toast.error(error?.message || "Không thể phê duyệt yêu cầu");
+        toast.error(
+          extractErrorMessage(error) || "Không thể phê duyệt yêu cầu"
+        );
       },
     },
   });
@@ -76,8 +79,8 @@ const CollaboratorDetail = () => {
         setRejectionReason("");
         getRequestQuery.refetch();
       },
-      onError: (error: any) => {
-        toast.error(error?.message || "Không thể từ chối yêu cầu");
+      onError: (error) => {
+        toast.error(extractErrorMessage(error) || "Không thể từ chối yêu cầu");
       },
     },
   });

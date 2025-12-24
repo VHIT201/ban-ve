@@ -16,6 +16,7 @@ import { ContentResponse } from "@/api/types/content";
 import { UseQueryResult } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { DataTableDeleteDialog } from "@/components/shared/data-table/shared";
+import { extractErrorMessage } from "@/utils/error";
 
 const ContentTable = () => {
   // States
@@ -36,6 +37,7 @@ const ContentTable = () => {
       },
     },
   });
+
   // Mutations
   const getContentListQuery = useGetApiContent<{
     data: ContentResponse[];
@@ -71,8 +73,9 @@ const ContentTable = () => {
       setDeleteSelectRow(null);
       toast.success("Xóa bài viết thành công.");
     } catch (error) {
-      console.error("Failed to delete content:", error);
-      toast.error("Đã có lỗi xảy ra khi xóa bài viết.");
+      toast.error(
+        extractErrorMessage(error) || "Đã có lỗi xảy ra khi xóa bài viết."
+      );
     }
   };
   const handleApprove = (content: ContentResponse) => {
@@ -131,7 +134,7 @@ const ContentTable = () => {
                     }
                   : null
               }
-              onDelete={() => {}}
+              onDelete={handleDelete}
               deleting={deleteContentMutation.isPending}
             />
           </DataTable>

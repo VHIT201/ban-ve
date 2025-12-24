@@ -38,7 +38,7 @@ const formatDate = (dateString?: string): string => {
 };
 
 export const useColumns = (props: useCollaboratorTableColumnsDefsProps) => {
-  const { onView, onApprove, onReject, onEdit, onDelete } = props;
+  const { onView, onApprove, onReject, onEdit } = props;
 
   return useMemo<ColumnDef<CollaboratorTableRow>[]>(
     () => [
@@ -175,7 +175,6 @@ export const useColumns = (props: useCollaboratorTableColumnsDefsProps) => {
             <DataTableActionCell
               rowName={`#${collaborator._id?.substring(0, 8)}`}
               onEdit={onEdit ? () => onEdit(collaborator) : undefined}
-              onDelete={onDelete ? () => onDelete(collaborator) : undefined}
               extraActions={
                 actions.length > 0 ? (
                   <>
@@ -201,6 +200,6 @@ export const useColumns = (props: useCollaboratorTableColumnsDefsProps) => {
         },
       },
     ],
-    [onView, onApprove, onReject, onEdit, onDelete]
+    [onView, onApprove, onReject, onEdit]
   );
 };

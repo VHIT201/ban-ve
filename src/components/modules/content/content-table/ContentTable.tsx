@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { BASE_PATHS } from "@/constants/paths";
 import { toast } from "sonner";
 import { DataTableDeleteDialog } from "@/components/shared/data-table/shared";
+import { extractErrorMessage } from "@/utils/error";
 
 const ContentTable = () => {
   // States
@@ -89,7 +90,9 @@ const ContentTable = () => {
         error?.response?.data?.message ||
         error?.message ||
         "Vui lòng thử lại sau";
-      toast.error(`Lỗi khi xóa nội dung: ${errorMessage}`);
+      toast.error(
+        extractErrorMessage(error) || `Lỗi khi xóa nội dung: ${errorMessage}`
+      );
     }
   };
 
