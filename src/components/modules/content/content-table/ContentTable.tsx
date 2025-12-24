@@ -5,7 +5,10 @@ import { GetApiContent200Pagination } from "@/api/models";
 // Internal
 import { useContentTableColumnsDefs } from "./lib/hooks";
 import { Fragment, useState } from "react";
-import { useDeleteApiContentId, useGetApiContent } from "@/api/endpoints/content";
+import {
+  useDeleteApiContentId,
+  useGetApiContent,
+} from "@/api/endpoints/content";
 import { QueryBoundary } from "@/components/shared";
 import { ContentResponse } from "@/api/types/content";
 import { UseQueryResult } from "@tanstack/react-query";
@@ -16,7 +19,8 @@ import { DataTableDeleteDialog } from "@/components/shared/data-table/shared";
 
 const ContentTable = () => {
   // States
-  const [deleteSelectRow, setDeleteSelectRow] = useState<ContentResponse | null>(null);
+  const [deleteSelectRow, setDeleteSelectRow] =
+    useState<ContentResponse | null>(null);
   const [pagination, setPagination] = useState<{
     pageIndex: number;
     pageSize: number;
@@ -55,7 +59,9 @@ const ContentTable = () => {
       },
       onError: (error: any) => {
         console.error("Failed to delete content:", error);
-        toast.error(`Lỗi khi xóa nội dung: ${error?.message || "Vui lòng thử lại sau"}`);
+        toast.error(
+          `Lỗi khi xóa nội dung: ${error?.message || "Vui lòng thử lại sau"}`
+        );
       },
     },
   });
@@ -73,13 +79,16 @@ const ContentTable = () => {
 
   const handleConfirmDelete = async () => {
     if (!deleteSelectRow) return;
-    
+
     try {
       await deleteContentMutation.mutateAsync({ id: deleteSelectRow._id });
       setDeleteSelectRow(null);
     } catch (error: any) {
       console.error("Failed to delete content:", error);
-      const errorMessage = error?.response?.data?.message || error?.message || "Vui lòng thử lại sau";
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Vui lòng thử lại sau";
       toast.error(`Lỗi khi xóa nội dung: ${errorMessage}`);
     }
   };
@@ -87,11 +96,11 @@ const ContentTable = () => {
   const handleApprove = (content: ContentResponse) => {
     // Approve logic here
   };
-  
+
   const handleReject = (content: ContentResponse) => {
     // Reject logic here
   };
-  
+
   const handleView = (content: ContentResponse) => {
     // View logic here
   };
@@ -128,8 +137,19 @@ const ContentTable = () => {
           state={{ pagination }}
           onPaginationChange={handlePaginationChange}
         >
+          <DataTable.Content>
+            <DataTable.Header />
+            <DataTable.Body />
+          </DataTable.Content>
+
+          <DataTable.Pagination />
+
           <DataTableDeleteDialog
-            currentRow={deleteSelectRow ? { ...deleteSelectRow, name: deleteSelectRow.title } : null}
+            currentRow={
+              deleteSelectRow
+                ? { ...deleteSelectRow, name: deleteSelectRow.title }
+                : null
+            }
             onDelete={handleConfirmDelete}
           />
         </DataTable>
