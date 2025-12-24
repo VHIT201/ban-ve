@@ -85,7 +85,7 @@ const formatDateTime = (dateString?: string): string => {
 };
 
 export const useColumns = (props: usePaymentTableColumnsDefsProps) => {
-  const { onView, onRefund, onDelete } = props;
+  const { onView, onRefund } = props;
 
   return useMemo<ColumnDef<PaymentTableRow>[]>(
     () => [
@@ -154,7 +154,7 @@ export const useColumns = (props: usePaymentTableColumnsDefsProps) => {
       },
       {
         accessorKey: "status",
-        header: "Trạng thái",
+        header: () => <span className="min-w-[100px]">Trạng thái</span>,
         cell: ({ row }) => {
           const status = row.getValue("status") as string | undefined;
           const config = getStatusConfig(status);
@@ -177,11 +177,19 @@ export const useColumns = (props: usePaymentTableColumnsDefsProps) => {
         accessorKey: "contentId",
         header: "Content ID",
         cell: ({ row }) => {
-          const contentId = row.getValue("contentId") as string | undefined;
+          const contentId = row.getValue("contentId") as {
+            _id: string;
+            title: string;
+          };
           return (
-            <span className="font-mono text-xs text-muted-foreground">
-              {contentId?.substring(0, 8) || "-"}
-            </span>
+            <div>
+              <span className="block font-medium">
+                {contentId?.title || "-"}
+              </span>
+              <span className="font-mono text-xs text-muted-foreground">
+                {contentId?._id || "-"}
+              </span>
+            </div>
           );
         },
       },
