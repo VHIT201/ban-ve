@@ -25,9 +25,10 @@ import type {
 
 import type {
   Content,
-  ContentInput,
   GetApiContent200,
-  GetApiContentParams
+  GetApiContentParams,
+  PostApiContentUploadBody,
+  PutApiContentIdBody
 } from '../models';
 
 import { mainInstance } from '../mutator/custom-instance';
@@ -369,18 +370,18 @@ export function useGetApiContentId<TData = Awaited<ReturnType<typeof getApiConte
 
 
 /**
- * @summary Cập nhật nội dung (chỉ người tạo hoặc admin)
+ * @summary Cập nhật thông tin nội dung
  */
 export const putApiContentId = (
     id: string,
-    contentInput: BodyType<ContentInput>,
+    putApiContentIdBody: BodyType<PutApiContentIdBody>,
  ) => {
       
       
-      return mainInstance<void>(
+      return mainInstance<Content>(
       {url: `/api/content/${id}`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
-      data: contentInput
+      data: putApiContentIdBody
     },
       );
     }
@@ -388,8 +389,8 @@ export const putApiContentId = (
 
 
 export const getPutApiContentIdMutationOptions = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiContentId>>, TError,{id: string;data: BodyType<ContentInput>}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof putApiContentId>>, TError,{id: string;data: BodyType<ContentInput>}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiContentId>>, TError,{id: string;data: BodyType<PutApiContentIdBody>}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof putApiContentId>>, TError,{id: string;data: BodyType<PutApiContentIdBody>}, TContext> => {
 
 const mutationKey = ['putApiContentId'];
 const {mutation: mutationOptions} = options ?
@@ -401,7 +402,7 @@ const {mutation: mutationOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiContentId>>, {id: string;data: BodyType<ContentInput>}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiContentId>>, {id: string;data: BodyType<PutApiContentIdBody>}> = (props) => {
           const {id,data} = props ?? {};
 
           return  putApiContentId(id,data,)
@@ -413,18 +414,18 @@ const {mutation: mutationOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PutApiContentIdMutationResult = NonNullable<Awaited<ReturnType<typeof putApiContentId>>>
-    export type PutApiContentIdMutationBody = BodyType<ContentInput>
+    export type PutApiContentIdMutationBody = BodyType<PutApiContentIdBody>
     export type PutApiContentIdMutationError = ErrorType<void>
 
     /**
- * @summary Cập nhật nội dung (chỉ người tạo hoặc admin)
+ * @summary Cập nhật thông tin nội dung
  */
 export const usePutApiContentId = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiContentId>>, TError,{id: string;data: BodyType<ContentInput>}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiContentId>>, TError,{id: string;data: BodyType<PutApiContentIdBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putApiContentId>>,
         TError,
-        {id: string;data: BodyType<ContentInput>},
+        {id: string;data: BodyType<PutApiContentIdBody>},
         TContext
       > => {
 
@@ -497,7 +498,7 @@ export const useDeleteApiContentId = <TError = ErrorType<void>,
  * @summary Tải lên nội dung mới
  */
 export const postApiContentUpload = (
-    contentInput: BodyType<ContentInput>,
+    postApiContentUploadBody: BodyType<PostApiContentUploadBody>,
  signal?: AbortSignal
 ) => {
       
@@ -505,7 +506,7 @@ export const postApiContentUpload = (
       return mainInstance<Content>(
       {url: `/api/content/upload`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
-      data: contentInput, signal
+      data: postApiContentUploadBody, signal
     },
       );
     }
@@ -513,8 +514,8 @@ export const postApiContentUpload = (
 
 
 export const getPostApiContentUploadMutationOptions = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiContentUpload>>, TError,{data: BodyType<ContentInput>}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof postApiContentUpload>>, TError,{data: BodyType<ContentInput>}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiContentUpload>>, TError,{data: BodyType<PostApiContentUploadBody>}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiContentUpload>>, TError,{data: BodyType<PostApiContentUploadBody>}, TContext> => {
 
 const mutationKey = ['postApiContentUpload'];
 const {mutation: mutationOptions} = options ?
@@ -526,7 +527,7 @@ const {mutation: mutationOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiContentUpload>>, {data: BodyType<ContentInput>}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiContentUpload>>, {data: BodyType<PostApiContentUploadBody>}> = (props) => {
           const {data} = props ?? {};
 
           return  postApiContentUpload(data,)
@@ -538,18 +539,18 @@ const {mutation: mutationOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiContentUploadMutationResult = NonNullable<Awaited<ReturnType<typeof postApiContentUpload>>>
-    export type PostApiContentUploadMutationBody = BodyType<ContentInput>
+    export type PostApiContentUploadMutationBody = BodyType<PostApiContentUploadBody>
     export type PostApiContentUploadMutationError = ErrorType<void>
 
     /**
  * @summary Tải lên nội dung mới
  */
 export const usePostApiContentUpload = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiContentUpload>>, TError,{data: BodyType<ContentInput>}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiContentUpload>>, TError,{data: BodyType<PostApiContentUploadBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiContentUpload>>,
         TError,
-        {data: BodyType<ContentInput>},
+        {data: BodyType<PostApiContentUploadBody>},
         TContext
       > => {
 

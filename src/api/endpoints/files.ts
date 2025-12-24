@@ -288,7 +288,7 @@ export function useGetApiFile<TData = Awaited<ReturnType<typeof getApiFile>>, TE
 
 
 /**
- * @summary Tải xuống file (yêu cầu đã thanh toán và đăng nhập)
+ * @summary Tải xuống file (yêu cầu đăng nhập)
  */
 export const getApiFileIdDownload = (
     id: string,
@@ -365,7 +365,7 @@ export function useGetApiFileIdDownloadInfinite<TData = InfiniteData<Awaited<Ret
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Tải xuống file (yêu cầu đã thanh toán và đăng nhập)
+ * @summary Tải xuống file (yêu cầu đăng nhập)
  */
 
 export function useGetApiFileIdDownloadInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFileIdDownload>>>, TError = ErrorType<void>>(
@@ -432,7 +432,7 @@ export function useGetApiFileIdDownload<TData = Awaited<ReturnType<typeof getApi
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Tải xuống file (yêu cầu đã thanh toán và đăng nhập)
+ * @summary Tải xuống file (yêu cầu đăng nhập)
  */
 
 export function useGetApiFileIdDownload<TData = Awaited<ReturnType<typeof getApiFileIdDownload>>, TError = ErrorType<void>>(

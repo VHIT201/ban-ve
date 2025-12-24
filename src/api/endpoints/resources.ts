@@ -27,6 +27,7 @@ import type {
   CreateResourceInput,
   DeleteApiResourcesId200,
   GetApiResources200,
+  GetApiResourcesParams,
   GetApiResourcesSuggest200,
   GetApiResourcesSuggestParams,
   PostApiResources201,
@@ -41,16 +42,17 @@ import type { ErrorType , BodyType } from '../mutator/custom-instance';
 
 
 /**
- * @summary Lấy danh sách tất cả tài nguyên phần mềm
+ * @summary Lấy danh sách tất cả tài nguyên phần mềm (có phân trang)
  */
 export const getApiResources = (
-    
+    params?: GetApiResourcesParams,
  signal?: AbortSignal
 ) => {
       
       
       return mainInstance<GetApiResources200>(
-      {url: `/api/resources`, method: 'GET', signal
+      {url: `/api/resources`, method: 'GET',
+        params, signal
     },
       );
     }
@@ -58,75 +60,75 @@ export const getApiResources = (
 
 
 
-export const getGetApiResourcesInfiniteQueryKey = () => {
+export const getGetApiResourcesInfiniteQueryKey = (params?: GetApiResourcesParams,) => {
     return [
-    'infinite', `/api/resources`
+    'infinite', `/api/resources`, ...(params ? [params]: [])
     ] as const;
     }
 
-export const getGetApiResourcesQueryKey = () => {
+export const getGetApiResourcesQueryKey = (params?: GetApiResourcesParams,) => {
     return [
-    `/api/resources`
+    `/api/resources`, ...(params ? [params]: [])
     ] as const;
     }
 
     
-export const getGetApiResourcesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiResources>>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, }
+export const getGetApiResourcesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiResources>>, GetApiResourcesParams['page']>, TError = ErrorType<unknown>>(params?: GetApiResourcesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData, QueryKey, GetApiResourcesParams['page']>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiResourcesInfiniteQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiResourcesInfiniteQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiResources>>> = ({ signal }) => getApiResources(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiResources>>, QueryKey, GetApiResourcesParams['page']> = ({ signal, pageParam }) => getApiResources({...params, 'page': pageParam || params?.['page']}, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData, QueryKey, GetApiResourcesParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetApiResourcesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiResources>>>
 export type GetApiResourcesInfiniteQueryError = ErrorType<unknown>
 
 
-export function useGetApiResourcesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiResources>>>, TError = ErrorType<unknown>>(
-  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>> & Pick<
+export function useGetApiResourcesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiResources>>, GetApiResourcesParams['page']>, TError = ErrorType<unknown>>(
+ params: undefined |  GetApiResourcesParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData, QueryKey, GetApiResourcesParams['page']>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiResources>>,
           TError,
-          Awaited<ReturnType<typeof getApiResources>>
+          Awaited<ReturnType<typeof getApiResources>>, QueryKey
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiResourcesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiResources>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>> & Pick<
+export function useGetApiResourcesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiResources>>, GetApiResourcesParams['page']>, TError = ErrorType<unknown>>(
+ params?: GetApiResourcesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData, QueryKey, GetApiResourcesParams['page']>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiResources>>,
           TError,
-          Awaited<ReturnType<typeof getApiResources>>
+          Awaited<ReturnType<typeof getApiResources>>, QueryKey
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiResourcesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiResources>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, }
+export function useGetApiResourcesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiResources>>, GetApiResourcesParams['page']>, TError = ErrorType<unknown>>(
+ params?: GetApiResourcesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData, QueryKey, GetApiResourcesParams['page']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Lấy danh sách tất cả tài nguyên phần mềm
+ * @summary Lấy danh sách tất cả tài nguyên phần mềm (có phân trang)
  */
 
-export function useGetApiResourcesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiResources>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, }
+export function useGetApiResourcesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiResources>>, GetApiResourcesParams['page']>, TError = ErrorType<unknown>>(
+ params?: GetApiResourcesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData, QueryKey, GetApiResourcesParams['page']>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiResourcesInfiniteQueryOptions(options)
+  const queryOptions = getGetApiResourcesInfiniteQueryOptions(params,options)
 
   const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -138,16 +140,16 @@ export function useGetApiResourcesInfinite<TData = InfiniteData<Awaited<ReturnTy
 
 
 
-export const getGetApiResourcesQueryOptions = <TData = Awaited<ReturnType<typeof getApiResources>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, }
+export const getGetApiResourcesQueryOptions = <TData = Awaited<ReturnType<typeof getApiResources>>, TError = ErrorType<unknown>>(params?: GetApiResourcesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiResourcesQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiResourcesQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiResources>>> = ({ signal }) => getApiResources(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiResources>>> = ({ signal }) => getApiResources(params, signal);
 
       
 
@@ -161,7 +163,7 @@ export type GetApiResourcesQueryError = ErrorType<unknown>
 
 
 export function useGetApiResources<TData = Awaited<ReturnType<typeof getApiResources>>, TError = ErrorType<unknown>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>> & Pick<
+ params: undefined |  GetApiResourcesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiResources>>,
           TError,
@@ -171,7 +173,7 @@ export function useGetApiResources<TData = Awaited<ReturnType<typeof getApiResou
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiResources<TData = Awaited<ReturnType<typeof getApiResources>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>> & Pick<
+ params?: GetApiResourcesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiResources>>,
           TError,
@@ -181,19 +183,19 @@ export function useGetApiResources<TData = Awaited<ReturnType<typeof getApiResou
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiResources<TData = Awaited<ReturnType<typeof getApiResources>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, }
+ params?: GetApiResourcesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Lấy danh sách tất cả tài nguyên phần mềm
+ * @summary Lấy danh sách tất cả tài nguyên phần mềm (có phân trang)
  */
 
 export function useGetApiResources<TData = Awaited<ReturnType<typeof getApiResources>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, }
+ params?: GetApiResourcesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiResources>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiResourcesQueryOptions(options)
+  const queryOptions = getGetApiResourcesQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
