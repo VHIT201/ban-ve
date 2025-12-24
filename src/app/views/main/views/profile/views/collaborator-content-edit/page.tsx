@@ -1,19 +1,18 @@
 import {
   useGetApiContentId,
   usePutApiContentId,
-  usePostApiContentUpload,
 } from "@/api/endpoints/content";
 import { ContentResponse } from "@/api/types/content";
+import { ContentInput } from "@/api/models/contentInput";
 import { ContentEditorForm } from "@/components/modules/content";
 import { QueryBoundary } from "@/components/shared";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { BASE_PATHS } from "@/constants/paths";
 import { useRequiredPathParams } from "@/hooks";
 import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeftIcon, Loader2 } from "lucide-react";
+import { ArrowLeftIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { useState } from "react";
 
 const ContentDetail = () => {
   // Hooks
@@ -25,76 +24,21 @@ const ContentDetail = () => {
     id
   ) as UseQueryResult<ContentResponse>;
 
-  // State
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   // Mutations
   const editContentMutation = usePutApiContentId();
-  const uploadFileMutation = usePostApiContentUpload();
 
   // Methods
-const handleUpdateContent = async (contentId: string, formData: any) => {
+const handleUpdateContent = async (contentId: string, formData: ContentInput) => {
   try {
-    setIsSubmitting(true);
-    
-    // Prepare the data for the API
-    const updateData: {
-      title?: string;
-      description?: string;
-      category_id?: string;
-      price?: number;
-      file_id?: string;
-    } = {
-      title: formData.title,
-      description: formData.description,
-      category_id: formData.category_id,
-      price: formData.price,
-    };
-
-    // Handle file upload if there's a new file
-    if (formData.file) {
-      try {
-        // First, upload the file to get a file ID
-        const fileFormData = new FormData();
-        fileFormData.append('file', formData.file);
-        
-        // This assumes you have a separate endpoint for file uploads
-        // that returns the file ID
-        const uploadResponse = await fetch('/api/files/upload', {
-          method: 'POST',
-          body: fileFormData,
-          // Don't set Content-Type header - let the browser set it with the correct boundary
-          headers: {
-            'Accept': 'application/json',
-          },
-        });
-        
-        if (!uploadResponse.ok) {
-          throw new Error('File upload failed');
-        }
-        
-        const fileData = await uploadResponse.json();
-        
-        if (fileData && fileData._id) {
-          updateData.file_id = fileData._id;
-        } else {
-          throw new Error('Invalid file upload response');
-        }
-      } catch (error) {
-        console.error('Error uploading file:', error);
-        toast.error('Có lỗi xảy ra khi tải lên file. Vui lòng thử lại.');
-        setIsSubmitting(false);
-        return;
-      }
-    } else if (formData.content_file?._id) {
-      // Use the existing file ID if no new file is uploaded
-      updateData.file_id = formData.content_file._id;
-    }
-
-    // Update the content with the new data
     await editContentMutation.mutateAsync({
       id: contentId,
-      data: updateData
+      data: {
+        title: formData.title,
+        description: formData.description,
+        category_id: formData.category_id,
+        price: formData.price,
+        file_id: formData.file_id
+      }
     }, {
       onSuccess: async () => {
         await queryClient.invalidateQueries({ 
@@ -108,15 +52,11 @@ const handleUpdateContent = async (contentId: string, formData: any) => {
       onError: (error) => {
         console.error('Error updating content:', error);
         toast.error("Có lỗi xảy ra khi cập nhật nội dung.");
-      },
-      onSettled: () => {
-        setIsSubmitting(false);
       }
     });
   } catch (error) {
     console.error('Unexpected error:', error);
     toast.error("Có lỗi không xác định xảy ra.");
-    setIsSubmitting(false);
   }
 };
 
@@ -146,9 +86,15 @@ const handleUpdateContent = async (contentId: string, formData: any) => {
                 title: contentDetail.title,
                 description: contentDetail.description,
                 category_id: contentDetail.category_id._id,
+                price: contentDetail.price,
+               content_file: {
+                  _id: contentDetail.file_id._id,
+                  name: contentDetail.file_id.name,
+                  type: contentDetail.file_id.type,
+                  size: contentDetail.file_id.size
+                }
               }}
               onSubmit={(data) => handleUpdateContent(contentDetail._id, data)}
-              isLoading={isSubmitting}
             />
           )}
         </QueryBoundary>

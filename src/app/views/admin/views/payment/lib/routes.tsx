@@ -30,6 +30,17 @@ const paymentRoutes: RouteObject = {
         };
       },
     },
+    {
+      path: ":id",
+      lazy: async () => {
+        const { default: PaymentDetailPage } = await import(
+          "../views/payment-detail/PaymentDetailPage"
+        );
+        return {
+          element: <PaymentDetailPage />,
+        };
+      },
+    },
   ],
 };
 
