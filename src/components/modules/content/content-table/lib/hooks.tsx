@@ -114,25 +114,30 @@ export const useContentTableColumnsDefs = (
           );
         },
       },
-      {
-        accessorKey: "category_id",
-        header: "Danh mục",
-        cell: ({ row }) => {
-          const category = row.original.category_id;
-          return (
-            <div className="flex flex-col gap-1 min-w-[120px]">
-              <Badge variant="outline" className="w-fit font-medium ">
-                {category?.name || "Chưa phân loại"}
-              </Badge>
-              {category?.slug && (
-                <div className="text-xs text-gray-400 font-mono">
-                  /{category.slug}
-                </div>
-              )}
-            </div>
-          );
-        },
-      },
+{
+  accessorKey: "category",
+  header: "Danh mục",
+  cell: ({ row }) => {
+    const category = row.original.category;
+
+    return (
+      <div className="flex flex-col gap-1 min-w-[120px]">
+        <Badge variant="outline" className="w-fit font-medium">
+          {category?.name || "Chưa phân loại"}
+        </Badge>
+
+        {category?.slug && (
+          <div className="text-xs text-gray-400 font-mono">
+            /{category.slug}
+          </div>
+        )}
+      </div>
+    );
+  },
+},
+
+
+
       {
         accessorKey: "file_id",
         header: "File",

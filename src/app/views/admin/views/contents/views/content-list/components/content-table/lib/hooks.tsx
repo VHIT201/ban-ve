@@ -115,10 +115,10 @@ export const useContentTableColumnsDefs = (
         },
       },
       {
-        accessorKey: "category_id",
+        accessorKey: "category",
         header: "Danh mục",
         cell: ({ row }) => {
-          const category = row.original.category_id;
+          const category = row.original.category;
           return (
             <div className="flex flex-col gap-1 min-w-[120px]">
               <Badge variant="outline" className="w-fit font-medium ">
