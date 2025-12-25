@@ -31,6 +31,8 @@ import type {
   PostApiPayments201,
   PostApiPaymentsSepayCreateQrPaymentBody,
   PostApiPaymentsSepayWebhook200,
+  PostApiPaymentsTestWebhook200,
+  PostApiPaymentsTestWebhookBody,
   PostApiPaymentsWebhook200,
   PostApiPaymentsWebhookBody,
   SepayWebhookInput
@@ -170,6 +172,73 @@ export const usePostApiPaymentsSepayWebhook = <TError = ErrorType<void>,
       > => {
 
       const mutationOptions = getPostApiPaymentsSepayWebhookMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * Endpoint này giúp test webhook mà không cần SePay thực sự gọi.
+Chỉ sử dụng cho môi trường development/testing.
+
+ * @summary Test webhook endpoint (Development only)
+ */
+export const postApiPaymentsTestWebhook = (
+    postApiPaymentsTestWebhookBody: BodyType<PostApiPaymentsTestWebhookBody>,
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<PostApiPaymentsTestWebhook200>(
+      {url: `/api/payments/test-webhook`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: postApiPaymentsTestWebhookBody, signal
+    },
+      );
+    }
+  
+
+
+export const getPostApiPaymentsTestWebhookMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiPaymentsTestWebhook>>, TError,{data: BodyType<PostApiPaymentsTestWebhookBody>}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiPaymentsTestWebhook>>, TError,{data: BodyType<PostApiPaymentsTestWebhookBody>}, TContext> => {
+
+const mutationKey = ['postApiPaymentsTestWebhook'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiPaymentsTestWebhook>>, {data: BodyType<PostApiPaymentsTestWebhookBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postApiPaymentsTestWebhook(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiPaymentsTestWebhookMutationResult = NonNullable<Awaited<ReturnType<typeof postApiPaymentsTestWebhook>>>
+    export type PostApiPaymentsTestWebhookMutationBody = BodyType<PostApiPaymentsTestWebhookBody>
+    export type PostApiPaymentsTestWebhookMutationError = ErrorType<void>
+
+    /**
+ * @summary Test webhook endpoint (Development only)
+ */
+export const usePostApiPaymentsTestWebhook = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiPaymentsTestWebhook>>, TError,{data: BodyType<PostApiPaymentsTestWebhookBody>}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiPaymentsTestWebhook>>,
+        TError,
+        {data: BodyType<PostApiPaymentsTestWebhookBody>},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiPaymentsTestWebhookMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }
