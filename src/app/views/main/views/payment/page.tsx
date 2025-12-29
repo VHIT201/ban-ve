@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -17,21 +16,17 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+
 import {
   Lock,
   CreditCard,
-  HelpCircle,
-  MoreVertical,
   ShieldCheck,
-  AlertCircle,
   X,
   Smartphone,
   Building2,
@@ -51,6 +46,9 @@ import PaymentMomo from "./components/payment-momo/PaymentMomo";
 import PaymentBank from "./components/payment-bank/PaymentBank";
 import PaymentVisa from "./components/payment-visa/PaymentVisa";
 import PaymentQR from "./components/payment-qr/PaymentQR";
+import { useCreateQrPayment } from "@/hooks/modules/payments";
+import { PaymentStatusDialog } from "@/components/modules/payment";
+import { PaymentStatus } from "@/enums/payment";
 
 // Zod validation schemas
 const momoSchema = z.object({
@@ -178,6 +176,7 @@ const PaymentPage = () => {
   const clearCart = useCartStore((state) => state.clearCart);
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [openPaymentStatus, setOpenPaymentStatus] = useState<boolean>(false);
 
   // React Hook Form
   const form = useForm<PaymentFormValues>({
@@ -204,8 +203,13 @@ const PaymentPage = () => {
 
   // Mutations
   const paymentMutation = usePostApiPayments();
+  const createQRPaymentMutation = useCreateQrPayment({
+    orders: items.map((item) => ({
+      contentId: item.product._id!,
+      quantity: item.quantity,
+    })),
+  });
 
-  // Redirect if cart is empty
   useEffect(() => {
     if (items.length === 0) {
       navigate("/collections");
@@ -213,9 +217,7 @@ const PaymentPage = () => {
   }, [items.length, navigate]);
 
   const handleApplyDiscount = () => {
-    const discountCode = form.getValues("discountCode");
-    console.log("Apply discount:", discountCode);
-    // TODO: Implement discount logic
+    console.log("Apply discount code:", form.getValues("discountCode"));
   };
 
   const handleSubmitPayment = async (data: PaymentFormValues) => {
@@ -226,7 +228,6 @@ const PaymentPage = () => {
     setIsProcessing(true);
 
     try {
-      // Prepare payment data
       items.forEach(async (item) => {
         await paymentMutation.mutateAsync({
           data: {
@@ -257,10 +258,6 @@ const PaymentPage = () => {
   const tax = 0;
   const discount = 0;
   const total = subtotal + shipping + tax - discount;
-
-  if (items.length === 0) {
-    return null;
-  }
 
   if (!authStore.isSignedIn) {
     return (
@@ -315,6 +312,23 @@ const PaymentPage = () => {
       </div>
     );
   }
+
+  useEffect(() => {
+    if (items.length === 0) {
+      return;
+    }
+
+    if (paymentMethod === "qr_code") {
+      createQRPaymentMutation.createPaymentQR();
+    }
+  }, [paymentMethod, items.length]);
+
+  useEffect(() => {
+    if (createQRPaymentMutation.streamingStatus === PaymentStatus.COMPLETED) {
+      clearCart();
+      setOpenPaymentStatus(true);
+    }
+  }, [createQRPaymentMutation.streamingStatus]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -516,110 +530,124 @@ const PaymentPage = () => {
                       )}
 
                       {/* QR Code Form */}
-                      {paymentMethod === "qr_code" && <PaymentQR form={form} />}
+                      {paymentMethod === "qr_code" && (
+                        <PaymentQR
+                          loading={createQRPaymentMutation.isPending}
+                          urlQRCode={createQRPaymentMutation.qrCodeUrl}
+                        />
+                      )}
                     </CardContent>
                   </Card>
                 </div>
 
                 {/* Billing Address */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-2xl font-semibold text-gray-900 mb-6">
-                      Thông tin người nhận
-                    </CardTitle>
-                  </CardHeader>
+                {paymentMethod !== "qr_code" && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-2xl font-semibold text-gray-900 mb-6">
+                        Thông tin người nhận
+                      </CardTitle>
+                    </CardHeader>
 
-                  <CardContent className="space-y-4">
-                    {/* Country */}
-                    <FormField
-                      control={form.control}
-                      name="country"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Quốc gia</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="Vietnam">Việt Nam</SelectItem>
-                              <SelectItem value="USA">Hoa Kỳ</SelectItem>
-                              <SelectItem value="UK">Anh</SelectItem>
-                              <SelectItem value="Japan">Nhật Bản</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    {/* First Name & Last Name */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <CardContent className="space-y-4">
+                      {/* Country */}
                       <FormField
                         control={form.control}
-                        name="firstName"
+                        name="country"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Họ</FormLabel>
+                            <FormLabel>Quốc gia</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="Vietnam">
+                                  Việt Nam
+                                </SelectItem>
+                                <SelectItem value="USA">Hoa Kỳ</SelectItem>
+                                <SelectItem value="UK">Anh</SelectItem>
+                                <SelectItem value="Japan">Nhật Bản</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* First Name & Last Name */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="firstName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Họ</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Nhập họ" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="lastName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Tên</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Nhập tên" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      {/* Company */}
+                      <FormField
+                        control={form.control}
+                        name="company"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Công ty (tùy chọn)</FormLabel>
                             <FormControl>
-                              <Input placeholder="Nhập họ" {...field} />
+                              <Input
+                                placeholder="Nhập tên công ty"
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                      <FormField
-                        control={form.control}
-                        name="lastName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Tên</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Nhập tên" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
-                    {/* Company */}
-                    <FormField
-                      control={form.control}
-                      name="company"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Công ty (tùy chọn)</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Nhập tên công ty" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                )}
 
                 {/* Submit Button - Mobile only */}
-                <div className="lg:hidden">
-                  <Button
-                    type="submit"
-                    size="lg"
-                    loading={isProcessing}
-                    disabled={items.length === 0}
-                    className="w-full bg-primary/60 hover:bg-primary/70 text-white h-12"
-                  >
-                    {`Thanh toán ${new Intl.NumberFormat("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    }).format(total)}`}
-                  </Button>
-                </div>
+                {paymentMethod !== "qr_code" && (
+                  <div className="lg:hidden">
+                    <Button
+                      type="submit"
+                      size="lg"
+                      loading={isProcessing}
+                      disabled={items.length === 0}
+                      className="w-full bg-primary/60 hover:bg-primary/70 text-white h-12"
+                    >
+                      {`Thanh toán ${new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(total)}`}
+                    </Button>
+                  </div>
+                )}
               </form>
             </Form>
           </div>
@@ -661,7 +689,7 @@ const PaymentPage = () => {
                           {item.product.title}
                         </h3>
                         <p className="text-xs text-gray-500 mb-2">
-                          {item.product.category_id.name}
+                          {item.product.category.name}
                         </p>
                         <p className="text-sm font-semibold text-gray-900">
                           {new Intl.NumberFormat("vi-VN", {
@@ -670,12 +698,14 @@ const PaymentPage = () => {
                           }).format(item.product.price * item.quantity)}
                         </p>
                       </div>
-                      <button
+                      <Button
+                        size="icon"
+                        variant="ghost"
                         onClick={() => removeItem(item.product._id)}
                         className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-red-500"
                       >
                         <X className="w-4 h-4" />
-                      </button>
+                      </Button>
                     </div>
                   ))}
                 </div>
@@ -695,7 +725,6 @@ const PaymentPage = () => {
                   />
                   <Button
                     type="button"
-                    variant="outline"
                     onClick={handleApplyDiscount}
                     className="px-6"
                   >
@@ -754,21 +783,23 @@ const PaymentPage = () => {
                 </div>
 
                 {/* Pay Now Button - Desktop */}
-                <div className="hidden lg:block">
-                  <Button
-                    type="submit"
-                    size="lg"
-                    loading={isProcessing}
-                    disabled={items.length === 0}
-                    className="w-full bg-primary/60 hover:bg-primary/70 text-white h-12"
-                    onClick={form.handleSubmit(handleSubmitPayment)}
-                  >
-                    {`Thanh toán ${new Intl.NumberFormat("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    }).format(total)}`}
-                  </Button>
-                </div>
+                {paymentMethod !== "qr_code" && (
+                  <div className="hidden lg:block">
+                    <Button
+                      type="submit"
+                      size="lg"
+                      loading={isProcessing}
+                      disabled={items.length === 0}
+                      className="w-full bg-primary/60 hover:bg-primary/70 text-white h-12"
+                      onClick={form.handleSubmit(handleSubmitPayment)}
+                    >
+                      {`Thanh toán ${new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(total)}`}
+                    </Button>
+                  </div>
+                )}
 
                 {/* Security Badge */}
                 <div className="flex items-center justify-center gap-2 text-xs text-gray-500 pt-2">
@@ -780,6 +811,13 @@ const PaymentPage = () => {
           </div>
         </div>
       </div>
+      <PaymentStatusDialog
+        open={openPaymentStatus}
+        order={createQRPaymentMutation.order}
+        amount={createQRPaymentMutation.order?.totalAmount}
+        status={PaymentStatus.COMPLETED}
+        onOpenChange={setOpenPaymentStatus}
+      />
     </div>
   );
 };

@@ -8,7 +8,7 @@ import {
 import Image from "@/components/ui/image";
 import { BASE_PATHS } from "@/constants/paths";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, QrCodeIcon } from "lucide-react";
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -34,10 +34,10 @@ const ContentPaymentDialog: FC<Props> = (props) => {
           </DialogTitle>
         </DialogHeader>
         {loading ? (
-          <p className="m-auto min-h-[200px]">
-            <Loader2Icon className="animate-spin mr-2 inline-block" /> Đang tạo
-            mã ...
-          </p>
+          <div className="w-full max-w-[360px] mx-auto min-h-[360px] h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+            <Loader2Icon className=" absolute top-1/2 left-1/2 -translate-1/2 animate-spin size-12" />
+            <QrCodeIcon className="w-64 h-64 text-gray-400" />
+          </div>
         ) : (
           <Image
             src={urlQRCode || ""}

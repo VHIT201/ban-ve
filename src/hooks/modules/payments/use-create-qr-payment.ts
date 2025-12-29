@@ -54,22 +54,13 @@ const useCreateQRPayment = (props: Props) => {
     setStreamingStatus(data.status);
   };
 
-  // Stream SSE Payment
-  useSSEStream({
-    enable: Boolean(paymentQR?.paymentId) && Boolean(paymentQR?.sseClientId),
-    url: `${baseConfig.backendDomain}api/sse/connect?sseClientId=${paymentQR?.sseClientId}&paymentId=${paymentQR?.paymentId}`,
-    onEvent: (event, data: SSEPaymentMessage) => {
-      if (event === "payment_status") {
-        handlePaymentSSEEvent(data);
-      }
-    },
-  });
-
   // Mutations
   const createOrderMutation = usePostApiOrders();
   const createPaymentQRMutation = usePostApiPaymentsSepayCreateQrPayment();
 
+  // Methods
   const handleCreatePaymentQR = async () => {
+    console.log("ORDER :", orders);
     try {
       const paymentStore = usePaymentStore.getState();
 
@@ -134,6 +125,17 @@ const useCreateQRPayment = (props: Props) => {
       );
     }
   };
+
+  // Stream SSE Payment
+  useSSEStream({
+    enable: Boolean(paymentQR?.paymentId) && Boolean(paymentQR?.sseClientId),
+    url: `${baseConfig.backendDomain}api/sse/connect?sseClientId=${paymentQR?.sseClientId}&paymentId=${paymentQR?.paymentId}`,
+    onEvent: (event, data: SSEPaymentMessage) => {
+      if (event === "payment_status") {
+        handlePaymentSSEEvent(data);
+      }
+    },
+  });
 
   const isIdle = useMemo(
     () => createOrderMutation.isIdle && createPaymentQRMutation.isIdle,

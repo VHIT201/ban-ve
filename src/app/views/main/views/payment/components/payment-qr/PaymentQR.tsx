@@ -1,13 +1,16 @@
 import React from "react";
-import { QrCode, AlertCircle } from "lucide-react";
+import { QrCode, AlertCircle, Loader2Icon, QrCodeIcon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { usePostApiPaymentsSepayCreateQrPayment } from "@/api/endpoints/payments";
+import Image from "@/components/ui/image";
+import { isEmpty } from "lodash-es";
 
 interface Props {
-  form: any;
+  urlQRCode?: string;
+  loading?: boolean;
 }
 
-export default function PaymentQR({ form }: Props) {
+export default function PaymentQR({ urlQRCode, loading = false }: Props) {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
@@ -26,9 +29,18 @@ export default function PaymentQR({ form }: Props) {
 
       <div className="bg-white border-2 border-dashed border-gray-300 rounded-xl p-8">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-64 h-64 bg-gray-100 rounded-lg flex items-center justify-center">
-            <QrCode className="w-32 h-32 text-gray-400" />
-          </div>
+          {loading || !urlQRCode || isEmpty(urlQRCode) ? (
+            <div className="relative w-full max-w-[360px] mx-auto min-h-[360px] h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+              <Loader2Icon className=" absolute top-1/2 left-1/2 -translate-1/2 animate-spin size-12" />
+              <QrCodeIcon className="w-64 h-64 text-gray-400" />
+            </div>
+          ) : (
+            <Image
+              src={urlQRCode}
+              alt="QR Code"
+              className="mx-auto fade-in-100 min-h-[300px]"
+            />
+          )}
           <div className="text-center space-y-2">
             <p className="text-sm font-medium text-gray-900">
               Quét mã QR để thanh toán

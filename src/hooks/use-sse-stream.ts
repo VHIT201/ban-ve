@@ -14,6 +14,8 @@ export default function useSSEStream<T>({
 }: UseSSEOptions<T>) {
   const abortRef = useRef<AbortController | null>(null);
 
+  console.log("SSE Stream URL :", url, " Enable :", enable);
+
   useEffect(() => {
     const authStore = useAuthStore.getState();
 

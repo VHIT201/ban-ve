@@ -14,8 +14,6 @@ import {
   ShoppingCartIcon,
   StarIcon,
   Check,
-  Ellipsis,
-  EllipsisVerticalIcon,
   HeartIcon,
   ShareIcon,
   FlagIcon,
@@ -99,13 +97,11 @@ const BlueprintDetailView: FC<Props> = (props) => {
 
     setIsAdding(true);
 
-    // Simulate async operation (could be API call for validation)
     setTimeout(() => {
       addItem(content, 1);
       setIsAdding(false);
       setJustAdded(true);
 
-      // Reset justAdded state after animation
       setTimeout(() => {
         setJustAdded(false);
       }, 2000);

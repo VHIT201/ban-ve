@@ -90,10 +90,9 @@ const BlueprintCard: FC<Props> = (props) => {
         <div className="absolute inset-0 w-full h-full opacity-0 group-hover/container:opacity-100 bg-black/20 transition-opacity duration-300" />
       </div>
 
-
       {/* Category Badge */}
       <Badge className="absolute top-4 left-4 rounded-full z-20">
-        {blueprint.category_id.name}
+        {blueprint.category.name}
       </Badge>
 
       {/* Heart Button */}
