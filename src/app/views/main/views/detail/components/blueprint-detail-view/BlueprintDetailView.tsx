@@ -21,7 +21,7 @@ import {
   FlagIcon,
   EllipsisIcon,
 } from "lucide-react";
-import { FC, Fragment, useState } from "react";
+import { FC, Fragment, useEffect, useState } from "react";
 import { Props } from "./lib/types";
 import { useCartStore } from "@/stores/use-cart-store";
 import { useNavigate } from "react-router-dom";
@@ -39,35 +39,10 @@ import { FileResponse } from "@/api/types/file";
 import { toast } from "sonner";
 import { extractErrorMessage } from "@/utils/error";
 import { useWatermark } from "@/hooks";
-
-const mockProduct: ContentResponse = {
-  _id: "1",
-  title: "Flat Vector Everyday Life Detailed Plan Creator Bundle",
-  description:
-    "Flat vector everyday life themed detailed plan creator bundle for your architecture & design projects.",
-  category_id: {
-    _id: "cat1",
-    name: "Thiết kế đồ họa",
-    slug: "thiet-ke-do-hoa",
-    description: "Bản vẽ thiết kế đồ họa",
-  },
-  file_id: {
-    _id: "file1",
-    name: "flat-vector-bundle.ai",
-    url: "/uploads/flat-vector-bundle.ai",
-    type: "AI",
-    size: 78643200, // 75.3 MB
-  },
-  price: 289000, // ~$11.99
-  status: "approved",
-  createdBy: {
-    _id: "user1",
-    username: "TOFFU",
-    email: "toffu@example.com",
-  },
-  createdAt: "2025-11-01T10:00:00Z",
-  updatedAt: "2025-11-08T15:30:00Z",
-};
+import { BASE_PATHS } from "@/constants/paths";
+import { PaymentStatusDialog } from "@/components/modules/payment";
+import { useCreateQrPayment } from "@/hooks/modules/payments";
+import { PaymentStatus } from "@/enums/payment";
 
 const MOCK_IMAGE_LIST = [
   "https://images.pexels.com/photos/1404948/pexels-photo-1404948.jpeg",
@@ -82,17 +57,13 @@ const BlueprintDetailView: FC<Props> = (props) => {
   const { content } = props;
 
   // Hooks
-  const canvasRef = useWatermark({
-    text: "TẠO BỞI BANVE.VN",
-    rotation: -Math.PI / 6,
-    fontSize: 22,
-    overlayOpacity: 0.5,
-    textOpacity: 0.7,
-  });
+  const navigate = useNavigate();
 
   // States
-  const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
+  const [openQRPaymentDialog, setOpenQRPaymentDialog] = useState(false);
   const [openReportDialog, setOpenReportDialog] = useState(false);
+  const [openPaymentStatusDialog, setOpenPaymentStatusDialog] =
+    useState<boolean>(false);
 
   // Cart Store
   const addItem = useCartStore((state) => state.addItem);
@@ -112,6 +83,11 @@ const BlueprintDetailView: FC<Props> = (props) => {
         (data as unknown as QueryData<FileResponse>).responseData,
       enabled: false,
     },
+  });
+
+  // Mutations
+  const createQRPaymentMutation = useCreateQrPayment({
+    orders: [{ contentId: content._id!, quantity: 1 }],
   });
 
   // Methods
@@ -137,10 +113,13 @@ const BlueprintDetailView: FC<Props> = (props) => {
   };
 
   const handleBuyNow = () => {
-    if (!isInCart) {
-      addItem(content, 1);
+    if (isInCart) {
+      navigate(BASE_PATHS.app.payment.path);
+      return;
     }
-    setOpenPaymentDialog(true);
+
+    createQRPaymentMutation.createPaymentQR();
+    setOpenQRPaymentDialog(true);
   };
 
   const handleDownloadPreview = async () => {
@@ -158,6 +137,18 @@ const BlueprintDetailView: FC<Props> = (props) => {
       toast.error("Không tìm thấy link tải xuống.");
     }
   };
+
+  // Effects
+  useEffect(() => {
+    if (createQRPaymentMutation.streamingStatus === PaymentStatus.COMPLETED) {
+      setOpenPaymentStatusDialog(true);
+    }
+  }, [createQRPaymentMutation.streamingStatus]);
+
+  useEffect(() => {
+    if (!openPaymentStatusDialog) return;
+    setOpenQRPaymentDialog(false);
+  }, [openPaymentStatusDialog]);
 
   return (
     <Fragment>
@@ -384,9 +375,18 @@ const BlueprintDetailView: FC<Props> = (props) => {
       />
 
       <ContentPaymentDialog
-        contentId={content._id}
-        open={openPaymentDialog}
-        onOpenChange={setOpenPaymentDialog}
+        urlQRCode={createQRPaymentMutation.qrCodeUrl}
+        loading={createQRPaymentMutation.isPending}
+        open={openQRPaymentDialog}
+        onOpenChange={setOpenQRPaymentDialog}
+      />
+
+      <PaymentStatusDialog
+        order={createQRPaymentMutation.order}
+        open={openPaymentStatusDialog}
+        amount={content.price}
+        status={PaymentStatus.COMPLETED}
+        onOpenChange={setOpenPaymentStatusDialog}
       />
     </Fragment>
   );

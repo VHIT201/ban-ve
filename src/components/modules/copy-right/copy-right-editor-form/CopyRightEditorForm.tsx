@@ -26,7 +26,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import {
   Loader2,
   AlertCircle,
@@ -36,9 +37,11 @@ import {
   FileText,
   Upload,
   X,
-  Link as LinkIcon,
+  Link2 as LinkIcon,
   Plus,
   ExternalLink,
+  Copy,
+  Info,
 } from "lucide-react";
 import { CopyrightReportViolationType } from "@/api/models/copyrightReportViolationType";
 
@@ -85,31 +88,35 @@ interface CopyrightReportEditorFormProps {
 const violationTypeOptions = [
   {
     value: CopyrightReportViolationType.copyright,
-    label: "Vi phạm bản quyền",
-    description: "Nội dung sao chép, sử dụng trái phép bản quyền",
+    label: "Bản quyền",
+    description: "Sao chép, sử dụng trái phép nội dung có bản quyền",
     icon: Shield,
-    color: "text-red-600",
+    gradient: "from-red-50 to-red-100",
+    iconColor: "text-red-600",
   },
   {
     value: CopyrightReportViolationType.trademark,
-    label: "Vi phạm thương hiệu",
-    description: "Sử dụng trái phép nhãn hiệu, logo, thương hiệu",
+    label: "Thương hiệu",
+    description: "Sử dụng trái phép nhãn hiệu, logo thương hiệu",
     icon: AlertTriangle,
-    color: "text-orange-600",
+    gradient: "from-orange-50 to-orange-100",
+    iconColor: "text-orange-600",
   },
   {
     value: CopyrightReportViolationType.privacy,
-    label: "Vi phạm quyền riêng tư",
+    label: "Quyền riêng tư",
     description: "Tiết lộ thông tin cá nhân, dữ liệu nhạy cảm",
     icon: UserIcon,
-    color: "text-purple-600",
+    gradient: "from-purple-50 to-purple-100",
+    iconColor: "text-purple-600",
   },
   {
     value: CopyrightReportViolationType.other,
-    label: "Vi phạm khác",
-    description: "Các loại vi phạm khác không thuộc các mục trên",
+    label: "Khác",
+    description: "Các vi phạm khác không thuộc danh mục trên",
     icon: FileText,
-    color: "text-gray-600",
+    gradient: "from-gray-50 to-gray-100",
+    iconColor: "text-gray-600",
   },
 ];
 
@@ -204,346 +211,525 @@ const CopyRightEditorForm = ({
   const isViewMode = mode === "view";
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-        {/* Error Alert */}
-        {error && (
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
+    <div className="max-w-4xl mx-auto">
+      <Card className="border-0 shadow-sm">
+        <CardHeader className="pb-6">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-red-50">
+              <Shield className="w-5 h-5 text-red-600" />
+            </div>
+            <div>
+              <CardTitle className="text-lg font-semibold text-gray-900">
+                {isViewMode
+                  ? "Chi tiết báo cáo vi phạm"
+                  : "Báo cáo vi phạm bản quyền"}
+              </CardTitle>
+              <p className="text-sm text-gray-600 mt-1">
+                {isViewMode
+                  ? "Thông tin chi tiết về báo cáo vi phạm"
+                  : "Điền thông tin để báo cáo nội dung vi phạm bản quyền"}
+              </p>
+            </div>
+          </div>
+        </CardHeader>
 
-        {/* Content ID */}
-        <FormField
-          control={form.control}
-          name="contentId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                ID Nội dung bị báo cáo <span className="text-red-500">*</span>
-              </FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-                  <Input
-                    placeholder="Nhập ID nội dung (24 ký tự)..."
-                    className="pl-10 font-mono"
-                    {...field}
-                    disabled={loading || isViewMode}
-                    maxLength={24}
-                  />
-                </div>
-              </FormControl>
-              <FormDescription>
-                ID của nội dung vi phạm bản quyền (24 ký tự ObjectId)
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Reported Content ID (Optional) */}
-        <FormField
-          control={form.control}
-          name="reportedContentId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>ID Nội dung gốc (Tùy chọn)</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-                  <Input
-                    placeholder="Nhập ID nội dung gốc (nếu có)..."
-                    className="pl-10 font-mono"
-                    {...field}
-                    disabled={loading || isViewMode}
-                    maxLength={24}
-                  />
-                </div>
-              </FormControl>
-              <FormDescription>
-                ID của nội dung gốc bị sao chép (nếu có)
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Violation Type */}
-        <FormField
-          control={form.control}
-          name="violationType"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Loại vi phạm <span className="text-red-500">*</span>
-              </FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                disabled={loading || isViewMode}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn loại vi phạm" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {violationTypeOptions.map((option) => {
-                    const Icon = option.icon;
-                    return (
-                      <SelectItem key={option.value} value={option.value}>
-                        <div className="flex flex-col">
-                          <span className="font-medium">{option.label}</span>
-                          <span className="text-xs text-gray-500">
-                            {option.description}
-                          </span>
-                        </div>
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-
-              {/* Selected Violation Type Preview */}
-              {selectedViolationConfig && (
-                <Card className="mt-2">
-                  <CardContent className="p-3">
-                    <div className="flex items-start gap-2">
-                      <selectedViolationConfig.icon
-                        className={`w-5 h-5 mt-0.5 ${selectedViolationConfig.color}`}
-                      />
-                      <div className="flex-1">
-                        <div className="font-medium text-sm">
-                          {selectedViolationConfig.label}
-                        </div>
-                        <div className="text-xs text-gray-600 mt-0.5">
-                          {selectedViolationConfig.description}
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+        <CardContent className="space-y-8 px-2">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-8"
+            >
+              {/* Error Alert */}
+              {error && (
+                <Alert
+                  variant="destructive"
+                  className="border-red-200 bg-red-50"
+                >
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription className="text-red-800">
+                    {error}
+                  </AlertDescription>
+                </Alert>
               )}
 
-              <FormDescription>
-                Chọn loại vi phạm phù hợp với nội dung báo cáo
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Description */}
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Mô tả chi tiết <span className="text-red-500">*</span>
-              </FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Mô tả chi tiết về vi phạm, bao gồm: cách thức vi phạm, thời điểm phát hiện, ảnh hưởng của vi phạm..."
-                  className="min-h-[150px] resize-none"
-                  {...field}
-                  disabled={loading || isViewMode}
-                />
-              </FormControl>
-              <FormDescription>
-                <div className="flex items-center justify-between">
-                  <span>
-                    Mô tả càng chi tiết càng giúp quá trình xử lý nhanh hơn
-                    (20-2000 ký tự)
-                  </span>
-                  <Badge
-                    variant={
-                      field.value.length < 20
-                        ? "destructive"
-                        : field.value.length > 2000
-                        ? "destructive"
-                        : "secondary"
-                    }
-                  >
-                    {field.value.length}/2000
-                  </Badge>
+              {/* Content Information Section */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-2">
+                  <div className="w-1 h-6 bg-red-500 rounded-full"></div>
+                  <h3 className="text-base font-medium text-gray-900">
+                    Thông tin nội dung
+                  </h3>
                 </div>
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
-        {/* Evidence */}
-        <FormField
-          control={form.control}
-          name="evidence"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Bằng chứng <span className="text-red-500">*</span>
-              </FormLabel>
-              <FormControl>
-                <div className="space-y-3">
-                  {/* Add Evidence Input */}
-                  {!isViewMode && (
-                    <div className="flex gap-2">
-                      <div className="relative flex-1">
-                        <Upload className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-                        <Input
-                          placeholder="Nhập URL bằng chứng (hình ảnh, video, tài liệu...)"
-                          className="pl-10"
-                          value={evidenceInput}
-                          onChange={(e) => setEvidenceInput(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              handleAddEvidence();
-                            }
-                          }}
-                          disabled={loading}
-                        />
-                      </div>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={handleAddEvidence}
-                        disabled={loading || !evidenceInput.trim()}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Content ID */}
+                  <FormField
+                    control={form.control}
+                    name="contentId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">
+                          ID nội dung vi phạm
+                          <span className="text-red-500 ml-1">*</span>
+                        </FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <FileText className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                            <Input
+                              placeholder="Nhập ID nội dung (24 ký tự)"
+                              className="pl-10 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 font-mono text-sm"
+                              {...field}
+                              disabled={loading || isViewMode}
+                              maxLength={24}
+                            />
+                            {field.value && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 h-7 px-2"
+                                onClick={() =>
+                                  navigator.clipboard.writeText(field.value)
+                                }
+                              >
+                                <Copy className="h-3 w-3" />
+                              </Button>
+                            )}
+                          </div>
+                        </FormControl>
+                        <FormDescription className="text-xs text-gray-500">
+                          ID của nội dung bị báo cáo vi phạm
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Reported Content ID (Optional) */}
+                  <FormField
+                    control={form.control}
+                    name="reportedContentId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">
+                          ID nội dung gốc
+                          <span className="text-gray-400 ml-1">(Tùy chọn)</span>
+                        </FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                            <Input
+                              placeholder="Nhập ID nội dung gốc"
+                              className="pl-10 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 font-mono text-sm"
+                              {...field}
+                              disabled={loading || isViewMode}
+                              maxLength={24}
+                            />
+                            {field.value && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 h-7 px-2"
+                                onClick={() =>
+                                  navigator.clipboard.writeText(field.value)
+                                }
+                              >
+                                <Copy className="h-3 w-3" />
+                              </Button>
+                            )}
+                          </div>
+                        </FormControl>
+                        <FormDescription className="text-xs text-gray-500">
+                          ID của nội dung gốc bị sao chép (nếu có)
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <Separator className="my-8" />
+
+              {/* Violation Type Section */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-2">
+                  <div className="w-1 h-6 bg-red-500 rounded-full"></div>
+                  <h3 className="text-base font-medium text-gray-900">
+                    Loại vi phạm
+                  </h3>
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="violationType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium text-gray-700">
+                        Chọn loại vi phạm
+                        <span className="text-red-500 ml-1">*</span>
+                      </FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        disabled={loading || isViewMode}
                       >
-                        <Plus className="w-4 h-4 mr-1" />
-                        Thêm
-                      </Button>
-                    </div>
-                  )}
+                        <FormControl>
+                          <SelectTrigger className="h-14! border-gray-200 focus:border-red-500 focus:ring-red-500/20 w-full">
+                            <SelectValue placeholder="Chọn loại vi phạm phù hợp" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="p-2">
+                          {violationTypeOptions.map((option) => {
+                            const Icon = option.icon;
+                            return (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                                className="p-3 cursor-pointer hover:bg-gray-50 rounded-lg mb-1 last:mb-0"
+                              >
+                                <div className="flex items-start gap-3">
+                                  <div
+                                    className={`p-2 rounded-lg bg-gradient-to-r ${option.gradient} flex items-center justify-center mt-1`}
+                                  >
+                                    <Icon
+                                      className={`w-4 h-4 ${option.iconColor}`}
+                                    />
+                                  </div>
+                                  <div className="flex-1">
+                                    <div className="font-medium text-sm text-gray-900 text-left">
+                                      {option.label}
+                                    </div>
+                                    <div className="text-xs text-gray-500 mt-0.5 leading-relaxed">
+                                      {option.description}
+                                    </div>
+                                  </div>
+                                </div>
+                              </SelectItem>
+                            );
+                          })}
+                        </SelectContent>
+                      </Select>
 
-                  {/* Evidence List */}
-                  {evidenceList.length > 0 ? (
-                    <div className="space-y-2">
-                      {evidenceList.map((url, index) => (
-                        <Card key={index}>
-                          <CardContent className="p-3">
-                            <div className="flex items-center gap-3">
-                              <div className="flex items-center justify-center w-8 h-8 rounded bg-blue-100 shrink-0">
-                                <LinkIcon className="w-4 h-4 text-blue-600" />
+                      {/* Selected Violation Type Preview */}
+                      {selectedViolationConfig && (
+                        <Card className="mt-4 border-gray-200 shadow-none">
+                          <CardContent className="p-4">
+                            <div className="flex items-start gap-3">
+                              <div
+                                className={`p-2 rounded-lg bg-gradient-to-r ${selectedViolationConfig.gradient}`}
+                              >
+                                <selectedViolationConfig.icon
+                                  className={`w-5 h-5 ${selectedViolationConfig.iconColor}`}
+                                />
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <a
-                                  href={url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-sm text-blue-600 hover:underline truncate block"
-                                >
-                                  {url}
-                                </a>
-                                <div className="flex items-center gap-1 mt-1">
-                                  <Badge
-                                    variant="secondary"
-                                    className="text-xs"
-                                  >
-                                    Bằng chứng #{index + 1}
-                                  </Badge>
-                                  <a
-                                    href={url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
-                                  >
-                                    <ExternalLink className="w-3 h-3" />
-                                    Xem
-                                  </a>
+                              <div className="flex-1">
+                                <div className="font-medium text-sm text-gray-900 mb-1">
+                                  Vi phạm {selectedViolationConfig.label}
+                                </div>
+                                <div className="text-xs text-gray-600 leading-relaxed">
+                                  {selectedViolationConfig.description}
                                 </div>
                               </div>
-                              {!isViewMode && (
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleRemoveEvidence(index)}
-                                  disabled={loading}
-                                >
-                                  <X className="w-4 h-4" />
-                                </Button>
-                              )}
                             </div>
                           </CardContent>
                         </Card>
-                      ))}
-                    </div>
-                  ) : (
-                    <Card>
-                      <CardContent className="p-6">
-                        <div className="text-center text-gray-500">
-                          <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                          <p className="text-sm">Chưa có bằng chứng nào</p>
-                          <p className="text-xs mt-1">
-                            Thêm URL hình ảnh, video hoặc tài liệu làm bằng
-                            chứng
-                          </p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-                </div>
-              </FormControl>
-              <FormDescription>
-                <div className="flex items-center justify-between">
-                  <span>
-                    Cung cấp URL hình ảnh, video, tài liệu chứng minh vi phạm
-                    (1-10 bằng chứng)
-                  </span>
-                  <Badge
-                    variant={
-                      evidenceList.length === 0
-                        ? "destructive"
-                        : evidenceList.length > 10
-                        ? "destructive"
-                        : "secondary"
-                    }
-                  >
-                    {evidenceList.length}/10
-                  </Badge>
-                </div>
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                      )}
 
-        {/* Actions */}
-        {!isViewMode && (
-          <div className="flex items-center gap-3 pt-4 border-t">
-            {onCancel && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onCancel}
-                disabled={loading}
-              >
-                Hủy
-              </Button>
-            )}
-            <Button
-              type="submit"
-              variant="destructive"
-              disabled={loading}
-              loading={loading}
-              className="ml-auto"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Đang gửi báo cáo...
-                </>
-              ) : (
-                <>Gửi báo cáo vi phạm</>
+                      <FormDescription className="text-xs text-gray-500 flex items-center gap-1">
+                        <Info className="w-3 h-3" />
+                        Chọn loại vi phạm phù hợp nhất với tình huống
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <Separator className="my-8" />
+
+              {/* Description Section */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-2">
+                  <div className="w-1 h-6 bg-red-500 rounded-full"></div>
+                  <h3 className="text-base font-medium text-gray-900">
+                    Mô tả chi tiết
+                  </h3>
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium text-gray-700">
+                        Mô tả về vi phạm
+                        <span className="text-red-500 ml-1">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Textarea
+                            placeholder="Mô tả chi tiết về vi phạm bao gồm:
+• Cách thức vi phạm cụ thể
+• Thời điểm phát hiện vi phạm  
+• Ảnh hưởng của vi phạm
+• Các chi tiết khác giúp làm rõ vấn đề"
+                            className="min-h-[140px] resize-none border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 text-sm leading-relaxed"
+                            {...field}
+                            disabled={loading || isViewMode}
+                          />
+                          <div className="absolute bottom-3 right-3 flex items-center gap-2">
+                            <Badge
+                              variant={
+                                field.value.length < 20
+                                  ? "destructive"
+                                  : field.value.length > 2000
+                                  ? "destructive"
+                                  : field.value.length > 1500
+                                  ? "secondary"
+                                  : "outline"
+                              }
+                              className="text-xs"
+                            >
+                              {field.value.length}/2000
+                            </Badge>
+                          </div>
+                        </div>
+                      </FormControl>
+                      <FormDescription className="text-xs text-gray-500 flex items-center gap-1">
+                        <Info className="w-3 h-3" />
+                        Mô tả càng chi tiết càng giúp quá trình xử lý diễn ra
+                        nhanh chóng và chính xác
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <Separator className="my-8" />
+
+              {/* Evidence Section */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-2">
+                  <div className="w-1 h-6 bg-red-500 rounded-full"></div>
+                  <h3 className="text-base font-medium text-gray-900">
+                    Bằng chứng
+                  </h3>
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="evidence"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium text-gray-700">
+                        URL bằng chứng
+                        <span className="text-red-500 ml-1">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <div className="space-y-4">
+                          {/* Add Evidence Input */}
+                          {!isViewMode && (
+                            <div className="flex gap-3">
+                              <div className="relative flex-1">
+                                <Upload className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                                <Input
+                                  placeholder="Nhập URL hình ảnh, video, tài liệu làm bằng chứng"
+                                  className="pl-10 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500/20"
+                                  value={evidenceInput}
+                                  onChange={(e) =>
+                                    setEvidenceInput(e.target.value)
+                                  }
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      e.preventDefault();
+                                      handleAddEvidence();
+                                    }
+                                  }}
+                                  disabled={loading}
+                                />
+                              </div>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                className="h-11 px-4 border-gray-200 hover:bg-purple-50 hover:border-purple-300"
+                                onClick={handleAddEvidence}
+                                disabled={loading || !evidenceInput.trim()}
+                              >
+                                <Plus className="w-4 h-4 mr-2" />
+                                Thêm
+                              </Button>
+                            </div>
+                          )}
+
+                          {/* Evidence List */}
+                          {evidenceList.length > 0 ? (
+                            <div className="space-y-3">
+                              {evidenceList.map((url, index) => (
+                                <Card
+                                  key={index}
+                                  className="border-gray-200 shadow-none hover:shadow-sm transition-shadow"
+                                >
+                                  <CardContent className="p-4">
+                                    <div className="flex items-center gap-3">
+                                      <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-50 shrink-0">
+                                        <LinkIcon className="w-4 h-4 text-blue-600" />
+                                      </div>
+                                      <div className="flex-1 min-w-0 space-y-2">
+                                        <div className="flex items-center justify-between">
+                                          <Badge
+                                            variant="secondary"
+                                            className="text-xs px-2 py-1"
+                                          >
+                                            Bằng chứng #{index + 1}
+                                          </Badge>
+                                          {!isViewMode && (
+                                            <Button
+                                              type="button"
+                                              variant="ghost"
+                                              size="sm"
+                                              className="h-8 w-8 p-0 text-gray-400 hover:text-red-500 hover:bg-red-50"
+                                              onClick={() =>
+                                                handleRemoveEvidence(index)
+                                              }
+                                              disabled={loading}
+                                            >
+                                              <X className="w-4 h-4" />
+                                            </Button>
+                                          )}
+                                        </div>
+                                        <a
+                                          href={url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-sm text-blue-600 hover:text-blue-700 hover:underline truncate block transition-colors"
+                                        >
+                                          {url}
+                                        </a>
+                                        <div className="flex items-center gap-3">
+                                          <a
+                                            href={url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 transition-colors"
+                                          >
+                                            <ExternalLink className="w-3 h-3" />
+                                            Xem bằng chứng
+                                          </a>
+                                          <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700"
+                                            onClick={() =>
+                                              navigator.clipboard.writeText(url)
+                                            }
+                                          >
+                                            <Copy className="w-3 h-3 mr-1" />
+                                            Sao chép
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              ))}
+                            </div>
+                          ) : (
+                            <Card className="border-gray-200 border-dashed">
+                              <CardContent className="p-8">
+                                <div className="text-center">
+                                  <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-gray-100 flex items-center justify-center">
+                                    <Upload className="w-6 h-6 text-gray-400" />
+                                  </div>
+                                  <p className="text-sm font-medium text-gray-900 mb-1">
+                                    Chưa có bằng chứng
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    Thêm URL hình ảnh, video hoặc tài liệu chứng
+                                    minh vi phạm
+                                  </p>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          )}
+                        </div>
+                      </FormControl>
+                      <FormDescription className="text-xs text-gray-500 flex items-center justify-between">
+                        <span className="flex items-center gap-1">
+                          <Info className="w-3 h-3" />
+                          Cần ít nhất 1 bằng chứng để hoàn tất báo cáo
+                        </span>
+                        <Badge
+                          variant={
+                            evidenceList.length === 0
+                              ? "destructive"
+                              : evidenceList.length > 10
+                              ? "destructive"
+                              : "outline"
+                          }
+                          className="text-xs"
+                        >
+                          {evidenceList.length}/10
+                        </Badge>
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Actions */}
+              {!isViewMode && (
+                <div className="flex items-center justify-between pt-8 border-t border-gray-200">
+                  <div className="flex items-center gap-2 text-xs text-gray-500 max-w-[50%]">
+                    <Info className="w-3 h-3" />
+                    <span>
+                      Tất cả thông tin sẽ được bảo mật và chỉ dùng để xử lý báo
+                      cáo
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    {onCancel && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        className="px-6"
+                        onClick={onCancel}
+                        disabled={loading}
+                      >
+                        Hủy bỏ
+                      </Button>
+                    )}
+                    <Button
+                      type="submit"
+                      variant="destructive"
+                      className="px-8 h-11 font-medium"
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Đang gửi báo cáo...
+                        </>
+                      ) : (
+                        <>
+                          <Shield className="w-4 h-4 mr-2" />
+                          Gửi báo cáo vi phạm
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
               )}
-            </Button>
-          </div>
-        )}
-      </form>
-    </Form>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

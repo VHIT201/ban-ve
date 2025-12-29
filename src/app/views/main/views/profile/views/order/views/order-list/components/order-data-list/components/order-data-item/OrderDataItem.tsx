@@ -3,7 +3,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Package, Eye, Download } from "lucide-react";
+import {
+  Package,
+  Eye,
+  Download,
+  MoveRightIcon,
+  ArrowRightFromLine,
+  ArrowRightFromLineIcon,
+  ArrowRightIcon,
+} from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 import { FC } from "react";
@@ -68,9 +76,14 @@ const OrderDataItem: FC<Props> = ({ order }) => {
                   Tải xuống
                 </Button>
               )}
-              <Button size="sm" className=" h-9" onClick={handleViewDetail}>
-                <Eye className="w-4 h-4 mr-2" />
+              <Button
+                variant="link"
+                size="sm"
+                className="group"
+                onClick={handleViewDetail}
+              >
                 Xem chi tiết
+                <ArrowRightIcon className="size-4 ml-1 group-hover:translate-x-1 transition-transform" />
               </Button>
             </div>
           </div>

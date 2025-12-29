@@ -38,10 +38,10 @@ export const ROUTE_PATHS = {
     },
     resources: { path: "resources" },
     copyRight: { path: "copy-right", detail: { path: "detail/:id" } },
-    collaborators: { 
-      path: "collaborators", 
+    collaborators: {
+      path: "collaborators",
       detail: { path: "detail/:id" },
-      edit: { path: "edit/:id" }
+      edit: { path: "edit/:id" },
     },
     payments: { path: "payments" },
   },
@@ -78,6 +78,7 @@ export const BASE_PATHS = {
       },
     },
     setting: { path: "/setting" },
+    payment: { path: "/payment" },
   },
   home: { path: "/" },
   checkout: { path: "/checkout" },
@@ -93,12 +94,11 @@ export const BASE_PATHS = {
     },
     resources: { path: "/admin/resources" },
     copyRight: { path: "/admin/copy-right" },
-    collaborators: { 
+    collaborators: {
       path: "/admin/collaborators",
       detail: { path: "/admin/collaborators/detail/:id" },
-      edit: { path: "/admin/collaborators/edit/:id" }
+      edit: { path: "/admin/collaborators/edit/:id" },
     },
     payments: { path: "/admin/payments" },
   },
-  
 };

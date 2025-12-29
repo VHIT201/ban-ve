@@ -1,4 +1,3 @@
-import { usePostApiPaymentsSepayCreateQrPayment } from "@/api/endpoints/payments";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -7,87 +6,48 @@ import {
   DialogHeader,
 } from "@/components/ui/dialog";
 import Image from "@/components/ui/image";
-import { extractErrorMessage } from "@/utils/error";
+import { BASE_PATHS } from "@/constants/paths";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { set } from "date-fns";
 import { Loader2Icon } from "lucide-react";
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 interface Props {
-  contentId: string;
+  urlQRCode?: string;
+  loading?: boolean;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
 const ContentPaymentDialog: FC<Props> = (props) => {
   // Props
-  const { contentId, open, onOpenChange } = props;
+  const { urlQRCode, loading, open, onOpenChange } = props;
 
   // Hooks
   const navigate = useNavigate();
-
-  // States
-  const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
-
-  // Mutations
-  const createPaymentQRMutation = usePostApiPaymentsSepayCreateQrPayment();
-
-  const handleCreatePaymentQR = async () => {
-    try {
-      const res = await createPaymentQRMutation.mutateAsync({
-        data: {
-          contentId: contentId,
-        },
-      });
-
-      const paymentQRData = res;
-
-      setQrCodeUrl(paymentQRData);
-    } catch (error) {
-      toast.warning("Tạo đơn thanh toán thất bại. Vui lòng thử lại.");
-    }
-  };
-
-  useEffect(() => {
-    if (createPaymentQRMutation.isError) {
-      toast.error(
-        extractErrorMessage(createPaymentQRMutation.error) ||
-          "Đã có lỗi xảy ra khi tạo đơn thanh toán QR."
-      );
-    }
-
-    handleCreatePaymentQR();
-
-    return () => {
-      setQrCodeUrl(null);
-    };
-  }, []);
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent aria-describedby="content-payment-dialog">
         <DialogHeader>
           <DialogTitle className="text-lg text-center md:text-xl font-semibold">
             Thanh toán nhanh QR
           </DialogTitle>
         </DialogHeader>
-        {createPaymentQRMutation.isPending ? (
+        {loading ? (
           <p className="m-auto min-h-[200px]">
             <Loader2Icon className="animate-spin mr-2 inline-block" /> Đang tạo
             mã ...
           </p>
         ) : (
           <Image
-            src={qrCodeUrl ?? ""}
+            src={urlQRCode || ""}
             alt="QR Code"
-            className="mx-auto fade-in-100"
+            className="mx-auto fade-in-100 min-h-[300px]"
           />
         )}
         <DialogFooter>
           <Button
-            onClick={() => navigate("/payment")}
+            onClick={() => navigate(BASE_PATHS.app.payment.path)}
             className="mx-auto fade-in duration-500 h-12 font-semibold hover:-translate-y-2 shadow-2xl transition-all"
           >
             Chọn phương thức thanh toán khác

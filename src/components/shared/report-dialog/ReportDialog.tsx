@@ -30,7 +30,7 @@ const ReportDialog: FC<Props> = (props) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="h-[90vh] sm:max-w-2xl">
-        <DialogHeader className="text-destructive">
+        <DialogHeader className="text-destructive font-semibold text-xl font-mono">
           Báo cáo vi phạm
         </DialogHeader>
         <ScrollArea className="overflow-y-auto px-5 py-2">

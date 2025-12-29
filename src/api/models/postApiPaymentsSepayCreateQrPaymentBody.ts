@@ -1,6 +1,6 @@
 // @ts-nocheck
 
 export type PostApiPaymentsSepayCreateQrPaymentBody = {
-  /** ID của nội dung cần thanh toán */
-  contentId: string;
+  /** ID của đơn hàng cần thanh toán */
+  orderId?: string;
 };

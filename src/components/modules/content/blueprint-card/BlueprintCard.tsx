@@ -53,6 +53,7 @@ const BlueprintCard: FC<Props> = (props) => {
     } finally {
       setIsAdding(false);
     }
+    0;
   };
 
   return (
