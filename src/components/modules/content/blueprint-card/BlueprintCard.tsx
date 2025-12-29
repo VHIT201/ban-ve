@@ -56,6 +56,13 @@ const BlueprintCard: FC<Props> = (props) => {
     0;
   };
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (!target.closest('button, a, [role="button"], .no-click')) {
+      onViewDetails(blueprint);
+    }
+  };
+
   return (
     <div
       className="group/container relative rounded-xl bg-linear-to-r from-neutral-600 to-neutral-300 pt-0 shadow-lg overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-2 cursor-pointer"
@@ -65,6 +72,7 @@ const BlueprintCard: FC<Props> = (props) => {
         backgroundPosition: "center",
         backgroundSize: "cover",
       }}
+      onClick={handleCardClick}
     >
       {/* IMAGE AREA + WATERMARK */}
       <div className="h-60 relative overflow-hidden">
@@ -79,19 +87,9 @@ const BlueprintCard: FC<Props> = (props) => {
           />
         </div>
 
-        {/* Hover View Button */}
-        <div
-          onClick={() => onViewDetails(blueprint)}
-          className="cursor-pointer group/view z-20 flex flex-col items-center justify-center opacity-0 group-hover/container:opacity-100 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full transition-opacity duration-300"
-        >
-          <EyeIcon className="size-8 stroke-white group-hover/view:scale-110 transition-transform duration-300" />
-          <span className="text-white text-sm group-hover/view:scale-110 transition-transform duration-300">
-            Xem chi tiết
-          </span>
-        </div>
+        <div className="absolute inset-0 w-full h-full opacity-0 group-hover/container:opacity-100 bg-black/20 transition-opacity duration-300" />
       </div>
 
-      <div className="opacity-0 group-hover/container:opacity-100 transition-opacity duration-300 absolute inset-0 bg-linear-to-b from-gray-400/50 to-gray-300/20 z-10" />
 
       {/* Category Badge */}
       <Badge className="absolute top-4 left-4 rounded-full z-20">

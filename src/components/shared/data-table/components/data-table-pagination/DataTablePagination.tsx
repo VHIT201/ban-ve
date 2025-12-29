@@ -29,7 +29,9 @@ const DataTablePagination = <TData,>() => {
   if (!enablePagination || !manualPagination) return null;
 
   const pageCount = table.getPageCount();
-  const currentPage = table.getState().pagination?.pageIndex || 1;
+  const pageIndex = table.getState().pagination?.pageIndex ?? 0;
+const currentPage = pageIndex + 1; // UI = 1-based
+
   const pageSize = table.getState().pagination?.pageSize || DEFAULT_PAGE_SIZE;
 
   const generatePageNumbers = () => {
@@ -118,7 +120,7 @@ const DataTablePagination = <TData,>() => {
               <Button
                 variant="outline"
                 className="hover:bg-primary/10 dark:hover:bg-primary/20 h-8 w-8 p-0"
-                onClick={() => table.setPageIndex(1)}
+                onClick={() => table.setPageIndex(0)}
                 disabled={currentPage <= 1}
               >
                 <span className="sr-only">Go to first page</span>
@@ -149,7 +151,7 @@ const DataTablePagination = <TData,>() => {
                         ? "bg-primary hover:bg-primary/90"
                         : "hover:bg-primary/10 dark:hover:bg-primary/20"
                     } `}
-                    onClick={() => table.setPageIndex(Number(page))}
+                    onClick={() => table.setPageIndex(Number(page) - 1)} // Convert to 0-based index for React Table
                   >
                     {page}
                   </Button>
@@ -172,7 +174,7 @@ const DataTablePagination = <TData,>() => {
               <Button
                 variant="outline"
                 className="hover:bg-primary/10 dark:hover:bg-primary/20 h-8 w-8 p-0"
-                onClick={() => table.setPageIndex(pageCount)}
+                onClick={() => table.setPageIndex(pageCount - 1)} // Convert to 0-based index
                 disabled={!table.getCanNextPage()}
               >
                 <span className="sr-only">Go to last page</span>

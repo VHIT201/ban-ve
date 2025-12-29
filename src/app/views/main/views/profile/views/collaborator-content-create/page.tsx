@@ -37,6 +37,9 @@ const ContentDetail = () => {
       return;
     }
 
+    // Ensure price is a number and not negative
+    const price = Number(values.price) >= 0 ? Number(values.price) : 0;
+
     try {
       const fileUploadResponse = await uploadFileMutation.mutateAsync({
         data: {
@@ -53,14 +56,15 @@ const ContentDetail = () => {
           description: values.description,
           file_id: fileData._id,
           category_id: values.category_id,
-          price: values.price || 0
+          price: price,
+         
         },
       });
 
-      toast.success("Nội dung đã được duyệt thành công.");
+      toast.success("Đã gửi yêu cầu tạo bản vẽ mới thành công. Vui lòng chờ quản trị viên phê duyệt.");
     } catch (error) {
-      console.error("Failed to approve content:", error);
-      toast.error("Đã có lỗi xảy ra khi duyệt nội dung.");
+      console.error("Failed to create content:", error);
+      toast.error("Đã có lỗi xảy ra khi tạo bản vẽ mới. Vui lòng thử lại sau.");
     }
   };
 

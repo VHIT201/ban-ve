@@ -1,6 +1,7 @@
 // Core
 import { useState } from "react";
 import { UseQueryResult } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 // App
 import { DataTable, QueryBoundary } from "@/components/shared";
@@ -31,6 +32,9 @@ const PaymentHistoryTable = () => {
     }
   ) as UseQueryResult<PaymentTableRow[]>;
 
+  // Hooks
+  const navigate = useNavigate();
+
   // Methods
   const handlePaginationChange = (newPagination: {
     pageIndex: number;
@@ -40,8 +44,9 @@ const PaymentHistoryTable = () => {
   };
 
   const handleView = (payment: PaymentTableRow) => {
-    // TODO: Navigate to payment detail page or open dialog
-    console.log("View payment:", payment._id);
+    if (payment._id) {
+      navigate(`/admin/payments/${payment._id}`);
+    }
   };
 
   const handleRefund = (payment: PaymentTableRow) => {

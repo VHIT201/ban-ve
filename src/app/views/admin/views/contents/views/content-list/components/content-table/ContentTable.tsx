@@ -4,7 +4,7 @@ import { GetApiContent200Pagination } from "@/api/models";
 
 // Internal
 import { useContentTableColumnsDefs } from "./lib/hooks";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import {
   getGetApiContentQueryKey,
   useDeleteApiContentId,
@@ -16,34 +16,36 @@ import { ContentResponse } from "@/api/types/content";
 import { UseQueryResult } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { DataTableDeleteDialog } from "@/components/shared/data-table/shared";
-import { extractErrorMessage } from "@/utils/error";
+import { PaginationState, Updater } from "@tanstack/react-table";
 
 const ContentTable = () => {
+  // =====================
   // States
+  // =====================
   const [deleteSelectRow, setDeleteSelectRow] =
     useState<ContentResponse | null>(null);
-  const [pagination, setPagination] = useState<{
-    pageIndex: number;
-    pageSize: number;
-  }>({ pageIndex: 0, pageSize: 10 });
 
-  // Hooks
-  const navigate = useNavigate();
-
-  const deleteContentMutation = useDeleteApiContentId({
-    mutation: {
-      meta: {
-        invalidateQueries: [getGetApiContentQueryKey()],
-      },
-    },
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0, // React Table: 0-based
+    pageSize: 10,
   });
 
-  // Mutations
+  // =====================
+  // Hooks
+  // =====================
+  const navigate = useNavigate();
+
+  // =====================
+  // Queries
+  // =====================
   const getContentListQuery = useGetApiContent<{
     data: ContentResponse[];
     pagination?: GetApiContent200Pagination;
   }>(
-    {},
+    {
+      page: pagination.pageIndex + 1, // API: 1-based
+      limit: pagination.pageSize,
+    },
     {
       query: {
         select: (data) =>
@@ -58,7 +60,42 @@ const ContentTable = () => {
     pagination?: GetApiContent200Pagination;
   }>;
 
-  // Methods
+  // =====================
+  // Mutations
+  // =====================
+  const deleteContentMutation = useDeleteApiContentId({
+    mutation: {
+      meta: {
+        invalidateQueries: [getGetApiContentQueryKey()],
+      },
+      onSuccess: () => {
+        toast.success("Xóa bài viết thành công.");
+        setDeleteSelectRow(null);
+      },
+      onError: () => {
+        toast.error("Đã có lỗi xảy ra khi xóa bài viết.");
+      },
+    },
+  });
+
+  // =====================
+  // Handlers
+  // =====================
+  const handlePaginationChange = (updater: Updater<PaginationState>) => {
+    setPagination((prev) => {
+      const newPagination =
+        typeof updater === "function" ? updater(prev) : updater;
+      // Ensure pageIndex is never undefined and is a number
+      if (typeof newPagination.pageIndex === "number") {
+        return {
+          ...newPagination,
+          pageIndex: newPagination.pageIndex,
+        };
+      }
+      return newPagination;
+    });
+  };
+
   const handleEdit = (content: ContentResponse) => {
     navigate(`/admin/contents/edit/${content._id}`);
   };
@@ -67,35 +104,20 @@ const ContentTable = () => {
     setDeleteSelectRow(row);
   };
 
-  const handleDelete = async (row: ContentResponse) => {
-    try {
-      await deleteContentMutation.mutateAsync({ id: row._id! });
-      setDeleteSelectRow(null);
-      toast.success("Xóa bài viết thành công.");
-    } catch (error) {
-      toast.error(
-        extractErrorMessage(error) || "Đã có lỗi xảy ra khi xóa bài viết."
-      );
-    }
-  };
-  const handleApprove = (content: ContentResponse) => {
-    // Approve logic here
-  };
-  const handleReject = (content: ContentResponse) => {
-    // Reject logic here
-  };
-  const handleView = (content: ContentResponse) => {
-    // View logic here
+  const handleConfirmDelete = async () => {
+    if (!deleteSelectRow?._id) return;
+    await deleteContentMutation.mutateAsync({
+      id: deleteSelectRow._id,
+    });
   };
 
-  const handlePaginationChange = (newPagination: {
-    pageIndex: number;
-    pageSize: number;
-  }) => {
-    setPagination(newPagination);
-  };
+  const handleApprove = (_: ContentResponse) => {};
+  const handleReject = (_: ContentResponse) => {};
+  const handleView = (_: ContentResponse) => {};
 
+  // =====================
   // Columns
+  // =====================
   const columns = useContentTableColumnsDefs({
     onEdit: handleEdit,
     onDelete: handleDeleteDialogOpen,
@@ -104,6 +126,9 @@ const ContentTable = () => {
     onView: handleView,
   });
 
+  // =====================
+  // Render
+  // =====================
   return (
     <Fragment>
       <QueryBoundary query={getContentListQuery}>
@@ -124,7 +149,9 @@ const ContentTable = () => {
               <DataTable.Header />
               <DataTable.Body />
             </DataTable.Content>
+
             <DataTable.Pagination />
+
             <DataTableDeleteDialog
               currentRow={
                 deleteSelectRow
@@ -134,7 +161,7 @@ const ContentTable = () => {
                     }
                   : null
               }
-              onDelete={handleDelete}
+              onDelete={handleConfirmDelete}
               deleting={deleteContentMutation.isPending}
             />
           </DataTable>
