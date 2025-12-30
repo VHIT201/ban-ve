@@ -63,6 +63,7 @@ export default function useSSEStream<T>({
     })();
 
     return () => {
+      console.log("CLOSE CONNECTING");
       controller.abort();
     };
   }, [url, enable]);
