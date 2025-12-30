@@ -126,7 +126,7 @@ export const TransactionList = () => {
       </div>
 
       {/* Phân trang */}
-      {paymentHistory?.pagination?.totalPages && paymentHistory.pagination.totalPages > 1 && (
+      {paymentHistory?.pagination && paymentHistory.pagination.total && paymentHistory.pagination.total > 0 && (
         <div className="flex items-center justify-between px-2 py-4">
           <div className="flex-1 flex justify-between sm:hidden">
             <Button

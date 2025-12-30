@@ -689,7 +689,7 @@ const PaymentPage = () => {
                           {item.product.title}
                         </h3>
                         <p className="text-xs text-gray-500 mb-2">
-                          {item.product.category.name}
+                          {item.product.category?.name || 'No category'}
                         </p>
                         <p className="text-sm font-semibold text-gray-900">
                           {new Intl.NumberFormat("vi-VN", {
