@@ -246,15 +246,15 @@ const Footer = () => {
         <div className="border-t border-border/50 mt-12 pt-8 text-center text-sm text-muted-foreground">
           <p> 2023 Bản Vẽ Chuyên Nghiệp. Tất cả các quyền được bảo lưu.</p>
           <div className="flex flex-wrap justify-center gap-4 mt-2">
-            <a href="#" className="hover:text-foreground transition-colors">
+            <a href="/terms" className="hover:text-foreground transition-colors">
               Điều khoản sử dụng
             </a>
             <span className="hidden sm:inline">•</span>
-            <a href="#" className="hover:text-foreground transition-colors">
+            <a href="/privacy" className="hover:text-foreground transition-colors">
               Chính sách bảo mật
             </a>
             <span className="hidden sm:inline">•</span>
-            <a href="#" className="hover:text-foreground transition-colors">
+            <a href="/cookie-policy" className="hover:text-foreground transition-colors">
               Chính sách cookie
             </a>
           </div>
