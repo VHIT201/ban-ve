@@ -25,6 +25,9 @@ export const ROUTE_PATHS = {
     setting: { path: "setting" },
     search: { path: "search" },
     terms: { path: "terms" },
+    privacy: { path: "privacy" },
+    cookiePolicy: { path: "cookie-policy" },
+    
   },
 
   admin: {

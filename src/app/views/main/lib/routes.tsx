@@ -83,6 +83,24 @@ const mainRoutes: RouteObject = {
         };
       },
     },
+    {
+      path: app.privacy.path,
+      lazy: async () => {
+        const { default: Privacy } = await import("../views/privacy/page");
+        return {
+          element: <Privacy />,
+        };
+      },
+    },
+    {
+      path: app.cookiePolicy.path,
+      lazy: async () => {
+        const { default: CookiePolicy } = await import("../views/cookie-policy/page");
+        return {
+          element: <CookiePolicy />,
+        };
+      },
+    },
     { ...profileRoutes },
   ],
 };
