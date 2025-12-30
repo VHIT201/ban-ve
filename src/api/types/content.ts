@@ -2,8 +2,8 @@ export interface ContentResponse {
   _id: string;
   title: string;
   description: string;
-  
-  category: {
+
+  category_id: {
     _id: string;
     name: string;
     slug: string;

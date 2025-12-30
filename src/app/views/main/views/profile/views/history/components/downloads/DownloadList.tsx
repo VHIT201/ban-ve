@@ -119,27 +119,33 @@ const DownloadList = () => {
   );
 
   // Hàm chuyển đổi dữ liệu từ API sang định dạng UI
-  const transformDownloadData = (data: DownloadsResponse | undefined): {
+  const transformDownloadData = (
+    data: DownloadsResponse | undefined
+  ): {
     downloads: DownloadItem[];
     totalItems: number;
     totalPages: number;
   } => {
-    if (!data?.responseData) {
+    if (!data?.data) {
       return { downloads: [], totalItems: 0, totalPages: 0 };
     }
 
-    const { history, pagination } = data.responseData;
-    
-    const downloads = history.map((item): DownloadItem => ({
-      id: item._id || "",
-      fileName: item.fileId?.name || "Không có tên",
-      fileType: getFileExtension(item.fileId?.name || ""),
-      fileSize: formatFileSize(item.fileId?.size || 0),
-      downloadDate: new Date(item.lastDownloadedAt || item.createdAt || new Date()),
-      downloadCount: item.count || 1,
-      status: "completed",
-      downloadUrl: item.fileId?.path,
-    }));
+    const { history, pagination } = data.data;
+
+    const downloads = history.map(
+      (item): DownloadItem => ({
+        id: item._id || "",
+        fileName: item.fileId?.name || "Không có tên",
+        fileType: getFileExtension(item.fileId?.name || ""),
+        fileSize: formatFileSize(item.fileId?.size || 0),
+        downloadDate: new Date(
+          item.lastDownloadedAt || item.createdAt || new Date()
+        ),
+        downloadCount: item.count || 1,
+        status: "completed",
+        downloadUrl: item.fileId?.path,
+      })
+    );
 
     return {
       downloads,
@@ -162,10 +168,8 @@ const DownloadList = () => {
 
   const goToFirstPage = () => setCurrentPage(1);
   const goToLastPage = () => setCurrentPage(totalPages);
-  const goToPreviousPage = () =>
-    setCurrentPage((p) => Math.max(1, p - 1));
-  const goToNextPage = () =>
-    setCurrentPage((p) => Math.min(totalPages, p + 1));
+  const goToPreviousPage = () => setCurrentPage((p) => Math.max(1, p - 1));
+  const goToNextPage = () => setCurrentPage((p) => Math.min(totalPages, p + 1));
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -200,7 +204,7 @@ const DownloadList = () => {
     document.body.removeChild(link);
   };
 
-//ui
+  //ui
   if (isLoading && !isRefetching) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -257,8 +261,7 @@ const DownloadList = () => {
                     className={cn(
                       download.status === "completed" &&
                         "bg-green-50 text-green-700",
-                      download.status === "failed" &&
-                        "bg-red-50 text-red-700",
+                      download.status === "failed" && "bg-red-50 text-red-700",
                       download.status === "pending" &&
                         "bg-yellow-50 text-yellow-700"
                     )}

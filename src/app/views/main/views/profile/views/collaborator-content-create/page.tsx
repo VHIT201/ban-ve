@@ -21,7 +21,7 @@ const ContentDetail = () => {
     mutation: {
       onSuccess: () => {
         // Invalidate the content list query to refresh the data
-        queryClient.invalidateQueries({ queryKey: ['/api/content'] });
+        queryClient.invalidateQueries({ queryKey: ["/api/content"] });
         // Navigate back to the content list
         navigate(BASE_PATHS.app.profile.collaborator.path);
       },
@@ -48,7 +48,7 @@ const ContentDetail = () => {
       });
       const fileData = (
         fileUploadResponse as unknown as MutationData<FileResponse>
-      ).responseData;
+      ).data;
 
       await createContentMutation.mutateAsync({
         data: {
@@ -57,11 +57,12 @@ const ContentDetail = () => {
           file_id: fileData._id,
           category_id: values.category_id,
           price: price,
-         
         },
       });
 
-      toast.success("Đã gửi yêu cầu tạo bản vẽ mới thành công. Vui lòng chờ quản trị viên phê duyệt.");
+      toast.success(
+        "Đã gửi yêu cầu tạo bản vẽ mới thành công. Vui lòng chờ quản trị viên phê duyệt."
+      );
     } catch (error) {
       console.error("Failed to create content:", error);
       toast.error("Đã có lỗi xảy ra khi tạo bản vẽ mới. Vui lòng thử lại sau.");

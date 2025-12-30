@@ -12,7 +12,7 @@ const useCart = () => {
   // Queries
   const getCartQuery = useGetApiCart({
     query: {
-      select: (data) => (data as unknown as QueryData<CartItem[]>).responseData,
+      select: (data) => (data as unknown as QueryData<CartItem[]>).data,
     },
   });
 

@@ -4,7 +4,7 @@ import { useShallow } from "zustand/shallow";
 
 // App
 import { User } from "@/api/models";
-import { Response } from "@/api/types/base";
+import { Response, ResponseData } from "@/api/types/base";
 import { useGetApiAuthMe } from "@/api/endpoints/auth";
 import { useAuthStore, useProfileStore } from "@/stores";
 
@@ -25,7 +25,7 @@ const AuthGate: FC<Props> = (props) => {
     query: {
       staleTime: Infinity,
       enabled: authStore.isSignedIn,
-      select: (data) => (data as unknown as Response<User>).responseData,
+      select: (data) => (data as unknown as ResponseData<User>).data,
     },
   });
 

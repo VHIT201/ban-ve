@@ -7,14 +7,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontalIcon, Trash2Icon } from "lucide-react";
+import { EditIcon, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
 import { FC, Fragment } from "react";
 import { Props } from "./lib/types";
 import { useDataTableContext } from "../../lib/hooks";
 
 const ActionColumn: FC<Props> = (props) => {
   // Props
-  const { rowName, extraActions, onEdit, onDelete } = props;
+  const { rowName, actions = [], extraActions, onEdit, onDelete } = props;
 
   // Hooks
   const { openDeleteDialogAction } = useDataTableContext();
@@ -40,9 +40,25 @@ const ActionColumn: FC<Props> = (props) => {
           Thao tác với{" "}
           <span className="text-primary font-semibold">{rowName}</span>{" "}
         </DropdownMenuLabel>
+
+        {actions.map((action, index) => (
+          <DropdownMenuItem
+            key={index}
+            onClick={action.onAction}
+            className="group"
+          >
+            <action.icon className="size-4 mr-2 group-hover:text-white" />
+            {action.label}
+          </DropdownMenuItem>
+        ))}
+
         {extraActions}
+
         {onEdit && (
-          <DropdownMenuItem onClick={onEdit}>Chỉnh sửa</DropdownMenuItem>
+          <DropdownMenuItem onClick={onEdit} className="group">
+            <EditIcon className="size-4 mr-2 group-hover:text-white" />
+            Chỉnh sửa
+          </DropdownMenuItem>
         )}
         {onDelete && (
           <Fragment>

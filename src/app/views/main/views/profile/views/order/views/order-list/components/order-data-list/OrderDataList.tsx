@@ -13,7 +13,7 @@ const OrderDataList = () => {
   const getOrderListQuery = useGetApiOrders({
     query: {
       select: (data) =>
-        (data as unknown as QueryData<FilterData<Order[]>>).responseData,
+        (data as unknown as QueryData<FilterData<Order[]>>).data,
     },
   }) as UseQueryResult<FilterData<Order[]>>;
 

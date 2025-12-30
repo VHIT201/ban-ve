@@ -27,7 +27,10 @@ const personalFormSchema = z.object({
     .string()
     .min(3, "Tên đăng nhập phải có ít nhất 3 ký tự")
     .max(50, "Tên đăng nhập không được vượt quá 50 ký tự")
-    .regex(/^[\p{L}\s]+$/u, "Tên đăng nhập chỉ được chứa chữ cái và khoảng trắng"),
+    .regex(
+      /^[\p{L}\s]+$/u,
+      "Tên đăng nhập chỉ được chứa chữ cái và khoảng trắng"
+    ),
   email: z.string().email("Email không hợp lệ"),
 });
 
@@ -35,7 +38,7 @@ type PersonalFormData = z.infer<typeof personalFormSchema>;
 
 const PersonalFormView = () => {
   const { data: userData, isLoading } = useGetApiAuthMe();
-  const user = userData?.responseData;
+  const user = userData?.data;
 
   const [saving, setSaving] = React.useState(false);
 
@@ -105,9 +108,7 @@ const PersonalFormView = () => {
             </Label>
             <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
               <Calendar className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm">
-                {formatDate(user?.createdAt)}
-              </span>
+              <span className="text-sm">{formatDate(user?.createdAt)}</span>
             </div>
           </div>
 
@@ -117,9 +118,7 @@ const PersonalFormView = () => {
             </Label>
             <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
               <Calendar className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm">
-                {formatDate(user?.updatedAt)}
-              </span>
+              <span className="text-sm">{formatDate(user?.updatedAt)}</span>
             </div>
           </div>
         </CardContent>
@@ -132,10 +131,7 @@ const PersonalFormView = () => {
 
         <CardContent>
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-6"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}

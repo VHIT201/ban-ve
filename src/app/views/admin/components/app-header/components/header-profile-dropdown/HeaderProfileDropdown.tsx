@@ -22,7 +22,7 @@ const HeaderProfileDropdown = () => {
   );
 
   const profileStore = useProfileStore(
-    useShallow(({ fullName, email, avatar }) => ({ fullName, email, avatar }))
+    useShallow(({ username, email, avatar }) => ({ username, email, avatar }))
   );
 
   const handleLogout = () => {
@@ -45,7 +45,7 @@ const HeaderProfileDropdown = () => {
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col gap-1.5">
               <p className="text-sm leading-none font-medium">
-                {profileStore.fullName}
+                {profileStore.username}
               </p>
               <p className="text-muted-foreground text-xs leading-none">
                 {profileStore.email}

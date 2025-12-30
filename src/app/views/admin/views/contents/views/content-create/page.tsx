@@ -40,7 +40,7 @@ const ContentDetail = () => {
       });
       const fileData = (
         fileUploadResponse as unknown as MutationData<FileResponse>
-      ).responseData;
+      ).data;
 
       await createContentMutation.mutateAsync({
         data: {

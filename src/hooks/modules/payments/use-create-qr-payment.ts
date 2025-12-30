@@ -86,7 +86,7 @@ const useCreateQRPayment = (props: Props) => {
       });
 
       const createOrderData = (createOrderRes as unknown as MutationData<Order>)
-        .responseData;
+        .data;
 
       if (!createOrderData) {
         toast.error(

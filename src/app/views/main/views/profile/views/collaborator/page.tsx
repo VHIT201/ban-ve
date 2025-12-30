@@ -333,8 +333,7 @@ function CollaboratorStatus({ data }: { data: any }) {
 const Collaborator = () => {
   const getCollaboratorMeQuery = useGetApiCollaboratorsMe({
     query: {
-      select: (data) =>
-        (data as unknown as QueryData<CollaboratorMe>).responseData,
+      select: (data) => (data as unknown as QueryData<CollaboratorMe>).data,
     },
   }) as UseQueryResult<CollaboratorMe>;
 
