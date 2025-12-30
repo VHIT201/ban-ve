@@ -17,7 +17,7 @@ const OrderDetail = () => {
   // Queries
   const getOrderDetailQuery = useGetApiOrdersOrderId(orderId, {
     query: {
-      select: (data) => (data as unknown as QueryData<Order>).responseData,
+      select: (data) => (data as unknown as QueryData<Order>).data,
     },
   }) as UseQueryResult<Order>;
 

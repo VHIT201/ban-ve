@@ -34,7 +34,7 @@ const CollaboratorTable = () => {
     {
       query: {
         select: (data) =>
-          (data as unknown as Response<CollaboratorRequest[]>).responseData,
+          (data as unknown as Response<CollaboratorRequest[]>).data,
       },
     }
   ) as UseQueryResult<CollaboratorRequest[]>;

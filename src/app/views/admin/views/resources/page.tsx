@@ -62,8 +62,7 @@ const Resources = () => {
 
   const getFileListQuery = useGetApiFile({
     query: {
-      select: (data) =>
-        (data as unknown as QueryData<FileResponse[]>).responseData,
+      select: (data) => (data as unknown as QueryData<FileResponse[]>).data,
     },
   }) as UseQueryResult<FileResponse[]>;
 

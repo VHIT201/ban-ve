@@ -24,6 +24,7 @@ import { useShallow } from "zustand/shallow";
 import { useAuthStore } from "@/stores";
 import { Response } from "@/api/types/base";
 import { PostApiAuthLogin200Data } from "@/api/models";
+import { extractErrorMessage } from "@/utils/error";
 
 const LoginForm: FC<Props> = () => {
   // Stores
@@ -58,17 +59,17 @@ const LoginForm: FC<Props> = () => {
 
       const loginData = (
         loginResponse as unknown as Response<PostApiAuthLogin200Data>
-      ).responseData;
+      ).data;
 
       authStore.setStore({ isSignedIn: true, ...loginData });
 
       toast.success("Đăng nhập thành công");
       window.location.href = BASE_PATHS.app.path;
       queryClient.clear();
-    } catch (error: any) {
-      // Hiển thị thông báo lỗi từ server nếu có
-      const errorMessage = error.response?.data?.message || 'Đăng nhập thất bại, vui lòng thử lại';
-      toast.error(errorMessage);
+    } catch (error) {
+      toast.error(
+        extractErrorMessage(error) || "Đăng nhập thất bại, vui lòng thử lại"
+      );
     }
   };
 

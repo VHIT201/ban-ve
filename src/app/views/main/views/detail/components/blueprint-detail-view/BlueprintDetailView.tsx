@@ -77,8 +77,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
   // Queries
   const getDownloadFileQuery = useGetApiFileIdDownload(content.file_id._id, {
     query: {
-      select: (data) =>
-        (data as unknown as QueryData<FileResponse>).responseData,
+      select: (data) => (data as unknown as QueryData<FileResponse>).data,
       enabled: false,
     },
   });

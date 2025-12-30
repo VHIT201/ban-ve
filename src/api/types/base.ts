@@ -2,9 +2,17 @@
 export interface Response<Data = unknown> {
   message: string;
   message_en: string;
-  responseData: Data;
+  data: Data;
   status: string;
   statusCode: number;
+  timeStamp: Date;
+}
+
+export interface ResponseData<Data = unknown> {
+  message: string;
+  message_en: string;
+  data: Data;
+  status: string;
   timeStamp: Date;
 }
 
