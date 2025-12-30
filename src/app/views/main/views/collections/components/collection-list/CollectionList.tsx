@@ -86,7 +86,7 @@ const CollectionList: FC<Props> = (props) => {
           ).data.filter((item) => {
             if (
               filter.categories.length > 0 &&
-              !filter.categories.includes(item.category_id._id)
+              !filter.categories.includes(item.category._id)
             ) {
               return false;
             }
@@ -105,7 +105,7 @@ const CollectionList: FC<Props> = (props) => {
               const descMatch = item.description
                 ?.toLowerCase()
                 .includes(searchLower);
-              const categoryMatch = item.category_id.name
+              const categoryMatch = item.category.name
                 .toLowerCase()
                 .includes(searchLower);
 
