@@ -61,6 +61,7 @@ export * from './getApiPaymentsHistory200';
 export * from './getApiPaymentsHistory200Pagination';
 export * from './getApiPaymentsHistoryParams';
 export * from './getApiPaymentsPaymentId200';
+export * from './getApiPaymentsSepayStatusPaymentId200';
 export * from './getApiReports200';
 export * from './getApiReports200Pagination';
 export * from './getApiReportsParams';

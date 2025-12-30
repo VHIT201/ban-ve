@@ -63,7 +63,7 @@ const queryClient = new QueryClient({
 
       if (meta?.invalidateQueries?.length) {
         const promises = meta.invalidateQueries.map((qk) =>
-          queryClient.refetchQueries({ queryKey: qk, exact: true })
+          queryClient.refetchQueries({ queryKey: qk })
         );
 
         await Promise.all(promises);

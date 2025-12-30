@@ -30,7 +30,6 @@ const ContentTable = () => {
     pageSize: 10,
   });
 
-
   // =====================
   // Hooks
   // =====================
@@ -49,7 +48,6 @@ const ContentTable = () => {
     },
     {
       query: {
-       
         select: (data) =>
           data as unknown as {
             data: ContentResponse[];
@@ -85,9 +83,10 @@ const ContentTable = () => {
   // =====================
   const handlePaginationChange = (updater: Updater<PaginationState>) => {
     setPagination((prev) => {
-      const newPagination = typeof updater === "function" ? updater(prev) : updater;
+      const newPagination =
+        typeof updater === "function" ? updater(prev) : updater;
       // Ensure pageIndex is never undefined and is a number
-      if (typeof newPagination.pageIndex === 'number') {
+      if (typeof newPagination.pageIndex === "number") {
         return {
           ...newPagination,
           pageIndex: newPagination.pageIndex,
@@ -96,7 +95,6 @@ const ContentTable = () => {
       return newPagination;
     });
   };
-
 
   const handleEdit = (content: ContentResponse) => {
     navigate(`/admin/contents/edit/${content._id}`);
@@ -152,9 +150,7 @@ const ContentTable = () => {
               <DataTable.Body />
             </DataTable.Content>
 
-            <DataTable.Pagination
-             
-            />
+            <DataTable.Pagination />
 
             <DataTableDeleteDialog
               currentRow={

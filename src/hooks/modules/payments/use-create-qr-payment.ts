@@ -1,0 +1,179 @@
+import { usePostApiOrders } from "@/api/endpoints/orders";
+import { usePostApiPaymentsSepayCreateQrPayment } from "@/api/endpoints/payments";
+import { Order } from "@/api/models";
+import { MutationData } from "@/api/types/base";
+import {
+  CreateQRPaymentResponse,
+  SSEPaymentMessage,
+} from "@/api/types/payments";
+import baseConfig from "@/configs/base";
+import { PaymentMethod, PaymentStatus } from "@/enums/payment";
+import useSSEStream from "@/hooks/use-sse-stream";
+import { usePaymentStore } from "@/stores";
+import { OrderItem } from "@/types/order";
+import { extractErrorMessage } from "@/utils/error";
+import { isUndefined } from "lodash-es";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+
+// Types
+interface Props {
+  orders: OrderItem[];
+  onConnect?: () => void;
+}
+
+interface PaymentQR {
+  url: string;
+  sseClientId: string;
+  paymentId: string;
+}
+
+// Custom Hook
+const useCreateQRPayment = (props: Props) => {
+  // Props
+  const { orders, onConnect } = props;
+
+  // States
+  const [orderPayment, setOrderPayment] = useState<Order | undefined>(
+    undefined
+  );
+  const [paymentQR, setPaymentQR] = useState<PaymentQR | null>(null);
+  const [isStreaming, setIsStreaming] = useState<boolean>(false);
+  const [streamingStatus, setStreamingStatus] = useState<PaymentStatus>(
+    PaymentStatus.PENDING
+  );
+
+  // Methods
+  const handlePaymentSSEEvent = (data: SSEPaymentMessage) => {
+    if (data.status === PaymentStatus.PENDING) {
+      onConnect?.();
+      setIsStreaming(true);
+    } else if (data.status === PaymentStatus.COMPLETED) {
+      setIsStreaming(false);
+    }
+    setStreamingStatus(data.status);
+  };
+
+  // Mutations
+  const createOrderMutation = usePostApiOrders();
+  const createPaymentQRMutation = usePostApiPaymentsSepayCreateQrPayment();
+
+  // Methods
+  const handleCreatePaymentQR = async () => {
+    console.log("ORDER :", orders);
+    try {
+      const paymentStore = usePaymentStore.getState();
+
+      const existsOrder = paymentStore.findExistsOrder({
+        items: orders,
+        paymentMethod: PaymentMethod.SEPAY,
+      });
+
+      if (!isUndefined(existsOrder)) {
+        setPaymentQR({
+          url: existsOrder.paymentId,
+          sseClientId: existsOrder.sseClientId,
+          paymentId: existsOrder.paymentId,
+        });
+        return;
+      }
+
+      const createOrderRes = await createOrderMutation.mutateAsync({
+        data: {
+          items: orders,
+          paymentMethod: PaymentMethod.SEPAY,
+        },
+      });
+
+      const createOrderData = (createOrderRes as unknown as MutationData<Order>)
+        .responseData;
+
+      if (!createOrderData) {
+        toast.error(
+          extractErrorMessage(createOrderMutation.error) ||
+            "Tạo đơn hàng thất bại."
+        );
+        throw new Error("Tạo đơn hàng thất bại.");
+      }
+
+      const createPaymentQRRes = await createPaymentQRMutation.mutateAsync({
+        data: {
+          orderId: createOrderData._id,
+        },
+      });
+
+      const paymentQRData =
+        createPaymentQRRes as unknown as CreateQRPaymentResponse;
+
+      paymentStore.createPayment({
+        sseClientId: paymentQRData.sseClientId,
+        paymentId: paymentQRData.paymentId,
+        order: createOrderData,
+      });
+
+      setOrderPayment(createOrderData);
+
+      setPaymentQR({
+        url: paymentQRData.qrUrl,
+        sseClientId: paymentQRData.sseClientId,
+        paymentId: paymentQRData.paymentId,
+      });
+    } catch (error) {
+      toast.warning(
+        extractErrorMessage(error) ||
+          "Tạo đơn thanh toán thất bại. Vui lòng thử lại."
+      );
+    }
+  };
+
+  // Stream SSE Payment
+  useSSEStream({
+    enable: Boolean(paymentQR?.paymentId) && Boolean(paymentQR?.sseClientId),
+    url: `${baseConfig.backendDomain}api/sse/connect?sseClientId=${paymentQR?.sseClientId}&paymentId=${paymentQR?.paymentId}`,
+    onEvent: (event, data: SSEPaymentMessage) => {
+      if (event === "payment_status") {
+        handlePaymentSSEEvent(data);
+      }
+    },
+  });
+
+  const isIdle = useMemo(
+    () => createOrderMutation.isIdle && createPaymentQRMutation.isIdle,
+    [createOrderMutation.isIdle, createPaymentQRMutation.isIdle]
+  );
+
+  const isPending = useMemo(
+    () => createOrderMutation.isPending || createPaymentQRMutation.isPending,
+    [createOrderMutation.isPending, createPaymentQRMutation.isPending]
+  );
+
+  const isError = useMemo(
+    () => createOrderMutation.isError || createPaymentQRMutation.isError,
+    [createOrderMutation.isError, createPaymentQRMutation.isError]
+  );
+
+  return useMemo(
+    () => ({
+      isIdle,
+      isError,
+      isPending,
+      isStreaming,
+      streamingStatus,
+      order: orderPayment,
+      qrCodeUrl: paymentQR?.url,
+      createPaymentQR: handleCreatePaymentQR,
+    }),
+    [
+      isIdle,
+      isError,
+      isPending,
+      paymentQR,
+      isStreaming,
+      streamingStatus,
+      orderPayment,
+      handleCreatePaymentQR,
+    ]
+  );
+};
+
+export default useCreateQRPayment;

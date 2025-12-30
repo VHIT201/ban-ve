@@ -28,6 +28,7 @@ import type {
   GetApiPaymentsHistory200,
   GetApiPaymentsHistoryParams,
   GetApiPaymentsPaymentId200,
+  GetApiPaymentsSepayStatusPaymentId200,
   PostApiPayments201,
   PostApiPaymentsSepayCreateQrPaymentBody,
   PostApiPaymentsSepayWebhook200,
@@ -372,6 +373,172 @@ export const usePostApiPaymentsSepayCreateQrPayment = <TError = ErrorType<void>,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * Kiểm tra trạng thái thanh toán từ SePay
+ * @summary Kiểm tra trạng thái thanh toán SePay
+ */
+export const getApiPaymentsSepayStatusPaymentId = (
+    paymentId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<GetApiPaymentsSepayStatusPaymentId200>(
+      {url: `/api/payments/sepay/status/${paymentId}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiPaymentsSepayStatusPaymentIdInfiniteQueryKey = (paymentId?: string,) => {
+    return [
+    'infinite', `/api/payments/sepay/status/${paymentId}`
+    ] as const;
+    }
+
+export const getGetApiPaymentsSepayStatusPaymentIdQueryKey = (paymentId?: string,) => {
+    return [
+    `/api/payments/sepay/status/${paymentId}`
+    ] as const;
+    }
+
+    
+export const getGetApiPaymentsSepayStatusPaymentIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>>, TError = ErrorType<void>>(paymentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPaymentsSepayStatusPaymentIdInfiniteQueryKey(paymentId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>> = ({ signal }) => getApiPaymentsSepayStatusPaymentId(paymentId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(paymentId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiPaymentsSepayStatusPaymentIdInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>>
+export type GetApiPaymentsSepayStatusPaymentIdInfiniteQueryError = ErrorType<void>
+
+
+export function useGetApiPaymentsSepayStatusPaymentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>>, TError = ErrorType<void>>(
+ paymentId: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPaymentsSepayStatusPaymentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>>, TError = ErrorType<void>>(
+ paymentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPaymentsSepayStatusPaymentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>>, TError = ErrorType<void>>(
+ paymentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Kiểm tra trạng thái thanh toán SePay
+ */
+
+export function useGetApiPaymentsSepayStatusPaymentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>>, TError = ErrorType<void>>(
+ paymentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiPaymentsSepayStatusPaymentIdInfiniteQueryOptions(paymentId,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const getGetApiPaymentsSepayStatusPaymentIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>, TError = ErrorType<void>>(paymentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPaymentsSepayStatusPaymentIdQueryKey(paymentId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>> = ({ signal }) => getApiPaymentsSepayStatusPaymentId(paymentId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(paymentId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiPaymentsSepayStatusPaymentIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>>
+export type GetApiPaymentsSepayStatusPaymentIdQueryError = ErrorType<void>
+
+
+export function useGetApiPaymentsSepayStatusPaymentId<TData = Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>, TError = ErrorType<void>>(
+ paymentId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPaymentsSepayStatusPaymentId<TData = Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>, TError = ErrorType<void>>(
+ paymentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPaymentsSepayStatusPaymentId<TData = Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>, TError = ErrorType<void>>(
+ paymentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Kiểm tra trạng thái thanh toán SePay
+ */
+
+export function useGetApiPaymentsSepayStatusPaymentId<TData = Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>, TError = ErrorType<void>>(
+ paymentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsSepayStatusPaymentId>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiPaymentsSepayStatusPaymentIdQueryOptions(paymentId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
  * @summary Lấy thông tin chi tiết thanh toán
  */
 export const getApiPaymentsPaymentId = (

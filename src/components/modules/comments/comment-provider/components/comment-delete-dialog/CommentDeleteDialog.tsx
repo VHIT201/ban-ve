@@ -13,6 +13,7 @@ import { useCommentSectionContext } from "../../lib/hooks";
 import { Trash2Icon } from "lucide-react";
 import { useDeleteApiCommentsId } from "@/api/endpoints/comments";
 import { toast } from "sonner";
+import { extractErrorMessage } from "@/utils/error";
 
 const DeleteCommentDialog: FC<Props> = (props) => {
   // Props
@@ -35,8 +36,10 @@ const DeleteCommentDialog: FC<Props> = (props) => {
 
       deleteComment?.({ commentId, parentCommentId });
       toast.success("Xóa bình luận thành công");
-    } catch (errorResponse) {
-      toast.error("Đã có lỗi xảy ra. Vui lòng thử lại.");
+    } catch (error) {
+      toast.error(
+        extractErrorMessage(error) || "Đã có lỗi xảy ra. Vui lòng thử lại."
+      );
     } finally {
       onOpenChange(false);
     }

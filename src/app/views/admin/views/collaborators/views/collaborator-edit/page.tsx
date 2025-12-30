@@ -17,6 +17,7 @@ import { CollaboratorRequest } from "@/api/types/collaborator";
 import { Response } from "@/api/types/base";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { extractErrorMessage } from "@/utils/error";
 
 const CollaboratorEdit = () => {
   // Hooks
@@ -28,11 +29,11 @@ const CollaboratorEdit = () => {
     {},
     {
       query: {
-        queryKey: ['collaborator-request', id],
+        queryKey: ["collaborator-request", id],
         select: (data) =>
-          (data as unknown as Response<CollaboratorRequest[]>).responseData.find(
-            (request) => request._id === id
-          )!,
+          (
+            data as unknown as Response<CollaboratorRequest[]>
+          ).responseData.find((request) => request._id === id)!,
         // Tự động làm mới dữ liệu mỗi khi mở trang
         staleTime: 0,
         gcTime: 0, // Thay thế cacheTime bằng gcTime trong phiên bản mới
@@ -53,7 +54,10 @@ const CollaboratorEdit = () => {
         if (error?.response?.data?.message) {
           toast.error(error.response.data.message);
         } else {
-          toast.error("Không thể xử lý yêu cầu. Vui lòng thử lại sau.");
+          toast.error(
+            extractErrorMessage(error) ||
+              "Không thể xử lý yêu cầu. Vui lòng thử lại sau."
+          );
         }
         // Làm mới dữ liệu khi có lỗi
         getRequestQuery.refetch();
@@ -108,7 +112,9 @@ const CollaboratorEdit = () => {
   if (!getRequestQuery.data) {
     return (
       <div className="text-center py-12">
-        <p className="text-muted-foreground">Không tìm thấy thông tin cộng tác viên</p>
+        <p className="text-muted-foreground">
+          Không tìm thấy thông tin cộng tác viên
+        </p>
       </div>
     );
   }
@@ -128,7 +134,9 @@ const CollaboratorEdit = () => {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div>
-            <h1 className="text-2xl font-semibold">Chỉnh sửa thông tin cộng tác viên</h1>
+            <h1 className="text-2xl font-semibold">
+              Chỉnh sửa thông tin cộng tác viên
+            </h1>
             <p className="text-sm text-muted-foreground">
               Cập nhật thông tin tài khoản ngân hàng và tỷ lệ hoa hồng
             </p>
@@ -168,19 +176,28 @@ const CollaboratorEdit = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            Trạng thái yêu cầu: 
-            <Badge 
+            Trạng thái yêu cầu:
+            <Badge
               variant={
-                getRequestQuery.data.status === 'approved' ? 'default' : 
-                getRequestQuery.data.status === 'rejected' ? 'destructive' : 'outline'
+                getRequestQuery.data.status === "approved"
+                  ? "default"
+                  : getRequestQuery.data.status === "rejected"
+                  ? "destructive"
+                  : "outline"
               }
               className={
-                getRequestQuery.data.status === 'approved' ? 'bg-green-100 text-green-800' :
-                getRequestQuery.data.status === 'rejected' ? '' : 'bg-yellow-100 text-yellow-800'
+                getRequestQuery.data.status === "approved"
+                  ? "bg-green-100 text-green-800"
+                  : getRequestQuery.data.status === "rejected"
+                  ? ""
+                  : "bg-yellow-100 text-yellow-800"
               }
             >
-              {getRequestQuery.data.status === 'approved' ? 'Đã duyệt' : 
-               getRequestQuery.data.status === 'rejected' ? 'Đã từ chối' : 'Chờ duyệt'}
+              {getRequestQuery.data.status === "approved"
+                ? "Đã duyệt"
+                : getRequestQuery.data.status === "rejected"
+                ? "Đã từ chối"
+                : "Chờ duyệt"}
             </Badge>
           </CardTitle>
         </CardHeader>
@@ -193,40 +210,62 @@ const CollaboratorEdit = () => {
                   variant="default"
                   size="sm"
                   onClick={handleApprove}
-                  disabled={approveMutation.isPending || getRequestQuery.data.status === 'approved'}
+                  disabled={
+                    approveMutation.isPending ||
+                    getRequestQuery.data.status === "approved"
+                  }
                   className="bg-green-600 hover:bg-green-700 text-white"
                 >
                   <CheckCircle2 className="mr-2 h-4 w-4" />
-                  {approveMutation.isPending ? 'Đang xử lý...' : 'Duyệt yêu cầu'}
+                  {approveMutation.isPending
+                    ? "Đang xử lý..."
+                    : "Duyệt yêu cầu"}
                 </Button>
                 <Button
                   variant="destructive"
                   size="sm"
                   onClick={handleReject}
-                  disabled={rejectMutation.isPending || getRequestQuery.data.status === 'rejected'}
+                  disabled={
+                    rejectMutation.isPending ||
+                    getRequestQuery.data.status === "rejected"
+                  }
                 >
                   <XCircle className="mr-2 h-4 w-4" />
-                  {rejectMutation.isPending ? 'Đang xử lý...' : 'Từ chối yêu cầu'}
+                  {rejectMutation.isPending
+                    ? "Đang xử lý..."
+                    : "Từ chối yêu cầu"}
                 </Button>
               </div>
             </div>
-            
+
             <Separator />
-            
+
             <div className="space-y-2">
               <h3 className="font-medium">Thông tin thanh toán</h3>
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">Số tài khoản ngân hàng</p>
-                  <p className="font-medium">{getRequestQuery.data.bankAccount || 'N/A'}</p>
+                  <p className="text-sm text-muted-foreground">
+                    Số tài khoản ngân hàng
+                  </p>
+                  <p className="font-medium">
+                    {getRequestQuery.data.bankAccount || "N/A"}
+                  </p>
                 </div>
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">Ngân hàng</p>
-                  <p className="font-medium">{getRequestQuery.data.bankName || 'N/A'}</p>
+                  <p className="font-medium">
+                    {getRequestQuery.data.bankName || "N/A"}
+                  </p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">Tỷ lệ hoa hồng</p>
-                  <p className="font-medium">{getRequestQuery.data.commissionRate ? `${getRequestQuery.data.commissionRate}%` : 'N/A'}</p>
+                  <p className="text-sm text-muted-foreground">
+                    Tỷ lệ hoa hồng
+                  </p>
+                  <p className="font-medium">
+                    {getRequestQuery.data.commissionRate
+                      ? `${getRequestQuery.data.commissionRate}%`
+                      : "N/A"}
+                  </p>
                 </div>
               </div>
             </div>

@@ -27,7 +27,7 @@ const ContentTable = () => {
 
   // Reset to first page when pageSize changes
   useEffect(() => {
-    setPagination(prev => ({
+    setPagination((prev) => ({
       pageIndex: 0,
       pageSize: prev.pageSize,
     }));
@@ -71,14 +71,15 @@ const ContentTable = () => {
   });
 
   const handlePaginationChange = (updater: Updater<PaginationState>) => {
-    setPagination(prev => {
-      const newPagination = typeof updater === 'function' ? updater(prev) : updater;
+    setPagination((prev) => {
+      const newPagination =
+        typeof updater === "function" ? updater(prev) : updater;
       // Ensure pageIndex is valid (0 or greater)
       const pageIndex = Math.max(0, newPagination.pageIndex);
       // Ensure we don't go beyond the last page
       const totalPages = getContentListQuery.data?.pagination?.totalPages || 1;
       const safePageIndex = Math.min(pageIndex, totalPages - 1);
-      
+
       return {
         ...newPagination,
         pageIndex: safePageIndex,
@@ -148,5 +149,3 @@ const ContentTable = () => {
 };
 
 export default ContentTable;
-
-
