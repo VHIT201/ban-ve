@@ -64,10 +64,8 @@ const ResourceItemCompact = ({ item, onClick, onDelete }: Props) => {
 
     const blobUrl = URL.createObjectURL(blob);
 
-    // 🔥 MỞ TAB PREVIEW
     window.open(blobUrl, "_blank", "noopener,noreferrer");
 
-    // ⏳ Không revoke ngay, đợi tab load xong
     setTimeout(() => {
       URL.revokeObjectURL(blobUrl);
     }, 60_000);
