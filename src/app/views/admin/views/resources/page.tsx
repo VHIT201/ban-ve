@@ -23,19 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Plus,
-  FolderPlus,
-  Search,
-  Grid3x3,
-  List,
-  Eye,
-  MoreVertical,
-  Download,
-  Trash2,
-  Edit,
-  Copy,
-} from "lucide-react";
+import { Search, Grid3x3, List } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDeleteApiFileId, useGetApiFile } from "@/api/endpoints/files";
 import { DeleteDialog, QueryBoundary } from "@/components/shared";
@@ -126,6 +114,7 @@ const Resources = () => {
           <AddFileDialog />
         </div>
       </div>
+
       <div className="flex-1 flex">
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
