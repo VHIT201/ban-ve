@@ -29,15 +29,17 @@ interface DownloadItem {
   fileSize: string;
   downloadDate: Date;
   downloadCount: number;
+  originalCount: number;
   status: "completed" | "failed" | "pending";
   error?: string;
   downloadUrl?: string;
+  fileId?: string;
 }
 
 interface ApiResponse<T> {
   message: string;
   message_en: string;
-  responseData: T;
+  data: T;
   status: string;
   timeStamp: string;
 }
@@ -101,6 +103,7 @@ const statusLabel: Record<DownloadItem["status"], string> = {
 
 const DownloadList = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [localCounts, setLocalCounts] = useState<Record<string, number>>({});
   const itemsPerPage = 10;
 
   const {
@@ -119,9 +122,7 @@ const DownloadList = () => {
   );
 
   // Hàm chuyển đổi dữ liệu từ API sang định dạng UI
-  const transformDownloadData = (
-    data: DownloadsResponse | undefined
-  ): {
+  const transformDownloadData = (data: DownloadsResponse | undefined): {
     downloads: DownloadItem[];
     totalItems: number;
     totalPages: number;
@@ -131,21 +132,25 @@ const DownloadList = () => {
     }
 
     const { history, pagination } = data.data;
-
-    const downloads = history.map(
-      (item): DownloadItem => ({
+    
+    const downloads = history.map((item): DownloadItem => {
+      const localCount = localCounts[item._id || ""] || 0;
+      const originalCount = item.count || 1;
+      const finalCount = originalCount + localCount;
+      
+      return {
         id: item._id || "",
         fileName: item.fileId?.name || "Không có tên",
         fileType: getFileExtension(item.fileId?.name || ""),
         fileSize: formatFileSize(item.fileId?.size || 0),
-        downloadDate: new Date(
-          item.lastDownloadedAt || item.createdAt || new Date()
-        ),
-        downloadCount: item.count || 1,
+        downloadDate: new Date(item.lastDownloadedAt || item.createdAt || new Date()),
+        downloadCount: finalCount,
+        originalCount: originalCount, // Lưu count gốc để kiểm tra điều kiện
         status: "completed",
         downloadUrl: item.fileId?.path,
-      })
-    );
+        fileId: item.fileId?._id,
+      };
+    });
 
     return {
       downloads,
@@ -156,7 +161,7 @@ const DownloadList = () => {
 
   const { downloads, totalItems, totalPages } = useMemo(
     () => transformDownloadData(downloadsData as unknown as DownloadsResponse),
-    [downloadsData, itemsPerPage]
+    [downloadsData, itemsPerPage, localCounts]
   );
 
   useEffect(() => {
@@ -168,8 +173,10 @@ const DownloadList = () => {
 
   const goToFirstPage = () => setCurrentPage(1);
   const goToLastPage = () => setCurrentPage(totalPages);
-  const goToPreviousPage = () => setCurrentPage((p) => Math.max(1, p - 1));
-  const goToNextPage = () => setCurrentPage((p) => Math.min(totalPages, p + 1));
+  const goToPreviousPage = () =>
+    setCurrentPage((p) => Math.max(1, p - 1));
+  const goToNextPage = () =>
+    setCurrentPage((p) => Math.min(totalPages, p + 1));
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -192,19 +199,35 @@ const DownloadList = () => {
     return pages;
   };
 
-  const handleDownload = (url?: string, fileName?: string) => {
-    if (!url) return;
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = fileName || "";
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async (url?: string, fileName?: string, fileId?: string, historyId?: string) => {
+    if (!url || !historyId) return;
+    
+    try {
+      // Increase local count immediately
+      setLocalCounts(prev => ({
+        ...prev,
+        [historyId]: (prev[historyId] || 0) + 1
+      }));
+
+      // Download the file
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName || "";
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success("Tải xuống thành công!");
+      
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.error("Tải xuống thất bại. Vui lòng thử lại.");
+    }
   };
 
-  //ui
+//ui
   if (isLoading && !isRefetching) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -261,7 +284,8 @@ const DownloadList = () => {
                     className={cn(
                       download.status === "completed" &&
                         "bg-green-50 text-green-700",
-                      download.status === "failed" && "bg-red-50 text-red-700",
+                      download.status === "failed" &&
+                        "bg-red-50 text-red-700",
                       download.status === "pending" &&
                         "bg-yellow-50 text-yellow-700"
                     )}
@@ -282,18 +306,19 @@ const DownloadList = () => {
               </div>
             </div>
 
-            {download.downloadUrl && (
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() =>
-                  handleDownload(download.downloadUrl, download.fileName)
-                }
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Tải lại
-              </Button>
-            )}
+          {download.downloadUrl && download.downloadCount < 5 && (
+  <Button
+    size="sm"
+    variant="outline"
+    onClick={() =>
+      handleDownload(download.downloadUrl, download.fileName, download.fileId, download.id)
+    }
+  >
+    <Download className="h-4 w-4 mr-2" />
+    Tải lại
+  </Button>
+)}
+
           </CardContent>
         </Card>
       ))}
@@ -338,3 +363,5 @@ const DownloadList = () => {
 };
 
 export default DownloadList;
+
+

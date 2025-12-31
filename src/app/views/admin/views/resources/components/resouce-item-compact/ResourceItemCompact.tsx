@@ -9,6 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { Eye, MoreVertical, Download, Trash2, Edit, Copy } from "lucide-react";
 import { FileResponse } from "@/api/types/file";
 import { Button } from "@/components/ui/button";
+import { useGetApiFileIdDownload } from "@/api/endpoints/files";
+import { useAuthStore } from "@/stores";
+import { toast } from "sonner";
+import { extractErrorMessage } from "@/utils/error";
 
 interface Props {
   item: FileResponse;
@@ -30,11 +34,49 @@ const getFileIcon = (type: string) => {
 };
 
 const ResourceItemCompact = ({ item, onClick, onDelete }: Props) => {
+  const getDownloadFileQuery = useGetApiFileIdDownload(item._id, {
+    query: {
+      enabled: false,
+    },
+  });
+
+  const handlePreview = async () => {
+    const isSignedIn = useAuthStore.getState().isSignedIn;
+
+    if (!isSignedIn) {
+      toast.warning("Vui lòng đăng nhập để xem file.");
+      return;
+    }
+
+    const res = await getDownloadFileQuery.refetch();
+
+    if (res.isError) {
+      toast.error(extractErrorMessage(res.error));
+      return;
+    }
+
+    const blob = res.data;
+
+    if (!(blob instanceof Blob) || blob.size === 0) {
+      toast.error("Dữ liệu tải về không hợp lệ.");
+      return;
+    }
+
+    const blobUrl = URL.createObjectURL(blob);
+
+    // 🔥 MỞ TAB PREVIEW
+    window.open(blobUrl, "_blank", "noopener,noreferrer");
+
+    // ⏳ Không revoke ngay, đợi tab load xong
+    setTimeout(() => {
+      URL.revokeObjectURL(blobUrl);
+    }, 60_000);
+  };
+
   return (
     <Card
       key={item._id}
       className="p-4 hover:shadow-md transition-shadow cursor-pointer"
-      onClick={() => onClick(item)}
     >
       <div className="flex items-center gap-4">
         <div className="w-16 h-16 bg-muted rounded overflow-hidden shrink-0 flex items-center justify-center">
@@ -76,11 +118,11 @@ const ResourceItemCompact = ({ item, onClick, onDelete }: Props) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handlePreview}>
                 <Eye className="size-4 mr-2" />
                 Xem
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onClick(item)}>
                 <Download className="size-4 mr-2" />
                 Tải xuống
               </DropdownMenuItem>
