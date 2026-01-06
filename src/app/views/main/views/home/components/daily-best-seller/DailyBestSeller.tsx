@@ -13,8 +13,13 @@ import { ContentResponse } from "@/api/types/content";
 import { GetApiContent200Pagination } from "@/api/models";
 import { UseQueryResult } from "@tanstack/react-query";
 import { QueryBoundary } from "@/components/shared";
+import { useNavigate } from "react-router-dom";
 
 const DailyBestDownloaded = () => {
+  // Hooks
+  const navigate = useNavigate();
+
+  // Queries
   const getBluerintListQuery = useGetApiContent<{
     data: ContentResponse[];
     pagination?: GetApiContent200Pagination;
@@ -35,6 +40,11 @@ const DailyBestDownloaded = () => {
     data: ContentResponse[];
     pagination?: GetApiContent200Pagination;
   }>;
+
+  // Methods
+  const handleViewDetail = (blueprint: ContentResponse) => {
+    navigate(`/detail/${blueprint._id}`);
+  };
 
   return (
     <section className="py-12 px-4 max-w-7xl mx-auto">
@@ -90,7 +100,10 @@ const DailyBestDownloaded = () => {
                       key={product._id}
                       className="pl-10 md:basis-1/2 lg:basis-1/3"
                     >
-                      <BlueprintCard product={product} />
+                      <BlueprintCard
+                        product={product}
+                        onViewDetail={handleViewDetail}
+                      />
                     </CarouselItem>
                   ))}
                 </CarouselContent>

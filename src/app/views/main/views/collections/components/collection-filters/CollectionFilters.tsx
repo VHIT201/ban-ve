@@ -33,6 +33,7 @@ import { useSearchParams } from "react-router-dom";
 import { FilterFormValues, Props } from "./lib/types";
 import { DEFAULT_FILTER_VALUES, FILTER_SCHEMA } from "./lib/constants";
 import { Input } from "@/components/ui/input";
+import { ResponseData } from "@/api/types/base";
 
 const CollectionFilters = ({ onFilterChange }: Props) => {
   // Hooks
@@ -60,9 +61,11 @@ const CollectionFilters = ({ onFilterChange }: Props) => {
   const selectedViews = form.watch("views");
 
   // Queries
-  const getCategoriesQuery = useGetApiCategories({
+  const getCategoryListQuery = useGetApiCategories({
     query: {
-      select: (data) => data as unknown as Category[],
+      select: (data) =>
+        (data as unknown as ResponseData<{ categories: Category[] }>).data
+          .categories,
     },
   }) as UseQueryResult<Category[]>;
 
@@ -159,7 +162,7 @@ const CollectionFilters = ({ onFilterChange }: Props) => {
               )}
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-3 space-y-2.5">
-              <QueryBoundary query={getCategoriesQuery}>
+              <QueryBoundary query={getCategoryListQuery}>
                 {(categories) => {
                   return categories.map((category) => (
                     <FormField

@@ -7,6 +7,7 @@ import { Category } from "@/api/models";
 import { UseQueryResult } from "@tanstack/react-query";
 import { QueryBoundary } from "@/components/shared";
 import { generateImageRandom } from "@/utils/image";
+import { ResponseData } from "@/api/types/base";
 
 const CategoriesSection = () => {
   // Hooks
@@ -15,7 +16,9 @@ const CategoriesSection = () => {
   // Queries
   const getCategoryListQuery = useGetApiCategories({
     query: {
-      select: (data) => data as unknown as Category[],
+      select: (data) =>
+        (data as unknown as ResponseData<{ categories: Category[] }>).data
+          .categories,
     },
   }) as UseQueryResult<Category[]>;
 
@@ -50,8 +53,8 @@ const CategoriesSection = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-px bg-black/5 border border-black/5 overflow-hidden">
         <QueryBoundary query={getCategoryListQuery}>
-          {(categories) =>
-            categories.map((category, index) => (
+          {(categories) => {
+            return categories.map((category, index) => (
               <div
                 key={`${category.name}-${index}`}
                 onClick={() => handleCategoryClick(category)}
@@ -81,8 +84,8 @@ const CategoriesSection = () => {
                 <div className="absolute bottom-4 right-4 w-2 h-px bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="absolute bottom-4 right-4 h-2 w-px bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
-            ))
-          }
+            ));
+          }}
         </QueryBoundary>
       </div>
     </section>

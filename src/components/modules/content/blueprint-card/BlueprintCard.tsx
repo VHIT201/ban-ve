@@ -5,10 +5,11 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { User } from "lucide-react";
 import Image from "@/components/ui/image";
 import { ContentResponse } from "@/api/types/content";
-import { FC, MouseEvent } from "react";
+import { FC, MouseEvent, useState } from "react";
 import { formatVND } from "@/utils/currency";
 import { generateImageRandom } from "@/utils/image";
 import { ContentStatus } from "@/enums/content";
+import { useCartStore } from "@/stores/use-cart-store";
 
 interface Props {
   product: ContentResponse;
@@ -21,6 +22,13 @@ const BlueprintCard: FC<Props> = (props) => {
   // Props
   const { product, className, onViewDetail, onAddToCart } = props;
 
+  // States
+  const [isAddingCart, setIsAddingCart] = useState(false);
+
+  const addItem = useCartStore((state) => state.addItem);
+  const isInCart = useCartStore((state) => state.isInCart(product._id));
+  const openCart = useCartStore((state) => state.openCart);
+
   // Methods
   const handleViewDetail = () => {
     if (onViewDetail) {
@@ -28,10 +36,23 @@ const BlueprintCard: FC<Props> = (props) => {
     }
   };
 
-  const handleAddToCart = (event: MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    if (onAddToCart) {
-      onAddToCart(product);
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (isInCart) {
+      openCart();
+      return;
+    }
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      addItem(product);
+      onAddToCart?.(product);
+
+      setIsAddingCart(true);
+      setTimeout(() => setIsAddingCart(false), 2000);
+    } catch (error) {
+      console.error("Failed to add to cart:", error);
     }
   };
 
@@ -109,11 +130,22 @@ const BlueprintCard: FC<Props> = (props) => {
       <CardFooter className="px-0 pt-0 pb-4 flex items-center justify-between border-t border-border mt-auto pt-4">
         <Button
           size="sm"
+          loading={isAddingCart}
           variant="outline"
-          className="h-12 rounded-none w-full px-5 font-semibold text-[12px] uppercase tracking-wider border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 bg-transparent"
+          className={cn(
+            "h-12 rounded-none w-full px-5 font-semibold text-[12px] uppercase tracking-wider border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 bg-transparent",
+            isAddingCart ? "cursor-not-allowed opacity-70" : "",
+            isInCart
+              ? "bg-green-600 text-white border-green-600 hover:bg-green-700 hover:border-green-700"
+              : ""
+          )}
           onClick={handleAddToCart}
         >
-          Add to cart
+          {isInCart
+            ? "Đã trong giỏ"
+            : isAddingCart
+            ? "Đang thêm"
+            : "Thêm vào giỏ"}
         </Button>
       </CardFooter>
     </Card>
