@@ -5,7 +5,7 @@ import {
   DailyBestDownloaded,
   DailyBestSeller,
   DailyFeatureSection,
-  CustomerReviewsSection,
+  DailyCustomerReviewSection,
 } from "./components";
 import { Main } from "@/components/layouts";
 
@@ -22,6 +22,7 @@ const Home = () => {
       <Main>
         <DailyBestSeller />
         <DailyBestDownloaded />
+        <DailyCustomerReviewSection />
         <DailyFeatureSection />
       </Main>
     </Fragment>
