@@ -18,9 +18,10 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { useGetApiFileDownloadsHistory } from "@/api/endpoints/files";
+import { useGetApiFileDownloadsMyHistory } from "@/api/endpoints/files";
 import { toast } from "sonner";
 import type { DownloadHistory } from "@/api/models/downloadHistory";
+import type { GetApiFileDownloadsMyHistoryParams } from "@/api/models/getApiFileDownloadsMyHistoryParams";
 
 interface DownloadItem {
   id: string;
@@ -37,7 +38,7 @@ interface DownloadItem {
 interface ApiResponse<T> {
   message: string;
   message_en: string;
-  responseData: T;
+  data: T;
   status: string;
   timeStamp: string;
 }
@@ -103,14 +104,19 @@ const DownloadList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  const params: GetApiFileDownloadsMyHistoryParams = {
+    page: currentPage,
+    limit: itemsPerPage,
+  };
+
   const {
     data: downloadsData,
     isLoading,
     error,
     refetch,
     isRefetching,
-  } = useGetApiFileDownloadsHistory(
-    { page: currentPage, limit: itemsPerPage },
+  } = useGetApiFileDownloadsMyHistory(
+    params,
     {
       query: {
         staleTime: 5 * 60 * 1000,
@@ -150,7 +156,7 @@ const DownloadList = () => {
     return {
       downloads,
       totalItems: pagination.total,
-      totalPages: Math.ceil(pagination.total / itemsPerPage),
+      totalPages: pagination.totalPages,
     };
   };
 

@@ -5,6 +5,7 @@ import {
   DailyBestDownloaded,
   DailyBestSeller,
   DailyFeatureSection,
+  CustomerReviewsSection,
 } from "./components";
 import { Main } from "@/components/layouts";
 
