@@ -22,8 +22,8 @@ const Home = () => {
       <Main>
         <DailyBestSeller />
         <DailyBestDownloaded />
-        <DailyFeatureSection />
         <DailyCustomerReviewSection />
+        <DailyFeatureSection />
       </Main>
     </Fragment>
   );

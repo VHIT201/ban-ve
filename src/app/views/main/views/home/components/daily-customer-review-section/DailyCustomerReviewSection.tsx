@@ -92,11 +92,11 @@ const CustomerReviewSection = () => {
         </h2>
 
         <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
-          <Marquee pauseOnHover className="[--duration:20s]">
+          <Marquee pauseOnHover className="[--duration:40s]">
             {reviews.map((review) => (
               <Card
                 key={review.id}
-                className="relative h-full bg-transparent rounded-none! shadow-none! hover:scale-105 transition-transform duration-300"
+                className="relative max-w-[300px] h-full bg-transparent rounded-none! shadow-none! hover:scale-105 transition-transform duration-300"
               >
                 <CardContent className="relative bg-white dark:bg-gray-800 p-6 shadow-none rounded-none">
                   {/* Header */}
@@ -136,11 +136,11 @@ const CustomerReviewSection = () => {
               </Card>
             ))}
           </Marquee>
-          <Marquee reverse pauseOnHover className="[--duration:20s]">
+          <Marquee reverse pauseOnHover className="[--duration:40s]">
             {reviews.map((review) => (
               <Card
                 key={review.id}
-                className="relative h-full bg-transparent rounded-none! shadow-none! hover:scale-105 transition-transform duration-300"
+                className="relative max-w-[300px] h-full bg-transparent rounded-none! shadow-none! hover:scale-105 transition-transform duration-300"
               >
                 <CardContent className="relative bg-white dark:bg-gray-800 p-6 shadow-none rounded-none">
                   {/* Header */}
