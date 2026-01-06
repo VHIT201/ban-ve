@@ -47,7 +47,7 @@ const DailyBestDownloaded = () => {
       >
         <div className="flex items-end justify-between mb-8 border-b border-black/10 pb-8">
           <h2 className="text-2xl font-semibold tracking-wider text-foreground uppercase">
-            Lượt tải nhiều nhất hàng ngày
+            Lượt tải nhiều nhất
           </h2>
           <div className="flex gap-2 relative">
             <CarouselPrevious className="static translate-y-0 rounded-none shadow-none bg-transparent" />
@@ -69,13 +69,13 @@ const DailyBestDownloaded = () => {
 
             <div className="relative z-10 text-center">
               <h3 className="text-2xl text-center font-light mb-6 leading-tight uppercase tracking-wider text-white">
-                Architecture Assets
+                Nghệ thuật kiến trúc
               </h3>
               <Button
                 variant="outline"
                 className="border-white/50 hover:bg-zinc-900 text-white hover:text-white rounded-none bg-transparent"
               >
-                View Collection
+                Xem thêm
               </Button>
             </div>
           </div>

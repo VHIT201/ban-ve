@@ -31,7 +31,7 @@ const CollectionList: FC<Props> = (props) => {
 
   const [sortBy, setSortBy] = useState("best-selling");
 
-  const handleViewDetails = (product: ContentResponse) => {
+  const handleViewDetail = (product: ContentResponse) => {
     navigate(`/detail/${product._id}`);
   };
 
@@ -246,8 +246,8 @@ const CollectionList: FC<Props> = (props) => {
               {blueprints.data.map((blueprint) => (
                 <BlueprintCard
                   key={blueprint._id}
-                  blueprint={blueprint}
-                  onViewDetails={handleViewDetails}
+                  product={blueprint}
+                  onViewDetail={handleViewDetail}
                   onAddToCart={handleAddToCart}
                 />
               ))}

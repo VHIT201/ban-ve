@@ -1,36 +1,60 @@
 import { BlueprintCard } from "@/components/modules/content";
 import { ContentResponse } from "@/api/types/content";
 
-import { useGetApiContent } from "@/api/endpoints/content";
+import {
+  useGetApiContent,
+  useGetApiContentInfinite,
+} from "@/api/endpoints/content";
 import { GetApiContent200Pagination } from "@/api/models";
 import { QueryBoundary } from "@/components/shared";
 import { UseQueryResult } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { get } from "http";
+import { cn } from "@/utils/ui";
 
 const DailyFeatureSection = () => {
   // Hooks
   const navigate = useNavigate();
 
+  // States
+  const [pagination, setPagination] = useState<{
+    page: number;
+    limit: number;
+  }>({
+    page: 0,
+    limit: 0,
+  });
+
   // Queries
-  const getBluerintListQuery = useGetApiContent<{
-    data: ContentResponse[];
-    pagination?: GetApiContent200Pagination;
-  }>(
-    {},
+  const getBluePrintListInfiniteQuery = useGetApiContentInfinite(
+    {
+      limit: pagination.limit,
+      page: pagination.page,
+    },
     {
       query: {
-        select: (data) =>
-          data as unknown as {
-            data: ContentResponse[];
-            pagination?: GetApiContent200Pagination;
-          },
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) => {
+          if (lastPage.pagination) {
+            const { currentPage, totalPages } = lastPage.pagination;
+
+            if (totalPages === undefined || currentPage === undefined) {
+              return undefined;
+            }
+
+            if (currentPage + 1 < totalPages) {
+              return currentPage + 1;
+            }
+          }
+          return undefined;
+        },
       },
     }
-  ) as UseQueryResult<{
-    data: ContentResponse[];
-    pagination?: GetApiContent200Pagination;
-  }>;
+  );
 
+  // Methods
   const handleViewDetails = (blueprint: ContentResponse) => {
     navigate(`/detail/${blueprint._id}`);
   };
@@ -39,37 +63,62 @@ const DailyFeatureSection = () => {
     console.log("Add to cart:", blueprint);
   };
 
+  // Memos
+  const blueprintInfiniteData = getBluePrintListInfiniteQuery.data?.pages;
+  const blueprintInfiniteList =
+    blueprintInfiniteData?.flatMap((page) => page.data) ?? [];
+
+  // Effects
+  useEffect(() => {
+    if (getBluePrintListInfiniteQuery.data?.pages) {
+      setPagination({
+        page: getBluePrintListInfiniteQuery.data?.pageParams.length || 0,
+        limit: 6,
+      });
+    }
+  }, [getBluePrintListInfiniteQuery.data]);
+
   return (
-    <section className="pt-16 bg-white">
+    <section className="pt-16 mb-12 bg-white">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Bản vẽ thiết kế chuyên nghiệp
+        <div className="flex items-end justify-between  border-b border-black/10 pb-8">
+          <h2 className="text-2xl font-semibold tracking-wider text-foreground uppercase">
+            Sản phẩm nổi bật
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Khám phá bộ sưu tập bản vẽ thiết kế chất lượng cao từ các chuyên gia
-            hàng đầu
-          </p>
         </div>
 
         <div
           className={
-            "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12"
+            "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
           }
         >
-          <QueryBoundary query={getBluerintListQuery}>
-            {(blueprints) => {
-              return blueprints.data.map((blueprint) => (
+          {blueprintInfiniteList.map(
+            (blueprint) =>
+              blueprint && (
                 <BlueprintCard
                   key={blueprint._id}
                   product={blueprint}
                   onViewDetail={handleViewDetails}
                   onAddToCart={handleAddToCart}
                 />
-              ));
+              )
+          )}
+        </div>
+
+        <div className="flex justify-center">
+          <Button
+            loading={getBluePrintListInfiniteQuery.isFetchingNextPage}
+            onClick={() => {
+              getBluePrintListInfiniteQuery.fetchNextPage();
             }}
-          </QueryBoundary>
+            className={cn(
+              "h-14 px-8 text-xl font-medium",
+              getBluePrintListInfiniteQuery.hasNextPage ? "block" : "hidden"
+            )}
+          >
+            Xem thêm
+          </Button>
         </div>
       </div>
     </section>
