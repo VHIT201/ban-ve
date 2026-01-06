@@ -5,10 +5,19 @@ export type PostApiFileUploadBody = {
 Hỗ trợ các định dạng: 3D, PDF, hình ảnh, tài liệu văn bản
  */
   file: Blob;
-  /** Tên file tùy chỉnh (nếu không nhập sẽ tự động sinh) */
+  /** Ảnh minh họa 1 (tùy chọn, chỉ chấp nhận định dạng ảnh) */
+  image1?: Blob;
+  /** Ảnh minh họa 2 (tùy chọn, chỉ chấp nhận định dạng ảnh) */
+  image2?: Blob;
+  /** Ảnh minh họa 3 (tùy chọn, chỉ chấp nhận định dạng ảnh) */
+  image3?: Blob;
+  /** Ảnh minh họa 4 (tùy chọn, chỉ chấp nhận định dạng ảnh) */
+  image4?: Blob;
+  /** Tên file tùy chỉnh cho file chính (nếu không nhập sẽ tự động sinh) */
   filename?: string;
   /** Để trống (không cần điền)
-Mọi file sẽ được lưu vào thư mục /uploads/document/
+File chính sẽ được lưu vào thư mục /uploads/
+Các ảnh minh họa sẽ được lưu vào thư mục /uploads/img/
  */
   dir?: string;
   /** Đặt true nếu muốn file riêng tư */

@@ -3,6 +3,7 @@ import {
   BannerSection,
   BlueprintFeatureSection,
   CategoriesSection,
+  CustomerReviewsSection,
 } from "./components";
 
 const Home = () => {
@@ -11,6 +12,7 @@ const Home = () => {
       <BannerSection />
       <CategoriesSection />
       <BlueprintFeatureSection />
+      <CustomerReviewsSection />
     </Fragment>
   );
 };

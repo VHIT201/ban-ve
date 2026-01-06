@@ -29,6 +29,10 @@ import type {
   GetApiPaymentsHistoryParams,
   GetApiPaymentsPaymentId200,
   GetApiPaymentsSepayStatusPaymentId200,
+  GetApiPaymentsStatisticsDownloadRanking200,
+  GetApiPaymentsStatisticsDownloadRankingParams,
+  GetApiPaymentsStatisticsPurchaseRanking200,
+  GetApiPaymentsStatisticsPurchaseRankingParams,
   PostApiPayments201,
   PostApiPaymentsSepayCreateQrPaymentBody,
   PostApiPaymentsSepayWebhook200,
@@ -244,6 +248,340 @@ export const usePostApiPaymentsTestWebhook = <TError = ErrorType<void>,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * Thống kê và xếp hạng các contentId theo số lượt mua từ các payment đã completed (không yêu cầu đăng nhập)
+ * @summary Lấy thống kê xếp hạng lượt mua
+ */
+export const getApiPaymentsStatisticsPurchaseRanking = (
+    params?: GetApiPaymentsStatisticsPurchaseRankingParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<GetApiPaymentsStatisticsPurchaseRanking200>(
+      {url: `/api/payments/statistics/purchase-ranking`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiPaymentsStatisticsPurchaseRankingInfiniteQueryKey = (params?: GetApiPaymentsStatisticsPurchaseRankingParams,) => {
+    return [
+    'infinite', `/api/payments/statistics/purchase-ranking`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+export const getGetApiPaymentsStatisticsPurchaseRankingQueryKey = (params?: GetApiPaymentsStatisticsPurchaseRankingParams,) => {
+    return [
+    `/api/payments/statistics/purchase-ranking`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetApiPaymentsStatisticsPurchaseRankingInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, GetApiPaymentsStatisticsPurchaseRankingParams['page']>, TError = ErrorType<void>>(params?: GetApiPaymentsStatisticsPurchaseRankingParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, TError, TData, QueryKey, GetApiPaymentsStatisticsPurchaseRankingParams['page']>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPaymentsStatisticsPurchaseRankingInfiniteQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, QueryKey, GetApiPaymentsStatisticsPurchaseRankingParams['page']> = ({ signal, pageParam }) => getApiPaymentsStatisticsPurchaseRanking({...params, 'page': pageParam || params?.['page']}, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, TError, TData, QueryKey, GetApiPaymentsStatisticsPurchaseRankingParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiPaymentsStatisticsPurchaseRankingInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>>
+export type GetApiPaymentsStatisticsPurchaseRankingInfiniteQueryError = ErrorType<void>
+
+
+export function useGetApiPaymentsStatisticsPurchaseRankingInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, GetApiPaymentsStatisticsPurchaseRankingParams['page']>, TError = ErrorType<void>>(
+ params: undefined |  GetApiPaymentsStatisticsPurchaseRankingParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, TError, TData, QueryKey, GetApiPaymentsStatisticsPurchaseRankingParams['page']>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, QueryKey
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPaymentsStatisticsPurchaseRankingInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, GetApiPaymentsStatisticsPurchaseRankingParams['page']>, TError = ErrorType<void>>(
+ params?: GetApiPaymentsStatisticsPurchaseRankingParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, TError, TData, QueryKey, GetApiPaymentsStatisticsPurchaseRankingParams['page']>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, QueryKey
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPaymentsStatisticsPurchaseRankingInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, GetApiPaymentsStatisticsPurchaseRankingParams['page']>, TError = ErrorType<void>>(
+ params?: GetApiPaymentsStatisticsPurchaseRankingParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, TError, TData, QueryKey, GetApiPaymentsStatisticsPurchaseRankingParams['page']>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lấy thống kê xếp hạng lượt mua
+ */
+
+export function useGetApiPaymentsStatisticsPurchaseRankingInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, GetApiPaymentsStatisticsPurchaseRankingParams['page']>, TError = ErrorType<void>>(
+ params?: GetApiPaymentsStatisticsPurchaseRankingParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, TError, TData, QueryKey, GetApiPaymentsStatisticsPurchaseRankingParams['page']>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiPaymentsStatisticsPurchaseRankingInfiniteQueryOptions(params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const getGetApiPaymentsStatisticsPurchaseRankingQueryOptions = <TData = Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, TError = ErrorType<void>>(params?: GetApiPaymentsStatisticsPurchaseRankingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPaymentsStatisticsPurchaseRankingQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>> = ({ signal }) => getApiPaymentsStatisticsPurchaseRanking(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiPaymentsStatisticsPurchaseRankingQueryResult = NonNullable<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>>
+export type GetApiPaymentsStatisticsPurchaseRankingQueryError = ErrorType<void>
+
+
+export function useGetApiPaymentsStatisticsPurchaseRanking<TData = Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, TError = ErrorType<void>>(
+ params: undefined |  GetApiPaymentsStatisticsPurchaseRankingParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPaymentsStatisticsPurchaseRanking<TData = Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, TError = ErrorType<void>>(
+ params?: GetApiPaymentsStatisticsPurchaseRankingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPaymentsStatisticsPurchaseRanking<TData = Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, TError = ErrorType<void>>(
+ params?: GetApiPaymentsStatisticsPurchaseRankingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lấy thống kê xếp hạng lượt mua
+ */
+
+export function useGetApiPaymentsStatisticsPurchaseRanking<TData = Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, TError = ErrorType<void>>(
+ params?: GetApiPaymentsStatisticsPurchaseRankingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsPurchaseRanking>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiPaymentsStatisticsPurchaseRankingQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Thống kê và xếp hạng các contentId theo số lượt tải từ các payment đã completed (không yêu cầu đăng nhập)
+ * @summary Lấy thống kê xếp hạng lượt tải
+ */
+export const getApiPaymentsStatisticsDownloadRanking = (
+    params?: GetApiPaymentsStatisticsDownloadRankingParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<GetApiPaymentsStatisticsDownloadRanking200>(
+      {url: `/api/payments/statistics/download-ranking`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiPaymentsStatisticsDownloadRankingInfiniteQueryKey = (params?: GetApiPaymentsStatisticsDownloadRankingParams,) => {
+    return [
+    'infinite', `/api/payments/statistics/download-ranking`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+export const getGetApiPaymentsStatisticsDownloadRankingQueryKey = (params?: GetApiPaymentsStatisticsDownloadRankingParams,) => {
+    return [
+    `/api/payments/statistics/download-ranking`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetApiPaymentsStatisticsDownloadRankingInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, GetApiPaymentsStatisticsDownloadRankingParams['page']>, TError = ErrorType<void>>(params?: GetApiPaymentsStatisticsDownloadRankingParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, TError, TData, QueryKey, GetApiPaymentsStatisticsDownloadRankingParams['page']>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPaymentsStatisticsDownloadRankingInfiniteQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, QueryKey, GetApiPaymentsStatisticsDownloadRankingParams['page']> = ({ signal, pageParam }) => getApiPaymentsStatisticsDownloadRanking({...params, 'page': pageParam || params?.['page']}, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, TError, TData, QueryKey, GetApiPaymentsStatisticsDownloadRankingParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiPaymentsStatisticsDownloadRankingInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>>
+export type GetApiPaymentsStatisticsDownloadRankingInfiniteQueryError = ErrorType<void>
+
+
+export function useGetApiPaymentsStatisticsDownloadRankingInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, GetApiPaymentsStatisticsDownloadRankingParams['page']>, TError = ErrorType<void>>(
+ params: undefined |  GetApiPaymentsStatisticsDownloadRankingParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, TError, TData, QueryKey, GetApiPaymentsStatisticsDownloadRankingParams['page']>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, QueryKey
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPaymentsStatisticsDownloadRankingInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, GetApiPaymentsStatisticsDownloadRankingParams['page']>, TError = ErrorType<void>>(
+ params?: GetApiPaymentsStatisticsDownloadRankingParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, TError, TData, QueryKey, GetApiPaymentsStatisticsDownloadRankingParams['page']>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, QueryKey
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPaymentsStatisticsDownloadRankingInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, GetApiPaymentsStatisticsDownloadRankingParams['page']>, TError = ErrorType<void>>(
+ params?: GetApiPaymentsStatisticsDownloadRankingParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, TError, TData, QueryKey, GetApiPaymentsStatisticsDownloadRankingParams['page']>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lấy thống kê xếp hạng lượt tải
+ */
+
+export function useGetApiPaymentsStatisticsDownloadRankingInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, GetApiPaymentsStatisticsDownloadRankingParams['page']>, TError = ErrorType<void>>(
+ params?: GetApiPaymentsStatisticsDownloadRankingParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, TError, TData, QueryKey, GetApiPaymentsStatisticsDownloadRankingParams['page']>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiPaymentsStatisticsDownloadRankingInfiniteQueryOptions(params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const getGetApiPaymentsStatisticsDownloadRankingQueryOptions = <TData = Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, TError = ErrorType<void>>(params?: GetApiPaymentsStatisticsDownloadRankingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPaymentsStatisticsDownloadRankingQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>> = ({ signal }) => getApiPaymentsStatisticsDownloadRanking(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiPaymentsStatisticsDownloadRankingQueryResult = NonNullable<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>>
+export type GetApiPaymentsStatisticsDownloadRankingQueryError = ErrorType<void>
+
+
+export function useGetApiPaymentsStatisticsDownloadRanking<TData = Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, TError = ErrorType<void>>(
+ params: undefined |  GetApiPaymentsStatisticsDownloadRankingParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPaymentsStatisticsDownloadRanking<TData = Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, TError = ErrorType<void>>(
+ params?: GetApiPaymentsStatisticsDownloadRankingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPaymentsStatisticsDownloadRanking<TData = Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, TError = ErrorType<void>>(
+ params?: GetApiPaymentsStatisticsDownloadRankingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lấy thống kê xếp hạng lượt tải
+ */
+
+export function useGetApiPaymentsStatisticsDownloadRanking<TData = Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, TError = ErrorType<void>>(
+ params?: GetApiPaymentsStatisticsDownloadRankingParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsStatisticsDownloadRanking>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiPaymentsStatisticsDownloadRankingQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
  * @summary Tạo yêu cầu thanh toán mới
  */
 export const postApiPayments = (
