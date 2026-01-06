@@ -79,7 +79,7 @@ const Header = () => {
           isSlideDown ? "translate-y-0" : "-translate-y-full"
         )}
       >
-        <div className="container mx-auto px-4">
+        <div className="container max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-18">
             {/* Logo Section */}
             <Link
@@ -115,7 +115,10 @@ const Header = () => {
               {authStore.isSignedIn ? (
                 <HeaderUserProfile />
               ) : (
-                <Button className="hidden sm:flex bg-black hover:bg-black/90 text-white rounded-none px-6 text-[11px] uppercase tracking-widest h-10 font-bold">
+                <Button
+                  onClick={() => navigate(BASE_PATHS.auth.login.path)}
+                  className="hidden sm:flex bg-black hover:bg-black/90 text-white rounded-none px-6 text-[11px] uppercase tracking-widest h-10 font-bold"
+                >
                   Đăng nhập
                 </Button>
               )}
@@ -131,7 +134,7 @@ const Header = () => {
           "transition-transform duration-300 ease-in-out"
         )}
       >
-        <div className="container mx-auto px-4">
+        <div className="container max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-24">
             {/* Logo Section */}
             <Link
@@ -168,7 +171,10 @@ const Header = () => {
               {authStore.isSignedIn ? (
                 <HeaderUserProfile />
               ) : (
-                <Button className="hidden sm:flex bg-black hover:bg-black/90 text-white rounded-none px-6 text-[11px] uppercase tracking-widest h-10 font-bold">
+                <Button
+                  onClick={() => navigate(BASE_PATHS.auth.login.path)}
+                  className="hidden sm:flex bg-black hover:bg-black/90 text-white rounded-none px-6 text-[11px] uppercase tracking-widest h-10 font-bold"
+                >
                   Đăng nhập
                 </Button>
               )}

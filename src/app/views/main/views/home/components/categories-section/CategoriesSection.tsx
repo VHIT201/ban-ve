@@ -39,8 +39,11 @@ const CategoriesSection = () => {
             Danh mục bản vẽ
           </h2>
         </div>
-        <button className="hidden md:flex items-center gap-2 group text-xs uppercase tracking-widest font-medium text-black/60 hover:text-black transition-colors">
-          View All Series
+        <button
+          onClick={handleViewAll}
+          className="hidden md:flex items-center gap-2 group text-xs uppercase tracking-widest font-medium text-black/60 hover:text-black transition-colors"
+        >
+          Xem tất cả
           <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </button>
       </div>
@@ -51,6 +54,7 @@ const CategoriesSection = () => {
             categories.map((category, index) => (
               <div
                 key={`${category.name}-${index}`}
+                onClick={() => handleCategoryClick(category)}
                 className={cn(
                   "group relative aspect-square bg-white flex flex-col items-center justify-center p-8 transition-all duration-500 hover:z-10",
                   "hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] cursor-pointer overflow-hidden"

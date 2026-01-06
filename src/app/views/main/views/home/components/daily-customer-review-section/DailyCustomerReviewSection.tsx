@@ -87,9 +87,11 @@ const CustomerReviewSection = () => {
   return (
     <section className="py-16 ">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12 text-gray-900 dark:text-white">
-          Đánh Giá Từ Khách Hàng
-        </h2>
+        <div className="flex items-end justify-between mb-8 border-b border-black/10 pb-8">
+          <h2 className="text-2xl font-semibold tracking-wider text-foreground uppercase">
+            Đánh giá khách hàng
+          </h2>
+        </div>
 
         <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
           <Marquee pauseOnHover className="[--duration:40s]">
@@ -183,8 +185,6 @@ const CustomerReviewSection = () => {
           <div className="from-background pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r"></div>
           <div className="from-background pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l"></div>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
       </div>
     </section>
   );
