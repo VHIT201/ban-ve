@@ -1,166 +1,122 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, HeartIcon, EyeIcon, Check } from "lucide-react";
-import { FC, useState } from "react";
-import { Props } from "./lib/types";
-
-import { cn } from "@/utils/ui";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { User } from "lucide-react";
+import Image from "@/components/ui/image";
+import { ContentResponse } from "@/api/types/content";
+import { FC, MouseEvent } from "react";
+import { formatVND } from "@/utils/currency";
 import { generateImageRandom } from "@/utils/image";
-import { useCartStore } from "@/stores/use-cart-store";
-import { useWatermark } from "@/hooks";
+import { ContentStatus } from "@/enums/content";
+
+interface Props {
+  product: ContentResponse;
+  className?: string;
+  onViewDetail?: (product: ContentResponse) => void;
+  onAddToCart?: (product: ContentResponse) => void;
+}
 
 const BlueprintCard: FC<Props> = (props) => {
-  const { blueprint, onViewDetails, onAddToCart } = props;
-  const [isAdding, setIsAdding] = useState(false);
-  const [justAdded, setJustAdded] = useState(false);
+  // Props
+  const { product, className, onViewDetail, onAddToCart } = props;
 
-  const addItem = useCartStore((state) => state.addItem);
-  const isInCart = useCartStore((state) => state.isInCart(blueprint._id));
-  const openCart = useCartStore((state) => state.openCart);
-
-  // Use watermark hook
-  const canvasRef = useWatermark({
-    text: "TẠO BỞI BANVE.VN",
-    rotation: -Math.PI / 6,
-    fontSize: 22,
-    overlayOpacity: 0.5,
-    textOpacity: 0.7,
-  });
-
-  const handleAddToCart = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-
-    if (isInCart) {
-      openCart();
-      return;
-    }
-
-    setIsAdding(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      addItem(blueprint);
-      onAddToCart?.(blueprint);
-
-      setJustAdded(true);
-      setTimeout(() => setJustAdded(false), 2000);
-    } finally {
-      setIsAdding(false);
-    }
-    0;
-  };
-
-  const handleCardClick = (e: React.MouseEvent) => {
-    const target = e.target as HTMLElement;
-    if (!target.closest('button, a, [role="button"], .no-click')) {
-      onViewDetails(blueprint);
+  // Methods
+  const handleViewDetail = () => {
+    if (onViewDetail) {
+      onViewDetail(product);
     }
   };
+
+  const handleAddToCart = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    if (onAddToCart) {
+      onAddToCart(product);
+    }
+  };
+
+  // Memos
+  const title = product.title || "Untitled Product";
+  const formattedPrice = formatVND(product.price || 0);
+  const username = product.createdBy?.username || "Anonymous";
+  const categoryName = product.category.name || "General";
+  const statusName =
+    product.status === ContentStatus.APPROVED
+      ? {
+          name: "Đã duyệt",
+          variant: "success",
+        }
+      : {
+          name: "Chưa duyệt",
+          variant: "error",
+        };
 
   return (
-    <div
-      className="group/container relative rounded-xl bg-linear-to-r from-neutral-600 to-neutral-300 pt-0 shadow-lg overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-2 cursor-pointer"
-      style={{
-        backgroundImage: `url(${generateImageRandom()})`,
-        objectFit: "cover",
-        backgroundPosition: "center",
-        backgroundSize: "cover",
-      }}
-      onClick={handleCardClick}
+    <Card
+      onClick={handleViewDetail}
+      className={cn(
+        "group cursor-pointer overflow-hidden border-none shadow-none bg-transparent transition-all duration-500 hover:-translate-y-1",
+        className
+      )}
     >
-      {/* IMAGE AREA + WATERMARK */}
-      <div className="h-60 relative overflow-hidden">
-        <div className="absolute inset-0 w-full h-full pointer-events-none">
-          <canvas
-            ref={canvasRef}
-            className="absolute inset-0 w-full h-full z-10 pointer-events-none"
-            style={{
-              mixBlendMode: "overlay",
-              pointerEvents: "none",
-            }}
-          />
+      <div className="relative aspect-[1/1] overflow-hidden bg-[#F5F5F3]">
+        <Image
+          src={generateImageRandom()}
+          alt={title}
+          wrapperClassName="h-full"
+          className="object-cover h-full transition-transform duration-1000 ease-out group-hover:scale-105"
+        />
+        <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+          <Badge
+            variant="outline"
+            className="bg-white/90 backdrop-blur-sm border-none text-[10px] uppercase tracking-widest py-1"
+          >
+            {categoryName}
+          </Badge>
         </div>
-
-        <div className="absolute inset-0 w-full h-full opacity-0 group-hover/container:opacity-100 bg-black/20 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/5" />
+        <div className="absolute bottom-4 left-4 right-4 translate-y-4 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+          {product.status && (
+            <Badge
+              variant={statusName.variant as "success" | "error"}
+              className={cn(
+                "text-[10px] font-bold uppercase tracking-[0.1em] border-none py-1 px-2.5"
+              )}
+            >
+              {statusName.name}
+            </Badge>
+          )}
+        </div>
       </div>
 
-      {/* Category Badge */}
-      <Badge className="absolute top-4 left-4 rounded-full z-20">
-        {blueprint.category.name}
-      </Badge>
-
-      {/* Heart Button */}
-      <Button
-        size="icon"
-        className="z-20 opacity-0 group-hover/container:opacity-100 bg-primary/10 hover:bg-primary/20 absolute top-4 right-4 rounded-full transition-opacity duration-300"
-      >
-        <HeartIcon className="size-4 stroke-white" />
-        <span className="sr-only">Like</span>
-      </Button>
-
-      {/* Card Content */}
-      <Card className="border-none relative z-20">
-        <CardHeader>
-          <CardTitle className="text-lg md:text-xl line-clamp-1">
-            {blueprint.title}
-          </CardTitle>
-        </CardHeader>
-
-        <CardContent className="line-clamp-2 h-12">
-          {blueprint.description}
-        </CardContent>
-
-        <CardFooter className="justify-between gap-3 max-sm:flex-col max-sm:items-stretch flex-wrap">
-          <div className="flex flex-col">
-            <span className="text-xl font-semibold">
-              {new Intl.NumberFormat("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              }).format(blueprint.price)}
-            </span>
+      <CardContent className="pt-6 px-0 pb-2">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
+            <User className="w-3 h-3" strokeWidth={3} />
+            <span>{username}</span>
           </div>
+        </div>
 
-          <Button
-            size="lg"
-            onClick={handleAddToCart}
-            disabled={isAdding}
-            className={cn(
-              "ml-auto transition-all duration-300",
-              isInCart && "bg-green-600 hover:bg-green-700",
-              justAdded && "bg-green-600"
-            )}
-          >
-            {isAdding ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                Đang thêm...
-              </>
-            ) : justAdded ? (
-              <>
-                <Check className="w-4 h-4 mr-2" />
-                Đã thêm!
-              </>
-            ) : isInCart ? (
-              <>
-                <ShoppingCart className="w-4 h-4 mr-2" />
-                Xem giỏ hàng
-              </>
-            ) : (
-              <>
-                <ShoppingCart className="w-4 h-4 mr-2" />
-                Thêm vào giỏ
-              </>
-            )}
-          </Button>
-        </CardFooter>
-      </Card>
-    </div>
+        <h3 className="text-xl font-medium text-foreground leading-tight mb-2 group-hover:underline underline-offset-4 decoration-1 transition-all">
+          {title}
+        </h3>
+
+        <div className="text-[15px] font-bold text-foreground/80 tracking-tighter mt-4">
+          {formattedPrice}
+        </div>
+      </CardContent>
+
+      <CardFooter className="px-0 pt-0 pb-4 flex items-center justify-between border-t border-border mt-auto pt-4">
+        <Button
+          size="sm"
+          variant="outline"
+          className="h-12 rounded-none w-full px-5 font-semibold text-[12px] uppercase tracking-wider border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 bg-transparent"
+          onClick={handleAddToCart}
+        >
+          Add to cart
+        </Button>
+      </CardFooter>
+    </Card>
   );
 };
 

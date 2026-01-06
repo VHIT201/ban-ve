@@ -17,10 +17,10 @@ import { BASE_PATHS } from "@/constants/paths";
 
 // Types
 interface UserData {
-  name: string;     
-  email: string;    
-  avatar: string;   
-  role?: string;    
+  name: string;
+  email: string;
+  avatar: string;
+  role?: string;
 }
 
 interface MenuItemProps {
@@ -32,7 +32,6 @@ interface MenuItemProps {
   children?: React.ReactNode;
   to?: string;
 }
-
 
 const MenuItem = ({
   icon,
@@ -93,25 +92,20 @@ const HeaderUserProfile = () => {
     }))
   );
 
-  const { 
-    role, 
-    email, 
-    username, 
-    avatar,
-  } = useProfileStore(
+  const { role, email, username, avatar } = useProfileStore(
     useShallow((state) => ({
       role: state.role,
       email: state.email,
       username: state.username,
-      avatar: state.avatar || '',
+      avatar: state.avatar || "",
     }))
   );
-  
+
   const userData: UserData = {
-    name: username || 'User',
-    email: email || '',
-    avatar: avatar || '',
-    role: role || ''
+    name: username || "User",
+    email: email || "",
+    avatar: avatar || "",
+    role: role || "",
   };
 
   const [isOpen, setIsOpen] = useState(false);
@@ -177,20 +171,20 @@ const HeaderUserProfile = () => {
         <MenuDivider />
 
         <div className="p-2 space-y-1">
-       {HEADER_USER_PROFILE_MENU.map((item) => {
-  if (item.roles.includes(role as UserRole)) {
-    return (
-      <MenuItem
-        key={item.label}
-        icon={<item.icon className="size-4" />}
-        label={item.label}
-        to={item.path}
-        onClick={() => handleItemClick()}
-      />
-    );
-  }
-  return null;
-})}
+          {HEADER_USER_PROFILE_MENU.map((item) => {
+            if (item.roles.includes(role as UserRole)) {
+              return (
+                <MenuItem
+                  key={item.label}
+                  icon={<item.icon className="size-4" />}
+                  label={item.label}
+                  to={item.path}
+                  onClick={() => handleItemClick()}
+                />
+              );
+            }
+            return null;
+          })}
         </div>
 
         <MenuDivider />

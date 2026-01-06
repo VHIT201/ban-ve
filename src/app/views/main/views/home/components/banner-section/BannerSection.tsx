@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Carousel,
   CarouselContent,
@@ -11,70 +10,52 @@ import {
 import {
   ArrowRight,
   Building,
-  Magnet,
+  Search,
   ChevronLeft,
   ChevronRight,
-  Play,
-  Users,
-  Award,
-  Clock,
+  BarChart3,
+  TrendingUp,
 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { cn } from "@/lib/utils";
+import Image from "@/components/ui/image";
+import { InteractiveGridPattern } from "@/components/ui/interactive-grid-pattern";
 
 // Carousel slides data
 const bannerSlides = [
   {
     id: 1,
-    background:
-      "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1600&h=900&fit=crop&auto=format&q=80",
-    badge: "Hơn 1000+ Bản vẽ chuyên nghiệp",
-    title: "Bản vẽ Kiến trúc",
-    subtitle: "Chuyên nghiệp & Sáng tạo",
+    gradient: "from-blue-600 via-blue-500 to-orange-400",
+    title: "Kho Dữ Liệu Hàng Đầu",
+    subtitle: "Mua, Bán & Tải Dữ Liệu Chất Lượng Cao!",
     description:
-      "Giải pháp thiết kế toàn diện, sáng tạo và tối ưu cho mọi dự án của bạn. Khám phá ngay bộ sưu tập bản vẽ kiến trúc độc đáo.",
-    primaryAction: { text: "Khám phá ngay", icon: Magnet },
-    secondaryAction: { text: "Xem Dự Án Mẫu", icon: Building },
-    stats: [
-      { value: "1000+", label: "Bản vẽ", icon: Building },
-      { value: "24/7", label: "Hỗ trợ", icon: Clock },
-      { value: "99%", label: "Hài lòng", icon: Award },
-    ],
+      "Khám phá kho bản vẽ kiến trúc chuyên nghiệp với hơn 1000+ thiết kế độc đáo. Giải pháp toàn diện cho mọi dự án của bạn.",
+    primaryAction: { text: "Tìm Kiếm Dữ Liệu", icon: Search },
+    secondaryAction: { text: "Xem Gói Dịch Vụ", icon: Building },
+    illustration: "dashboard",
   },
   {
     id: 2,
-    background:
-      "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1600&h=900&fit=crop&auto=format&q=80",
-    badge: "Thiết kế cao cấp",
-    title: "Kiến trúc Hiện đại",
-    subtitle: "Xu hướng & Đổi mới",
+    gradient: "from-purple-600 via-pink-500 to-orange-400",
+    title: "Thiết Kế Chuyên Nghiệp",
+    subtitle: "Bản vẽ CAD & 3D Chất Lượng Cao",
     description:
-      "Khám phá những thiết kế kiến trúc tiên tiến nhất với công nghệ 3D và BIM. Tạo nên không gian sống hoàn hảo cho tương lai.",
-    primaryAction: { text: "Xem Thiết Kế", icon: Play },
-    secondaryAction: { text: "Tư Vấn Miễn Phí", icon: Users },
-    stats: [
-      { value: "50+", label: "Chuyên gia", icon: Users },
-      { value: "15+", label: "Năm KN", icon: Award },
-      { value: "500+", label: "Dự án", icon: Building },
-    ],
+      "Truy cập ngay vào thư viện thiết kế kiến trúc hiện đại với công nghệ BIM và 3D. Tiết kiệm thời gian và chi phí cho dự án.",
+    primaryAction: { text: "Khám Phá Ngay", icon: ArrowRight },
+    secondaryAction: { text: "Tư Vấn Miễn Phí", icon: Building },
+    illustration: "analytics",
   },
   {
     id: 3,
-    background:
-      "https://images.unsplash.com/photo-1448630360428-65456885c650?w=1600&h=900&fit=crop&auto=format&q=80",
-    badge: "Giải pháp thông minh",
-    title: "Smart Building",
-    subtitle: "Công nghệ & Bền vững",
+    gradient: "from-teal-600 via-green-500 to-yellow-400",
+    title: "Giải Pháp Thông Minh",
+    subtitle: "Nền Tảng Số Hóa Bản Vẽ",
     description:
-      "Thiết kế nhà thông minh với hệ thống IoT tích hợp. Tối ưu hóa năng lượng và nâng cao chất lượng cuộc sống.",
-    primaryAction: { text: "Tìm hiểu thêm", icon: ArrowRight },
-    secondaryAction: { text: "Demo Công nghệ", icon: Play },
-    stats: [
-      { value: "30%", label: "Tiết kiệm", icon: Award },
-      { value: "Smart", label: "Công nghệ", icon: Building },
-      { value: "Eco", label: "Thân thiện", icon: Users },
-    ],
+      "Quản lý, chia sẻ và mua bán bản vẽ dễ dàng. Hệ thống bảo mật cao, hỗ trợ 24/7 và thanh toán linh hoạt.",
+    primaryAction: { text: "Bắt Đầu Ngay", icon: ArrowRight },
+    secondaryAction: { text: "Xem Demo", icon: BarChart3 },
+    illustration: "charts",
   },
 ];
 
@@ -103,74 +84,84 @@ const BannerSection = () => {
         }}
         plugins={[
           Autoplay({
-            delay: 5000,
-            stopOnInteraction: false,
+            delay: 6000,
+            stopOnInteraction: true,
           }),
         ]}
         setApi={setApi}
-        className="w-full max-h-[650px]"
+        className="w-full"
       >
         <CarouselContent>
           {bannerSlides.map((slide) => (
             <CarouselItem key={slide.id}>
-              <div className="relative h-[600px] md:h-[700px] flex items-center">
-                {/* Background Image */}
-                <div
-                  className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                  style={{ backgroundImage: `url(${slide.background})` }}
-                />
+              <div className="relative h-[450px] md:h-[400px] overflow-hidden">
+                {/* Gradient Background */}
+                <div className={cn("absolute inset-0 bg-primary")} />
 
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/50 to-transparent" />
+                {/* Pattern Overlay */}
+                <div className="absolute inset-0 opacity-10">
+                  <InteractiveGridPattern />
+                </div>
 
-                {/* Content */}
-                <div className="relative z-10 container mx-auto px-4">
-                  <div className="max-w-2xl">
-                    {/* Title */}
-                    <h1 className="text-4xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-4 text-white">
-                      <span className="text-white drop-shadow-lg leading-12 uppercase -tracking-wide italic">
-                        {slide.title}
-                      </span>
-                      <br />
-                      <span className="text-white drop-shadow-lg leading-12 uppercase -tracking-wide italic">
-                        {slide.subtitle}
-                      </span>
-                    </h1>
+                {/* Content Container */}
+                <div className="relative h-full container mx-auto px-4 lg:px-8 lg:pr-0">
+                  <div className="grid lg:grid-cols-2 gap-8 h-full items-center">
+                    {/* Left Column - Text Content */}
+                    <div className="flex flex-col justify-center space-y-6 py-8 lg:py-0">
+                      {/* Title */}
+                      <div className="space-y-2">
+                        <h1 className="text-2xl lg:text-3xl font-bold text-white leading-tight">
+                          {slide.title}
+                        </h1>
+                      </div>
 
-                    {/* Description */}
-                    <p className="text-lg md:text-xl text-white/90 mb-8 max-w-xl drop-shadow-md leading-relaxed">
-                      {slide.description}
-                    </p>
+                      {/* Description */}
+                      <p className="text-base md:text-lg text-white/90 leading-relaxed max-w-lg">
+                        {slide.description}
+                      </p>
 
-                    {/* Actions */}
-                    <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                      <Button
-                        size="lg"
-                        className={cn(
-                          "group bg-primary hover:bg-primary/90 text-white",
-                          "transition-all duration-300 shadow-lg hover:shadow-xl",
-                          "hover:scale-105 transform"
-                        )}
-                      >
-                        {slide.primaryAction.text}
-                      </Button>
+                      {/* CTA Buttons */}
+                      <div className="flex flex-wrap gap-3">
+                        <Button
+                          size="lg"
+                          className={cn(
+                            "bg-white text-gray-900 hover:bg-white/90",
+                            "shadow-lg hover:shadow-xl",
+                            "transition-all duration-200 font-semibold",
+                            "px-6 h-12"
+                          )}
+                        >
+                          {slide.primaryAction.text}
+                        </Button>
 
-                      <Button
-                        variant="outline"
-                        size="lg"
-                        className={cn(
-                          "group bg-white/10 border-white/20 text-white backdrop-blur-sm",
-                          "hover:bg-white/20 hover:border-white/30",
-                          "transition-all duration-300"
-                        )}
-                        onClick={() => {
-                          document
-                            .getElementById("featured-projects")
-                            ?.scrollIntoView({ behavior: "smooth" });
-                        }}
-                      >
-                        {slide.secondaryAction.text}
-                      </Button>
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          className={cn(
+                            "bg-transparent border-2 border-white text-white",
+                            "hover:bg-white hover:text-gray-900",
+                            "transition-all duration-200 font-semibold",
+                            "px-6 h-12"
+                          )}
+                          onClick={() => {
+                            document
+                              .getElementById("featured-projects")
+                              ?.scrollIntoView({ behavior: "smooth" });
+                          }}
+                        >
+                          {slide.secondaryAction.text}
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Right Column - Illustration */}
+                    <div className="relative h-full">
+                      <Image
+                        noWrapper
+                        alt="banner"
+                        src="https://images.pexels.com/photos/18435276/pexels-photo-18435276.jpeg"
+                        className="object-cover shadow-2xl max-h-[450px] w-full transition-transform duration-300"
+                      />
                     </div>
                   </div>
                 </div>
@@ -179,42 +170,43 @@ const BannerSection = () => {
           ))}
         </CarouselContent>
 
-        {/* Custom Navigation Arrows */}
+        {/* Navigation Arrows */}
         <CarouselPrevious
           className={cn(
-            "absolute left-4 top-1/2 -translate-y-1/2 z-20",
-            "bg-white/10 border-white/20 text-white backdrop-blur-sm",
-            "hover:bg-white/20 hover:border-white/30 hover:scale-110",
-            "transition-all duration-300 w-12 h-12"
+            "absolute left-4 top-1/2 -translate-y-1/2 z-20 rounded-none",
+            "bg-transparent/20 border-white/40 text-white backdrop-blur-sm",
+            "hover:bg-white/30 hover:border-white/60",
+            "transition-all duration-200 w-10 h-10 md:w-12 md:h-12"
           )}
         >
-          <ChevronLeft className="w-6 h-6" />
+          <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
         </CarouselPrevious>
 
         <CarouselNext
           className={cn(
-            "absolute right-4 top-1/2 -translate-y-1/2 z-20",
-            "bg-white/10 border-white/20 text-white backdrop-blur-sm",
-            "hover:bg-white/20 hover:border-white/30 hover:scale-110",
-            "transition-all duration-300 w-12 h-12"
+            "absolute right-4 top-1/2 -translate-y-1/2 z-20 rounded-none",
+            "bg-transparent/20 border-white/40 text-white backdrop-blur-sm",
+            "hover:bg-white/30 hover:border-white/60",
+            "transition-all duration-200 w-10 h-10 md:w-12 md:h-12"
           )}
         >
-          <ChevronRight className="w-6 h-6" />
+          <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
         </CarouselNext>
       </Carousel>
 
       {/* Dots Indicator */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
         {Array.from({ length: count }).map((_, index) => (
           <button
             key={index}
             className={cn(
-              "size-4 rounded-full transition-all duration-300",
+              "h-2 rounded-full transition-all duration-300 h-2",
               current === index + 1
-                ? "bg-primary w-8"
-                : "bg-white/60 hover:bg-white/80"
+                ? "bg-white w-8 shadow-lg"
+                : "bg-white/50 w-2 hover:bg-white/70"
             )}
             onClick={() => api?.scrollTo(index)}
+            aria-label={`Go to slide ${index + 1}`}
           />
         ))}
       </div>

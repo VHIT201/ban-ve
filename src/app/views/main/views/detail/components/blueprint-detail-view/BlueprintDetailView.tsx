@@ -41,6 +41,8 @@ import { BASE_PATHS } from "@/constants/paths";
 import { PaymentStatusDialog } from "@/components/modules/payment";
 import { useCreateQrPayment } from "@/hooks/modules/payments";
 import { PaymentStatus } from "@/enums/payment";
+import { useAuth } from "@/contexts/AuthContext";
+import { useAuthStore } from "@/stores";
 
 const MOCK_IMAGE_LIST = [
   "https://images.pexels.com/photos/1404948/pexels-photo-1404948.jpeg",
@@ -77,7 +79,6 @@ const BlueprintDetailView: FC<Props> = (props) => {
   // Queries
   const getDownloadFileQuery = useGetApiFileIdDownload(content.file_id._id, {
     query: {
-      select: (data) => (data as unknown as QueryData<FileResponse>).data,
       enabled: false,
     },
   });
@@ -117,20 +118,41 @@ const BlueprintDetailView: FC<Props> = (props) => {
     setOpenQRPaymentDialog(true);
   };
 
-  const handleDownloadPreview = async () => {
-    const downloadUrlRes = await getDownloadFileQuery.refetch();
+  const handleDownload = async () => {
+    const isSignedIn = useAuthStore.getState().isSignedIn;
 
-    if (downloadUrlRes.isError) {
-      toast.error(extractErrorMessage(downloadUrlRes.error));
+    if (!isSignedIn) {
+      toast.warning("Vui lòng đăng nhập để tải file.");
       return;
     }
 
-    const downloadUrl = downloadUrlRes.data?.url;
-    if (downloadUrl) {
-      window.open(downloadUrl, "_blank");
-    } else {
-      toast.error("Không tìm thấy link tải xuống.");
+    const res = await getDownloadFileQuery.refetch();
+
+    if (res.isError) {
+      toast.error(extractErrorMessage(res.error));
+      return;
     }
+
+    const blob = res.data;
+
+    if (!(blob instanceof Blob)) {
+      toast.error("Dữ liệu tải về không hợp lệ.");
+      return;
+    }
+
+    const url = URL.createObjectURL(blob);
+
+    console.log("BLOB :", blob);
+    console.log("CONTENT", content.file_id);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = content.file_id.name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    URL.revokeObjectURL(url);
   };
 
   // Effects
@@ -354,11 +376,11 @@ const BlueprintDetailView: FC<Props> = (props) => {
               loading={getDownloadFileQuery.isFetching}
               variant="outline"
               size="lg"
-              onClick={handleDownloadPreview}
+              onClick={handleDownload}
               className="w-full h-12 font-semibold border-white/20 text-gray-700 hover:bg-white/80 hover:text-gray-900"
             >
               <DownloadIcon className="w-5 h-5 mr-2" />
-              Xem trước miễn phí
+              Tải file xuống
             </Button>
           </div>
         </div>
