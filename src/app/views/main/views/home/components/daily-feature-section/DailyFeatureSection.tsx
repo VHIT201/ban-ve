@@ -1,17 +1,10 @@
 import { BlueprintCard } from "@/components/modules/content";
 import { ContentResponse } from "@/api/types/content";
 
-import {
-  useGetApiContent,
-  useGetApiContentInfinite,
-} from "@/api/endpoints/content";
-import { GetApiContent200Pagination } from "@/api/models";
-import { QueryBoundary } from "@/components/shared";
-import { UseQueryResult } from "@tanstack/react-query";
+import { useGetApiContentInfinite } from "@/api/endpoints/content";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { get } from "http";
 import { cn } from "@/utils/ui";
 
 const DailyFeatureSection = () => {
@@ -55,7 +48,7 @@ const DailyFeatureSection = () => {
   );
 
   // Methods
-  const handleViewDetails = (blueprint: ContentResponse) => {
+  const handleViewDetail = (blueprint: ContentResponse) => {
     navigate(`/detail/${blueprint._id}`);
   };
 
@@ -99,7 +92,7 @@ const DailyFeatureSection = () => {
                 <BlueprintCard
                   key={blueprint._id}
                   product={blueprint}
-                  onViewDetail={handleViewDetails}
+                  onViewDetail={handleViewDetail}
                   onAddToCart={handleAddToCart}
                 />
               )
