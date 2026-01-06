@@ -1,119 +1,23 @@
-import { useMemo } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
-import { Category } from "@/api/models/category";
-import { CategoryItem } from "./components";
-import Autoplay from "embla-carousel-autoplay";
-import { Grid3X3, ArrowRight } from "lucide-react";
-import { useGetApiCategories } from "@/api/endpoints/categories";
-import { Response } from "@/api/types/base";
-import { QueryBoundary } from "@/components/shared";
-import { UseQueryResult } from "@tanstack/react-query";
+import { ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
+import Image from "@/components/ui/image";
 import { useNavigate } from "react-router-dom";
-
-const mockCategories: Category[] = [
-  {
-    _id: "1",
-    name: "Nhà ở dân dụng",
-    slug: "nha-o-dan-dung",
-    description:
-      "Thiết kế bản vẽ cho nhà ở gia đình, biệt thự, căn hộ và các công trình dân dụng",
-    createdAt: "2024-01-01T00:00:00Z",
-    updatedAt: "2024-01-01T00:00:00Z",
-  },
-  {
-    _id: "2",
-    name: "Công trình thương mại",
-    slug: "cong-trinh-thuong-mai",
-    description:
-      "Bản vẽ thiết kế cho trung tâm thương mại, cửa hàng, nhà hàng và các công trình kinh doanh",
-    createdAt: "2024-01-01T00:00:00Z",
-    updatedAt: "2024-01-01T00:00:00Z",
-  },
-  {
-    _id: "3",
-    name: "Khu công nghiệp",
-    slug: "khu-cong-nghiep",
-    description:
-      "Thiết kế nhà máy, kho bãi, xưởng sản xuất và các công trình công nghiệp",
-    createdAt: "2024-01-01T00:00:00Z",
-    updatedAt: "2024-01-01T00:00:00Z",
-  },
-  {
-    _id: "4",
-    name: "Công trình giáo dục",
-    slug: "cong-trinh-giao-duc",
-    description:
-      "Bản vẽ thiết kế trường học, đại học, thư viện và các công trình giáo dục",
-    createdAt: "2024-01-01T00:00:00Z",
-    updatedAt: "2024-01-01T00:00:00Z",
-  },
-  {
-    _id: "5",
-    name: "Y tế & Chăm sóc sức khỏe",
-    slug: "y-te-cham-soc-suc-khoe",
-    description:
-      "Thiết kế bệnh viện, phòng khám, trung tâm y tế và các công trình sức khỏe",
-    createdAt: "2024-01-01T00:00:00Z",
-    updatedAt: "2024-01-01T00:00:00Z",
-  },
-  {
-    _id: "6",
-    name: "Cảnh quan & Công viên",
-    slug: "canh-quan-cong-vien",
-    description:
-      "Thiết kế công viên, khu vườn, cảnh quan và các không gian xanh",
-    createdAt: "2024-01-01T00:00:00Z",
-    updatedAt: "2024-01-01T00:00:00Z",
-  },
-  {
-    _id: "7",
-    name: "Năng lượng tái tạo",
-    slug: "nang-luong-tai-tao",
-    description:
-      "Thiết kế hệ thống năng lượng mặt trời, gió và các công trình năng lượng xanh",
-    createdAt: "2024-01-01T00:00:00Z",
-    updatedAt: "2024-01-01T00:00:00Z",
-  },
-  {
-    _id: "8",
-    name: "Hạ tầng đô thị",
-    slug: "ha-tang-do-thi",
-    description:
-      "Bản vẽ quy hoạch đô thị, hạ tầng giao thông và các công trình công cộng",
-    createdAt: "2024-01-01T00:00:00Z",
-    updatedAt: "2024-01-01T00:00:00Z",
-  },
-];
+import { useGetApiCategories } from "@/api/endpoints/categories";
+import { Category } from "@/api/models";
+import { UseQueryResult } from "@tanstack/react-query";
+import { QueryBoundary } from "@/components/shared";
+import { generateImageRandom } from "@/utils/image";
 
 const CategoriesSection = () => {
   // Hooks
   const navigate = useNavigate();
 
   // Queries
-  const getCategoryListQuery = useGetApiCategories<{
-    topRowCategories: Category[];
-    bottomRowCategories: Category[];
-  }>({
+  const getCategoryListQuery = useGetApiCategories({
     query: {
-      select: (data) => {
-        const categories = data as unknown as Category[];
-        const half = Math.ceil(categories.length / 2);
-
-        return {
-          topRowCategories: categories.slice(0, half),
-          bottomRowCategories: categories.slice(half),
-        };
-      },
+      select: (data) => data as unknown as Category[],
     },
-  }) as UseQueryResult<{
-    topRowCategories: Category[];
-    bottomRowCategories: Category[];
-  }>;
+  }) as UseQueryResult<Category[]>;
 
   // Methods
   const handleCategoryClick = (category: Category) => {
@@ -124,103 +28,58 @@ const CategoriesSection = () => {
     navigate("/collections");
   };
 
-  // Template
   return (
-    <section className="py-16 bg-primary">
-      <div className="container mx-auto px-4">
-        {/* Section Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-white mb-4">
+    <section className="mt-8">
+      <div className="flex items-end justify-between mb-8 border-b border-black/10 pb-8">
+        <div>
+          <span className="text-[10px] uppercase tracking-[0.2em] text-black/40 mb-2 block font-medium">
+            Tìm theo
+          </span>
+          <h2 className="text-2xl uppercase font-semibold tracking-tight text-[#1a1a1a]">
             Danh mục bản vẽ
           </h2>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-            Tìm kiếm bản vẽ kiến trúc phù hợp với dự án của bạn
-          </p>
         </div>
+        <button className="hidden md:flex items-center gap-2 group text-xs uppercase tracking-widest font-medium text-black/60 hover:text-black transition-colors">
+          View All Series
+          <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </button>
+      </div>
 
-        {/* Dual Carousel Layout */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-px bg-black/5 border border-black/5 overflow-hidden">
         <QueryBoundary query={getCategoryListQuery}>
-          {(categories) => (
-            <div className="space-y-2 md:space-y-4">
-              {/* Top Row Carousel - Moving Left to Right */}
-              <Carousel
-                opts={{
-                  align: "start",
-                  loop: true,
-                }}
-                plugins={[
-                  Autoplay({
-                    delay: 3000,
-                    stopOnInteraction: false,
-                  }),
-                ]}
-                className="w-full"
+          {(categories) =>
+            categories.map((category, index) => (
+              <div
+                key={`${category.name}-${index}`}
+                className={cn(
+                  "group relative aspect-square bg-white flex flex-col items-center justify-center p-8 transition-all duration-500 hover:z-10",
+                  "hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] cursor-pointer overflow-hidden"
+                )}
               >
-                <CarouselContent className="-ml-2 md:-ml-4">
-                  {categories.topRowCategories.map((category) => (
-                    <CarouselItem
-                      key={category._id}
-                      className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 lg:basis-1/4 p-2"
-                    >
-                      <div className="animate-in slide-in-from-left-10 duration-700 h-full">
-                        <CategoryItem
-                          category={category}
-                          onClick={handleCategoryClick}
-                          className="h-full"
-                        />
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-              </Carousel>
+                <div className="relative w-full aspect-square mb-6 overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
+                  <Image
+                    src={generateImageRandom()}
+                    alt={category.name}
+                    className="object-contain p-4 scale-95 group-hover:scale-105 transition-transform duration-700 ease-out"
+                  />
+                </div>
 
-              {/* Bottom Row Carousel - Moving Right to Left (Reversed) */}
-              <Carousel
-                opts={{
-                  align: "start",
-                  loop: true,
-                  direction: "rtl",
-                }}
-                plugins={[
-                  Autoplay({
-                    delay: 3000,
-                    stopOnInteraction: false,
-                  }),
-                ]}
-                className="w-full px-0 md:px-16 lg:px-32"
-              >
-                <CarouselContent className="-ml-2 md:-ml-4 flex-row-reverse">
-                  {categories.bottomRowCategories.map((category) => (
-                    <CarouselItem
-                      key={category._id}
-                      className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 p-2"
-                    >
-                      <div className="animate-in slide-in-from-right-10 duration-700 h-full">
-                        <CategoryItem
-                          category={category}
-                          onClick={handleCategoryClick}
-                          className="h-full"
-                        />
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-              </Carousel>
-            </div>
-          )}
+                <div className="text-center">
+                  <h3 className="text-[11px] uppercase tracking-[0.15em] font-medium text-black/80 group-hover:text-black transition-colors">
+                    {category.name}
+                  </h3>
+                  <div className="h-px w-0 bg-black/20 mx-auto mt-2 group-hover:w-8 transition-all duration-500" />
+                </div>
+
+                {/* Subtle architectural corner markers */}
+                <div className="absolute top-4 left-4 w-2 h-px bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute top-4 left-4 h-2 w-px bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute bottom-4 right-4 w-2 h-px bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute bottom-4 right-4 h-2 w-px bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+            ))
+          }
         </QueryBoundary>
-
-        {/* Mobile View All Button */}
-        <div className="flex justify-center mt-8 md:hidden">
-          <Button
-            onClick={handleViewAll}
-            className="gap-2 bg-primary hover:bg-primary/90"
-          >
-            <Grid3X3 className="w-4 h-4" />
-            Xem tất cả danh mục
-            <ArrowRight className="w-4 h-4" />
-          </Button>
-        </div>
       </div>
     </section>
   );

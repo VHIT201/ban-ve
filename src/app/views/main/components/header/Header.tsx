@@ -1,6 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, DraftingCompassIcon, UserIcon } from "lucide-react";
+import {
+  Search,
+  DraftingCompassIcon,
+  UserIcon,
+  ShoppingCartIcon,
+  MenuIcon,
+} from "lucide-react";
 import { CartItem } from "@/lib/types";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +20,7 @@ import { useShallow } from "zustand/shallow";
 import { Link } from "react-router-dom";
 import { BASE_PATHS } from "@/constants/paths";
 import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
 
 const Header = () => {
   // Stores
@@ -80,8 +87,11 @@ const Header = () => {
               className="flex items-center gap-3 group transition-all duration-200 hover:scale-[1.02]"
             >
               <div className="relative">
-                <div className="flex items-center justify-center size-10 rounded-full bg-linear-to-br from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/20 group-hover:shadow-xl group-hover:shadow-primary/30 transition-all duration-300">
-                  <DraftingCompassIcon strokeWidth={2} className="size-6" />
+                <div className="relative size-10 rounded-none rotate-6 bg-linear-to-br from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/20 group-hover:shadow-xl group-hover:shadow-primary/30 transition-all duration-300">
+                  <DraftingCompassIcon
+                    strokeWidth={2}
+                    className="size-6 absolute left-1/2 top-1/2 -translate-1/2 -rotate-6"
+                  />
                 </div>
               </div>
               <div className="hidden sm:block">
@@ -98,25 +108,17 @@ const Header = () => {
 
             {/* Actions Section */}
             <div className="flex items-center gap-3">
+              <HeaderShoppingCart />
+
+              <Separator orientation="vertical" className="h-6" />
+
               {authStore.isSignedIn ? (
                 <HeaderUserProfile />
               ) : (
-                <Button
-                  onClick={() => navigate(BASE_PATHS.auth.login.path)}
-                  size="sm"
-                  variant="outline"
-                  className={cn(
-                    "gap-2 h-10 px-4 rounded-full border-border/40",
-                    "hover:bg-primary hover:border-border/60",
-                    "transition-all duration-200 font-medium",
-                    "shadow-sm hover:shadow-md"
-                  )}
-                >
-                  <UserIcon className="size-4" />
-                  <span className="hidden sm:inline">Đăng nhập</span>
+                <Button className="hidden sm:flex bg-black hover:bg-black/90 text-white rounded-none px-6 text-[11px] uppercase tracking-widest h-10 font-bold">
+                  Đăng nhập
                 </Button>
               )}
-              <HeaderShoppingCart />
             </div>
           </div>
         </div>
@@ -137,8 +139,11 @@ const Header = () => {
               className="flex items-center gap-3 group transition-all duration-200 hover:scale-[1.02]"
             >
               <div className="relative">
-                <div className="flex items-center justify-center size-10 md:size-12 rounded-full bg-linear-to-br from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/20 group-hover:shadow-xl group-hover:shadow-primary/30 transition-all duration-300">
-                  <DraftingCompassIcon strokeWidth={2} className="size-8" />
+                <div className="relative size-10 rounded-none rotate-6 bg-linear-to-br from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/20 group-hover:shadow-xl group-hover:shadow-primary/30 transition-all duration-300">
+                  <DraftingCompassIcon
+                    strokeWidth={2}
+                    className="size-6 absolute left-1/2 top-1/2 -translate-1/2 -rotate-6"
+                  />
                 </div>
               </div>
               <div className="hidden sm:block">
@@ -156,25 +161,17 @@ const Header = () => {
 
             {/* Actions Section */}
             <div className="flex items-center gap-3">
+              <HeaderShoppingCart />
+
+              <Separator orientation="vertical" className="h-6" />
+
               {authStore.isSignedIn ? (
                 <HeaderUserProfile />
               ) : (
-                <Button
-                  onClick={() => navigate(BASE_PATHS.auth.login.path)}
-                  size="sm"
-                  variant="outline"
-                  className={cn(
-                    "gap-2 h-10 px-4 rounded-full border-border/40",
-                    "hover:bg-primary hover:border-border/60",
-                    "transition-all duration-200 font-medium",
-                    "shadow-sm hover:shadow-md"
-                  )}
-                >
-                  <UserIcon className="size-4" />
-                  <span className="hidden sm:inline">Đăng nhập</span>
+                <Button className="hidden sm:flex bg-black hover:bg-black/90 text-white rounded-none px-6 text-[11px] uppercase tracking-widest h-10 font-bold">
+                  Đăng nhập
                 </Button>
               )}
-              <HeaderShoppingCart />
             </div>
           </div>
         </div>

@@ -94,7 +94,8 @@ const HeaderContentSearch = () => {
 
   // Check for speech recognition support on mount
   useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
     setIsSpeechSupported(!!SpeechRecognition);
   }, []);
 
@@ -133,7 +134,7 @@ const HeaderContentSearch = () => {
     if (silenceTimerRef.current) {
       clearTimeout(silenceTimerRef.current);
     }
-    
+
     silenceTimerRef.current = setTimeout(() => {
       if (recognitionRef.current) recognitionRef.current.stop();
       setIsListening(false);
@@ -142,7 +143,8 @@ const HeaderContentSearch = () => {
   }, []);
 
   const initSpeechRecognition = useCallback(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       setIsSpeechSupported(false);
       return null;
@@ -152,10 +154,10 @@ const HeaderContentSearch = () => {
       const recognition = new SpeechRecognition();
       recognition.continuous = false;
       recognition.interimResults = true;
-      recognition.lang = 'vi-VN';
+      recognition.lang = "vi-VN";
       return recognition;
     } catch (error) {
-      console.error('Khởi tạo nhận dạng giọng nói thất bại:', error);
+      console.error("Khởi tạo nhận dạng giọng nói thất bại:", error);
       return null;
     }
   }, []);
@@ -173,7 +175,7 @@ const HeaderContentSearch = () => {
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch (error) {
-      console.error('Microphone access denied:', error);
+      console.error("Microphone access denied:", error);
       return;
     }
 
@@ -182,8 +184,8 @@ const HeaderContentSearch = () => {
 
     recognition.onresult = (event: any) => {
       const transcript = Array.from(event.results)
-        .map((result: any) => result[0]?.transcript || '')
-        .join('')
+        .map((result: any) => result[0]?.transcript || "")
+        .join("")
         .trim();
 
       if (transcript) {
@@ -193,7 +195,7 @@ const HeaderContentSearch = () => {
     };
 
     recognition.onerror = (event: any) => {
-      console.error('Speech recognition error:', event.error);
+      console.error("Speech recognition error:", event.error);
       setIsListening(false);
       setIsProcessing(false);
     };
@@ -205,14 +207,14 @@ const HeaderContentSearch = () => {
 
     recognitionRef.current = recognition;
     try {
-      setSearchQuery('');
-      setDebouncedQuery('');
+      setSearchQuery("");
+      setDebouncedQuery("");
       debouncedSearch.cancel();
-      
+
       recognition.start();
       setIsListening(true);
       setIsProcessing(true);
-      
+
       setTimeout(() => {
         if (isListening) {
           recognition.stop();
@@ -220,9 +222,8 @@ const HeaderContentSearch = () => {
           setIsProcessing(false);
         }
       }, 10000);
-      
     } catch (error) {
-      console.error('Failed to start speech recognition:', error);
+      console.error("Failed to start speech recognition:", error);
       setIsListening(false);
       setIsProcessing(false);
     }
@@ -333,7 +334,7 @@ const HeaderContentSearch = () => {
               type="text"
               placeholder="Tìm kiếm bản vẽ theo tên, lĩnh vực..."
               className={cn(
-                "pl-10 pr-20 h-10 rounded-full border-border/40 bg-background/50",
+                "pl-10 pr-20 h-10 rounded-none shadow-none border-border/40 bg-background/50",
                 "focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/40",
                 "placeholder:text-muted-foreground/60 transition-all duration-200",
                 "hover:border-border/60 hover:bg-background/80"
@@ -359,15 +360,15 @@ const HeaderContentSearch = () => {
                   <XIcon className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
                 </button>
               )}
-              
+
               {isSpeechSupported && (
                 <button
                   type="button"
                   onClick={toggleSpeechRecognition}
                   className={cn(
                     "rounded-full p-1.5 transition-all duration-300 relative",
-                    isListening 
-                      ? "text-white bg-red-500 shadow-lg shadow-red-500/30" 
+                    isListening
+                      ? "text-white bg-red-500 shadow-lg shadow-red-500/30"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted",
                     isListening && "ring-2 ring-offset-2 ring-red-500"
                   )}
@@ -386,7 +387,7 @@ const HeaderContentSearch = () => {
                   </div>
                 </button>
               )}
-              
+
               {isLoading && (
                 <div className="p-1.5">
                   <LoaderCircle className="h-4 w-4 animate-spin text-primary" />

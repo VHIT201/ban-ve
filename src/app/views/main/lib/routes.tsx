@@ -50,18 +50,11 @@ const mainRoutes: RouteObject = {
     {
       path: app.search.path,
       lazy: async () => {
-        const { default: SearchResults } = await import("../views/search/SearchResults");
+        const { default: SearchResults } = await import(
+          "../views/search/SearchResults"
+        );
         return {
           element: <SearchResults />,
-        };
-      },
-    },
-    {
-      path: app.setting.path,
-      lazy: async () => {
-        const { default: Settings } = await import("../pages/setting/page");
-        return {
-          element: <Settings />,
         };
       },
     },
@@ -95,7 +88,9 @@ const mainRoutes: RouteObject = {
     {
       path: app.cookiePolicy.path,
       lazy: async () => {
-        const { default: CookiePolicy } = await import("../views/cookie-policy/page");
+        const { default: CookiePolicy } = await import(
+          "../views/cookie-policy/page"
+        );
         return {
           element: <CookiePolicy />,
         };

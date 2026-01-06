@@ -1,11 +1,4 @@
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -37,11 +30,15 @@ const getFileIcon = (type: string) => {
 };
 
 const ResourceItem = ({ item, onClick, onDelete }: Props) => {
+  const handlePreview = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    window.open(item.path, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <Card
       key={item._id}
       className="p-4 hover:shadow-md transition-shadow cursor-pointer"
-      onClick={() => onClick(item)}
     >
       <div className="flex items-center gap-4">
         <div className="w-16 h-16 bg-muted rounded overflow-hidden shrink-0 flex items-center justify-center">
@@ -83,11 +80,11 @@ const ResourceItem = ({ item, onClick, onDelete }: Props) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handlePreview}>
                 <Eye className="size-4 mr-2" />
                 Xem
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onClick(item)}>
                 <Download className="size-4 mr-2" />
                 Tải xuống
               </DropdownMenuItem>
