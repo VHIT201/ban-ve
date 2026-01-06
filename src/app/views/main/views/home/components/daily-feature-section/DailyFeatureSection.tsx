@@ -1,33 +1,13 @@
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { BlueprintCard } from "@/components/modules/content";
 import { ContentResponse } from "@/api/types/content";
-import {
-  Search,
-  Filter,
-  Grid3X3,
-  List,
-  SortAsc,
-  SortDesc,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+
 import { useGetApiContent } from "@/api/endpoints/content";
 import { GetApiContent200Pagination } from "@/api/models";
 import { QueryBoundary } from "@/components/shared";
 import { UseQueryResult } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
-const BlueprintFeatureSection = () => {
+const DailyFeatureSection = () => {
   // Hooks
   const navigate = useNavigate();
 
@@ -60,7 +40,7 @@ const BlueprintFeatureSection = () => {
   };
 
   return (
-    <section className="py-16 bg-white">
+    <section className="pt-16 bg-white">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">
@@ -83,8 +63,8 @@ const BlueprintFeatureSection = () => {
               return blueprints.data.map((blueprint) => (
                 <BlueprintCard
                   key={blueprint._id}
-                  blueprint={blueprint}
-                  onViewDetails={handleViewDetails}
+                  product={blueprint}
+                  onViewDetail={handleViewDetails}
                   onAddToCart={handleAddToCart}
                 />
               ));
@@ -96,4 +76,4 @@ const BlueprintFeatureSection = () => {
   );
 };
 
-export default BlueprintFeatureSection;
+export default DailyFeatureSection;
