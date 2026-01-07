@@ -152,8 +152,12 @@ const HeaderUserProfile = () => {
         sideOffset={8}
       >
         <div className="flex items-center gap-3 p-4">
-          <Avatar className={cn("ring-2 ring-background")}>
-            <AvatarImage src={userData.avatar} alt={userData.name} />
+          <Avatar className={cn("ring-2 ring-background rounded-md!")}>
+            <AvatarImage
+              src={userData.avatar}
+              alt={userData.name}
+              className="rounded-md!"
+            />
             <AvatarFallback className="bg-linear-to-br from-primary/20 to-primary/10 text-primary font-semibold text-sm">
               {userData.name.charAt(0).toUpperCase()}
             </AvatarFallback>

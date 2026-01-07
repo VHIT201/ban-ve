@@ -46,7 +46,7 @@ const DataTableBody = <TData,>() => {
             }
             className="h-24 text-center text-gray-500 dark:text-gray-400"
           >
-            No results found.
+            Không có dữ liệu để hiển thị.
           </TableCell>
         </TableRow>
       )}

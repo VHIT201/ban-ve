@@ -8,28 +8,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Search, Grid3x3, List } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useDeleteApiFileId, useGetApiFile } from "@/api/endpoints/files";
 import { DeleteDialog, QueryBoundary } from "@/components/shared";
 import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { FileResponse } from "@/api/types/file";
-import { QueryData } from "@/api/types/base";
+import { ResponseData } from "@/api/types/base";
 import {
   AddFileDialog,
   PreviewFileDialog,
@@ -50,7 +34,7 @@ const Resources = () => {
 
   const getFileListQuery = useGetApiFile({
     query: {
-      select: (data) => (data as unknown as QueryData<FileResponse[]>).data,
+      select: (data) => (data as unknown as ResponseData<FileResponse[]>).data,
     },
   }) as UseQueryResult<FileResponse[]>;
 
@@ -164,14 +148,14 @@ const Resources = () => {
           </div>
 
           {/* Content Area */}
-          <div className="flex-1 overflow-y-auto py-6 px-0 bg-muted/20">
+          <div className="flex-1 overflow-y-auto py-6 px-0">
             <QueryBoundary query={getFileListQuery}>
               {() => (
                 <>
                   {viewMode === "grid" ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                       {filteredItems.map((item) => (
-                        <ResourceItemCompact
+                        <ResourceItem
                           key={item._id}
                           item={item}
                           onClick={setPreviewItem}
@@ -182,7 +166,7 @@ const Resources = () => {
                   ) : (
                     <div className="space-y-2">
                       {filteredItems.map((item) => (
-                        <ResourceItem
+                        <ResourceItemCompact
                           key={item._id}
                           item={item}
                           onClick={setPreviewItem}

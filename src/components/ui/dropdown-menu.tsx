@@ -25,7 +25,7 @@ function DropdownMenuTrigger({
     <DropdownMenuPrimitive.Trigger
       data-slot="dropdown-menu-trigger"
       {...props}
-      className={cn("hover:text-primary-foreground/80", props.className)}
+      className={cn("hover:text-primary/80", props.className)}
     />
   );
 }

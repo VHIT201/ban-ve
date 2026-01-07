@@ -21,25 +21,20 @@ const DataTableHeader = <TData,>() => {
           className="border-0 hover:bg-transparent"
         >
           {enableRowSelection && (
-            <TableHead className="w-12 rounded-tl-xl">
+            <TableHead className="w-12">
               <Checkbox
                 checked={table.getIsAllPageRowsSelected()}
                 onCheckedChange={(value) =>
                   table.toggleAllPageRowsSelected(!!value)
                 }
                 aria-label="Select all"
-                className="[&>span]:data-[state=checked]:text-primary [&>span]:border-white [&>span]:rounded-sm [&>span]:bg-white/10 [&>span]:data-[state=checked]:border-white [&>span]:data-[state=checked]:bg-white"
+                className="[&>span]:data-[state=checked]:text-primary [&>span]:border-white  [&>span]:bg-white/10 [&>span]:data-[state=checked]:border-white [&>span]:data-[state=checked]:bg-white"
               />
             </TableHead>
           )}
 
           {headerGroup.headers.map((header, index) => (
-            <TableHead
-              key={header.id}
-              className={`py-4 font-bold text-white ${
-                index === headerGroup.headers.length - 1 ? "rounded-tr-xl" : ""
-              } `}
-            >
+            <TableHead key={header.id} className="py-4 font-bold text-white">
               <div className="flex items-center space-x-2">
                 {header.isPlaceholder
                   ? null

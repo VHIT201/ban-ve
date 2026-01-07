@@ -184,7 +184,7 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
   return (
     <DATA_TABLE_CONTEXT.Provider value={contextValues}>
       <div className="space-y-4 overflow-x-auto">
-        <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800">
+        <div className="overflow-hidden border border-gray-200 dark:border-gray-800">
           {children}
         </div>
       </div>
