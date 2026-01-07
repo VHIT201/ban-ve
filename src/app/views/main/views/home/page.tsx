@@ -23,7 +23,7 @@ const Home = () => {
         <DailyBestSeller />
         <DailyBestDownloaded />
         <DailyCustomerReviewSection />
-        <DailyFeatureSection />
+        {/* <DailyFeatureSection /> */}
       </Main>
     </Fragment>
   );
