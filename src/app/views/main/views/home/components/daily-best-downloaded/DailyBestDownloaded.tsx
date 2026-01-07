@@ -13,6 +13,7 @@ import { ContentResponse } from "@/api/types/content";
 import {
   GetApiContent200Pagination,
   GetApiPaymentsStatisticsDownloadRanking200DataItem,
+  GetApiPaymentsStatisticsDownloadRanking200DataItemContentInfo,
   GetApiPaymentsStatisticsPurchaseRanking200DataItemContentInfo,
 } from "@/api/models";
 import { UseQueryResult } from "@tanstack/react-query";
@@ -81,7 +82,8 @@ const DailyBestDownloaded = () => {
                       <BlueprintCard
                         product={{
                           _id: product.contentId!,
-                          ...(product.contentInfo as GetApiPaymentsStatisticsPurchaseRanking200DataItemContentInfo),
+                          ...(product.contentInfo as GetApiPaymentsStatisticsDownloadRanking200DataItemContentInfo),
+                          downloadCount: product.downloadCount,
                         }}
                         onViewDetail={handleViewDetail}
                       />
