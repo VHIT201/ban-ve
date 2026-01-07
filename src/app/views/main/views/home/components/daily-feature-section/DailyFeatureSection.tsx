@@ -1,4 +1,7 @@
-import { BlueprintCard } from "@/components/modules/content";
+import {
+  BlueprintCard,
+  BlueprintCardSkeleton,
+} from "@/components/modules/content";
 import { ContentResponse } from "@/api/types/content";
 
 import { useGetApiContentInfinite } from "@/api/endpoints/content";
@@ -97,6 +100,11 @@ const DailyFeatureSection = () => {
                 />
               )
           )}
+
+          {getBluePrintListInfiniteQuery.isFetchingNextPage &&
+            Array.from({ length: pagination.limit }).map((_, index) => (
+              <BlueprintCardSkeleton key={index} />
+            ))}
         </div>
 
         <div className="flex justify-center">

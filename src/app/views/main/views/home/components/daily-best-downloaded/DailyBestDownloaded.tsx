@@ -7,7 +7,10 @@ import {
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
 import Image from "@/components/ui/image";
-import { BlueprintCard } from "@/components/modules/content";
+import {
+  BlueprintCard,
+  BlueprintCardSkeleton,
+} from "@/components/modules/content";
 import { useGetApiContent } from "@/api/endpoints/content";
 import { ContentResponse } from "@/api/types/content";
 import {
@@ -70,7 +73,16 @@ const DailyBestDownloaded = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
           {/* Product Cards */}
-          <QueryBoundary query={getBluerintListQuery}>
+          <QueryBoundary
+            query={getBluerintListQuery}
+            fetchingView={
+              <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <BlueprintCardSkeleton key={index} />
+                ))}
+              </div>
+            }
+          >
             {(products) => (
               <div className="lg:col-span-3">
                 <CarouselContent className="-ml-10">
