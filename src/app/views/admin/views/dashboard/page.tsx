@@ -5,7 +5,6 @@ const Dashboard = () => {
     <div className="space-y-8">
       <StatsCard />
       <DailyUserPostStats />
-      <RankingTable />
     </div>
   );
 };

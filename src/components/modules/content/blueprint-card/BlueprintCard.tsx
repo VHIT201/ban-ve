@@ -2,20 +2,25 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { User } from "lucide-react";
+import { DownloadCloudIcon, ShoppingCartIcon, User } from "lucide-react";
 import Image from "@/components/ui/image";
-import { ContentResponse } from "@/api/types/content";
+import { ContentProduct } from "@/api/types/content";
 import { FC, MouseEvent, useState } from "react";
 import { formatVND } from "@/utils/currency";
 import { generateImageRandom } from "@/utils/image";
 import { ContentStatus } from "@/enums/content";
 import { useCartStore } from "@/stores/use-cart-store";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Props {
-  product: ContentResponse;
+  product: ContentProduct;
   className?: string;
-  onViewDetail?: (product: ContentResponse) => void;
-  onAddToCart?: (product: ContentResponse) => void;
+  onViewDetail?: (product: ContentProduct) => void;
+  onAddToCart?: (product: ContentProduct) => void;
 }
 
 const BlueprintCard: FC<Props> = (props) => {
@@ -60,7 +65,7 @@ const BlueprintCard: FC<Props> = (props) => {
   const title = product.title || "Untitled Product";
   const formattedPrice = formatVND(product.price || 0);
   const username = product.createdBy?.username || "Anonymous";
-  const categoryName = product.category.name || "General";
+  const categoryName = product?.category?.name || "General";
   const statusName =
     product.status === ContentStatus.APPROVED
       ? {
@@ -90,10 +95,39 @@ const BlueprintCard: FC<Props> = (props) => {
         <div className="absolute top-4 left-4 flex flex-wrap gap-2">
           <Badge
             variant="outline"
-            className="bg-white/90 backdrop-blur-sm border-none text-[10px] uppercase tracking-widest py-1"
+            className="bg-white/90 backdrop-blur-sm border-none text-[10px] uppercase tracking-widest py-1 "
           >
             {categoryName}
           </Badge>
+        </div>
+
+        <div className="absolute top-4 right-4 flex flex-wrap gap-2">
+          {product.purchaseCount && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Badge variant="destructive" className="shadow-none!">
+                  <ShoppingCartIcon className="inline-block size-4 mr-2" />
+                  {product.purchaseCount}
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent className="bg-black/90 text-white text-xs">
+                Lượt mua
+              </TooltipContent>
+            </Tooltip>
+          )}
+          {product.downloadCount && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Badge variant="destructive" className="shadow-none!">
+                  <DownloadCloudIcon className="inline-block size-4 mr-2" />
+                  {product.downloadCount}
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent className="bg-black/90 text-white text-xs">
+                Lượt tải
+              </TooltipContent>
+            </Tooltip>
+          )}
         </div>
         <div className="absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/5" />
         <div className="absolute bottom-4 left-4 right-4 translate-y-4 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">

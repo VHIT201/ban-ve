@@ -1,23 +1,33 @@
+"use client";
+
+import type React from "react";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Eye, MoreVertical, Download, Trash2, Edit, Copy } from "lucide-react";
-import { FileResponse } from "@/api/types/file";
+import { Eye, MoreVertical, Download, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useGetApiFileIdDownload } from "@/api/endpoints/files";
-import { useAuthStore } from "@/stores";
 import { toast } from "sonner";
-import { extractErrorMessage } from "@/utils/error";
+import { getFileIcon } from "@/utils/file";
+import { FileType } from "@/enums/file";
+
+export interface ResourceItemData {
+  _id: string;
+  name: string;
+  type: string;
+  size: number;
+  createdAt: string;
+  path?: string;
+}
 
 interface Props {
-  item: FileResponse;
-  onClick: (item: FileResponse) => void;
-  onDelete: (item: FileResponse) => void;
+  item: ResourceItemData;
+  onView?: (item: ResourceItemData) => void;
+  onDownload?: (item: ResourceItemData) => void;
+  onDelete?: (item: ResourceItemData) => void;
 }
 
 const formatFileSize = (bytes: number): string => {
@@ -26,119 +36,107 @@ const formatFileSize = (bytes: number): string => {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 };
 
-const getFileIcon = (type: string) => {
-  if (type.toLowerCase().includes("image")) return "🖼️";
-  if (type.toLowerCase().includes("pdf")) return "📄";
-  if (type.toLowerCase().includes("excel")) return "📊";
-  return "📁";
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  return date.toLocaleString("en-US", {
+    month: "numeric",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
 };
 
-const ResourceItemCompact = ({ item, onClick, onDelete }: Props) => {
-  const getDownloadFileQuery = useGetApiFileIdDownload(item._id, {
-    query: {
-      enabled: false,
-    },
-  });
-
-  const handlePreview = async () => {
-    const isSignedIn = useAuthStore.getState().isSignedIn;
-
-    if (!isSignedIn) {
-      toast.warning("Vui lòng đăng nhập để xem file.");
-      return;
+const ResourceItemCompact = ({ item, onView, onDownload, onDelete }: Props) => {
+  const handleView = () => {
+    if (onView) {
+      onView(item);
+    } else {
+      toast.info("View action not configured");
     }
-
-    const res = await getDownloadFileQuery.refetch();
-
-    if (res.isError) {
-      toast.error(extractErrorMessage(res.error));
-      return;
-    }
-
-    const blob = res.data;
-
-    if (!(blob instanceof Blob) || blob.size === 0) {
-      toast.error("Dữ liệu tải về không hợp lệ.");
-      return;
-    }
-
-    const blobUrl = URL.createObjectURL(blob);
-
-    window.open(blobUrl, "_blank", "noopener,noreferrer");
-
-    setTimeout(() => {
-      URL.revokeObjectURL(blobUrl);
-    }, 60_000);
   };
 
+  const handleDownload = () => {
+    if (onDownload) {
+      onDownload(item);
+    } else {
+      toast.info("Download action not configured");
+    }
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onDelete) {
+      onDelete(item);
+    } else {
+      toast.info("Delete action not configured");
+    }
+  };
+
+  const FileIcon = getFileIcon(item.type as FileType);
+
   return (
-    <Card
+    <div
       key={item._id}
-      className="p-4 hover:shadow-md transition-shadow cursor-pointer"
+      className="flex items-center gap-3 px-4 py-3 border-b border-border hover:bg-muted/50 transition-colors cursor-pointer group"
+      onClick={handleDownload}
     >
-      <div className="flex items-center gap-4">
-        <div className="w-16 h-16 bg-muted rounded overflow-hidden shrink-0 flex items-center justify-center">
-          {item.type.toLowerCase().includes("image") ? (
-            <img
-              src={item.path || "https://placehold.co/100x100?text=No+Image"}
-              alt={item.name}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.src = "https://placehold.co/100x100?text=Error";
-              }}
-            />
-          ) : (
-            <span className="text-3xl">{getFileIcon(item.type)}</span>
-          )}
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-medium truncate" title={item.name}>
-            {item.name}
-          </p>
-          <div className="flex items-center gap-2 mt-1">
-            <p className="text-sm text-muted-foreground">
-              {formatFileSize(item.size)}
-            </p>
-            <Badge variant="outline" className="text-xs">
-              {item.type}
-            </Badge>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <MoreVertical className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={handlePreview}>
-                <Eye className="size-4 mr-2" />
-                Xem
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onClick(item)}>
-                <Download className="size-4 mr-2" />
-                Tải xuống
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDelete(item);
-                }}
-                className="text-destructive"
-              >
-                <Trash2 className="size-4 mr-2" />
-                Xóa
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+      {/* Icon Container */}
+      <div className="w-12 h-12 bg-muted/50 rounded flex items-center justify-center shrink-0 text-xl overflow-hidden">
+        <FileIcon />
       </div>
-    </Card>
+
+      {/* Content Section - Title & Meta */}
+      <div className="flex-1 min-w-0">
+        <p
+          className="font-semibold text-sm text-foreground truncate"
+          title={item.name}
+        >
+          {item.name}
+        </p>
+        <p className="text-xs text-muted-foreground mt-0.5">
+          Authors: <span className="font-medium">{item.type}</span>
+        </p>
+      </div>
+
+      {/* Right Section - Date & Size */}
+      <div className="flex flex-col items-end gap-1 shrink-0 text-xs text-muted-foreground whitespace-nowrap">
+        <span>Date modified: {formatDate(item.createdAt)}</span>
+        <span>Size: {formatFileSize(item.size)}</span>
+      </div>
+
+      <div
+        className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <MoreVertical className="size-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={handleView}>
+              <Eye className="size-4 mr-2" />
+              View
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDownload}>
+              <Download className="size-4 mr-2" />
+              Download
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={handleDelete}
+              className="text-destructive"
+            >
+              <Trash2 className="size-4 mr-2" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </div>
   );
 };
 

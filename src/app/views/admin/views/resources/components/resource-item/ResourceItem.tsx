@@ -1,109 +1,122 @@
+"use client";
+
+import type React from "react";
+
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Eye, MoreVertical, Download, Trash2, Edit, Copy } from "lucide-react";
-import { FileResponse } from "@/api/types/file";
-import { Button } from "@/components/ui/button";
+import { Eye, MoreVertical, Download, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { getFileIcon, getFileTypeLabel } from "@/utils/file";
+import { FileType } from "@/enums/file";
 
-interface Props {
-  item: FileResponse;
-  onClick: (item: FileResponse) => void;
-  onDelete: (item: FileResponse) => void;
+export interface ResourceItemData {
+  _id: string;
+  name: string;
+  type: string;
+  size?: number;
+  createdAt?: string;
+  path?: string;
 }
 
-const formatFileSize = (bytes: number): string => {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-};
+interface Props {
+  item: ResourceItemData;
+  onView?: (item: ResourceItemData) => void;
+  onDownload?: (item: ResourceItemData) => void;
+  onDelete?: (item: ResourceItemData) => void;
+}
 
-const getFileIcon = (type: string) => {
-  if (type.toLowerCase().includes("image")) return "🖼️";
-  if (type.toLowerCase().includes("pdf")) return "📄";
-  if (type.toLowerCase().includes("excel")) return "📊";
-  return "📁";
-};
+export default function ResourceItem({
+  item,
+  onView,
+  onDownload,
+  onDelete,
+}: Props) {
+  const [showActions, setShowActions] = useState(false);
 
-const ResourceItem = ({ item, onClick, onDelete }: Props) => {
   const handlePreview = (e: React.MouseEvent) => {
     e.stopPropagation();
-    window.open(item.path, "_blank", "noopener,noreferrer");
+    onView?.(item);
+    if (item.path) {
+      window.open(item.path, "_blank", "noopener,noreferrer");
+    }
   };
+
+  const handleDownload = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDownload?.(item);
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDelete?.(item);
+  };
+
+  const FileIcon = getFileIcon(item.type as FileType);
 
   return (
     <Card
-      key={item._id}
-      className="p-4 hover:shadow-md transition-shadow cursor-pointer"
+      className="flex flex-col items-center justify-center p-4 min-h-40 hover:shadow-md hover:scale-105 hover:bg-muted/30 transition-all duration-200 cursor-pointer relative group rounded-none! shadow-none! border-gray-300"
+      onMouseEnter={() => setShowActions(true)}
+      onMouseLeave={() => setShowActions(false)}
     >
-      <div className="flex items-center gap-4">
-        <div className="w-16 h-16 bg-muted rounded overflow-hidden shrink-0 flex items-center justify-center">
-          {item.type.toLowerCase().includes("image") ? (
-            <img
-              src={item.path || "https://placehold.co/100x100?text=No+Image"}
-              alt={item.name}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.src = "https://placehold.co/100x100?text=Error";
-              }}
-            />
-          ) : (
-            <span className="text-3xl">{getFileIcon(item.type)}</span>
-          )}
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-medium truncate" title={item.name}>
-            {item.name}
-          </p>
-          <div className="flex items-center gap-2 mt-1">
-            <p className="text-sm text-muted-foreground">
-              {formatFileSize(item.size)}
-            </p>
-            <Badge variant="outline" className="text-xs">
-              {item.type}
-            </Badge>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <MoreVertical className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={handlePreview}>
-                <Eye className="size-4 mr-2" />
-                Xem
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onClick(item)}>
-                <Download className="size-4 mr-2" />
-                Tải xuống
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDelete(item);
-                }}
-                className="text-destructive"
-              >
-                <Trash2 className="size-4 mr-2" />
-                Xóa
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+      <div className="size-16 bg-muted/50 rounded flex items-center justify-center shrink-0 text-xl overflow-hidden">
+        <FileIcon />
+      </div>
+
+      <div className="w-full">
+        <p
+          className="text-sm font-medium text-center line-clamp-2 text-foreground"
+          title={item.name}
+        >
+          {item.name}
+        </p>
+      </div>
+
+      <p className="text-xs text-muted-foreground mt-1">
+        {getFileTypeLabel(item.type as FileType)}
+      </p>
+
+      <div
+        className={`absolute top-2 right-2 transition-opacity duration-200 ${
+          showActions ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 hover:bg-muted"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <MoreVertical className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuItem onClick={handlePreview}>
+              <Eye className="h-4 w-4 mr-2" />
+              Preview
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDownload}>
+              <Download className="h-4 w-4 mr-2" />
+              Download
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={handleDelete}
+              className="text-destructive"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </Card>
   );
-};
-
-export default ResourceItem;
+}

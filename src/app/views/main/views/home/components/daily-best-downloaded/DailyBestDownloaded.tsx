@@ -10,36 +10,39 @@ import Image from "@/components/ui/image";
 import { BlueprintCard } from "@/components/modules/content";
 import { useGetApiContent } from "@/api/endpoints/content";
 import { ContentResponse } from "@/api/types/content";
-import { GetApiContent200Pagination } from "@/api/models";
+import {
+  GetApiContent200Pagination,
+  GetApiPaymentsStatisticsDownloadRanking200DataItem,
+  GetApiPaymentsStatisticsDownloadRanking200DataItemContentInfo,
+  GetApiPaymentsStatisticsPurchaseRanking200DataItemContentInfo,
+} from "@/api/models";
 import { UseQueryResult } from "@tanstack/react-query";
 import { QueryBoundary } from "@/components/shared";
 import { useNavigate } from "react-router-dom";
+import { useGetApiPaymentsStatisticsDownloadRanking } from "@/api/endpoints/payments";
+import { ResponseData } from "@/api/types/base";
 
 const DailyBestDownloaded = () => {
   // Hooks
   const navigate = useNavigate();
 
   // Queries
-  const getBluerintListQuery = useGetApiContent<{
-    data: ContentResponse[];
-    pagination?: GetApiContent200Pagination;
-  }>(
+  // Queries
+  const getBluerintListQuery = useGetApiPaymentsStatisticsDownloadRanking(
     {
       limit: 10,
     },
     {
       query: {
         select: (data) =>
-          data as unknown as {
-            data: ContentResponse[];
-            pagination?: GetApiContent200Pagination;
-          },
+          (
+            data as unknown as ResponseData<
+              GetApiPaymentsStatisticsDownloadRanking200DataItem[]
+            >
+          ).data,
       },
     }
-  ) as UseQueryResult<{
-    data: ContentResponse[];
-    pagination?: GetApiContent200Pagination;
-  }>;
+  ) as UseQueryResult<GetApiPaymentsStatisticsDownloadRanking200DataItem[]>;
 
   // Methods
   const handleViewDetail = (blueprint: ContentResponse) => {
@@ -71,13 +74,17 @@ const DailyBestDownloaded = () => {
             {(products) => (
               <div className="lg:col-span-3">
                 <CarouselContent className="-ml-10">
-                  {products.data.map((product) => (
+                  {products.map((product) => (
                     <CarouselItem
-                      key={product._id}
+                      key={product?.contentId}
                       className="pl-10 md:basis-1/2 lg:basis-1/3"
                     >
                       <BlueprintCard
-                        product={product}
+                        product={{
+                          _id: product.contentId!,
+                          ...(product.contentInfo as GetApiPaymentsStatisticsDownloadRanking200DataItemContentInfo),
+                          downloadCount: product.downloadCount,
+                        }}
                         onViewDetail={handleViewDetail}
                       />
                     </CarouselItem>
