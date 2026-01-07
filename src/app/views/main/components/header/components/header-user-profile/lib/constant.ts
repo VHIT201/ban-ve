@@ -16,12 +16,6 @@ export const HEADER_USER_PROFILE_MENU = [
     path: BASE_PATHS.app.profile.personal.path,
   },
   {
-    icon: CogIcon,
-    roles: [UserRole.USER, UserRole.ADMIN, UserRole.COLLABORATOR],
-    label: "Cài đặt",
-    path: BASE_PATHS.app.setting.path,
-  },
-  {
     icon: UserCogIcon,
     roles: [UserRole.ADMIN],
     label: "Quản lý hệ thống",

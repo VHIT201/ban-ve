@@ -6,6 +6,7 @@ import {
   DialogHeader,
 } from "@/components/ui/dialog";
 import Image from "@/components/ui/image";
+import { Separator } from "@/components/ui/separator";
 import { BASE_PATHS } from "@/constants/paths";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { Loader2Icon, QrCodeIcon } from "lucide-react";
@@ -45,12 +46,16 @@ const ContentPaymentDialog: FC<Props> = (props) => {
             className="mx-auto fade-in-100 min-h-[300px]"
           />
         )}
+
+        <Separator className="my-1 w-2/3! mx-auto" />
+
         <DialogFooter>
           <Button
+            variant="destructive"
             onClick={() => navigate(BASE_PATHS.app.payment.path)}
             className="mx-auto fade-in duration-500 h-12 font-semibold hover:-translate-y-2 shadow-2xl transition-all"
           >
-            Chọn phương thức thanh toán khác
+            Phương thức thanh toán khác
           </Button>
         </DialogFooter>
       </DialogContent>
