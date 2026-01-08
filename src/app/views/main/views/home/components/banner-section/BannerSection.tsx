@@ -76,25 +76,25 @@ const BannerSection = () => {
   }, [api]);
 
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-hidden my-12">
       <Carousel
         opts={{
           loop: true,
           align: "start",
         }}
-        plugins={[
-          Autoplay({
-            delay: 6000,
-            stopOnInteraction: true,
-          }),
-        ]}
+        // plugins={[
+        //   Autoplay({
+        //     delay: 6000,
+        //     stopOnInteraction: true,
+        //   }),
+        // ]}
         setApi={setApi}
         className="w-full"
       >
         <CarouselContent>
           {bannerSlides.map((slide) => (
             <CarouselItem key={slide.id}>
-              <div className="relative h-[450px] md:h-[400px] overflow-hidden">
+              <div className="relative h-[200px] md:h-[250px] overflow-hidden">
                 {/* Gradient Background */}
                 <div className={cn("absolute inset-0 bg-primary")} />
 
@@ -104,8 +104,8 @@ const BannerSection = () => {
                 </div>
 
                 {/* Content Container */}
-                <div className="relative h-full container mx-auto px-4 lg:px-8 lg:pr-0">
-                  <div className="grid lg:grid-cols-2 gap-8 h-full items-center">
+                <div className="relative h-full px-4 lg:px-8 lg:pr-0">
+                  <div className="grid lg:grid-cols-2 gap-8">
                     {/* Left Column - Text Content */}
                     <div className="flex flex-col justify-center space-y-6 py-8 lg:py-0">
                       {/* Title */}
@@ -160,7 +160,7 @@ const BannerSection = () => {
                         noWrapper
                         alt="banner"
                         src="https://images.pexels.com/photos/18435276/pexels-photo-18435276.jpeg"
-                        className="object-cover shadow-2xl max-h-[450px] w-full transition-transform duration-300"
+                        className="object-cover shadow-2xl max-h-[250px] w-full transition-transform duration-300"
                       />
                     </div>
                   </div>

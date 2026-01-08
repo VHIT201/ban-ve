@@ -45,7 +45,7 @@ const Image: FC<ImageProps> = ({
   lazy = true,
   className,
   wrapperClassName,
-  noWrapper = false,
+  noWrapper = true,
   ...props
 }) => {
   const [imageState, setImageState] = useState<"loading" | "loaded" | "error">(
