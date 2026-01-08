@@ -121,7 +121,7 @@ const CollectionFilters = ({ onFilterChange }: Props) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         {/* Filter Card Header */}
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 space-y-6">
+        <div className="bg-white border border-gray-200 p-6 space-y-6">
           <div className="flex items-center gap-2 pb-4 border-b">
             <Filter className="w-5 h-5 text-gray-700" />
             <h2 className="font-semibold text-lg text-gray-900">Bộ lọc</h2>

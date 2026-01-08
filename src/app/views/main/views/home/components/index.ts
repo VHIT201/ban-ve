@@ -3,4 +3,6 @@ export { default as DailyBestSeller } from "./daily-best-seller";
 export { default as CategoriesSection } from "./categories-section";
 export { default as DailyBestDownloaded } from "./daily-best-downloaded";
 export { default as DailyFeatureSection } from "./daily-feature-section";
+export { default as TopSellingLists } from "./top-selling-lists";
+export { default as CategoriesFeatureSection } from "./categories-feature-section";
 export { default as DailyCustomerReviewSection } from "./daily-customer-review-section";

@@ -6,21 +6,24 @@ import {
   DailyBestSeller,
   DailyFeatureSection,
   DailyCustomerReviewSection,
+  TopSellingLists,
+  CategoriesFeatureSection,
 } from "./components";
 import { Main } from "@/components/layouts";
 
 const Home = () => {
   return (
     <Fragment>
-      <div className="bg-[#FAF9F6]">
+      <div className="bg-gray-50 py-12">
         <Main>
-          <BannerSection />
-          <CategoriesSection />
+          <CategoriesFeatureSection />
         </Main>
       </div>
 
       <Main>
+        <TopSellingLists />
         <DailyBestSeller />
+        <BannerSection />
         <DailyBestDownloaded />
         <DailyCustomerReviewSection />
         <DailyFeatureSection />

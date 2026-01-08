@@ -141,7 +141,7 @@ const CollectionList: FC<Props> = (props) => {
   return (
     <div className="space-y-6">
       {/* Header with Results Count & Sort */}
-      <div className="flex items-center justify-between bg-white rounded-lg border border-gray-200 shadow-sm px-5 py-4">
+      <div className="flex items-center justify-between bg-transparent px-5 py-4 border-b border-black/10">
         <QueryBoundary query={getBlueprintListQuery}>
           {(blueprints) => (
             <div className="text-sm font-medium text-gray-700">

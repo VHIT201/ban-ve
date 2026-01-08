@@ -27,7 +27,6 @@ export const ROUTE_PATHS = {
     terms: { path: "terms" },
     privacy: { path: "privacy" },
     cookiePolicy: { path: "cookie-policy" },
-    
   },
 
   admin: {
@@ -80,6 +79,9 @@ export const BASE_PATHS = {
         detail: { path: "/profile/order/detail/:id" },
       },
     },
+    detail: { path: "/detail/:id" },
+    collections: { path: "/collections" },
+    search: { path: "/search" },
     setting: { path: "/setting" },
     payment: { path: "/payment" },
   },

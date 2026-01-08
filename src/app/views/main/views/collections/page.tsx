@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { ContentResponse } from "@/api/types/content";
 import { Category } from "@/api/models/category";
 import { ChevronRight, ChevronDown, ChevronUp, Filter, X } from "lucide-react";
-import { CollectionFilters, CollectionList } from "./components";
+import {
+  CategoriesSection,
+  CollectionFilters,
+  CollectionList,
+} from "./components";
 import { FilterFormValues } from "./components/collection-filters/lib/types";
 import { DEFAULT_FILTER_VALUES } from "./components/collection-filters/lib/constants";
 
@@ -123,6 +127,7 @@ const CategoryPage = () => {
 
           {/* Products Grid */}
           <main className="flex-1">
+            <CategoriesSection />
             <CollectionList
               filter={filteredProducts}
               onClearFilters={() => setFilteredProducts(DEFAULT_FILTER_VALUES)}
