@@ -36,6 +36,8 @@ import {
   X,
 } from "lucide-react";
 import { isUndefined } from "lodash-es";
+import { ResponseData } from "@/api/types/base";
+import { Category } from "@/api/models";
 
 // Schema validation
 const contentFormSchema = z
@@ -116,7 +118,13 @@ const ContentEditorForm = ({
 }: ContentEditorFormProps) => {
   // Fetch categories
   const { data: categoriesData, isLoading: isCategoriesLoading } =
-    useGetApiCategories();
+    useGetApiCategories({
+      query: {
+        select: (data) =>
+          (data as unknown as ResponseData<{ categories: Category[] }>).data
+            .categories,
+      },
+    });
 
   const categories = useMemo(() => categoriesData || [], [categoriesData]);
 

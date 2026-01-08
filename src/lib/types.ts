@@ -1,4 +1,12 @@
-export type Category = 'Cơ khí' | 'Điện' | 'Xây dựng' | 'Điều hòa' | 'Cấp thoát nước' | 'Điện tử' | 'Robot' | 'Nội thất';
+export type Category =
+  | "Cơ khí"
+  | "Điện"
+  | "Xây dựng"
+  | "Điều hòa"
+  | "Cấp thoát nước"
+  | "Điện tử"
+  | "Robot"
+  | "Nội thất";
 
 export interface Blueprint {
   id: string;
