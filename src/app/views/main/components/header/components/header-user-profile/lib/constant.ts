@@ -1,12 +1,6 @@
 import { BASE_PATHS } from "@/constants/paths";
 import { UserRole } from "@/enums/roles";
-import {
-  BarChart2,
-  CogIcon,
-  Upload,
-  UserCogIcon,
-  UserIcon,
-} from "lucide-react";
+import { UserCogIcon, UserIcon } from "lucide-react";
 
 export const HEADER_USER_PROFILE_MENU = [
   {

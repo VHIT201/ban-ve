@@ -8,6 +8,7 @@ import { UseQueryResult } from "@tanstack/react-query";
 import { QueryBoundary } from "@/components/shared";
 import { generateImageRandom } from "@/utils/image";
 import { ResponseData } from "@/api/types/base";
+import CategoriesSectionSkeleton from "./CategoriesSectionSkeleton";
 
 const CategoriesSection = () => {
   // Hooks
@@ -52,7 +53,10 @@ const CategoriesSection = () => {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-px bg-black/5 border border-black/5 overflow-hidden">
-        <QueryBoundary query={getCategoryListQuery}>
+        <QueryBoundary
+          query={getCategoryListQuery}
+          fetchingView={<CategoriesSectionSkeleton />}
+        >
           {(categories) => {
             return categories.map((category, index) => (
               <div

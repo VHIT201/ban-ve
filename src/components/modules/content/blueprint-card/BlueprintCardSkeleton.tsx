@@ -13,7 +13,7 @@ const BlueprintCardSkeleton: React.FC<Props> = ({
   return (
     <Card
       className={cn(
-        "group cursor-pointer overflow-hidden border-none shadow-none bg-transparent animate-pulse",
+        "group relative cursor-pointer overflow-hidden border-none shadow-none bg-transparent animate-pulse",
         className
       )}
     >
@@ -24,21 +24,6 @@ const BlueprintCardSkeleton: React.FC<Props> = ({
 
       {variant === "default" ? (
         <>
-          {/* Top badges skeleton */}
-          <div className="absolute top-4 left-4">
-            <div className="h-5 w-16 bg-gray-200 rounded-full" />
-          </div>
-
-          <div className="absolute top-4 right-4 flex gap-2">
-            <div className="h-5 w-10 bg-gray-200 rounded-full" />
-            <div className="h-5 w-10 bg-gray-200 rounded-full" />
-          </div>
-
-          {/* Bottom status badge skeleton */}
-          <div className="absolute bottom-4 left-4">
-            <div className="h-5 w-16 bg-gray-200 rounded-full" />
-          </div>
-
           <CardContent className="pt-6 px-0 pb-2">
             {/* User info skeleton */}
             <div className="flex items-center gap-2 mb-3">
