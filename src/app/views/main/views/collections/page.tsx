@@ -9,6 +9,7 @@ import {
 } from "./components";
 import { FilterFormValues } from "./components/collection-filters/lib/types";
 import { DEFAULT_FILTER_VALUES } from "./components/collection-filters/lib/constants";
+import { Main } from "@/components/layouts";
 
 // Mock data
 const mockCategories: Category[] = [
@@ -88,7 +89,7 @@ const CategoryPage = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header Section with bg-primary */}
       <div className="bg-primary">
-        <div className="container mx-auto px-4 py-8">
+        <Main>
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-sm text-white/70 mb-4">
             <a href="/" className="hover:text-white transition-colors">
@@ -112,11 +113,11 @@ const CategoryPage = () => {
           <p className="text-white/80 mt-2 text-sm lg:text-base">
             Tìm kiếm và lựa chọn từ hàng nghìn thiết kế chất lượng cao
           </p>
-        </div>
+        </Main>
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
+      <Main>
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar Filters */}
           <aside className="lg:w-72 shrink-0 hidden lg:block">
@@ -134,7 +135,7 @@ const CategoryPage = () => {
             />
           </main>
         </div>
-      </div>
+      </Main>
     </div>
   );
 };

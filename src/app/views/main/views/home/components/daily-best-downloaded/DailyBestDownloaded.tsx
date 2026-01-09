@@ -107,17 +107,17 @@ const DailyBestDownloaded = () => {
           </QueryBoundary>
 
           {/* Banner Card */}
-          <div className="relative overflow-hidden min-h-[400px] flex flex-col justify-center p-8 bg-[#F0F0F0]">
+          <div className="relative overflow-hidden h-full max-h-[500px] mt-6 flex flex-col justify-center p-8 bg-[#F0F0F0]">
             <Image
               noWrapper
               alt="Promotion"
               src="https://images.pexels.com/photos/7911758/pexels-photo-7911758.jpeg"
-              className="object-cover absolute inset-0 h-full"
+              className="object-cover absolute inset-0 h-full w-full"
             />
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/30 to-transparent" />
 
-            <div className="relative z-10 text-center">
+            <div className="relative z-10 text-center ">
               <h3 className="text-2xl mt-0 lg:mt-8 text-center font-light mb-6 leading-tight uppercase tracking-wider text-white">
                 Giá trị đến từ kiến trúc
               </h3>

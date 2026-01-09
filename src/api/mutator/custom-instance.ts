@@ -68,7 +68,7 @@ MAIN_AXIOS_INSTANCE.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       // Skip token refresh for login endpoint
-      if (originalRequest.url?.includes('/api/auth/login')) {
+      if (originalRequest.url?.includes("/api/auth/login")) {
         return Promise.reject(error);
       }
 
@@ -130,10 +130,6 @@ MAIN_AXIOS_INSTANCE.interceptors.response.use(
       } finally {
         isRefreshing = false;
       }
-    }
-
-    if (error.response?.status !== 401) {
-      toast.warning(extractErrorMessage(error));
     }
 
     return Promise.reject(error);
