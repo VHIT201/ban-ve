@@ -79,7 +79,7 @@ const Header = () => {
           isSlideDown ? "translate-y-0" : "-translate-y-full"
         )}
       >
-        <div className="container max-w-7xl mx-auto px-4">
+        <div className="container max-w-[1500px] mx-auto px-4">
           <div className="flex items-center justify-between h-18">
             {/* Logo Section */}
             <Link
@@ -134,23 +134,23 @@ const Header = () => {
           "transition-transform duration-300 ease-in-out"
         )}
       >
-        <div className="container max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between h-24">
+        <div className="container max-w-[1500px] mx-auto px-4">
+          <div className="flex items-center justify-between h-20">
             {/* Logo Section */}
             <Link
               to="/"
               className="flex items-center gap-3 group transition-all duration-200 hover:scale-[1.02]"
             >
               <div className="relative">
-                <div className="relative size-10 rounded-none rotate-6 bg-linear-to-br from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/20 group-hover:shadow-xl group-hover:shadow-primary/30 transition-all duration-300">
+                <div className="relative size-8 rounded-none rotate-6 bg-linear-to-br from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/20 group-hover:shadow-xl group-hover:shadow-primary/30 transition-all duration-300">
                   <DraftingCompassIcon
                     strokeWidth={2}
-                    className="size-6 absolute left-1/2 top-1/2 -translate-1/2 -rotate-6"
+                    className="size-4 absolute left-1/2 top-1/2 -translate-1/2 -rotate-6"
                   />
                 </div>
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors duration-200">
+                <h1 className="text-md font-bold tracking-tight text-foreground group-hover:text-primary transition-colors duration-200">
                   Marketplace Blueprint
                 </h1>
                 <p className="text-xs text-muted-foreground/80 font-medium">

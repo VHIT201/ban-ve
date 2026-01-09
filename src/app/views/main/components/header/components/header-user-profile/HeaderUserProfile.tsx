@@ -43,7 +43,7 @@ const MenuItem = ({
   to,
 }: MenuItemProps) => {
   const buttonClass = cn(
-    "w-full justify-start gap-3 flex px-3 py-2.5 hover:text-white h-auto text-sm font-medium rounded-lg transition-all duration-200",
+    "w-full justify-start gap-3 flex px-3 py-2.5 hover:text-white h-auto text-sm font-medium rounded-none! transition-all duration-200",
     variant === "destructive"
       ? "text-destructive hover:text-destructive hover:bg-destructive/10 focus:bg-destructive/10"
       : "text-foreground hover:bg-primary focus:bg-primary focus:text-white"
@@ -180,10 +180,10 @@ const HeaderUserProfile = () => {
               return (
                 <MenuItem
                   key={item.label}
-                  icon={<item.icon className="size-4" />}
                   label={item.label}
                   to={item.path}
                   onClick={() => handleItemClick()}
+                  icon={<item.icon className="size-4" />}
                 />
               );
             }

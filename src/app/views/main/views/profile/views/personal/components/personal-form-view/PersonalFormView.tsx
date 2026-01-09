@@ -106,7 +106,7 @@ const PersonalFormView = () => {
             <Label className="text-sm text-muted-foreground">
               Ngày tạo tài khoản
             </Label>
-            <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
+            <div className="flex items-center gap-2 p-3 rounded-none bg-gray-100/50">
               <Calendar className="w-4 h-4 text-muted-foreground" />
               <span className="text-sm">{formatDate(user?.createdAt)}</span>
             </div>
@@ -116,7 +116,7 @@ const PersonalFormView = () => {
             <Label className="text-sm text-muted-foreground">
               Cập nhật lần cuối
             </Label>
-            <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
+            <div className="flex items-center gap-2 p-3 rounded-none bg-gray-100/50">
               <Calendar className="w-4 h-4 text-muted-foreground" />
               <span className="text-sm">{formatDate(user?.updatedAt)}</span>
             </div>

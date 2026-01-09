@@ -13,7 +13,7 @@ const Main = ({ fixed, className, fluid, ...props }: MainProps) => {
       className={cn(
         "px-4 py-6",
         fixed && "flex grow flex-col overflow-hidden",
-        !fluid && "max-w-7xl mx-auto",
+        !fluid && "max-w-[1500px] mx-auto",
         className
       )}
       {...props}

@@ -99,9 +99,9 @@ const BestSellingData = () => {
       .sort((a, b) => b.puschaseCount - a.puschaseCount) || [];
 
   return (
-    <section className="py-8 pb-2 max-w-7xl mx-auto">
-      <div className="flex items-end justify-between mb-8 border-b border-black/10 pb-8">
-        <h2 className="text-2xl uppercase font-semibold tracking-widest text-[#1a1a1a]">
+    <section className="pt-8 pb-2 max-w-[1500px] mx-auto">
+      <div className="flex items-end justify-between pb-2">
+        <h2 className="text-xl uppercase font-semibold tracking-widest text-[#1a1a1a]">
           Dữ liệu bán chạy
         </h2>
         <button className="hidden md:flex items-center gap-2 group text-xs uppercase tracking-widest font-medium text-black/60 hover:text-black transition-colors">
@@ -124,13 +124,13 @@ const BestSellingData = () => {
               key={product.id}
               className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
             >
-              <Card className="relative overflow-hidden flex flex-col bg-white shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 p-2 rounded-none">
+              <Card className="relative overflow-hidden flex flex-col bg-white shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 p-0 rounded-none">
                 <Badge className="absolute top-2 right-2 px-8 z-20 p-1 text-2xl inline-block bg-orange-500 italic text-white font-semibold hover:bg-orange-400">
                   # {index + 1}
                 </Badge>
                 <CardContent className="flex flex-col flex-1 p-2">
                   {/* Product Image */}
-                  <div className="relative aspect-square max-h-[200px] overflow-hidden bg-gray-100">
+                  <div className="relative aspect-square max-h-[150px] overflow-hidden bg-gray-100">
                     <Image
                       src={generateImageRandom()}
                       alt={product.title}
