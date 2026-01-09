@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -32,8 +31,8 @@ import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 import { User, CreditCard, Percent } from "lucide-react";
-import React, { useMemo } from "react";
-import { QueryData, ResponseData } from "@/api/types/base";
+import { useMemo } from "react";
+import { ResponseData } from "@/api/types/base";
 import { UseQueryResult } from "@tanstack/react-query";
 import { CollaboratorMe } from "@/api/types/collaborator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -220,7 +219,7 @@ function CollaboratorStatus({ data }: { data: any }) {
           <CardContent className="pt-6">
             <div className="space-y-5">
               {/* Bank Info */}
-              <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
+              <div className="flex items-start gap-4 p-4 bg-gray-50 border border-gray-100">
                 <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center flex-shrink-0">
                   <CreditCard className="w-5 h-5 text-gray-600" />
                 </div>
@@ -238,7 +237,7 @@ function CollaboratorStatus({ data }: { data: any }) {
               </div>
 
               {/* Commission Rate */}
-              <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
+              <div className="flex items-start gap-4 p-4 bg-gray-50 border border-gray-100">
                 <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center flex-shrink-0">
                   <Percent className="w-5 h-5 text-gray-600" />
                 </div>
@@ -254,7 +253,7 @@ function CollaboratorStatus({ data }: { data: any }) {
 
               {/* Approver */}
               {data.approvedBy && (
-                <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                <div className="flex items-start gap-4 p-4 bg-gray-50 border border-gray-100">
                   <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center flex-shrink-0">
                     <User className="w-5 h-5 text-gray-600" />
                   </div>
@@ -272,7 +271,7 @@ function CollaboratorStatus({ data }: { data: any }) {
               {/* Rejection Reason */}
               {data.rejectionReason &&
                 data.status === CollaboratorResponseStatus.rejected && (
-                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="p-4 bg-red-50 border border-red-200">
                     <p className="text-sm font-semibold text-red-900 mb-1">
                       Lý do từ chối
                     </p>

@@ -1,6 +1,6 @@
 import { useGetApiOrdersOrderId } from "@/api/endpoints/orders";
 import { Order } from "@/api/models";
-import { QueryData } from "@/api/types/base";
+import { ResponseData } from "@/api/types/base";
 import { useRequiredPathParams } from "@/hooks";
 import { QueryBoundary } from "@/components/shared";
 import { UseQueryResult } from "@tanstack/react-query";
@@ -17,7 +17,7 @@ const OrderDetail = () => {
   // Queries
   const getOrderDetailQuery = useGetApiOrdersOrderId(orderId, {
     query: {
-      select: (data) => (data as unknown as QueryData<Order>).data,
+      select: (data) => (data as unknown as ResponseData<Order>).data,
     },
   }) as UseQueryResult<Order>;
 

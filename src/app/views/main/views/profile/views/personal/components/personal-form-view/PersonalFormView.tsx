@@ -21,6 +21,7 @@ import { Calendar, Save, Loader2 } from "lucide-react";
 
 import { useGetApiAuthMe } from "@/api/endpoints/auth";
 import { getRoleLabel, getRoleVariant } from "@/utils/role";
+import { toast } from "sonner";
 
 const personalFormSchema = z.object({
   username: z
@@ -64,7 +65,8 @@ const PersonalFormView = () => {
     try {
       // TODO: call API update profile
       await new Promise((r) => setTimeout(r, 1500));
-      console.log("Update profile:", data);
+
+      toast.success("Cập nhật thông tin cá nhân thành công");
     } finally {
       setSaving(false);
     }

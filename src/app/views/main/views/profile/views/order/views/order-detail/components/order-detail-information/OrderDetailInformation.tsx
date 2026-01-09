@@ -87,7 +87,7 @@ const OrderDetailInformation: FC<Props> = ({ order }) => {
         <div className="space-y-5">
           {/* Order ID */}
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-none bg-gray-100 flex items-center justify-center flex-shrink-0">
               <Hash className="w-5 h-5 text-gray-600" />
             </div>
             <div className="flex-1">
@@ -102,7 +102,7 @@ const OrderDetailInformation: FC<Props> = ({ order }) => {
 
           {/* Payment Method */}
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-none bg-gray-100 flex items-center justify-center flex-shrink-0">
               <CreditCard className="w-5 h-5 text-gray-600" />
             </div>
             <div className="flex-1">
@@ -125,13 +125,13 @@ const OrderDetailInformation: FC<Props> = ({ order }) => {
           {/* Dates */}
           <div className="space-y-3">
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-none bg-gray-100 flex items-center justify-center flex-shrink-0">
                 <Calendar className="w-5 h-5 text-gray-600" />
               </div>
               <div className="flex-1 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Ngày tạo</span>
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-xs font-medium text-gray-900">
                     {formatDate(order.createdAt)}
                   </span>
                 </div>
@@ -141,7 +141,7 @@ const OrderDetailInformation: FC<Props> = ({ order }) => {
                     <span className="text-sm text-gray-600">
                       Ngày hoàn thành
                     </span>
-                    <span className="text-sm font-medium text-green-700">
+                    <span className="text-xs font-medium text-green-700">
                       {formatDate(order.completedAt)}
                     </span>
                   </div>
@@ -150,7 +150,7 @@ const OrderDetailInformation: FC<Props> = ({ order }) => {
                 {order.cancelledAt && (
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">Ngày hủy</span>
-                    <span className="text-sm font-medium text-red-700">
+                    <span className="text-xs font-medium text-red-700">
                       {formatDate(order.cancelledAt)}
                     </span>
                   </div>
@@ -171,12 +171,12 @@ const OrderDetailInformation: FC<Props> = ({ order }) => {
           <Separator />
 
           {/* Total Amount */}
-          <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+          <div className="bg-gray-50 rounded-none p-4 border border-gray-100">
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold text-gray-900">
                 Tổng tiền
               </span>
-              <span className="text-2xl font-bold text-gray-900">
+              <span className="text-xl font-bold text-gray-900">
                 {new Intl.NumberFormat("vi-VN", {
                   style: "currency",
                   currency: "VND",

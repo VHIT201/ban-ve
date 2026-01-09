@@ -104,10 +104,6 @@ const BestSellingData = () => {
         <h2 className="text-xl uppercase font-semibold tracking-widest text-[#1a1a1a]">
           Dữ liệu bán chạy
         </h2>
-        <button className="hidden md:flex items-center gap-2 group text-xs uppercase tracking-widest font-medium text-black/60 hover:text-black transition-colors">
-          Xem tất cả
-          <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-        </button>
       </div>
 
       <Carousel
