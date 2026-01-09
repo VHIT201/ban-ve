@@ -49,7 +49,7 @@ const CategoriesFeatureSection = () => {
 
   return (
     <section className="max-w-[1500px] mx-auto">
-      <div className="flex items-end justify-between mb-6 border-b border-black/10 pb-4">
+      <div className="flex items-end justify-between pb-2">
         <h2 className="text-xl uppercase font-semibold tracking-widest text-[#1a1a1a]">
           Danh mục dữ liệu nổi bật
         </h2>

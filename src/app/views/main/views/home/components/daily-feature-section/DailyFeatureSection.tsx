@@ -76,17 +76,17 @@ const DailyFeatureSection = () => {
 
   return (
     <section className="pt-16 mb-12 bg-white">
-      <div className="container mx-auto px-4">
+      <div>
         {/* Header */}
-        <div className="flex items-end justify-between  border-b border-black/10 pb-8">
-          <h2 className="text-2xl font-semibold tracking-wider text-foreground uppercase">
+        <div className="flex items-end justify-between pb-2">
+          <h2 className="text-xl uppercase font-semibold tracking-widest text-[#1a1a1a]">
             Sản phẩm nổi bật
           </h2>
         </div>
 
         <div
           className={
-            "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
+            "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
           }
         >
           {blueprintInfiniteList.map(

@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { User, Mail, Phone, MapPin, Calendar, Edit, Save } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useState } from 'react';
+import { User, Mail, Phone, MapPin, Calendar, Edit, Save } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
 
 type ProfileData = {
   fullName: string;
@@ -17,32 +17,34 @@ type ProfileData = {
 function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<ProfileData>({
-    fullName: 'Nguyễn Văn A',
-    email: 'nguyenvana@example.com',
-    phone: '0987 654 321',
-    birthday: '1990-01-01',
+    fullName: "Nguyễn Văn A",
+    email: "nguyenvana@example.com",
+    phone: "0987 654 321",
+    birthday: "1990-01-01",
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setProfile(prev => ({
+    setProfile((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSave = () => {
-    console.log('Đã lưu thông tin:', profile);
+    console.log("Đã lưu thông tin:", profile);
     setIsEditing(false);
   };
 
   const handleCancel = () => {
     // Reset về giá trị ban đầu
     setProfile({
-      fullName: 'Nguyễn Văn A',
-      email: 'nguyenvana@example.com',
-      phone: '0987 654 321',
-      birthday: '1990-01-01',
+      fullName: "Nguyễn Văn A",
+      email: "nguyenvana@example.com",
+      phone: "0987 654 321",
+      birthday: "1990-01-01",
     });
     setIsEditing(false);
   };
@@ -55,10 +57,7 @@ function ProfilePage() {
           <p className="text-gray-500">Quản lý thông tin cá nhân của bạn</p>
         </div>
         {!isEditing && (
-          <Button 
-            onClick={() => setIsEditing(true)}
-            variant="outline"
-          >
+          <Button onClick={() => setIsEditing(true)} variant="outline">
             <Edit className="mr-2 h-4 w-4" />
             Chỉnh sửa
           </Button>
@@ -85,9 +84,7 @@ function ProfilePage() {
                     onChange={handleInputChange}
                   />
                 ) : (
-                  <div className="p-2 border rounded">
-                    {profile.fullName}
-                  </div>
+                  <div className="p-2 border rounded">{profile.fullName}</div>
                 )}
               </div>
 
@@ -105,9 +102,7 @@ function ProfilePage() {
                     onChange={handleInputChange}
                   />
                 ) : (
-                  <div className="p-2 border rounded">
-                    {profile.email}
-                  </div>
+                  <div className="p-2 border rounded">{profile.email}</div>
                 )}
               </div>
 
@@ -124,9 +119,7 @@ function ProfilePage() {
                     onChange={handleInputChange}
                   />
                 ) : (
-                  <div className="p-2 border rounded">
-                    {profile.phone}
-                  </div>
+                  <div className="p-2 border rounded">{profile.phone}</div>
                 )}
               </div>
 
@@ -145,7 +138,7 @@ function ProfilePage() {
                   />
                 ) : (
                   <div className="p-2 border rounded">
-                    {new Date(profile.birthday).toLocaleDateString('vi-VN')}
+                    {new Date(profile.birthday).toLocaleDateString("vi-VN")}
                   </div>
                 )}
               </div>
@@ -153,17 +146,10 @@ function ProfilePage() {
 
             {isEditing && (
               <div className="flex justify-end space-x-4 pt-4 border-t mt-6">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handleCancel}
-                >
+                <Button type="button" variant="outline" onClick={handleCancel}>
                   Hủy
                 </Button>
-                <Button 
-                  type="button" 
-                  onClick={handleSave}
-                >
+                <Button type="button" onClick={handleSave}>
                   Lưu thay đổi
                 </Button>
               </div>

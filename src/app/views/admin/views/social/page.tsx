@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
 
 type SocialLink = {
   platform: string;
@@ -13,10 +13,10 @@ type SocialLink = {
 
 export default function SocialPage() {
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([
-    { platform: 'facebook', url: '' },
-    { platform: 'twitter', url: '' },
-    { platform: 'linkedin', url: '' },
-    { platform: 'instagram', url: '' },
+    { platform: "facebook", url: "" },
+    { platform: "twitter", url: "" },
+    { platform: "linkedin", url: "" },
+    { platform: "instagram", url: "" },
   ]);
 
   const handleInputChange = (index: number, value: string) => {
@@ -26,20 +26,20 @@ export default function SocialPage() {
   };
 
   const handleSave = () => {
-    console.log('Đã lưu liên kết mạng xã hội:', socialLinks);
+    console.log("Đã lưu liên kết mạng xã hội:", socialLinks);
     // Thêm logic lưu dữ liệu vào API ở đây
   };
 
   const getPlatformName = (platform: string) => {
     switch (platform) {
-      case 'facebook':
-        return 'Facebook';
-      case 'twitter':
-        return 'Twitter';
-      case 'linkedin':
-        return 'LinkedIn';
-      case 'instagram':
-        return 'Instagram';
+      case "facebook":
+        return "Facebook";
+      case "twitter":
+        return "Twitter";
+      case "linkedin":
+        return "LinkedIn";
+      case "instagram":
+        return "Instagram";
       default:
         return platform;
     }
@@ -47,13 +47,13 @@ export default function SocialPage() {
 
   const getPlatformIcon = (platform: string) => {
     switch (platform) {
-      case 'facebook':
+      case "facebook":
         return <span className="text-blue-600">f</span>;
-      case 'twitter':
+      case "twitter":
         return <span className="text-blue-400">𝕏</span>;
-      case 'linkedin':
+      case "linkedin":
         return <span className="text-blue-700">in</span>;
-      case 'instagram':
+      case "instagram":
         return <span className="text-pink-600">📷</span>;
       default:
         return <span>🔗</span>;
@@ -98,9 +98,7 @@ export default function SocialPage() {
             </div>
 
             <div className="flex justify-end pt-4 border-t">
-              <Button onClick={handleSave}>
-                Lưu thay đổi
-              </Button>
+              <Button onClick={handleSave}>Lưu thay đổi</Button>
             </div>
           </div>
         </CardContent>

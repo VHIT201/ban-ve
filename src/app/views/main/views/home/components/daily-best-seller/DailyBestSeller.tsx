@@ -57,8 +57,8 @@ const DailyBestDownloaded = () => {
         }}
         className="w-full"
       >
-        <div className="flex items-end justify-between mb-8 border-b border-black/10 pb-8">
-          <h2 className="text-2xl font-semibold tracking-wider text-foreground uppercase">
+        <div className="flex items-end justify-between pb-2">
+          <h2 className="text-xl uppercase font-semibold tracking-widest text-[#1a1a1a]">
             Lượt mua nhiều nhất
           </h2>
           <div className="flex gap-2 relative">
@@ -68,34 +68,11 @@ const DailyBestDownloaded = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
-          {/* Banner Card */}
-          <div className="relative overflow-hidden max-h-[500px] mt-6 h-full flex flex-col justify-center p-8 bg-[#F0F0F0]">
-            <Image
-              alt="Promotion"
-              src="https://images.pexels.com/photos/18435276/pexels-photo-18435276.jpeg"
-              className="object-cover absolute inset-0 h-full w-full"
-            />
-
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/30 to-transparent" />
-
-            <div className="relative z-10 text-center">
-              <h3 className="text-2xl text-center font-light mb-6 leading-tight uppercase tracking-wider text-white">
-                Nghệ thuật kiến trúc
-              </h3>
-              <Button
-                variant="outline"
-                className="border-white/50 hover:bg-zinc-900 text-white hover:text-white rounded-none bg-transparent"
-              >
-                Xem thêm
-              </Button>
-            </div>
-          </div>
-
           {/* Product Cards */}
           <QueryBoundary
             query={getBluerintListQuery}
             fetchingView={
-              <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
                 {Array.from({ length: 6 }).map((_, index) => (
                   <BlueprintCardSkeleton key={index} />
                 ))}
@@ -103,12 +80,12 @@ const DailyBestDownloaded = () => {
             }
           >
             {(products) => (
-              <div className="lg:col-span-3">
+              <div className="lg:col-span-4">
                 <CarouselContent className="-ml-10">
                   {products?.map((product) => (
                     <CarouselItem
                       key={product?.contentId}
-                      className="pl-10 md:basis-1/2 lg:basis-1/3"
+                      className="pl-10 md:basis-1/2 lg:basis-1/4"
                     >
                       <BlueprintCard
                         product={{

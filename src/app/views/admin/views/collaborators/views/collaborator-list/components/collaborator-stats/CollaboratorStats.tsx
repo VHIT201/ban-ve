@@ -126,15 +126,15 @@ const CollaboratorStats = () => {
                 <CardTitle className="text-base">Top cộng tác viên</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {topCollaborators.map((collaborator, index) => (
                     <div
                       key={collaborator._id}
-                      className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+                      className="flex items-center justify-between p-3 py-4 rounded-none border bg-card"
                     >
                       <div className="flex items-center gap-3">
                         <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold text-sm">
-                          {index + 1}
+                          # {index + 1}
                         </div>
                         <div>
                           <div className="font-medium">

@@ -76,7 +76,7 @@ const BannerSection = () => {
   }, [api]);
 
   return (
-    <div className="relative overflow-hidden my-12">
+    <div className="relative overflow-hidden my-6">
       <Carousel
         opts={{
           loop: true,

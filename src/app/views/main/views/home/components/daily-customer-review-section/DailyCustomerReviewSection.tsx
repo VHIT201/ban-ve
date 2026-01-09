@@ -91,10 +91,10 @@ const reviews: Review[] = [
 
 const CustomerReviewSection = () => {
   return (
-    <section className="py-16 ">
-      <div className="container mx-auto px-4">
-        <div className="flex items-end justify-between mb-8 border-b border-black/10 pb-8">
-          <h2 className="text-2xl font-semibold tracking-wider text-foreground uppercase">
+    <section>
+      <div>
+        <div className="flex items-end justify-between pb-2">
+          <h2 className="text-xl uppercase font-semibold tracking-widest text-[#1a1a1a]">
             Đánh giá khách hàng
           </h2>
         </div>
@@ -112,7 +112,7 @@ const CustomerReviewSection = () => {
               {reviews.map((review) => (
                 <CarouselItem
                   key={review.id}
-                  className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
+                  className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5"
                 >
                   <Card
                     key={review.id}
