@@ -53,7 +53,7 @@ const DailyBestDownloaded = () => {
   };
 
   return (
-    <section className="py-12 px-4 max-w-7xl mx-auto">
+    <section className="py-12 px-4 max-w-[1500px] mx-auto">
       <Carousel
         opts={{
           align: "start",

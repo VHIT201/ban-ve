@@ -7,7 +7,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-[#FAF9F6] border-t border-black/5 pt-24 pb-12 px-6 md:px-12">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+      <div className="max-w-[1500px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
         <div className="space-y-6">
           <h3 className="text-xl font-serif font-bold tracking-tighter">
             Marketplace Blueprint
@@ -97,7 +97,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="max-w-[1400px] mx-auto border-t border-black/5 pt-12 flex flex-col md:flex-row items-center justify-center gap-6">
+      <div className="max-w-[1500px] mx-auto border-t border-black/5 pt-12 flex flex-col md:flex-row items-center justify-center gap-6">
         <p className="text-[10px] uppercase tracking-widest text-black/40 font-medium">
           © {currentYear} Marketplace Blueprint. ALL RIGHTS RESERVED.
         </p>

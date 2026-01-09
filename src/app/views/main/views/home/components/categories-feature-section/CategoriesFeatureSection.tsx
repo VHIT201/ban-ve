@@ -48,9 +48,9 @@ const CategoriesFeatureSection = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="max-w-7xl mx-auto">
-      <div className="flex items-end justify-between mb-8 border-b border-black/10 pb-8">
-        <h2 className="text-2xl uppercase font-semibold tracking-widest text-[#1a1a1a]">
+    <section className="max-w-[1500px] mx-auto">
+      <div className="flex items-end justify-between mb-6 border-b border-black/10 pb-4">
+        <h2 className="text-xl uppercase font-semibold tracking-widest text-[#1a1a1a]">
           Danh mục dữ liệu nổi bật
         </h2>
       </div>
@@ -67,7 +67,7 @@ const CategoriesFeatureSection = () => {
               <Image
                 src={product.image}
                 alt={product.title}
-                className="object-contain size-28 mx-auto"
+                className="object-contain size-20 mx-auto"
               />
 
               {/* Product Details */}

@@ -74,21 +74,21 @@ const History = () => {
   return (
     <div>
       <Tabs defaultValue="downloads" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3 max-w-md h-14">
+        <TabsList className="grid w-full grid-cols-3 max-w-md h-12">
           <TabsTrigger
             value="downloads"
-            className="flex items-center gap-2 h-12"
+            className="flex items-center gap-2 h-10"
           >
             <DownloadIcon className="h-4 w-4" />
             Lịch sử tải file
           </TabsTrigger>
-          <TabsTrigger value="reviews" className="flex items-center gap-2 h-12">
+          <TabsTrigger value="reviews" className="flex items-center gap-2 h-10">
             <Edit3Icon className="h-4 w-4" />
             Lịch sử đánh giá
           </TabsTrigger>
           <TabsTrigger
             value="transactions"
-            className="flex items-center gap-2 h-12"
+            className="flex items-center gap-2 h-10"
           >
             <CreditCardIcon className="h-4 w-4" />
             Lịch sử giao dịch

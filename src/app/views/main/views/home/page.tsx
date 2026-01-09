@@ -14,13 +14,13 @@ import { Main } from "@/components/layouts";
 const Home = () => {
   return (
     <Fragment>
-      <div className="bg-gray-50 py-12">
-        <Main>
+      <div className="bg-gray-50 py-4">
+        <Main className="py-2">
           <CategoriesFeatureSection />
         </Main>
       </div>
 
-      <Main>
+      <Main className="pt-0">
         <TopSellingLists />
         <DailyBestSeller />
         <BannerSection />
