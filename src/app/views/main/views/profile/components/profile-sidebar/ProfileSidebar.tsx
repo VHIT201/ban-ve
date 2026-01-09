@@ -14,7 +14,7 @@ const ProfileSidebar = () => {
 
   // Template
   return (
-    <Card className="sticky top-20 border border-gray-200 shadow-sm">
+    <Card className="sticky top-20 border border-gray-200 rounded-none! shadow-none!">
       <CardContent className="p-0">
         {/* User Profile Header */}
         <div className="text-center p-6 border-b border-gray-100">
@@ -46,9 +46,9 @@ const ProfileSidebar = () => {
               to={item.path}
               className={({ isActive }) =>
                 cn(
-                  "w-full cursor-pointer flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-all duration-200",
+                  "w-full cursor-pointer flex items-center gap-3 px-4 py-3 text-left rounded-none transition-all duration-200",
                   isActive
-                    ? "bg-gray-900 text-white shadow-sm"
+                    ? "bg-gray-900 text-white shadow-none"
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                 )
               }

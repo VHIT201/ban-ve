@@ -69,12 +69,11 @@ const DailyBestDownloaded = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
           {/* Banner Card */}
-          <div className="relative overflow-hidden min-h-[400px] flex flex-col justify-center p-8 bg-[#F0F0F0]">
+          <div className="relative overflow-hidden max-h-[500px] mt-6 h-full flex flex-col justify-center p-8 bg-[#F0F0F0]">
             <Image
-              noWrapper
               alt="Promotion"
               src="https://images.pexels.com/photos/18435276/pexels-photo-18435276.jpeg"
-              className="object-cover absolute inset-0 h-full"
+              className="object-cover absolute inset-0 h-full w-full"
             />
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/30 to-transparent" />

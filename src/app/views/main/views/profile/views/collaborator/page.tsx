@@ -33,12 +33,11 @@ import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 import { User, CreditCard, Percent } from "lucide-react";
 import React, { useMemo } from "react";
-import { QueryData } from "@/api/types/base";
+import { QueryData, ResponseData } from "@/api/types/base";
 import { UseQueryResult } from "@tanstack/react-query";
 import { CollaboratorMe } from "@/api/types/collaborator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CollaboratorContents } from "./components";
-import { BarChart3, DollarSign } from "lucide-react";
 import CollaboratorRevenue from "./components/CollaboratorRevenue";
 
 const collaboratorApplySchema = z.object({
@@ -333,7 +332,7 @@ function CollaboratorStatus({ data }: { data: any }) {
 const Collaborator = () => {
   const getCollaboratorMeQuery = useGetApiCollaboratorsMe({
     query: {
-      select: (data) => (data as unknown as QueryData<CollaboratorMe>).data,
+      select: (data) => (data as unknown as ResponseData<CollaboratorMe>).data,
     },
   }) as UseQueryResult<CollaboratorMe>;
 
