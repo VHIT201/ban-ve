@@ -1,8 +1,8 @@
 // @ts-nocheck
 
 export type PutApiCartBody = {
-  /** ID của tài nguyên (sản phẩm) */
-  resourceId: string;
-  /** Số lượng sản phẩm mới */
+  /** ID của sản phẩm */
+  contentId: string;
+  /** Số lượng mới */
   quantity: number;
 };

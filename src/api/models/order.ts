@@ -5,8 +5,12 @@ import type { OrderStatus } from './orderStatus';
 export interface Order {
   /** ID của đơn hàng */
   _id?: string;
-  /** ID người dùng */
+  /** ID người dùng (optional cho guest) */
   userId?: string;
+  /** Email của khách hàng (bắt buộc cho guest) */
+  email?: string;
+  /** Mã đơn hàng công khai (unique) */
+  orderCode?: string;
   items?: OrderItem[];
   /** Tổng tiền đơn hàng */
   totalAmount?: number;

@@ -21,7 +21,6 @@ import type {
 
 import type {
   GetApiSseCheckPaymentStatus200,
-  GetApiSseCheckPaymentStatus400,
   GetApiSseCheckPaymentStatusParams,
   GetApiSseConnectParams
 } from '../models';
@@ -40,7 +39,7 @@ Có thể sử dụng để theo dõi trạng thái thanh toán thời gian th�
  * @summary Kết nối SSE để nhận thông báo real-time
  */
 export const getApiSseConnect = (
-    params?: GetApiSseConnectParams,
+    params: GetApiSseConnectParams,
  signal?: AbortSignal
 ) => {
       
@@ -68,7 +67,7 @@ export const getGetApiSseConnectQueryKey = (params?: GetApiSseConnectParams,) =>
     }
 
     
-export const getGetApiSseConnectInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiSseConnect>>, GetApiSseConnectParams['page']>, TError = ErrorType<void>>(params?: GetApiSseConnectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData, QueryKey, GetApiSseConnectParams['page']>>, }
+export const getGetApiSseConnectInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiSseConnect>>, GetApiSseConnectParams['page']>, TError = ErrorType<void>>(params: GetApiSseConnectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData, QueryKey, GetApiSseConnectParams['page']>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
@@ -91,7 +90,7 @@ export type GetApiSseConnectInfiniteQueryError = ErrorType<void>
 
 
 export function useGetApiSseConnectInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSseConnect>>, GetApiSseConnectParams['page']>, TError = ErrorType<void>>(
- params: undefined |  GetApiSseConnectParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData, QueryKey, GetApiSseConnectParams['page']>> & Pick<
+ params: GetApiSseConnectParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData, QueryKey, GetApiSseConnectParams['page']>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiSseConnect>>,
           TError,
@@ -101,7 +100,7 @@ export function useGetApiSseConnectInfinite<TData = InfiniteData<Awaited<ReturnT
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSseConnectInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSseConnect>>, GetApiSseConnectParams['page']>, TError = ErrorType<void>>(
- params?: GetApiSseConnectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData, QueryKey, GetApiSseConnectParams['page']>> & Pick<
+ params: GetApiSseConnectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData, QueryKey, GetApiSseConnectParams['page']>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiSseConnect>>,
           TError,
@@ -111,7 +110,7 @@ export function useGetApiSseConnectInfinite<TData = InfiniteData<Awaited<ReturnT
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSseConnectInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSseConnect>>, GetApiSseConnectParams['page']>, TError = ErrorType<void>>(
- params?: GetApiSseConnectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData, QueryKey, GetApiSseConnectParams['page']>>, }
+ params: GetApiSseConnectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData, QueryKey, GetApiSseConnectParams['page']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -119,7 +118,7 @@ export function useGetApiSseConnectInfinite<TData = InfiniteData<Awaited<ReturnT
  */
 
 export function useGetApiSseConnectInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSseConnect>>, GetApiSseConnectParams['page']>, TError = ErrorType<void>>(
- params?: GetApiSseConnectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData, QueryKey, GetApiSseConnectParams['page']>>, }
+ params: GetApiSseConnectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData, QueryKey, GetApiSseConnectParams['page']>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -135,7 +134,7 @@ export function useGetApiSseConnectInfinite<TData = InfiniteData<Awaited<ReturnT
 
 
 
-export const getGetApiSseConnectQueryOptions = <TData = Awaited<ReturnType<typeof getApiSseConnect>>, TError = ErrorType<void>>(params?: GetApiSseConnectParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData>>, }
+export const getGetApiSseConnectQueryOptions = <TData = Awaited<ReturnType<typeof getApiSseConnect>>, TError = ErrorType<void>>(params: GetApiSseConnectParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
@@ -158,7 +157,7 @@ export type GetApiSseConnectQueryError = ErrorType<void>
 
 
 export function useGetApiSseConnect<TData = Awaited<ReturnType<typeof getApiSseConnect>>, TError = ErrorType<void>>(
- params: undefined |  GetApiSseConnectParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData>> & Pick<
+ params: GetApiSseConnectParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiSseConnect>>,
           TError,
@@ -168,7 +167,7 @@ export function useGetApiSseConnect<TData = Awaited<ReturnType<typeof getApiSseC
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSseConnect<TData = Awaited<ReturnType<typeof getApiSseConnect>>, TError = ErrorType<void>>(
- params?: GetApiSseConnectParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData>> & Pick<
+ params: GetApiSseConnectParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiSseConnect>>,
           TError,
@@ -178,7 +177,7 @@ export function useGetApiSseConnect<TData = Awaited<ReturnType<typeof getApiSseC
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiSseConnect<TData = Awaited<ReturnType<typeof getApiSseConnect>>, TError = ErrorType<void>>(
- params?: GetApiSseConnectParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData>>, }
+ params: GetApiSseConnectParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -186,7 +185,7 @@ export function useGetApiSseConnect<TData = Awaited<ReturnType<typeof getApiSseC
  */
 
 export function useGetApiSseConnect<TData = Awaited<ReturnType<typeof getApiSseConnect>>, TError = ErrorType<void>>(
- params?: GetApiSseConnectParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData>>, }
+ params: GetApiSseConnectParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSseConnect>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -203,9 +202,7 @@ export function useGetApiSseConnect<TData = Awaited<ReturnType<typeof getApiSseC
 
 
 /**
- * Kiểm tra xem user đã chuyển khoản thành công hay chưa.
-API này trả về trạng thái hiện tại của giao dịch thanh toán.
-
+ * Kiểm tra trạng thái thanh toán của đơn hàng
  * @summary Kiểm tra trạng thái thanh toán
  */
 export const getApiSseCheckPaymentStatus = (
@@ -237,7 +234,7 @@ export const getGetApiSseCheckPaymentStatusQueryKey = (params?: GetApiSseCheckPa
     }
 
     
-export const getGetApiSseCheckPaymentStatusInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, GetApiSseCheckPaymentStatusParams['page']>, TError = ErrorType<GetApiSseCheckPaymentStatus400 | void>>(params: GetApiSseCheckPaymentStatusParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError, TData, QueryKey, GetApiSseCheckPaymentStatusParams['page']>>, }
+export const getGetApiSseCheckPaymentStatusInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, GetApiSseCheckPaymentStatusParams['page']>, TError = ErrorType<void>>(params: GetApiSseCheckPaymentStatusParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError, TData, QueryKey, GetApiSseCheckPaymentStatusParams['page']>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
@@ -256,10 +253,10 @@ const {query: queryOptions} = options ?? {};
 }
 
 export type GetApiSseCheckPaymentStatusInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>>
-export type GetApiSseCheckPaymentStatusInfiniteQueryError = ErrorType<GetApiSseCheckPaymentStatus400 | void>
+export type GetApiSseCheckPaymentStatusInfiniteQueryError = ErrorType<void>
 
 
-export function useGetApiSseCheckPaymentStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, GetApiSseCheckPaymentStatusParams['page']>, TError = ErrorType<GetApiSseCheckPaymentStatus400 | void>>(
+export function useGetApiSseCheckPaymentStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, GetApiSseCheckPaymentStatusParams['page']>, TError = ErrorType<void>>(
  params: GetApiSseCheckPaymentStatusParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError, TData, QueryKey, GetApiSseCheckPaymentStatusParams['page']>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>,
@@ -269,7 +266,7 @@ export function useGetApiSseCheckPaymentStatusInfinite<TData = InfiniteData<Awai
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiSseCheckPaymentStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, GetApiSseCheckPaymentStatusParams['page']>, TError = ErrorType<GetApiSseCheckPaymentStatus400 | void>>(
+export function useGetApiSseCheckPaymentStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, GetApiSseCheckPaymentStatusParams['page']>, TError = ErrorType<void>>(
  params: GetApiSseCheckPaymentStatusParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError, TData, QueryKey, GetApiSseCheckPaymentStatusParams['page']>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>,
@@ -279,7 +276,7 @@ export function useGetApiSseCheckPaymentStatusInfinite<TData = InfiniteData<Awai
       >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiSseCheckPaymentStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, GetApiSseCheckPaymentStatusParams['page']>, TError = ErrorType<GetApiSseCheckPaymentStatus400 | void>>(
+export function useGetApiSseCheckPaymentStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, GetApiSseCheckPaymentStatusParams['page']>, TError = ErrorType<void>>(
  params: GetApiSseCheckPaymentStatusParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError, TData, QueryKey, GetApiSseCheckPaymentStatusParams['page']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -287,7 +284,7 @@ export function useGetApiSseCheckPaymentStatusInfinite<TData = InfiniteData<Awai
  * @summary Kiểm tra trạng thái thanh toán
  */
 
-export function useGetApiSseCheckPaymentStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, GetApiSseCheckPaymentStatusParams['page']>, TError = ErrorType<GetApiSseCheckPaymentStatus400 | void>>(
+export function useGetApiSseCheckPaymentStatusInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, GetApiSseCheckPaymentStatusParams['page']>, TError = ErrorType<void>>(
  params: GetApiSseCheckPaymentStatusParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError, TData, QueryKey, GetApiSseCheckPaymentStatusParams['page']>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -304,7 +301,7 @@ export function useGetApiSseCheckPaymentStatusInfinite<TData = InfiniteData<Awai
 
 
 
-export const getGetApiSseCheckPaymentStatusQueryOptions = <TData = Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError = ErrorType<GetApiSseCheckPaymentStatus400 | void>>(params: GetApiSseCheckPaymentStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError, TData>>, }
+export const getGetApiSseCheckPaymentStatusQueryOptions = <TData = Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError = ErrorType<void>>(params: GetApiSseCheckPaymentStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
@@ -323,10 +320,10 @@ const {query: queryOptions} = options ?? {};
 }
 
 export type GetApiSseCheckPaymentStatusQueryResult = NonNullable<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>>
-export type GetApiSseCheckPaymentStatusQueryError = ErrorType<GetApiSseCheckPaymentStatus400 | void>
+export type GetApiSseCheckPaymentStatusQueryError = ErrorType<void>
 
 
-export function useGetApiSseCheckPaymentStatus<TData = Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError = ErrorType<GetApiSseCheckPaymentStatus400 | void>>(
+export function useGetApiSseCheckPaymentStatus<TData = Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError = ErrorType<void>>(
  params: GetApiSseCheckPaymentStatusParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>,
@@ -336,7 +333,7 @@ export function useGetApiSseCheckPaymentStatus<TData = Awaited<ReturnType<typeof
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiSseCheckPaymentStatus<TData = Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError = ErrorType<GetApiSseCheckPaymentStatus400 | void>>(
+export function useGetApiSseCheckPaymentStatus<TData = Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError = ErrorType<void>>(
  params: GetApiSseCheckPaymentStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>,
@@ -346,7 +343,7 @@ export function useGetApiSseCheckPaymentStatus<TData = Awaited<ReturnType<typeof
       >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiSseCheckPaymentStatus<TData = Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError = ErrorType<GetApiSseCheckPaymentStatus400 | void>>(
+export function useGetApiSseCheckPaymentStatus<TData = Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError = ErrorType<void>>(
  params: GetApiSseCheckPaymentStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -354,7 +351,7 @@ export function useGetApiSseCheckPaymentStatus<TData = Awaited<ReturnType<typeof
  * @summary Kiểm tra trạng thái thanh toán
  */
 
-export function useGetApiSseCheckPaymentStatus<TData = Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError = ErrorType<GetApiSseCheckPaymentStatus400 | void>>(
+export function useGetApiSseCheckPaymentStatus<TData = Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError = ErrorType<void>>(
  params: GetApiSseCheckPaymentStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiSseCheckPaymentStatus>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {

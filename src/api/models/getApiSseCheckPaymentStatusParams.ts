@@ -2,11 +2,15 @@
 
 export type GetApiSseCheckPaymentStatusParams = {
 /**
- * ID của kết nối SSE nhận được từ API tạo thanh toán
+ * Order code của đơn hàng
+ */
+orderCode: string;
+/**
+ * ID của kết nối SSE
  */
 sseClientId: string;
 /**
- * ID của giao dịch thanh toán cần kiểm tra
+ * ID của giao dịch thanh toán
  */
 paymentId: string;
 };

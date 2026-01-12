@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-export type GetApiSseCheckPaymentStatus400 = {
+export type PostApiPaymentsSepayCreateQrPayment500 = {
   success?: boolean;
   message?: string;
 };
