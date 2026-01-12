@@ -1,4 +1,5 @@
 import { ContentResponse } from "@/api/types/content";
+import { usePostApiCart } from "@/api/endpoints/cart";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -20,6 +21,7 @@ import {
   EllipsisIcon,
 } from "lucide-react";
 import { FC, Fragment, useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Props } from "./lib/types";
 import { useCartStore } from "@/stores/use-cart-store";
 import { useNavigate } from "react-router-dom";
@@ -58,6 +60,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
 
   // Hooks
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   // States
   const [openQRPaymentDialog, setOpenQRPaymentDialog] = useState(false);
@@ -67,7 +70,6 @@ const BlueprintDetailView: FC<Props> = (props) => {
 
   // Cart Store
   const addItem = useCartStore((state) => state.addItem);
-  const isInCart = useCartStore((state) => state.isInCart(content._id));
   const openCart = useCartStore((state) => state.openCart);
 
   // States
@@ -77,7 +79,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
   const [justAdded, setJustAdded] = useState(false);
 
   // Queries
-  const getDownloadFileQuery = useGetApiFileIdDownload(content.file_id._id, {
+  const getDownloadFileQuery = useGetApiFileIdDownload(content.file_id?._id || '', {
     query: {
       enabled: false,
     },
@@ -89,31 +91,43 @@ const BlueprintDetailView: FC<Props> = (props) => {
   });
 
   // Methods
-  const handleAddToCart = () => {
-    if (isInCart) {
-      openCart();
-      return;
+  const { mutate: addToCart, isPending: isAddingToCart } = usePostApiCart({
+    mutation: {
+      onSuccess: async () => {
+        // Cập nhật store cục bộ sau khi gọi API thành công
+        addItem(content, 1);
+        setJustAdded(true);
+        
+        // Làm mới dữ liệu giỏ hàng
+        await queryClient.invalidateQueries({ queryKey: ['/api/cart'] });
+        
+        setTimeout(() => {
+          setJustAdded(false);
+        }, 2000);
+      },
+      onError: (error) => {
+        console.error('Lỗi khi thêm vào giỏ hàng:', error);
+        toast.error('Có lỗi xảy ra khi thêm vào giỏ hàng');
+      }
     }
+  });
 
+  const handleAddToCart = async () => {
     setIsAdding(true);
-
-    setTimeout(() => {
-      addItem(content, 1);
+    try {
+      // Gọi API để thêm vào giỏ hàng
+      await addToCart({
+        data: {
+          contentId: content._id,
+          quantity: 1
+        }
+      });
+    } finally {
       setIsAdding(false);
-      setJustAdded(true);
-
-      setTimeout(() => {
-        setJustAdded(false);
-      }, 2000);
-    }, 300);
+    }
   };
 
   const handleBuyNow = () => {
-    if (isInCart) {
-      navigate(BASE_PATHS.app.payment.path);
-      return;
-    }
-
     createQRPaymentMutation.createPaymentQR();
     setOpenQRPaymentDialog(true);
   };
@@ -143,11 +157,12 @@ const BlueprintDetailView: FC<Props> = (props) => {
     const url = URL.createObjectURL(blob);
 
     console.log("BLOB :", blob);
-    console.log("CONTENT", content.file_id);
+    const fileName = content.file_id?.name || 'download';
+    console.log("Downloading file:", fileName);
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = content.file_id.name;
+    a.download = fileName;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -268,10 +283,10 @@ const BlueprintDetailView: FC<Props> = (props) => {
           {/* Price & Rating */}
           <div className="space-y-3 pb-6 border-b border-white/10">
             <div className="text-3xl lg:text-4xl font-bold text-white">
-              {new Intl.NumberFormat("vi-VN", {
+              {content.price ? new Intl.NumberFormat("vi-VN", {
                 style: "currency",
                 currency: "VND",
-              }).format(content.price)}
+              }).format(content.price) : 'Liên hệ'}
             </div>
             <div className="flex items-center gap-2">
               <div className="flex items-center">
@@ -304,9 +319,9 @@ const BlueprintDetailView: FC<Props> = (props) => {
               <div className="text-xs text-white/50 uppercase tracking-wide">
                 Kích thước
               </div>
-              <div className="font-medium text-white">
-                {formatFileSize(content.file_id.size)}
-              </div>
+              <span className="text-sm font-medium text-muted-foreground">
+                {content.file_id?.size ? formatFileSize(content.file_id.size) : 'N/A'}
+              </span>
             </div>
             <div className="space-y-1.5">
               <div className="text-xs text-white/50 uppercase tracking-wide">
@@ -319,17 +334,12 @@ const BlueprintDetailView: FC<Props> = (props) => {
                 Danh mục
               </div>
               <div className="font-medium text-white">
-                {content.category_id.name}
+                {content.category?.name || 'N/A'}
               </div>
             </div>
           </div>
 
-          {/* Description */}
-          <div className="py-4">
-            <p className="text-white/80 leading-relaxed text-sm">
-              {content.description}
-            </p>
-          </div>
+// ...
 
           {/* Action Buttons */}
           <div className="space-y-3 pt-4">
@@ -339,7 +349,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
                 className="flex-1 h-12 bg-white text-gray-900 hover:bg-white/90 font-semibold hover:text-gray-900"
                 onClick={handleAddToCart}
                 disabled={isAdding}
-                variant={isInCart ? "outline" : "default"}
+                variant="default"
               >
                 {isAdding ? (
                   <>
@@ -348,17 +358,12 @@ const BlueprintDetailView: FC<Props> = (props) => {
                   </>
                 ) : justAdded ? (
                   <>
-                    <Check className="w-5 h-5 mr-2" />
-                    Đã thêm!
-                  </>
-                ) : isInCart ? (
-                  <>
-                    <Check className="w-5 h-5 mr-2" />
-                    Xem giỏ hàng
+                    <Check className="h-5 w-5 mr-2" />
+                    Đã thêm vào giỏ
                   </>
                 ) : (
                   <>
-                    <ShoppingCartIcon className="w-5 h-5 mr-2" />
+                    <ShoppingCartIcon className="h-5 w-5 mr-2" />
                     Thêm vào giỏ
                   </>
                 )}
@@ -373,11 +378,14 @@ const BlueprintDetailView: FC<Props> = (props) => {
               </Button>
             </div>
             <Button
-              loading={getDownloadFileQuery.isFetching}
               variant="outline"
               size="lg"
-              onClick={handleDownload}
-              className="w-full h-12 font-semibold border-white/20 text-gray-700 hover:bg-white/80 hover:text-gray-900"
+              className="w-full gap-2"
+              onClick={() => {
+                if (!content.file_id?._id) return;
+                getDownloadFileQuery.refetch();
+              }}
+              disabled={getDownloadFileQuery.isLoading || !content.file_id?._id}
             >
               <DownloadIcon className="w-5 h-5 mr-2" />
               Tải file xuống

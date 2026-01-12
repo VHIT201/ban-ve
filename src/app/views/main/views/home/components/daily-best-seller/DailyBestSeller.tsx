@@ -12,36 +12,28 @@ import {
   BlueprintCardSkeleton,
 } from "@/components/modules/content";
 import { ContentResponse } from "@/api/types/content";
-import {
-  GetApiPaymentsStatisticsPurchaseRanking200DataItem,
-  GetApiPaymentsStatisticsPurchaseRanking200DataItemContentInfo,
+import type {
+  GetApiContentStatisticsPurchaseRanking200DataItem,
+  GetApiContentStatisticsPurchaseRanking200,
 } from "@/api/models";
 import { UseQueryResult } from "@tanstack/react-query";
 import { QueryBoundary } from "@/components/shared";
 import { useNavigate } from "react-router-dom";
-import { useGetApiPaymentsStatisticsPurchaseRanking } from "@/api/endpoints/payments";
-import { ResponseData } from "@/api/types/base";
+import { useGetApiContentStatisticsPurchaseRanking } from "@/api/endpoints/content";
 
 const DailyBestDownloaded = () => {
   // Hooks
   const navigate = useNavigate();
 
   // Queries
-  const getBluerintListQuery = useGetApiPaymentsStatisticsPurchaseRanking(
-    {
-      limit: 10,
-    },
+  const getBluerintListQuery = useGetApiContentStatisticsPurchaseRanking(
+    { limit: 10 },
     {
       query: {
-        select: (data) =>
-          (
-            data as unknown as ResponseData<
-              GetApiPaymentsStatisticsPurchaseRanking200DataItem[]
-            >
-          ).data,
+        select: (data: GetApiContentStatisticsPurchaseRanking200) => data.data || [],
       },
     }
-  ) as UseQueryResult<GetApiPaymentsStatisticsPurchaseRanking200DataItem[]>;
+  ) as UseQueryResult<GetApiContentStatisticsPurchaseRanking200DataItem[]>;
 
   // Methods
   const handleViewDetail = (blueprint: ContentResponse) => {
@@ -90,7 +82,7 @@ const DailyBestDownloaded = () => {
                       <BlueprintCard
                         product={{
                           _id: product.contentId!,
-                          ...(product.contentInfo as GetApiPaymentsStatisticsPurchaseRanking200DataItemContentInfo),
+                          ...(product.contentInfo || {}),
                           purchaseCount: product.purchaseCount,
                         }}
                         onViewDetail={handleViewDetail}

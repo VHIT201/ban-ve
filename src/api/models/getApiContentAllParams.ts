@@ -1,7 +1,6 @@
 // @ts-nocheck
-import type { GetApiContentStatus } from './getApiContentStatus';
 
-export type GetApiContentParams = {
+export type GetApiContentAllParams = {
 /**
  * Trang hiện tại
  * @minimum 1
@@ -13,10 +12,6 @@ page?: number;
  * @maximum 100
  */
 limit?: number;
-/**
- * Trạng thái nội dung (pending - chờ duyệt, approved - đã duyệt)
- */
-status?: GetApiContentStatus;
 /**
  * Lọc theo slug của danh mục
  */

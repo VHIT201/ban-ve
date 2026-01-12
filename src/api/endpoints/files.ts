@@ -84,6 +84,12 @@ if(postApiFileUploadBody.private !== undefined) {
 if(postApiFileUploadBody.compress !== undefined) {
  formData.append(`compress`, postApiFileUploadBody.compress.toString())
  }
+if(postApiFileUploadBody.requirePayment !== undefined) {
+ formData.append(`requirePayment`, postApiFileUploadBody.requirePayment.toString())
+ }
+if(postApiFileUploadBody.expiresAfterDays !== undefined) {
+ formData.append(`expiresAfterDays`, postApiFileUploadBody.expiresAfterDays.toString())
+ }
 
       return mainInstance<FileUploadResponse>(
       {url: `/api/file/upload`, method: 'POST',
@@ -474,6 +480,11 @@ export function useGetApiFilePendingLarge<TData = Awaited<ReturnType<typeof getA
 
 
 /**
+ * Tải xuống file và tất cả ảnh minh họa liên quan (image1, image2, image3, image4).
+- Nếu chỉ có file chính: Trả về file đó trực tiếp
+- Nếu có nhiều file (file chính + ảnh minh họa): Trả về file ZIP chứa tất cả các file
+- File ZIP sẽ có tên dựa trên tên file chính (ví dụ: test4.zip)
+
  * @summary Tải xuống file (yêu cầu đăng nhập và thanh toán)
  */
 export const getApiFileIdDownload = (
@@ -505,7 +516,7 @@ export const getGetApiFileIdDownloadQueryKey = (id?: string,) => {
     }
 
     
-export const getGetApiFileIdDownloadInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiFileIdDownload>>>, TError = ErrorType<unknown>>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFileIdDownload>>, TError, TData>>, }
+export const getGetApiFileIdDownloadInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiFileIdDownload>>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFileIdDownload>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
@@ -524,10 +535,10 @@ const {query: queryOptions} = options ?? {};
 }
 
 export type GetApiFileIdDownloadInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiFileIdDownload>>>
-export type GetApiFileIdDownloadInfiniteQueryError = ErrorType<unknown>
+export type GetApiFileIdDownloadInfiniteQueryError = ErrorType<void>
 
 
-export function useGetApiFileIdDownloadInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFileIdDownload>>>, TError = ErrorType<unknown>>(
+export function useGetApiFileIdDownloadInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFileIdDownload>>>, TError = ErrorType<void>>(
  id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFileIdDownload>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFileIdDownload>>,
@@ -537,7 +548,7 @@ export function useGetApiFileIdDownloadInfinite<TData = InfiniteData<Awaited<Ret
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiFileIdDownloadInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFileIdDownload>>>, TError = ErrorType<unknown>>(
+export function useGetApiFileIdDownloadInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFileIdDownload>>>, TError = ErrorType<void>>(
  id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFileIdDownload>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFileIdDownload>>,
@@ -547,7 +558,7 @@ export function useGetApiFileIdDownloadInfinite<TData = InfiniteData<Awaited<Ret
       >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiFileIdDownloadInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFileIdDownload>>>, TError = ErrorType<unknown>>(
+export function useGetApiFileIdDownloadInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFileIdDownload>>>, TError = ErrorType<void>>(
  id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFileIdDownload>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -555,7 +566,7 @@ export function useGetApiFileIdDownloadInfinite<TData = InfiniteData<Awaited<Ret
  * @summary Tải xuống file (yêu cầu đăng nhập và thanh toán)
  */
 
-export function useGetApiFileIdDownloadInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFileIdDownload>>>, TError = ErrorType<unknown>>(
+export function useGetApiFileIdDownloadInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFileIdDownload>>>, TError = ErrorType<void>>(
  id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFileIdDownload>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -572,7 +583,7 @@ export function useGetApiFileIdDownloadInfinite<TData = InfiniteData<Awaited<Ret
 
 
 
-export const getGetApiFileIdDownloadQueryOptions = <TData = Awaited<ReturnType<typeof getApiFileIdDownload>>, TError = ErrorType<unknown>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFileIdDownload>>, TError, TData>>, }
+export const getGetApiFileIdDownloadQueryOptions = <TData = Awaited<ReturnType<typeof getApiFileIdDownload>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFileIdDownload>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
@@ -591,10 +602,10 @@ const {query: queryOptions} = options ?? {};
 }
 
 export type GetApiFileIdDownloadQueryResult = NonNullable<Awaited<ReturnType<typeof getApiFileIdDownload>>>
-export type GetApiFileIdDownloadQueryError = ErrorType<unknown>
+export type GetApiFileIdDownloadQueryError = ErrorType<void>
 
 
-export function useGetApiFileIdDownload<TData = Awaited<ReturnType<typeof getApiFileIdDownload>>, TError = ErrorType<unknown>>(
+export function useGetApiFileIdDownload<TData = Awaited<ReturnType<typeof getApiFileIdDownload>>, TError = ErrorType<void>>(
  id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFileIdDownload>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFileIdDownload>>,
@@ -604,7 +615,7 @@ export function useGetApiFileIdDownload<TData = Awaited<ReturnType<typeof getApi
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiFileIdDownload<TData = Awaited<ReturnType<typeof getApiFileIdDownload>>, TError = ErrorType<unknown>>(
+export function useGetApiFileIdDownload<TData = Awaited<ReturnType<typeof getApiFileIdDownload>>, TError = ErrorType<void>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFileIdDownload>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiFileIdDownload>>,
@@ -614,7 +625,7 @@ export function useGetApiFileIdDownload<TData = Awaited<ReturnType<typeof getApi
       >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiFileIdDownload<TData = Awaited<ReturnType<typeof getApiFileIdDownload>>, TError = ErrorType<unknown>>(
+export function useGetApiFileIdDownload<TData = Awaited<ReturnType<typeof getApiFileIdDownload>>, TError = ErrorType<void>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFileIdDownload>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -622,12 +633,183 @@ export function useGetApiFileIdDownload<TData = Awaited<ReturnType<typeof getApi
  * @summary Tải xuống file (yêu cầu đăng nhập và thanh toán)
  */
 
-export function useGetApiFileIdDownload<TData = Awaited<ReturnType<typeof getApiFileIdDownload>>, TError = ErrorType<unknown>>(
+export function useGetApiFileIdDownload<TData = Awaited<ReturnType<typeof getApiFileIdDownload>>, TError = ErrorType<void>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFileIdDownload>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetApiFileIdDownloadQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Chỉ admin mới có thể sử dụng endpoint này để xem trước file mà không cần thanh toán.
+- Không có giới hạn lượt tải
+- Không yêu cầu thanh toán
+- Hỗ trợ tải file đơn hoặc ZIP (nếu có ảnh minh họa)
+
+ * @summary Admin tải xuống file preview (không giới hạn, không cần thanh toán)
+ */
+export const getApiFileIdPreview = (
+    id: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<Blob>(
+      {url: `/api/file/${id}/preview`, method: 'GET',
+        responseType: 'blob', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiFileIdPreviewInfiniteQueryKey = (id?: string,) => {
+    return [
+    'infinite', `/api/file/${id}/preview`
+    ] as const;
+    }
+
+export const getGetApiFileIdPreviewQueryKey = (id?: string,) => {
+    return [
+    `/api/file/${id}/preview`
+    ] as const;
+    }
+
+    
+export const getGetApiFileIdPreviewInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiFileIdPreview>>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFileIdPreview>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiFileIdPreviewInfiniteQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiFileIdPreview>>> = ({ signal }) => getApiFileIdPreview(id, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFileIdPreview>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiFileIdPreviewInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiFileIdPreview>>>
+export type GetApiFileIdPreviewInfiniteQueryError = ErrorType<void>
+
+
+export function useGetApiFileIdPreviewInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFileIdPreview>>>, TError = ErrorType<void>>(
+ id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFileIdPreview>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiFileIdPreview>>,
+          TError,
+          Awaited<ReturnType<typeof getApiFileIdPreview>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiFileIdPreviewInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFileIdPreview>>>, TError = ErrorType<void>>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFileIdPreview>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiFileIdPreview>>,
+          TError,
+          Awaited<ReturnType<typeof getApiFileIdPreview>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiFileIdPreviewInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFileIdPreview>>>, TError = ErrorType<void>>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFileIdPreview>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Admin tải xuống file preview (không giới hạn, không cần thanh toán)
+ */
+
+export function useGetApiFileIdPreviewInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFileIdPreview>>>, TError = ErrorType<void>>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiFileIdPreview>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiFileIdPreviewInfiniteQueryOptions(id,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const getGetApiFileIdPreviewQueryOptions = <TData = Awaited<ReturnType<typeof getApiFileIdPreview>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFileIdPreview>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiFileIdPreviewQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiFileIdPreview>>> = ({ signal }) => getApiFileIdPreview(id, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiFileIdPreview>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiFileIdPreviewQueryResult = NonNullable<Awaited<ReturnType<typeof getApiFileIdPreview>>>
+export type GetApiFileIdPreviewQueryError = ErrorType<void>
+
+
+export function useGetApiFileIdPreview<TData = Awaited<ReturnType<typeof getApiFileIdPreview>>, TError = ErrorType<void>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFileIdPreview>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiFileIdPreview>>,
+          TError,
+          Awaited<ReturnType<typeof getApiFileIdPreview>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiFileIdPreview<TData = Awaited<ReturnType<typeof getApiFileIdPreview>>, TError = ErrorType<void>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFileIdPreview>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiFileIdPreview>>,
+          TError,
+          Awaited<ReturnType<typeof getApiFileIdPreview>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiFileIdPreview<TData = Awaited<ReturnType<typeof getApiFileIdPreview>>, TError = ErrorType<void>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFileIdPreview>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Admin tải xuống file preview (không giới hạn, không cần thanh toán)
+ */
+
+export function useGetApiFileIdPreview<TData = Awaited<ReturnType<typeof getApiFileIdPreview>>, TError = ErrorType<void>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiFileIdPreview>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiFileIdPreviewQueryOptions(id,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

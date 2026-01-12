@@ -38,7 +38,11 @@ import type { ErrorType , BodyType } from '../mutator/custom-instance';
 
 
 /**
- * @summary Tạo đơn hàng mới
+ * Tạo đơn hàng mới. Hỗ trợ cả user đã đăng nhập và guest.
+- User đã đăng nhập: chỉ cần items và paymentMethod
+- Guest: cần cung cấp email thay cho userId
+
+ * @summary Tạo đơn hàng mới (hỗ trợ guest)
  */
 export const postApiOrders = (
     createOrderInput: BodyType<CreateOrderInput>,
@@ -86,7 +90,7 @@ const {mutation: mutationOptions} = options ?
     export type PostApiOrdersMutationError = ErrorType<void>
 
     /**
- * @summary Tạo đơn hàng mới
+ * @summary Tạo đơn hàng mới (hỗ trợ guest)
  */
 export const usePostApiOrders = <TError = ErrorType<void>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiOrders>>, TError,{data: BodyType<CreateOrderInput>}, TContext>, }
