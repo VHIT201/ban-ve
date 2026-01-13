@@ -27,4 +27,13 @@ Các ảnh minh họa sẽ được lưu vào thư mục /uploads/img/
 - false: Giữ nguyên chất lượng ảnh
  */
   compress?: boolean;
+  /** File có yêu cầu thanh toán trước khi tải xuống không
+- true: Yêu cầu thanh toán (file có phí)
+- false: File miễn phí, có thể tải xuống tự do (mặc định)
+ */
+  requirePayment?: boolean;
+  /** Số ngày file có thể được tải xuống sau khi thanh toán (chỉ áp dụng khi requirePayment = true)
+Nếu không đặt, file sẽ không hết hạn sau khi thanh toán
+ */
+  expiresAfterDays?: number;
 };

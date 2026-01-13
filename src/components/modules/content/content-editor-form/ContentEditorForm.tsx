@@ -1,5 +1,5 @@
 // Core
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -27,17 +27,12 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { useGetApiCategories } from "@/api/endpoints/categories";
-import {
-  Upload,
-  Loader2,
-  FileText,
-  DollarSign,
-  AlertCircle,
-  X,
-} from "lucide-react";
-import { isUndefined } from "lodash-es";
+import { Loader2, DollarSign, AlertCircle, X } from "lucide-react";
 import { ResponseData } from "@/api/types/base";
 import { Category } from "@/api/models";
+import { Uploader } from "@/components/shared";
+import { useUploadMedia } from "@/hooks";
+import { Progress } from "@/components/ui/progress";
 
 // Schema validation
 const contentFormSchema = z
@@ -58,13 +53,15 @@ const contentFormSchema = z
       })
       .min(0, "Giá không được âm")
       .max(1000000000, "Giá không được vượt quá 1 tỷ VNĐ"),
-    file: z
-      .instanceof(File)
+    files: z
+      .array(z.instanceof(File))
+      .min(1, "Vui lòng chọn ít nhất 1 file")
+      .max(1, "Chỉ được chọn 1 file")
       .refine(
-        (file) => file.size <= 50 * 1024 * 1024,
+        (files) => files.every((file) => file.size <= 50 * 1024 * 1024),
         "Kích thước file không được vượt quá 50MB"
       )
-      .refine((file) => {
+      .refine((files) => {
         const validTypes = [
           "application/pdf",
           "application/acad",
@@ -77,7 +74,9 @@ const contentFormSchema = z
           "image/vnd.dwg",
           "drawing/dwg",
         ];
-        return validTypes.includes(file.type) || file.name.endsWith(".dwg");
+        return files.every(
+          (file) => validTypes.includes(file.type) || file.name.endsWith(".dwg")
+        );
       }, "Chỉ chấp nhận file PDF hoặc DWG")
       .optional(),
     content_file: z
@@ -90,10 +89,11 @@ const contentFormSchema = z
       .optional(),
   })
   .refine(
-    (data) => data.file !== undefined || data.content_file !== undefined,
+    (data) =>
+      (data.files && data.files.length > 0) || data.content_file !== undefined,
     {
       message: "Vui lòng chọn file hoặc giữ file hiện tại",
-      path: ["file"],
+      path: ["files"],
     }
   );
 
@@ -128,6 +128,14 @@ const ContentEditorForm = ({
 
   const categories = useMemo(() => categoriesData || [], [categoriesData]);
 
+  // Upload media hook
+  const {
+    uploadSingle,
+    uploadProgress,
+    isUploading: isUploadingFile,
+  } = useUploadMedia();
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
   // Initialize form
   const form = useForm<ContentFormValues>({
     resolver: zodResolver(contentFormSchema),
@@ -136,14 +144,19 @@ const ContentEditorForm = ({
       description: defaultValues?.description || "",
       category_id: defaultValues?.category_id || "",
       price: defaultValues?.price || 0,
-      file: defaultValues?.file,
+      files: defaultValues?.files || [],
       content_file: defaultValues?.content_file,
     },
   });
 
   // Watch file changes
-  const selectedFile = form.watch("file");
+  const selectedFiles = form.watch("files");
   const contentFile = form.watch("content_file");
+
+  // Get upload progress for current file
+  const currentFileProgress = selectedFiles?.[0]
+    ? uploadProgress[selectedFiles[0].name]
+    : null;
 
   // Reset form when mode changes
   useEffect(() => {
@@ -153,7 +166,7 @@ const ContentEditorForm = ({
         description: defaultValues.description || "",
         category_id: defaultValues.category_id || "",
         price: defaultValues.price || 0,
-        file: defaultValues.file,
+        files: defaultValues.files || [],
         content_file: defaultValues.content_file,
       });
     }
@@ -178,9 +191,37 @@ const ContentEditorForm = ({
 
   const handleSubmit = async (values: ContentFormValues) => {
     try {
+      setUploadError(null);
+
+      // If new file is selected, upload it first
+      if (values.files && values.files.length > 0) {
+        const file = values.files[0];
+
+        // Upload file with compression
+        const uploadedFile = await uploadSingle(file, {
+          compress: true,
+          requirePayment: values.price > 0,
+        });
+
+        if (!uploadedFile) {
+          setUploadError("Upload file thất bại. Vui lòng thử lại.");
+          return;
+        }
+
+        // Update content_file with uploaded file info
+        values.content_file = {
+          _id: uploadedFile._id || "",
+          name: uploadedFile.name,
+          type: uploadedFile.type?.toString() || "",
+          size: uploadedFile.size || 0,
+        };
+      }
+
+      // Submit form with uploaded file info
       await onSubmit(values);
     } catch (error) {
       console.error("Form submission error:", error);
+      setUploadError(error instanceof Error ? error.message : "Có lỗi xảy ra");
     }
   };
 
@@ -201,7 +242,7 @@ const ContentEditorForm = ({
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel className="text-primary font-semibold tracking-wider">
                 Tiêu đề <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
@@ -225,7 +266,7 @@ const ContentEditorForm = ({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel className="text-primary font-semibold tracking-wider">
                 Mô tả chi tiết <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
@@ -251,7 +292,7 @@ const ContentEditorForm = ({
           name="category_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel className="text-primary font-semibold tracking-wider">
                 Danh mục <span className="text-red-500">*</span>
               </FormLabel>
               <Select
@@ -297,7 +338,7 @@ const ContentEditorForm = ({
           name="price"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel className="text-primary font-semibold tracking-wider">
                 Giá bán <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
@@ -331,118 +372,60 @@ const ContentEditorForm = ({
         />
 
         {/* File Upload */}
-
         <FormField
           control={form.control}
-          name="file"
-          render={({ field: { value, onChange, ...field } }) => (
+          name="files"
+          render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel className="text-primary font-semibold tracking-wider">
                 File bản vẽ <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <div className="space-y-3">
-                  {/* Current File Display (Edit Mode) */}
-                  {!selectedFile && contentFile && (
-                    <div className="flex items-center gap-3 p-4 border border-blue-200 rounded-lg bg-blue-50">
-                      <div className="flex items-center justify-center w-10 h-10 rounded bg-blue-100">
-                        <FileText className="w-5 h-5 text-blue-600" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          {contentFile.name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {formatFileSize(contentFile.size)} • File hiện tại
-                        </p>
-                      </div>
-                      <Badge variant="outline" className="text-xs">
-                        {contentFile.type}
-                      </Badge>
-                    </div>
-                  )}
+                  <Uploader
+                    value={field.value || []}
+                    onChange={field.onChange}
+                    maxFiles={1}
+                    maxSize={50 * 1024 * 1024}
+                    accept={{
+                      "application/pdf": [".pdf"],
+                      "application/acad": [".dwg"],
+                    }}
+                  >
+                    <Uploader.DropZone>
+                      <Uploader.Placeholder />
+                    </Uploader.DropZone>
+                    <Uploader.MediaList />
+                  </Uploader>
 
-                  {/* Upload Button */}
-                  {!selectedFile && (
-                    <div className="flex items-center justify-center w-full">
-                      <label
-                        htmlFor="file-upload"
-                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors"
-                      >
-                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                          <Upload className="w-8 h-8 mb-2 text-gray-500" />
-                          <p className="mb-2 text-sm text-gray-500">
-                            <span className="font-semibold">
-                              {contentFile
-                                ? "Chọn file mới"
-                                : "Nhấn để chọn file"}
-                            </span>{" "}
-                            hoặc kéo thả
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            PDF hoặc DWG (tối đa 50MB)
-                          </p>
-                        </div>
-                        <Input
-                          id="file-upload"
-                          type="file"
-                          className="hidden"
-                          accept=".pdf,.dwg"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              onChange(file);
-                            }
-                          }}
-                          disabled={isLoading}
-                          {...field}
-                        />
-                      </label>
-                    </div>
-                  )}
-
-                  {/* New File Preview */}
-                  {selectedFile && (
-                    <div className="flex items-center gap-3 p-4 border border-green-200 rounded-lg bg-green-50">
-                      <div className="flex items-center justify-center w-10 h-10 rounded bg-green-100">
-                        <FileText className="w-5 h-5 text-green-600" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          {selectedFile.name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {formatFileSize(selectedFile.size)} • File mới
-                        </p>
-                      </div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          onChange(undefined);
-                          const input = document.getElementById(
-                            "file-upload"
-                          ) as HTMLInputElement;
-                          if (input) input.value = "";
-                        }}
-                        disabled={isLoading}
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
+                  {/* Current file info in edit mode */}
+                  {mode === "edit" && contentFile && !selectedFiles?.length && (
+                    <div className="rounded-lg border bg-blue-50 p-3">
+                      <p className="text-sm font-medium text-blue-900">
+                        File hiện tại: {contentFile.name}
+                      </p>
+                      <p className="text-xs text-blue-700 mt-1">
+                        {formatFileSize(contentFile.size)}
+                      </p>
                     </div>
                   )}
                 </div>
               </FormControl>
               <FormDescription>
-                {contentFile && !selectedFile
-                  ? "Đang sử dụng file hiện tại. Upload file mới để thay thế."
-                  : "Chỉ chấp nhận file PDF hoặc DWG, kích thước tối đa 50MB"}
+                Chọn file bản vẽ (PDF hoặc DWG, tối đa 50MB)
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        {/* Upload Error Alert */}
+        {uploadError && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{uploadError}</AlertDescription>
+          </Alert>
+        )}
 
         {/* Actions */}
         <div className="flex items-center gap-3 pt-4 border-t justify-between">
@@ -458,14 +441,16 @@ const ContentEditorForm = ({
           )}
           <Button
             type="submit"
-            disabled={isLoading || form.formState.isDirty === false}
-            loading={isLoading}
+            disabled={
+              isLoading || isUploadingFile || form.formState.isDirty === false
+            }
+            loading={isLoading || isUploadingFile}
             className="ml-auto"
           >
-            {isLoading ? (
+            {isLoading || isUploadingFile ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Đang xử lý...
+                {isUploadingFile ? "Đang upload..." : "Đang xử lý..."}
               </>
             ) : mode === "create" ? (
               "Tạo mới"

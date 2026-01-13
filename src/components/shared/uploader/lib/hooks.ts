@@ -1,12 +1,14 @@
-import { useContext } from 'react'
-import { UPLOADER_SECTION_CONTEXT } from './constants'
+import { useContext } from "react";
+import { UPLOADER_CONTEXT } from "./constants";
 
-export const useUploaderSectionContext = () => {
-  const context = useContext(UPLOADER_SECTION_CONTEXT)
+export const useUploaderContext = () => {
+  const context = useContext(UPLOADER_CONTEXT);
 
   if (!context) {
-    throw new Error('useUploaderSectionContext must be used within a UPLOADER_SECTION_CONTEXT provider')
+    throw new Error(
+      "useUploaderContext must be used within an Uploader component"
+    );
   }
 
-  return context
-}
+  return context;
+};

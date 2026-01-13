@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { DownloadCloudIcon, ShoppingCartIcon, User } from "lucide-react";
 import Image from "@/components/ui/image";
 import { ContentProduct } from "@/api/types/content";
-import { FC, MouseEvent, useState } from "react";
+import { FC, useState } from "react";
 import { formatVND } from "@/utils/currency";
 import { generateImageRandom } from "@/utils/image";
 import { ContentStatus } from "@/enums/content";
@@ -64,7 +64,7 @@ const BlueprintCard: FC<Props> = (props) => {
   // Memos
   const title = product.title || "Untitled Product";
   const formattedPrice = formatVND(product.price || 0);
-  const username = product.createdBy?.username || "Anonymous";
+  const username = product.createdBy?.email || "Anonymous";
   const categoryName = product?.category?.name || "General";
   const statusName =
     product.status === ContentStatus.APPROVED

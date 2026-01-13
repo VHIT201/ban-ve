@@ -11,18 +11,20 @@ import {
   BlueprintCard,
   BlueprintCardSkeleton,
 } from "@/components/modules/content";
-import { useGetApiContent } from "@/api/endpoints/content";
+import {
+  useGetApiContent,
+  useGetApiContentStatisticsDownloadRanking,
+} from "@/api/endpoints/content";
 import { ContentResponse } from "@/api/types/content";
 import {
   GetApiContent200Pagination,
-  GetApiPaymentsStatisticsDownloadRanking200DataItem,
-  GetApiPaymentsStatisticsDownloadRanking200DataItemContentInfo,
-  GetApiPaymentsStatisticsPurchaseRanking200DataItemContentInfo,
+  GetApiContentStatisticsDownloadRanking200DataItem,
+  GetApiContentStatisticsDownloadRanking200DataItemContentInfo,
 } from "@/api/models";
 import { UseQueryResult } from "@tanstack/react-query";
 import { QueryBoundary } from "@/components/shared";
 import { useNavigate } from "react-router-dom";
-import { useGetApiPaymentsStatisticsDownloadRanking } from "@/api/endpoints/payments";
+
 import { ResponseData } from "@/api/types/base";
 
 const DailyBestDownloaded = () => {
@@ -31,7 +33,7 @@ const DailyBestDownloaded = () => {
 
   // Queries
   // Queries
-  const getBluerintListQuery = useGetApiPaymentsStatisticsDownloadRanking(
+  const getBluerintListQuery = useGetApiContentStatisticsDownloadRanking(
     {
       limit: 10,
     },
@@ -40,12 +42,12 @@ const DailyBestDownloaded = () => {
         select: (data) =>
           (
             data as unknown as ResponseData<
-              GetApiPaymentsStatisticsDownloadRanking200DataItem[]
+              GetApiContentStatisticsDownloadRanking200DataItem[]
             >
           ).data,
       },
     }
-  ) as UseQueryResult<GetApiPaymentsStatisticsDownloadRanking200DataItem[]>;
+  ) as UseQueryResult<GetApiContentStatisticsDownloadRanking200DataItem[]>;
 
   // Methods
   const handleViewDetail = (blueprint: ContentResponse) => {
@@ -94,7 +96,7 @@ const DailyBestDownloaded = () => {
                       <BlueprintCard
                         product={{
                           _id: product.contentId!,
-                          ...(product.contentInfo as GetApiPaymentsStatisticsDownloadRanking200DataItemContentInfo),
+                          ...(product.contentInfo as GetApiContentStatisticsDownloadRanking200DataItemContentInfo),
                           downloadCount: product.downloadCount,
                         }}
                         onViewDetail={handleViewDetail}

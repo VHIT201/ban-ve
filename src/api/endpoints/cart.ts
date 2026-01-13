@@ -24,10 +24,17 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  Cart,
+  BadRequestErrorResponse,
+  DeleteApiCart200,
   DeleteApiCartBody,
+  GetApiCart200,
+  NotFoundErrorResponse,
+  PostApiCart200,
   PostApiCartBody,
-  PutApiCartBody
+  PutApiCart200,
+  PutApiCartBody,
+  ServerErrorResponse,
+  UnauthorizedErrorResponse
 } from '../models';
 
 import { mainInstance } from '../mutator/custom-instance';
@@ -46,7 +53,7 @@ export const getApiCart = (
 ) => {
       
       
-      return mainInstance<Cart>(
+      return mainInstance<GetApiCart200>(
       {url: `/api/cart`, method: 'GET', signal
     },
       );
@@ -68,7 +75,7 @@ export const getGetApiCartQueryKey = () => {
     }
 
     
-export const getGetApiCartInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCart>>>, TError = ErrorType<void>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCart>>, TError, TData>>, }
+export const getGetApiCartInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCart>>>, TError = ErrorType<UnauthorizedErrorResponse | ServerErrorResponse>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCart>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
@@ -87,10 +94,10 @@ const {query: queryOptions} = options ?? {};
 }
 
 export type GetApiCartInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCart>>>
-export type GetApiCartInfiniteQueryError = ErrorType<void>
+export type GetApiCartInfiniteQueryError = ErrorType<UnauthorizedErrorResponse | ServerErrorResponse>
 
 
-export function useGetApiCartInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCart>>>, TError = ErrorType<void>>(
+export function useGetApiCartInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCart>>>, TError = ErrorType<UnauthorizedErrorResponse | ServerErrorResponse>>(
   options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCart>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCart>>,
@@ -100,7 +107,7 @@ export function useGetApiCartInfinite<TData = InfiniteData<Awaited<ReturnType<ty
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCartInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCart>>>, TError = ErrorType<void>>(
+export function useGetApiCartInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCart>>>, TError = ErrorType<UnauthorizedErrorResponse | ServerErrorResponse>>(
   options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCart>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCart>>,
@@ -110,7 +117,7 @@ export function useGetApiCartInfinite<TData = InfiniteData<Awaited<ReturnType<ty
       >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCartInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCart>>>, TError = ErrorType<void>>(
+export function useGetApiCartInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCart>>>, TError = ErrorType<UnauthorizedErrorResponse | ServerErrorResponse>>(
   options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCart>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -118,7 +125,7 @@ export function useGetApiCartInfinite<TData = InfiniteData<Awaited<ReturnType<ty
  * @summary Lấy thông tin giỏ hàng của người dùng
  */
 
-export function useGetApiCartInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCart>>>, TError = ErrorType<void>>(
+export function useGetApiCartInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCart>>>, TError = ErrorType<UnauthorizedErrorResponse | ServerErrorResponse>>(
   options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCart>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -135,7 +142,7 @@ export function useGetApiCartInfinite<TData = InfiniteData<Awaited<ReturnType<ty
 
 
 
-export const getGetApiCartQueryOptions = <TData = Awaited<ReturnType<typeof getApiCart>>, TError = ErrorType<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCart>>, TError, TData>>, }
+export const getGetApiCartQueryOptions = <TData = Awaited<ReturnType<typeof getApiCart>>, TError = ErrorType<UnauthorizedErrorResponse | ServerErrorResponse>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCart>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
@@ -154,10 +161,10 @@ const {query: queryOptions} = options ?? {};
 }
 
 export type GetApiCartQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCart>>>
-export type GetApiCartQueryError = ErrorType<void>
+export type GetApiCartQueryError = ErrorType<UnauthorizedErrorResponse | ServerErrorResponse>
 
 
-export function useGetApiCart<TData = Awaited<ReturnType<typeof getApiCart>>, TError = ErrorType<void>>(
+export function useGetApiCart<TData = Awaited<ReturnType<typeof getApiCart>>, TError = ErrorType<UnauthorizedErrorResponse | ServerErrorResponse>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCart>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCart>>,
@@ -167,7 +174,7 @@ export function useGetApiCart<TData = Awaited<ReturnType<typeof getApiCart>>, TE
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCart<TData = Awaited<ReturnType<typeof getApiCart>>, TError = ErrorType<void>>(
+export function useGetApiCart<TData = Awaited<ReturnType<typeof getApiCart>>, TError = ErrorType<UnauthorizedErrorResponse | ServerErrorResponse>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCart>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCart>>,
@@ -177,7 +184,7 @@ export function useGetApiCart<TData = Awaited<ReturnType<typeof getApiCart>>, TE
       >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCart<TData = Awaited<ReturnType<typeof getApiCart>>, TError = ErrorType<void>>(
+export function useGetApiCart<TData = Awaited<ReturnType<typeof getApiCart>>, TError = ErrorType<UnauthorizedErrorResponse | ServerErrorResponse>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCart>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -185,7 +192,7 @@ export function useGetApiCart<TData = Awaited<ReturnType<typeof getApiCart>>, TE
  * @summary Lấy thông tin giỏ hàng của người dùng
  */
 
-export function useGetApiCart<TData = Awaited<ReturnType<typeof getApiCart>>, TError = ErrorType<void>>(
+export function useGetApiCart<TData = Awaited<ReturnType<typeof getApiCart>>, TError = ErrorType<UnauthorizedErrorResponse | ServerErrorResponse>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCart>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -211,7 +218,7 @@ export const postApiCart = (
 ) => {
       
       
-      return mainInstance<Cart>(
+      return mainInstance<PostApiCart200>(
       {url: `/api/cart`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: postApiCartBody, signal
@@ -221,7 +228,7 @@ export const postApiCart = (
   
 
 
-export const getPostApiCartMutationOptions = <TError = ErrorType<void>,
+export const getPostApiCartMutationOptions = <TError = ErrorType<BadRequestErrorResponse | UnauthorizedErrorResponse | ServerErrorResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiCart>>, TError,{data: BodyType<PostApiCartBody>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiCart>>, TError,{data: BodyType<PostApiCartBody>}, TContext> => {
 
@@ -248,12 +255,12 @@ const {mutation: mutationOptions} = options ?
 
     export type PostApiCartMutationResult = NonNullable<Awaited<ReturnType<typeof postApiCart>>>
     export type PostApiCartMutationBody = BodyType<PostApiCartBody>
-    export type PostApiCartMutationError = ErrorType<void>
+    export type PostApiCartMutationError = ErrorType<BadRequestErrorResponse | UnauthorizedErrorResponse | ServerErrorResponse>
 
     /**
  * @summary Thêm sản phẩm vào giỏ hàng
  */
-export const usePostApiCart = <TError = ErrorType<void>,
+export const usePostApiCart = <TError = ErrorType<BadRequestErrorResponse | UnauthorizedErrorResponse | ServerErrorResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiCart>>, TError,{data: BodyType<PostApiCartBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiCart>>,
@@ -274,7 +281,7 @@ export const putApiCart = (
  ) => {
       
       
-      return mainInstance<Cart>(
+      return mainInstance<PutApiCart200>(
       {url: `/api/cart`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
       data: putApiCartBody
@@ -284,7 +291,7 @@ export const putApiCart = (
   
 
 
-export const getPutApiCartMutationOptions = <TError = ErrorType<void>,
+export const getPutApiCartMutationOptions = <TError = ErrorType<BadRequestErrorResponse | UnauthorizedErrorResponse | NotFoundErrorResponse | ServerErrorResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCart>>, TError,{data: BodyType<PutApiCartBody>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof putApiCart>>, TError,{data: BodyType<PutApiCartBody>}, TContext> => {
 
@@ -311,12 +318,12 @@ const {mutation: mutationOptions} = options ?
 
     export type PutApiCartMutationResult = NonNullable<Awaited<ReturnType<typeof putApiCart>>>
     export type PutApiCartMutationBody = BodyType<PutApiCartBody>
-    export type PutApiCartMutationError = ErrorType<void>
+    export type PutApiCartMutationError = ErrorType<BadRequestErrorResponse | UnauthorizedErrorResponse | NotFoundErrorResponse | ServerErrorResponse>
 
     /**
  * @summary Cập nhật số lượng sản phẩm trong giỏ hàng
  */
-export const usePutApiCart = <TError = ErrorType<void>,
+export const usePutApiCart = <TError = ErrorType<BadRequestErrorResponse | UnauthorizedErrorResponse | NotFoundErrorResponse | ServerErrorResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCart>>, TError,{data: BodyType<PutApiCartBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putApiCart>>,
@@ -337,7 +344,7 @@ export const deleteApiCart = (
  ) => {
       
       
-      return mainInstance<Cart>(
+      return mainInstance<DeleteApiCart200>(
       {url: `/api/cart`, method: 'DELETE',
       headers: {'Content-Type': 'application/json', },
       data: deleteApiCartBody
@@ -347,7 +354,7 @@ export const deleteApiCart = (
   
 
 
-export const getDeleteApiCartMutationOptions = <TError = ErrorType<void>,
+export const getDeleteApiCartMutationOptions = <TError = ErrorType<BadRequestErrorResponse | UnauthorizedErrorResponse | NotFoundErrorResponse | ServerErrorResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiCart>>, TError,{data: BodyType<DeleteApiCartBody>}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteApiCart>>, TError,{data: BodyType<DeleteApiCartBody>}, TContext> => {
 
@@ -374,12 +381,12 @@ const {mutation: mutationOptions} = options ?
 
     export type DeleteApiCartMutationResult = NonNullable<Awaited<ReturnType<typeof deleteApiCart>>>
     export type DeleteApiCartMutationBody = BodyType<DeleteApiCartBody>
-    export type DeleteApiCartMutationError = ErrorType<void>
+    export type DeleteApiCartMutationError = ErrorType<BadRequestErrorResponse | UnauthorizedErrorResponse | NotFoundErrorResponse | ServerErrorResponse>
 
     /**
  * @summary Xóa sản phẩm khỏi giỏ hàng
  */
-export const useDeleteApiCart = <TError = ErrorType<void>,
+export const useDeleteApiCart = <TError = ErrorType<BadRequestErrorResponse | UnauthorizedErrorResponse | NotFoundErrorResponse | ServerErrorResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiCart>>, TError,{data: BodyType<DeleteApiCartBody>}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteApiCart>>,

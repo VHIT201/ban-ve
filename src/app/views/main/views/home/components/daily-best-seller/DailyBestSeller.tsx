@@ -5,29 +5,30 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Button } from "@/components/ui/button";
-import Image from "@/components/ui/image";
+
 import {
   BlueprintCard,
   BlueprintCardSkeleton,
 } from "@/components/modules/content";
 import { ContentResponse } from "@/api/types/content";
-import {
-  GetApiPaymentsStatisticsPurchaseRanking200DataItem,
-  GetApiPaymentsStatisticsPurchaseRanking200DataItemContentInfo,
-} from "@/api/models";
+
 import { UseQueryResult } from "@tanstack/react-query";
 import { QueryBoundary } from "@/components/shared";
 import { useNavigate } from "react-router-dom";
-import { useGetApiPaymentsStatisticsPurchaseRanking } from "@/api/endpoints/payments";
 import { ResponseData } from "@/api/types/base";
+import { useGetApiContentStatisticsPurchaseRanking } from "@/api/endpoints/content";
+
+import {
+  GetApiContentStatisticsPurchaseRanking200DataItem,
+  GetApiContentStatisticsPurchaseRanking200DataItemContentInfo,
+} from "@/api/models";
 
 const DailyBestDownloaded = () => {
   // Hooks
   const navigate = useNavigate();
 
   // Queries
-  const getBluerintListQuery = useGetApiPaymentsStatisticsPurchaseRanking(
+  const getBluerintListQuery = useGetApiContentStatisticsPurchaseRanking(
     {
       limit: 10,
     },
@@ -36,12 +37,12 @@ const DailyBestDownloaded = () => {
         select: (data) =>
           (
             data as unknown as ResponseData<
-              GetApiPaymentsStatisticsPurchaseRanking200DataItem[]
+              GetApiContentStatisticsPurchaseRanking200DataItem[]
             >
           ).data,
       },
     }
-  ) as UseQueryResult<GetApiPaymentsStatisticsPurchaseRanking200DataItem[]>;
+  ) as UseQueryResult<GetApiContentStatisticsPurchaseRanking200DataItem[]>;
 
   // Methods
   const handleViewDetail = (blueprint: ContentResponse) => {
@@ -90,7 +91,7 @@ const DailyBestDownloaded = () => {
                       <BlueprintCard
                         product={{
                           _id: product.contentId!,
-                          ...(product.contentInfo as GetApiPaymentsStatisticsPurchaseRanking200DataItemContentInfo),
+                          ...(product.contentInfo as GetApiContentStatisticsPurchaseRanking200DataItemContentInfo),
                           purchaseCount: product.purchaseCount,
                         }}
                         onViewDetail={handleViewDetail}

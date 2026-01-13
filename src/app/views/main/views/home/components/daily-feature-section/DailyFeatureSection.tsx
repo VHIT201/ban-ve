@@ -64,15 +64,9 @@ const DailyFeatureSection = () => {
   const blueprintInfiniteList =
     blueprintInfiniteData?.flatMap((page) => page.data) ?? [];
 
+  console.log("BLUE PRINTS LIST : ", blueprintInfiniteList);
+
   // Effects
-  useEffect(() => {
-    if (getBluePrintListInfiniteQuery.data?.pages) {
-      setPagination({
-        page: getBluePrintListInfiniteQuery.data?.pageParams.length || 0,
-        limit: 6,
-      });
-    }
-  }, [getBluePrintListInfiniteQuery.data]);
 
   return (
     <section className="pt-16 mb-12 bg-white">
