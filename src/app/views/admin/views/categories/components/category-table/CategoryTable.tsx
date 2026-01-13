@@ -28,11 +28,14 @@ const CategoryTable = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   // Queries
-  const getCategoryList = useGetApiCategories({
-    query: {
-      select: (data) => data as unknown as Category[],
-    },
-  }) as UseQueryResult<Category[]>;
+const getCategoryList = useGetApiCategories({
+  query: {
+    select: (data: any) => {
+      const result = data.data?.categories || [];
+      return result;
+    }
+  }
+}) as UseQueryResult<Category[]>;
 
   // Mutations
   const editCategoryMutation = usePutApiCategoriesId({
