@@ -1,16 +1,12 @@
-import { createContext } from 'react'
-import { DropzoneState } from 'react-dropzone'
+import { createContext } from "react";
+import { UploaderContextValue } from "./types";
 
-export const UPLOADER_SECTION_CONTEXT = createContext<{
-  // Props
-  uploading?: boolean
-  maxFiles?: number
-  maxSize?: number
-  accept?: Record<string, string[]>
-  fileList?: File[]
-  dropZoneStates?: DropzoneState
+export const UPLOADER_CONTEXT = createContext<UploaderContextValue | null>(
+  null
+);
 
-  // Actions
-  handleAddImages?: ({ newFile, mutiple }: { newFile: File; mutiple?: boolean }) => void
-  handleDeleteImages?: (fileName: string) => void
-}>({})
+export const DEFAULT_MAX_FILES = 10;
+export const DEFAULT_MAX_SIZE = 10 * 1024 * 1024; // 10MB
+export const DEFAULT_ACCEPT = {
+  "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp"],
+};

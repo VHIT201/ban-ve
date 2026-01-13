@@ -2,15 +2,24 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { DownloadCloudIcon, ShoppingCartIcon, User, Loader2 } from "lucide-react";
+import {
+  DownloadCloudIcon,
+  ShoppingCartIcon,
+  User,
+  Loader2,
+} from "lucide-react";
 import type { Content } from "@/api/models/content";
 import Image from "@/components/ui/image";
 import { ContentProduct } from "@/api/types/content";
-import { FC, MouseEvent, useMemo } from "react";
+import { FC, useState } from "react";
 import { formatVND } from "@/utils/currency";
 import { generateImageRandom } from "@/utils/image";
 import { ContentStatus } from "@/enums/content";
-import { useGetApiCart, usePostApiCart, useDeleteApiCart } from "@/api/endpoints/cart";
+import {
+  useGetApiCart,
+  usePostApiCart,
+  useDeleteApiCart,
+} from "@/api/endpoints/cart";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -65,7 +74,7 @@ const BlueprintCard: FC<Props> = (props) => {
 
   // Check if product is in cart
   const isInCart = useMemo(() => {
-    return cartItems.some(item => item.contentId?._id === product._id);
+    return cartItems.some((item) => item.contentId?._id === product._id);
   }, [cartItems, product._id]);
 
   // Add to cart mutation
@@ -73,19 +82,21 @@ const BlueprintCard: FC<Props> = (props) => {
     mutation: {
       onSuccess: (data) => {
         queryClient.invalidateQueries({ queryKey: ["cart"] });
-        
+
         // Kiểm tra xem sản phẩm đã được thêm vào giỏ hàng chưa
-        const isItemInCart = data?.data?.items?.some(item => item.contentId?._id === product._id);
-        
+        const isItemInCart = data?.data?.items?.some(
+          (item) => item.contentId?._id === product._id
+        );
+
         if (isItemInCart) {
           toast.success("Đã thêm vào giỏ hàng");
           onAddToCart?.(product);
         } else {
           toast.error("Không thể thêm sản phẩm vào giỏ hàng");
         }
-        
+
         // Dispatch custom event to notify other components about cart update
-        window.dispatchEvent(new Event('cartUpdated'));
+        window.dispatchEvent(new Event("cartUpdated"));
       },
       onError: () => {
         toast.error("Thêm vào giỏ hàng thất bại");
@@ -98,10 +109,12 @@ const BlueprintCard: FC<Props> = (props) => {
     mutation: {
       onSuccess: (data) => {
         queryClient.invalidateQueries({ queryKey: ["cart"] });
-        
+
         // Kiểm tra xem sản phẩm đã bị xóa khỏi giỏ hàng chưa
-        const isItemRemoved = !data?.data?.items?.some(item => item.contentId?._id === product._id);
-        
+        const isItemRemoved = !data?.data?.items?.some(
+          (item) => item.contentId?._id === product._id
+        );
+
         if (isItemRemoved) {
           toast.success("Đã xóa khỏi giỏ hàng");
         } else {
@@ -121,12 +134,12 @@ const BlueprintCard: FC<Props> = (props) => {
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
-    
+
     // Always add to cart, don't check if it's already in cart
     addToCart({
       data: {
         contentId: product._id,
-        quantity: 1
+        quantity: 1,
       },
     });
   };
@@ -134,7 +147,7 @@ const BlueprintCard: FC<Props> = (props) => {
   // Memos
   const title = product.title || "Untitled Product";
   const formattedPrice = formatVND(product.price || 0);
-  const username = product.createdBy?.username || "Anonymous";
+  const username = product.createdBy?.email || "Anonymous";
   const categoryName = product?.category?.name || "General";
   const statusName =
     product.status === ContentStatus.APPROVED

@@ -28,33 +28,21 @@ const ContentDetail = () => {
     },
   });
 
-  const uploadFileMutation = usePostApiFileUpload();
-
   // Methods
   const handleSubmit = async (values: ContentFormValues) => {
-    if (!values.file) {
+    if (!values.content_file) {
       toast.error("Vui lòng chọn tệp tải lên.");
       return;
     }
 
-    // Ensure price is a number and not negative
     const price = Number(values.price) >= 0 ? Number(values.price) : 0;
 
     try {
-      const fileUploadResponse = await uploadFileMutation.mutateAsync({
-        data: {
-          file: values.file,
-        },
-      });
-      const fileData = (
-        fileUploadResponse as unknown as MutationData<FileResponse>
-      ).data;
-
       await createContentMutation.mutateAsync({
         data: {
           title: values.title,
           description: values.description,
-          file_id: fileData._id,
+          file_id: values.content_file._id,
           category_id: values.category_id,
           price: price,
         },
@@ -64,7 +52,6 @@ const ContentDetail = () => {
         "Đã gửi yêu cầu tạo bản vẽ mới thành công. Vui lòng chờ quản trị viên phê duyệt."
       );
     } catch (error) {
-      console.error("Failed to create content:", error);
       toast.error("Đã có lỗi xảy ra khi tạo bản vẽ mới. Vui lòng thử lại sau.");
     }
   };
@@ -92,9 +79,7 @@ const ContentDetail = () => {
       <CardContent>
         <ContentEditorForm
           mode="create"
-          isLoading={
-            createContentMutation.isPending || uploadFileMutation.isPending
-          }
+          isLoading={createContentMutation.isPending}
           onSubmit={handleSubmit}
         />
       </CardContent>

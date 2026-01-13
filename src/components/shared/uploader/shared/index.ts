@@ -1,5 +1,2 @@
-export { default as UploaderAvatarView } from './uploader-avatar-view'
-export { default as UploaderFileListView } from './uploader-file-list-view'
-export { default as UploaderMediaListView } from './uploader-media-list-view'
-export { default as UploaderPlaceholderView } from './uploader-placeholder-view'
-export { default as UploaderAdminMediaSingleView } from './uploader-admin-media-single-view'
+export { default as UploaderFileItem } from "./uploader-file-item";
+export { default as UploaderErrorMessage } from "./uploader-error-message";

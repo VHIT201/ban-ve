@@ -17,7 +17,6 @@ import {
   DEFAULT_PAGE_INDEX,
   DEFAULT_PAGE_SIZE,
 } from "./lib/constants";
-import { Table } from "@/components/ui/table";
 import { assign } from "lodash-es";
 import {
   DataTableBody,
@@ -25,7 +24,6 @@ import {
   DataTableHeader,
   DataTablePagination,
 } from "./components";
-import { Pagination } from "@/components/ui/pagination";
 
 interface DataTableRootProps<TData> extends Props<TData> {
   children: ReactNode;

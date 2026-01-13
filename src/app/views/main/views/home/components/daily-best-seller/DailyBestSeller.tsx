@@ -5,13 +5,25 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Button } from "@/components/ui/button";
-import Image from "@/components/ui/image";
+
 import {
   BlueprintCard,
   BlueprintCardSkeleton,
 } from "@/components/modules/content";
 import { ContentResponse } from "@/api/types/content";
+<<<<<<< HEAD
+
+import { UseQueryResult } from "@tanstack/react-query";
+import { QueryBoundary } from "@/components/shared";
+import { useNavigate } from "react-router-dom";
+import { ResponseData } from "@/api/types/base";
+import { useGetApiContentStatisticsPurchaseRanking } from "@/api/endpoints/content";
+
+import {
+  GetApiContentStatisticsPurchaseRanking200DataItem,
+  GetApiContentStatisticsPurchaseRanking200DataItemContentInfo,
+} from "@/api/models";
+=======
 import type {
   GetApiContentStatisticsPurchaseRanking200DataItem,
   GetApiContentStatisticsPurchaseRanking200,
@@ -20,6 +32,7 @@ import { UseQueryResult } from "@tanstack/react-query";
 import { QueryBoundary } from "@/components/shared";
 import { useNavigate } from "react-router-dom";
 import { useGetApiContentStatisticsPurchaseRanking } from "@/api/endpoints/content";
+>>>>>>> 15f6ca13b4107d9029846bef9d7c0c4768cd116c
 
 const DailyBestDownloaded = () => {
   // Hooks
@@ -27,10 +40,24 @@ const DailyBestDownloaded = () => {
 
   // Queries
   const getBluerintListQuery = useGetApiContentStatisticsPurchaseRanking(
+<<<<<<< HEAD
+    {
+      limit: 10,
+    },
+    {
+      query: {
+        select: (data) =>
+          (
+            data as unknown as ResponseData<
+              GetApiContentStatisticsPurchaseRanking200DataItem[]
+            >
+          ).data,
+=======
     { limit: 10 },
     {
       query: {
         select: (data: GetApiContentStatisticsPurchaseRanking200) => data.data || [],
+>>>>>>> 15f6ca13b4107d9029846bef9d7c0c4768cd116c
       },
     }
   ) as UseQueryResult<GetApiContentStatisticsPurchaseRanking200DataItem[]>;
@@ -82,7 +109,11 @@ const DailyBestDownloaded = () => {
                       <BlueprintCard
                         product={{
                           _id: product.contentId!,
+<<<<<<< HEAD
+                          ...(product.contentInfo as GetApiContentStatisticsPurchaseRanking200DataItemContentInfo),
+=======
                           ...(product.contentInfo || {}),
+>>>>>>> 15f6ca13b4107d9029846bef9d7c0c4768cd116c
                           purchaseCount: product.purchaseCount,
                         }}
                         onViewDetail={handleViewDetail}

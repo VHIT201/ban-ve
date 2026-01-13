@@ -11,16 +11,20 @@ import {
   BlueprintCard,
   BlueprintCardSkeleton,
 } from "@/components/modules/content";
-import { useGetApiContent } from "@/api/endpoints/content";
+import {
+  useGetApiContent,
+  useGetApiContentStatisticsDownloadRanking,
+} from "@/api/endpoints/content";
 import { ContentResponse } from "@/api/types/content";
-import type {
+import {
+  GetApiContent200Pagination,
   GetApiContentStatisticsDownloadRanking200DataItem,
-  GetApiContentStatisticsDownloadRanking200,
+  GetApiContentStatisticsDownloadRanking200DataItemContentInfo,
 } from "@/api/models";
 import { UseQueryResult } from "@tanstack/react-query";
 import { QueryBoundary } from "@/components/shared";
 import { useNavigate } from "react-router-dom";
-import { useGetApiContentStatisticsDownloadRanking } from "@/api/endpoints/content";
+
 import { ResponseData } from "@/api/types/base";
 
 const DailyBestDownloaded = () => {
@@ -30,10 +34,17 @@ const DailyBestDownloaded = () => {
   // Queries
   // Queries
   const getBluerintListQuery = useGetApiContentStatisticsDownloadRanking(
-    { limit: 10 },
+    {
+      limit: 10,
+    },
     {
       query: {
-        select: (data: GetApiContentStatisticsDownloadRanking200) => data.data || [],
+        select: (data) =>
+          (
+            data as unknown as ResponseData<
+              GetApiContentStatisticsDownloadRanking200DataItem[]
+            >
+          ).data,
       },
     }
   ) as UseQueryResult<GetApiContentStatisticsDownloadRanking200DataItem[]>;
@@ -85,7 +96,7 @@ const DailyBestDownloaded = () => {
                       <BlueprintCard
                         product={{
                           _id: product.contentId!,
-                          ...(product.contentInfo || {}),
+                          ...(product.contentInfo as GetApiContentStatisticsDownloadRanking200DataItemContentInfo),
                           downloadCount: product.downloadCount,
                         }}
                         onViewDetail={handleViewDetail}
