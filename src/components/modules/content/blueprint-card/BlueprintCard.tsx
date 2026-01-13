@@ -8,10 +8,9 @@ import {
   User,
   Loader2,
 } from "lucide-react";
-import type { Content } from "@/api/models/content";
 import Image from "@/components/ui/image";
 import { ContentProduct } from "@/api/types/content";
-import { FC, useState } from "react";
+import { FC, useMemo } from "react";
 import { formatVND } from "@/utils/currency";
 import { generateImageRandom } from "@/utils/image";
 import { ContentStatus } from "@/enums/content";
