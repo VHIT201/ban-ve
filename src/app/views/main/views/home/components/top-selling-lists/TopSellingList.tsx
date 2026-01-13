@@ -1,5 +1,5 @@
-import { useGetApiPaymentsStatisticsPurchaseRanking } from "@/api/endpoints/payments";
-import { GetApiPaymentsStatisticsPurchaseRanking200DataItem } from "@/api/models";
+import { useGetApiContentStatisticsPurchaseRanking } from "@/api/endpoints/content";
+import { GetApiContentStatisticsPurchaseRanking200DataItem } from "@/api/models";
 import { ResponseData } from "@/api/types/base";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -71,7 +71,7 @@ const BestSellingData = () => {
   const navigate = useNavigate();
 
   // Queries
-  const getBluerintListQuery = useGetApiPaymentsStatisticsPurchaseRanking(
+  const getBluerintListQuery = useGetApiContentStatisticsPurchaseRanking(
     {
       limit: 5,
     },
@@ -80,12 +80,12 @@ const BestSellingData = () => {
         select: (data) =>
           (
             data as unknown as ResponseData<
-              GetApiPaymentsStatisticsPurchaseRanking200DataItem[]
+              GetApiContentStatisticsPurchaseRanking200DataItem[]
             >
           ).data,
       },
     }
-  ) as UseQueryResult<GetApiPaymentsStatisticsPurchaseRanking200DataItem[]>;
+  ) as UseQueryResult<GetApiContentStatisticsPurchaseRanking200DataItem[]>;
 
   const bestSellingProducts =
     getBluerintListQuery.data
