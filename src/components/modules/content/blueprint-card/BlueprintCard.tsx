@@ -2,19 +2,58 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { DownloadCloudIcon, ShoppingCartIcon, User } from "lucide-react";
+import {
+  DownloadCloudIcon,
+  ShoppingCartIcon,
+  User,
+  Loader2,
+} from "lucide-react";
+import type { Content } from "@/api/models/content";
 import Image from "@/components/ui/image";
 import { ContentProduct } from "@/api/types/content";
 import { FC, useState } from "react";
 import { formatVND } from "@/utils/currency";
 import { generateImageRandom } from "@/utils/image";
 import { ContentStatus } from "@/enums/content";
-import { useCartStore } from "@/stores/use-cart-store";
+import {
+  useGetApiCart,
+  usePostApiCart,
+  useDeleteApiCart,
+} from "@/api/endpoints/cart";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+
+interface CartItem {
+  _id: string;
+  quantity: number;
+  contentId?: {
+    _id: string;
+    title: string;
+    price?: number;
+    description?: string;
+    category?: {
+      _id: string;
+      name: string;
+      description?: string;
+    };
+  };
+}
+
+interface CartResponse {
+  message?: string;
+  data?: {
+    _id?: string;
+    userId?: string;
+    items?: CartItem[];
+    createdAt?: string;
+    updatedAt?: string;
+  };
+}
 
 interface Props {
   product: ContentProduct;
@@ -26,39 +65,83 @@ interface Props {
 const BlueprintCard: FC<Props> = (props) => {
   // Props
   const { product, className, onViewDetail, onAddToCart } = props;
+  const queryClient = useQueryClient();
 
-  // States
-  const [isAddingCart, setIsAddingCart] = useState(false);
+  // Cart API
+  const { data: cartData, isLoading: isLoadingCart } = useGetApiCart({});
+  const cartResponse = cartData as CartResponse;
+  const cartItems = cartResponse?.data?.items ?? [];
 
-  const addItem = useCartStore((state) => state.addItem);
-  const isInCart = useCartStore((state) => state.isInCart(product._id));
-  const openCart = useCartStore((state) => state.openCart);
+  // Check if product is in cart
+  const isInCart = useMemo(() => {
+    return cartItems.some((item) => item.contentId?._id === product._id);
+  }, [cartItems, product._id]);
+
+  // Add to cart mutation
+  const { mutate: addToCart, isPending: isAddingToCart } = usePostApiCart({
+    mutation: {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries({ queryKey: ["cart"] });
+
+        // Kiểm tra xem sản phẩm đã được thêm vào giỏ hàng chưa
+        const isItemInCart = data?.data?.items?.some(
+          (item) => item.contentId?._id === product._id
+        );
+
+        if (isItemInCart) {
+          toast.success("Đã thêm vào giỏ hàng");
+          onAddToCart?.(product);
+        } else {
+          toast.error("Không thể thêm sản phẩm vào giỏ hàng");
+        }
+
+        // Dispatch custom event to notify other components about cart update
+        window.dispatchEvent(new Event("cartUpdated"));
+      },
+      onError: () => {
+        toast.error("Thêm vào giỏ hàng thất bại");
+      },
+    },
+  });
+
+  // Remove from cart mutation
+  const { mutate: removeFromCart } = useDeleteApiCart({
+    mutation: {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries({ queryKey: ["cart"] });
+
+        // Kiểm tra xem sản phẩm đã bị xóa khỏi giỏ hàng chưa
+        const isItemRemoved = !data?.data?.items?.some(
+          (item) => item.contentId?._id === product._id
+        );
+
+        if (isItemRemoved) {
+          toast.success("Đã xóa khỏi giỏ hàng");
+        } else {
+          toast.error("Không thể xóa sản phẩm khỏi giỏ hàng");
+        }
+      },
+      onError: () => {
+        toast.error("Xóa khỏi giỏ hàng thất bại");
+      },
+    },
+  });
 
   // Methods
   const handleViewDetail = () => {
-    if (onViewDetail) {
-      onViewDetail(product);
-    }
+    onViewDetail?.(product);
   };
 
-  const handleAddToCart = async (e: React.MouseEvent) => {
+  const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    if (isInCart) {
-      openCart();
-      return;
-    }
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      addItem(product);
-      onAddToCart?.(product);
-
-      setIsAddingCart(true);
-      setTimeout(() => setIsAddingCart(false), 2000);
-    } catch (error) {
-      console.error("Failed to add to cart:", error);
-    }
+    // Always add to cart, don't check if it's already in cart
+    addToCart({
+      data: {
+        contentId: product._id,
+        quantity: 1,
+      },
+    });
   };
 
   // Memos
@@ -164,22 +247,20 @@ const BlueprintCard: FC<Props> = (props) => {
       <CardFooter className="px-0 pt-0 pb-4 flex items-center justify-between border-t border-border mt-auto pt-4">
         <Button
           size="sm"
-          loading={isAddingCart}
+          loading={isAddingToCart}
           variant="outline"
           className={cn(
             "h-12 rounded-none w-full px-5 font-semibold text-[12px] uppercase tracking-wider border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 bg-transparent",
-            isAddingCart ? "cursor-not-allowed opacity-70" : "",
-            isInCart
-              ? "bg-green-600 text-white border-green-600 hover:bg-green-700 hover:border-green-700"
-              : ""
+            isAddingToCart ? "cursor-not-allowed opacity-70" : ""
           )}
           onClick={handleAddToCart}
         >
-          {isInCart
-            ? "Đã trong giỏ"
-            : isAddingCart
-            ? "Đang thêm"
-            : "Thêm vào giỏ"}
+          {isAddingToCart ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <ShoppingCartIcon className="w-4 h-4 mr-2" />
+          )}
+          Thêm vào giỏ hàng
         </Button>
       </CardFooter>
     </Card>
