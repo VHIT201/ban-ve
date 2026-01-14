@@ -1,14 +1,15 @@
 // App
 import DataTable from "@/components/shared/data-table/DataTable";
-import { GetApiContent200Pagination } from "@/api/models";
+import { GetApiContentAll200Pagination } from "@/api/models";
 
 // Internal
 import { useContentTableColumnsDefs } from "./lib/hooks";
 import { Fragment, useEffect, useState } from "react";
 import {
-  getGetApiContentQueryKey,
+  getGetApiContentAllQueryKey,
   useDeleteApiContentId,
-  useGetApiContent,
+  useGetApiContentAll,
+  usePutApiContentIdApprove,
 } from "@/api/endpoints/content";
 import { QueryBoundary } from "@/components/shared";
 import { toast } from "sonner";
@@ -38,9 +39,9 @@ const ContentTable = () => {
   // =====================
   // Queries
   // =====================
-  const getContentListQuery = useGetApiContent<{
+  const getContentListQuery = useGetApiContentAll<{
     data: ContentResponse[];
-    pagination?: GetApiContent200Pagination;
+    pagination?: GetApiContentAll200Pagination;
   }>(
     {
       page: pagination.pageIndex + 1, // API: 1-based
@@ -51,13 +52,13 @@ const ContentTable = () => {
         select: (data) =>
           data as unknown as {
             data: ContentResponse[];
-            pagination?: GetApiContent200Pagination;
+            pagination?: GetApiContentAll200Pagination;
           },
       },
     }
   ) as UseQueryResult<{
     data: ContentResponse[];
-    pagination?: GetApiContent200Pagination;
+    pagination?: GetApiContentAll200Pagination;
   }>;
 
   // =====================
@@ -66,7 +67,7 @@ const ContentTable = () => {
   const deleteContentMutation = useDeleteApiContentId({
     mutation: {
       meta: {
-        invalidateQueries: [getGetApiContentQueryKey()],
+        invalidateQueries: [getGetApiContentAllQueryKey()],
       },
       onSuccess: () => {
         toast.success("Xóa bài viết thành công.");
@@ -111,9 +112,36 @@ const ContentTable = () => {
     });
   };
 
-  const handleApprove = (_: ContentResponse) => {};
-  const handleReject = (_: ContentResponse) => {};
-  const handleView = (_: ContentResponse) => {};
+
+  const approveContentMutation = usePutApiContentIdApprove({
+    mutation: {
+      onSuccess: () => {
+        toast.success("Duyệt nội dung thành công");
+        getContentListQuery.refetch();
+      },
+      onError: () => {
+        toast.error("Có lỗi xảy ra khi duyệt nội dung");
+      },
+    },
+  });
+
+  const handleApprove = (content: ContentResponse) => {
+    if (!content._id) return;
+    if (confirm(`Bạn có chắc chắn muốn duyệt nội dung "${content.title}"?`)) {
+      approveContentMutation.mutate({ id: content._id });
+    }
+  };
+
+  const handleReject = () => {
+    // Không làm gì cả vì không có API từ chối
+  };
+
+  const handleView = (content: ContentResponse) => {
+    // Open content in a new tab or show preview
+    if (content.file?.url) {
+      window.open(content.file.url, '_blank');
+    }
+  };
 
   // =====================
   // Columns

@@ -37,7 +37,7 @@ import { UseQueryResult } from "@tanstack/react-query";
 import { CollaboratorMe } from "@/api/types/collaborator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CollaboratorContents } from "./components";
-import CollaboratorRevenue from "./components/CollaboratorRevenue";
+import CollaboratorRevenue from "./components/collaborator-revenue/CollaboratorRevenue";
 
 const collaboratorApplySchema = z.object({
   bankAccount: z

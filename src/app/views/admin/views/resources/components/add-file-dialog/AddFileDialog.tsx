@@ -285,7 +285,7 @@ const AddFileDialog = () => {
                 />
               </div>
 
-              <div className="flex items-center justify-between space-x-2 rounded-lg border p-4">
+              {/* <div className="flex items-center justify-between space-x-2 rounded-lg border p-4">
                 <div className="space-y-0.5">
                   <Label htmlFor="private">File riêng tư</Label>
                   <p className="text-xs text-muted-foreground">
@@ -313,7 +313,7 @@ const AddFileDialog = () => {
                   onCheckedChange={setCompress}
                   disabled={isUploading}
                 />
-              </div>
+              </div> */}
             </div>
           )}
         </div>

@@ -20,10 +20,10 @@ const CollaboratorList = () => {
             Quản lý các cộng tác viên trong hệ thống
           </p>
         </div>
-        <Button>
+        {/* <Button>
           <PlusIcon className="mr-2 size-4" />
           Thêm mới
-        </Button>
+        </Button> */}
       </div>
 
       {/* Collaborator Stats */}
