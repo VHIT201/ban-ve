@@ -126,7 +126,7 @@ const BestSellingData = () => {
                 </Badge>
                 <CardContent className="flex flex-col flex-1 p-2">
                   {/* Product Image */}
-                  <div className="relative aspect-square max-h-[150px] overflow-hidden bg-gray-100">
+                  <div className="relative aspect-square max-h-[200px] overflow-hidden bg-gray-100">
                     <Image
                       src={generateImageRandom()}
                       alt={product.title}

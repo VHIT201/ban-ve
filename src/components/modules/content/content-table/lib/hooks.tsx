@@ -114,29 +114,27 @@ export const useContentTableColumnsDefs = (
           );
         },
       },
-{
-  accessorKey: "category",
-  header: "Danh mục",
-  cell: ({ row }) => {
-    const category = row.original.category;
+      {
+        accessorKey: "category",
+        header: "Danh mục",
+        cell: ({ row }) => {
+          const category = row.original.category;
 
-    return (
-      <div className="flex flex-col gap-1 min-w-[120px]">
-        <Badge variant="outline" className="w-fit font-medium">
-          {category?.name || "Chưa phân loại"}
-        </Badge>
+          return (
+            <div className="flex flex-col gap-1 min-w-[120px]">
+              <Badge variant="outline" className="w-fit font-medium">
+                {category?.name || "Chưa phân loại"}
+              </Badge>
 
-        {category?.slug && (
-          <div className="text-xs text-gray-400 font-mono">
-            /{category.slug}
-          </div>
-        )}
-      </div>
-    );
-  },
-},
-
-
+              {category?.slug && (
+                <div className="text-xs text-gray-400 font-mono">
+                  /{category.slug}
+                </div>
+              )}
+            </div>
+          );
+        },
+      },
 
       {
         accessorKey: "file_id",
@@ -205,7 +203,7 @@ export const useContentTableColumnsDefs = (
           return (
             <div className="flex items-center gap-2 min-w-[140px]">
               <Avatar className="w-7 h-7">
-                <AvatarFallback className="bg-linear-to-br from-indigo-500 to-purple-600 text-white text-xs">
+                <AvatarFallback className="text-white text-xs">
                   {initials}
                 </AvatarFallback>
               </Avatar>

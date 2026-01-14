@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 
 // Hàm định dạng tiền tệ VNĐ
 const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(amount);
@@ -28,7 +28,8 @@ const MOCK_REVENUE_DATA: CollaboratorRevenueData = {
 
 const CollaboratorRevenue = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [revenueData, setRevenueData] = useState<CollaboratorRevenueData | null>(null);
+  const [revenueData, setRevenueData] =
+    useState<CollaboratorRevenueData | null>(null);
 
   useEffect(() => {
     // Simulate API call
@@ -41,14 +42,14 @@ const CollaboratorRevenue = () => {
   }, []);
 
   // Responsive grid columns and styles
-  const gridCols = 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4';
-  const cardSpacing = 'space-y-4 sm:space-y-0 sm:space-x-4';
-  const cardPadding = 'p-4';
-  const titleSize = 'text-lg';
-  const valueSize = 'text-xl sm:text-2xl';
-  const descriptionSize = 'text-xs sm:text-sm';
-  const cardMinWidth = 'min-w-0';
-  const cardContentPadding = 'p-4 pt-0';
+  const gridCols = "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
+  const cardSpacing = "space-y-4 sm:space-y-0 sm:space-x-4";
+  const cardPadding = "p-4";
+  const titleSize = "text-lg";
+  const valueSize = "text-xl sm:text-2xl";
+  const descriptionSize = "text-xs sm:text-sm";
+  const cardMinWidth = "min-w-0";
+  const cardContentPadding = "p-4 pt-0";
 
   if (isLoading) {
     return (
@@ -75,7 +76,9 @@ const CollaboratorRevenue = () => {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h2 className={`font-bold tracking-tight ${titleSize}`}>Thống kê doanh thu</h2>
+        <h2 className={`font-bold tracking-tight ${titleSize}`}>
+          Thống kê doanh thu
+        </h2>
         <p className={`text-muted-foreground ${descriptionSize}`}>
           Tổng quan về doanh thu từ các bản vẽ của bạn
         </p>
@@ -83,8 +86,12 @@ const CollaboratorRevenue = () => {
 
       <div className={`grid gap-4 ${gridCols}`}>
         <Card className="h-full flex flex-col">
-          <CardHeader className={`flex flex-row items-center justify-between space-y-0 p-4 pb-2`}>
-            <CardTitle className="text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis">Tổng doanh thu</CardTitle>
+          <CardHeader
+            className={`flex flex-row items-center justify-between space-y-0 p-4 pb-2`}
+          >
+            <CardTitle className="text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+              Tổng doanh thu
+            </CardTitle>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -100,7 +107,7 @@ const CollaboratorRevenue = () => {
           </CardHeader>
           <CardContent className={cardContentPadding}>
             <div className={`font-bold ${valueSize} break-words`}>
-              {revenueData ? formatCurrency(revenueData.totalRevenue) : '0'}
+              {revenueData ? formatCurrency(revenueData.totalRevenue) : "0"}
             </div>
             <p className={`text-muted-foreground ${descriptionSize} mt-1`}>
               Tổng số tiền đã kiếm được
@@ -109,8 +116,12 @@ const CollaboratorRevenue = () => {
         </Card>
 
         <Card className="h-full flex flex-col">
-          <CardHeader className={`flex flex-row items-center justify-between space-y-0 p-4 pb-2`}>
-            <CardTitle className="text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis">Hoa hồng</CardTitle>
+          <CardHeader
+            className={`flex flex-row items-center justify-between space-y-0 p-4 pb-2`}
+          >
+            <CardTitle className="text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+              Hoa hồng
+            </CardTitle>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -128,7 +139,7 @@ const CollaboratorRevenue = () => {
           </CardHeader>
           <CardContent className={cardContentPadding}>
             <div className={`font-bold ${valueSize} break-words`}>
-              {revenueData ? formatCurrency(revenueData.totalCommission) : '0'}
+              {revenueData ? formatCurrency(revenueData.totalCommission) : "0"}
             </div>
             <p className={`text-muted-foreground ${descriptionSize} mt-1`}>
               Tổng hoa hồng nhận được
@@ -137,8 +148,12 @@ const CollaboratorRevenue = () => {
         </Card>
 
         <Card className="h-full flex flex-col">
-          <CardHeader className={`flex flex-row items-center justify-between space-y-0 p-4 pb-2`}>
-            <CardTitle className="text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis">Tổng đơn hàng</CardTitle>
+          <CardHeader
+            className={`flex flex-row items-center justify-between space-y-0 p-4 pb-2`}
+          >
+            <CardTitle className="text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+              Tổng đơn hàng
+            </CardTitle>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -154,7 +169,9 @@ const CollaboratorRevenue = () => {
             </svg>
           </CardHeader>
           <CardContent className={cardContentPadding}>
-            <div className={`font-bold ${valueSize} break-words`}>{revenueData?.totalOrders ?? 0}</div>
+            <div className={`font-bold ${valueSize} break-words`}>
+              {revenueData?.totalOrders ?? 0}
+            </div>
             <p className={`text-muted-foreground ${descriptionSize} mt-1`}>
               Tổng số đơn hàng đã bán
             </p>
@@ -162,8 +179,12 @@ const CollaboratorRevenue = () => {
         </Card>
 
         <Card className="h-full flex flex-col">
-          <CardHeader className={`flex flex-row items-center justify-between space-y-0 p-4 pb-2`}>
-            <CardTitle className="text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis">Tỷ lệ hoa hồng</CardTitle>
+          <CardHeader
+            className={`flex flex-row items-center justify-between space-y-0 p-4 pb-2`}
+          >
+            <CardTitle className="text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+              Tỷ lệ hoa hồng
+            </CardTitle>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -178,7 +199,9 @@ const CollaboratorRevenue = () => {
             </svg>
           </CardHeader>
           <CardContent className={cardContentPadding}>
-            <div className={`font-bold ${valueSize} break-words`}>{revenueData?.commissionRate ?? 0}%</div>
+            <div className={`font-bold ${valueSize} break-words`}>
+              {revenueData?.commissionRate ?? 0}%
+            </div>
             <p className={`text-muted-foreground ${descriptionSize} mt-1`}>
               Tỷ lệ hoa hồng hiện tại
             </p>

@@ -23,14 +23,14 @@ const ProfileSidebar = () => {
               src={profileStore.avatar}
               alt={profileStore.username}
             />
-            <AvatarFallback className="text-lg font-semibold bg-gray-900 text-white">
+            <AvatarFallback className="text-lg font-semibold bg-primary text-white">
               {profileStore.username
                 .split(" ")
                 .map((n) => n[0])
                 .join("")}
             </AvatarFallback>
           </Avatar>
-          <h3 className="font-semibold text-base text-gray-900 mb-1">
+          <h3 className="font-semibold text-base text-primary mb-1">
             {profileStore.username}
           </h3>
           <p className="text-xs text-gray-500 truncate px-2">
@@ -48,8 +48,8 @@ const ProfileSidebar = () => {
                 cn(
                   "w-full cursor-pointer flex items-center gap-3 px-4 py-3 text-left rounded-none transition-all duration-200",
                   isActive
-                    ? "bg-gray-900 text-white shadow-none"
-                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    ? "bg-primary text-white shadow-none"
+                    : "text-gray-600 hover:bg-gray-100 hover:text-primary"
                 )
               }
             >

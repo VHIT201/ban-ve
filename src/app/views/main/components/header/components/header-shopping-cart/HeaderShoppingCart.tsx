@@ -3,6 +3,7 @@ import {
   ShoppingCartIcon,
   ShoppingBagIcon,
   Loader2,
+  XIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -15,173 +16,94 @@ import {
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { Link, useNavigate } from "react-router-dom";
-import { useMemo, useCallback, useEffect, useRef } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { useCartStore } from "@/stores/use-cart-store";
-import {
-  useGetApiCart,
-  usePutApiCart,
-  useDeleteApiCart,
-} from "@/api/endpoints/cart";
+import { useCart } from "@/hooks/use-cart";
 import { generateImageRandom } from "@/utils/image";
+import { cn } from "@/utils/ui";
+import { Skeleton } from "@/components/ui/skeleton";
 
-interface CartItem {
-  _id: string;
-  quantity: number;
-  contentId?: {
-    _id: string;
-    title: string;
-    price?: number;
-  };
+interface HeaderShoppingCartProps {
+  sync?: boolean;
 }
 
-interface CartResponse {
-  data?: {
-    items?: CartItem[];
-  };
-}
+const HeaderShoppingCart = ({ sync = true }: HeaderShoppingCartProps) => {
+  const cart = useCart({ sync });
 
-const HeaderShoppingCart = () => {
-  const queryClient = useQueryClient();
-  const prevItemsLength = useRef(0);
-
-  const { isOpen, openCart, closeCart } = useCartStore();
-
-  const { data, isLoading, refetch } = useGetApiCart({
-    query: { staleTime: 0, gcTime: 0 },
-  });
-
-  const items = (data as CartResponse)?.data?.items ?? [];
-
-  const refreshCart = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: ["cart"] });
-    refetch();
-  }, [queryClient, refetch]);
-
-  useEffect(() => {
-    if (isOpen || items.length !== prevItemsLength.current) {
-      refetch();
-      prevItemsLength.current = items.length;
-    }
-  }, [isOpen, items.length, refetch]);
-
-  const { totalItems, totalPrice } = useMemo(() => {
-    return items.reduce(
-      (acc, item) => {
-        const qty = item.quantity || 1;
-        return {
-          totalItems: acc.totalItems + qty,
-          totalPrice:
-            acc.totalPrice + (item.contentId?.price || 0) * qty,
-        };
-      },
-      { totalItems: 0, totalPrice: 0 }
-    );
-  }, [items]);
-
-  const { mutate: updateItem, isPending: isUpdating } =
-    usePutApiCart({
-      mutation: {
-        onSuccess: refreshCart,
-        onError: () =>
-          toast.error("Lỗi cập nhật số lượng"),
-      },
-    });
-
-  const { mutate: removeItemApi, isPending: isRemoving } =
-    useDeleteApiCart({
-      mutation: {
-        onSuccess: refreshCart,
-        onError: () =>
-          toast.error("Lỗi xóa sản phẩm"),
-      },
-    });
-
-  const updateQuantity = (item: CartItem, quantity: number) => {
-    if (quantity < 1 || !item.contentId?._id) return;
-    updateItem({
-      data: {
-        contentId: item.contentId._id,
-        quantity,
-      },
-    });
+  const handleUpdateQuantity = (productId: string, quantity: number) => {
+    if (quantity < 1) return;
+    cart.updateQuantity(productId, quantity);
   };
 
-  const removeSingleItem = (contentId: string) => {
-    removeItemApi({ data: { contentId } });
+  const handleRemoveItem = (productId: string) => {
+    cart.removeItem(productId);
   };
 
-  const clearCart = () => {
-    items.forEach((item) => {
-      if (item.contentId?._id) {
-        removeItemApi({ data: { contentId: item.contentId._id } });
-      }
-    });
+  const handleClearCart = () => {
+    cart.clearCart();
     toast.success("Đã xóa giỏ hàng");
   };
 
-  if (isLoading) {
-    return (
-      <Button variant="ghost" size="icon" disabled>
-        <Loader2 className="w-5 h-5 animate-spin" />
-      </Button>
-    );
-  }
-
   return (
-    <Sheet open={isOpen} onOpenChange={(o) => (o ? openCart() : closeCart())}>
+    <Sheet
+      open={cart.isOpen}
+      onOpenChange={(o) => {
+        console.log("ON OPEN CHANGE");
+
+        return o ? cart.openCart() : cart.closeCart();
+      }}
+      aria-describedby="cart-shopping"
+    >
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
           <ShoppingBagIcon className="w-5 h-5" />
-          {totalItems > 0 && (
+          {cart.totalItems > 0 && (
             <span className="absolute -top-1 -right-1 bg-destructive text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-              {totalItems}
+              {cart.totalItems}
             </span>
           )}
         </Button>
       </SheetTrigger>
 
       <SheetContent className="p-0 flex flex-col">
-       <SheetHeader className="border-b px-4 py-3 bg-primary">
-  <SheetTitle className="text-white text-base font-semibold">
-    Giỏ hàng
-  </SheetTitle>
+        <SheetHeader className="border-b px-4 py-3 bg-primary">
+          <SheetTitle className="text-white text-base font-semibold">
+            Giỏ hàng
+          </SheetTitle>
 
-  {totalItems > 0 && (
-    <p className="text-xs text-white/80">
-      {totalItems} sản phẩm
-    </p>
-  )}
-</SheetHeader>
-
+          {cart.totalItems > 0 && (
+            <p className="text-xs text-white/80">{cart.totalItems} sản phẩm</p>
+          )}
+        </SheetHeader>
 
         {/* BODY */}
-        {items.length === 0 ? (
-          <EmptyCart onClose={closeCart} />
+        {cart.items.length === 0 ? (
+          <EmptyCart onClose={cart.closeCart} />
         ) : (
           <>
-            <ScrollArea className="flex-1 px-4 py-3">
+            <ScrollArea className="flex-1 px-4 py-3 h-80">
               <div className="space-y-3">
-                {items.map((item) => (
+                {cart.items.map((item, index) => (
                   <CartItemRow
-                    key={item._id}
+                    key={`${item.product._id}-${index}`}
                     item={item}
-                    isUpdating={isUpdating}
-                    isRemoving={isRemoving}
-                    onUpdate={updateQuantity}
-                    onRemove={removeSingleItem}
+                    isLoading={cart.isLoading}
+                    onUpdate={handleUpdateQuantity}
+                    onRemove={handleRemoveItem}
                   />
                 ))}
+                {cart.isLoading &&
+                  Array.from({ length: 3 }).map((_, index) => (
+                    <CartItemSkeleton key={`skeleton-${index}`} />
+                  ))}
               </div>
             </ScrollArea>
 
             <CartFooter
-              totalItems={totalItems}
-              totalPrice={totalPrice}
-              onClear={clearCart}
-              onClose={closeCart}
+              totalItems={cart.totalItems}
+              totalPrice={cart.totalPrice}
+              onClear={handleClearCart}
+              onClose={cart.closeCart}
             />
           </>
         )}
@@ -205,7 +127,7 @@ const EmptyCart = ({ onClose }: { onClose: () => void }) => (
 const CartItemRow = ({
   item,
   isUpdating,
-  isRemoving,
+  isLoading,
   onUpdate,
   onRemove,
 }: any) => (
@@ -218,30 +140,28 @@ const CartItemRow = ({
     <div className="flex-1 flex flex-col justify-between">
       <div>
         <p className="text-sm font-medium line-clamp-2">
-          {item.contentId?.title}
+          {item.product?.title}
         </p>
         <p className="text-sm font-semibold text-primary mt-1">
-          {item.contentId?.price?.toLocaleString("vi-VN")} ₫
+          {item.product?.price?.toLocaleString("vi-VN")} ₫
         </p>
       </div>
 
       <div className="flex items-center gap-2 mt-2">
         <button
           className="w-7 h-7 border rounded text-sm disabled:opacity-40"
-          disabled={isUpdating || item.quantity <= 1}
-          onClick={() => onUpdate(item, item.quantity - 1)}
+          disabled={isLoading || item.quantity <= 1}
+          onClick={() => onUpdate(item.product._id, item.quantity - 1)}
         >
           −
         </button>
 
-        <span className="w-6 text-center text-sm">
-          {item.quantity}
-        </span>
+        <span className="w-6 text-center text-sm">{item.quantity}</span>
 
         <button
           className="w-7 h-7 border rounded text-sm disabled:opacity-40"
-          disabled={isUpdating}
-          onClick={() => onUpdate(item, item.quantity + 1)}
+          disabled={isLoading}
+          onClick={() => onUpdate(item.product._id, item.quantity + 1)}
         >
           +
         </button>
@@ -250,24 +170,34 @@ const CartItemRow = ({
 
     <button
       className="text-muted-foreground hover:text-destructive"
-      disabled={isRemoving}
-      onClick={() => onRemove(item.contentId._id)}
+      disabled={isLoading}
+      onClick={() => onRemove(item.product._id)}
     >
-      {isRemoving ? (
+      {isLoading ? (
         <Loader2 className="w-4 h-4 animate-spin" />
       ) : (
-        <Trash2 className="w-4 h-4" />
+        <XIcon className="w-4 h-4 cursor-pointer" />
       )}
     </button>
   </div>
 );
 
-const CartFooter = ({
-  totalItems,
-  totalPrice,
-  onClear,
-  onClose,
-}: any) => {
+interface CartItemSkeletonProps {
+  className?: string;
+}
+
+const CartItemSkeleton = ({ className }: CartItemSkeletonProps) => (
+  <div className={cn("flex gap-3 pb-4 border-b last:border-b-0", className)}>
+    <Skeleton className="w-14 h-14 rounded-md shrink-0" />
+
+    <div className="flex-1 space-y-2">
+      <Skeleton className="h-4 w-3/4" />
+      <Skeleton className="h-3 w-1/4" />
+    </div>
+  </div>
+);
+
+const CartFooter = ({ totalItems, totalPrice, onClear, onClose }: any) => {
   const navigate = useNavigate();
 
   const handleCheckout = () => {
@@ -278,9 +208,7 @@ const CartFooter = ({
   return (
     <div className="border-t p-4 space-y-3">
       <div className="flex justify-between text-sm">
-        <span className="text-muted-foreground">
-          Subtotal ({totalItems})
-        </span>
+        <span className="text-muted-foreground">Subtotal ({totalItems})</span>
         <span className="font-medium">
           {totalPrice.toLocaleString("vi-VN")} ₫
         </span>

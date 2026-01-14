@@ -36,8 +36,7 @@ import { ResponseData } from "@/api/types/base";
 import { UseQueryResult } from "@tanstack/react-query";
 import { CollaboratorMe } from "@/api/types/collaborator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CollaboratorContents } from "./components";
-import CollaboratorRevenue from "./components/CollaboratorRevenue";
+import { CollaboratorContents, CollaboratorRevenue } from "./components";
 
 const collaboratorApplySchema = z.object({
   bankAccount: z
@@ -198,10 +197,11 @@ function CollaboratorStatus({ data }: { data: any }) {
       <TabsList>
         <TabsTrigger value="info">Thông tin cộng tác viên</TabsTrigger>
         <TabsTrigger value="contents">Sản phẩm cộng tác viên</TabsTrigger>
-        <TabsTrigger value="revenue">Doanh thu</TabsTrigger>
       </TabsList>
 
       <TabsContent value="info" className="space-y-6">
+        <CollaboratorRevenue />
+
         <Card className="border border-gray-200 shadow-sm">
           <CardHeader className="border-b border-gray-100">
             <div className="flex items-start justify-between">
@@ -315,14 +315,6 @@ function CollaboratorStatus({ data }: { data: any }) {
 
       <TabsContent value="contents">
         <CollaboratorContents />
-      </TabsContent>
-
-      <TabsContent value="revenue" className="mt-4">
-        <Card className="mx-auto">
-          <CardContent className="pt-6">
-            <CollaboratorRevenue />
-          </CardContent>
-        </Card>
       </TabsContent>
     </Tabs>
   );

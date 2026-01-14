@@ -204,9 +204,7 @@ export const useContentTableColumnsDefs = (
           return (
             <div className="flex items-center gap-2 min-w-[140px]">
               <Avatar className="w-7 h-7">
-                <AvatarFallback className="bg-linear-to-br from-indigo-500 to-purple-600 text-white text-xs">
-                  {initials}
-                </AvatarFallback>
+                <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
               <div className="flex flex-col gap-0.5 flex-1 min-w-0">
                 <div className="text-sm font-medium text-gray-900 truncate">

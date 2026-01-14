@@ -6,7 +6,7 @@ const Profile = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header Section with bg-primary */}
       <div className="bg-primary">
-        <div className="container m mx-auto px-4 py-8">
+        <div className="max-w-8xl mx-auto px-4 py-8">
           <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">
             Tài khoản của tôi
           </h1>
@@ -17,7 +17,7 @@ const Profile = () => {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="max-w-8xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Sidebar */}
           <div className="lg:col-span-1">
