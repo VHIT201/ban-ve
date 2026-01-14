@@ -159,7 +159,7 @@ export const useColumns = (props: useCopyrightReportTableColumnsDefsProps) => {
           return (
             <div className="flex items-center gap-2 min-w-[160px]">
               <Avatar className="w-8 h-8">
-                <AvatarFallback className="bg-linear-to-br from-blue-500 to-cyan-600 text-white text-xs">
+                <AvatarFallback className=" text-white text-xs">
                   {initials}
                 </AvatarFallback>
               </Avatar>

@@ -10,6 +10,7 @@ export interface CartItem {
 
 interface CartStore {
   // State
+  isSyncing: boolean;
   items: CartItem[];
   isOpen: boolean;
 
@@ -22,6 +23,7 @@ interface CartStore {
   // Actions
   addItem: (product: ContentResponse, quantity?: number) => void;
   removeItem: (productId: string) => void;
+  updateSyncing: (isSyncing: boolean) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   incrementQuantity: (productId: string) => void;
   decrementQuantity: (productId: string) => void;
@@ -39,6 +41,7 @@ export const useCartStore = create<CartStore>()(
       // Initial state
       items: [],
       isOpen: false,
+      isSyncing: false,
 
       // Computed values
       totalItems: () => {
@@ -47,7 +50,7 @@ export const useCartStore = create<CartStore>()(
 
       totalPrice: () => {
         return get().items.reduce(
-          (total, item) => total + item.product.price * item.quantity,
+          (total, item) => total + (item.product?.price || 0) * item.quantity,
           0
         );
       },
@@ -96,6 +99,10 @@ export const useCartStore = create<CartStore>()(
         set((state) => ({
           items: state.items.filter((item) => item.product._id !== productId),
         }));
+      },
+
+      updateSyncing: (isSyncing: boolean) => {
+        set({ isSyncing });
       },
 
       updateQuantity: (productId: string, quantity: number) => {
@@ -169,7 +176,6 @@ export const useCartStore = create<CartStore>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         items: state.items,
-        // Don't persist isOpen state
       }),
     }
   )

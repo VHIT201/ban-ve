@@ -14,13 +14,12 @@ import {
   ChevronLeft,
   ChevronRight,
   BarChart3,
-  TrendingUp,
 } from "lucide-react";
-import React, { useState, useEffect } from "react";
-import Autoplay from "embla-carousel-autoplay";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import Image from "@/components/ui/image";
 import { InteractiveGridPattern } from "@/components/ui/interactive-grid-pattern";
+import Autoplay from "embla-carousel-autoplay";
 
 // Carousel slides data
 const bannerSlides = [
@@ -82,12 +81,12 @@ const BannerSection = () => {
           loop: true,
           align: "start",
         }}
-        // plugins={[
-        //   Autoplay({
-        //     delay: 6000,
-        //     stopOnInteraction: true,
-        //   }),
-        // ]}
+        plugins={[
+          Autoplay({
+            delay: 10000,
+            stopOnInteraction: true,
+          }),
+        ]}
         setApi={setApi}
         className="w-full"
       >

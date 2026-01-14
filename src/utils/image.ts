@@ -7,8 +7,10 @@ const DEFAULT_IMAGE_RANDOM_URLS = [
 ];
 
 export const generateImageRandom = (): string => {
-  const randomNum = Math.floor(Math.random() * 10000);
-  return DEFAULT_IMAGE_RANDOM_URLS[
-    randomNum % DEFAULT_IMAGE_RANDOM_URLS.length
-  ];
+  // const randomNum = Math.floor(Math.random() * 10000);
+  // return DEFAULT_IMAGE_RANDOM_URLS[
+  //   randomNum % DEFAULT_IMAGE_RANDOM_URLS.length
+  // ];
+
+  return "https://images.pexels.com/photos/1404948/pexels-photo-1404948.jpeg";
 };

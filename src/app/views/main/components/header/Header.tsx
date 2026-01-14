@@ -59,15 +59,9 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const updateLocalCart = (newCart: CartItem[]) => {
-    try {
-      localStorage.setItem("local-cart", JSON.stringify(newCart));
-    } catch (error) {
-      console.error("Error saving cart to localStorage: ", error);
-    }
-  };
-
   const navigate = useNavigate();
+
+  console.log("HEADER RENDER");
 
   return (
     <header>
@@ -95,7 +89,7 @@ const Header = () => {
                 </div>
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-base font-bold tracking-tight text-foreground group-hover:text-primary transition-colors duration-200">
+                <h1 className="text-base font-bold tracking-tight text-primary group-hover:text-primary/50 transition-colors duration-200">
                   Marketplace Blueprint
                 </h1>
                 <p className="text-xs text-muted-foreground/80 font-medium">
@@ -108,7 +102,14 @@ const Header = () => {
 
             {/* Actions Section */}
             <div className="flex items-center gap-3">
-              <HeaderShoppingCart />
+              {
+                /* Shopping Cart Section */
+                (() => {
+                  console.log("Render Header Shopping Cart 1");
+                  return <></>;
+                })()
+              }
+              <HeaderShoppingCart sync={false} />
 
               <Separator orientation="vertical" className="h-6" />
 
@@ -164,6 +165,13 @@ const Header = () => {
 
             {/* Actions Section */}
             <div className="flex items-center gap-3">
+              {
+                /* Shopping Cart Section */
+                (() => {
+                  console.log("Render Header Shopping Cart 2");
+                  return <></>;
+                })()
+              }
               <HeaderShoppingCart />
 
               <Separator orientation="vertical" className="h-6" />

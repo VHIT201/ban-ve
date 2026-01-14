@@ -64,8 +64,6 @@ const DailyFeatureSection = () => {
   const blueprintInfiniteList =
     blueprintInfiniteData?.flatMap((page) => page.data) ?? [];
 
-  console.log("BLUE PRINTS LIST : ", blueprintInfiniteList);
-
   // Effects
 
   return (
