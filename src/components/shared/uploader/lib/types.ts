@@ -16,6 +16,7 @@ export interface FileWithPreview extends File {
 
 export interface UploaderContextValue {
   // Props
+  multiple: boolean;
   accept?: Record<string, string[]>;
   maxSize: number;
   maxFiles: number;
@@ -23,11 +24,12 @@ export interface UploaderContextValue {
   dropZoneStates: DropzoneState;
 
   // Actions
-  handleAddFiles: (params: { newFile: File; multiple?: boolean }) => void;
+  handleAddFiles: (newFile: File) => void;
   handleDeleteFile: (fileName: string) => void;
 }
 
 export interface UploaderProps {
+  multiple?: boolean;
   maxFiles?: number;
   maxSize?: number;
   accept?: Record<string, string[]>;

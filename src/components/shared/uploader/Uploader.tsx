@@ -23,6 +23,7 @@ interface UploaderRootProps extends UploaderProps {
 const Uploader: FC<UploaderRootProps> = (props) => {
   // Props
   const {
+    multiple = false,
     maxFiles = DEFAULT_MAX_FILES,
     maxSize = DEFAULT_MAX_SIZE,
     accept = DEFAULT_ACCEPT,
@@ -33,6 +34,7 @@ const Uploader: FC<UploaderRootProps> = (props) => {
 
   // Hooks
   const dropZoneStates = useDropzone({
+    multiple,
     accept,
     maxSize,
     maxFiles,
@@ -63,7 +65,7 @@ const Uploader: FC<UploaderRootProps> = (props) => {
 
   // Methods
   const handleAddFiles = useCallback(
-    ({ newFile, multiple = true }: { newFile: File; multiple?: boolean }) => {
+    (newFile: File) => {
       if (value.length >= maxFiles) return;
 
       const fileWithPreview = createFileWithPreview(
@@ -94,6 +96,7 @@ const Uploader: FC<UploaderRootProps> = (props) => {
       accept,
       maxSize,
       maxFiles,
+      multiple,
       fileList: value,
       dropZoneStates,
 
@@ -102,6 +105,7 @@ const Uploader: FC<UploaderRootProps> = (props) => {
       handleDeleteFile,
     }),
     [
+      multiple,
       accept,
       maxSize,
       maxFiles,

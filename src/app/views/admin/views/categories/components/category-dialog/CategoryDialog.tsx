@@ -94,117 +94,114 @@ const CategoryDialog = (props: CategoryDialogProps) => {
         </DialogHeader>
 
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-6"
-          >
-            <ScrollArea className="h-[70vh] px-4">
-              {/* Name Field */}
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Tên danh mục <span className="text-red-500">*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Nhập tên danh mục (vd: Kiến trúc, Cơ khí...)"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Tên danh mục phải là duy nhất (tối đa 100 ký tự)
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* Slug Field */}
-              <FormField
-                control={form.control}
-                name="slug"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Slug <span className="text-red-500">*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="slug-tu-dong-tao"
-                        {...field}
-                        disabled
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      {mode === "create"
-                        ? "Slug tự động tạo từ tên danh mục"
-                        : "Slug không thể chỉnh sửa"}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* Description Field */}
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Mô tả</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Nhập mô tả chi tiết về danh mục này..."
-                        className="resize-none min-h-[100px]"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Mô tả chi tiết về danh mục (tối đa 500 ký tự)
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* Category Image */}
-              {/* File Upload */}
-              <FormField
-                control={form.control}
-                name="image"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-primary font-semibold tracking-wider">
-                      File bản vẽ <span className="text-red-500">*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <div className="space-y-3">
-                        <Uploader
-                          value={field.value || []}
-                          onChange={field.onChange}
-                          maxFiles={1}
-                          maxSize={50 * 1024 * 1024}
-                          accept={{
-                            "application/pdf": [".pdf"],
-                            "application/acad": [".dwg"],
-                          }}
-                        >
-                          <Uploader.DropZone>
-                            <Uploader.Placeholder />
-                          </Uploader.DropZone>
-                          <Uploader.MediaList />
-                        </Uploader>
-                      </div>
-                    </FormControl>
-                    <FormDescription>
-                      Chọn file bản vẽ (PDF hoặc DWG, tối đa 50MB)
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          <form onSubmit={form.handleSubmit(handleSubmit)}>
+            <ScrollArea className="h-[70vh]">
+              <div className="mx-4 space-y-6">
+                {/* Name Field */}
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Tên danh mục <span className="text-red-500">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Nhập tên danh mục (vd: Kiến trúc, Cơ khí...)"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Tên danh mục phải là duy nhất (tối đa 100 ký tự)
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Slug Field */}
+                <FormField
+                  control={form.control}
+                  name="slug"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Slug <span className="text-red-500">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="slug-tu-dong-tao"
+                          {...field}
+                          disabled
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        {mode === "create"
+                          ? "Slug tự động tạo từ tên danh mục"
+                          : "Slug không thể chỉnh sửa"}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Description Field */}
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Mô tả</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Nhập mô tả chi tiết về danh mục này..."
+                          className="resize-none min-h-[100px]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Mô tả chi tiết về danh mục (tối đa 500 ký tự)
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Category Image */}
+                <FormField
+                  control={form.control}
+                  name="image"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary font-semibold tracking-wider">
+                        File bản vẽ <span className="text-red-500">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <div className="space-y-3">
+                          <Uploader
+                            value={field.value || []}
+                            onChange={field.onChange}
+                            maxFiles={1}
+                            maxSize={50 * 1024 * 1024}
+                            accept={{
+                              "image/*": [],
+                            }}
+                          >
+                            <Uploader.DropZone>
+                              <Uploader.Placeholder />
+                            </Uploader.DropZone>
+                            <Uploader.MediaList />
+                          </Uploader>
+                        </div>
+                      </FormControl>
+                      <FormDescription>
+                        Chọn file bản vẽ (PDF hoặc DWG, tối đa 50MB)
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </ScrollArea>
-            <DialogFooter>
+            <DialogFooter className="space-x-2 py-2 border-t">
               <Button
                 type="button"
                 variant="outline"
