@@ -11,8 +11,12 @@ const UploaderDropZone: FC<UploaderDropZoneProps> = (props) => {
   const { className, children } = props;
 
   // Hooks
-  const { dropZoneStates } = useUploaderContext();
+  const { dropZoneStates, multiple, fileList } = useUploaderContext();
   const { getRootProps, getInputProps, isDragActive } = dropZoneStates;
+
+  if (!multiple && fileList.length > 0) {
+    return null;
+  }
 
   return (
     <div
@@ -23,7 +27,7 @@ const UploaderDropZone: FC<UploaderDropZoneProps> = (props) => {
         className
       )}
     >
-      <input {...getInputProps()} />
+      <input {...getInputProps()} multiple={multiple} />
       {children}
     </div>
   );

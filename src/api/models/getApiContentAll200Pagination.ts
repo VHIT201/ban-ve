@@ -5,6 +5,4 @@ export type GetApiContentAll200Pagination = {
   totalPages?: number;
   currentPage?: number;
   itemsPerPage?: number;
-  hasNext?: boolean;
-  hasPrev?: boolean;
 };

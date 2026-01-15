@@ -7,4 +7,5 @@ export type GetApiContentStatus = typeof GetApiContentStatus[keyof typeof GetApi
 export const GetApiContentStatus = {
   pending: 'pending',
   approved: 'approved',
+  rejected: 'rejected',
 } as const;

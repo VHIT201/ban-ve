@@ -32,7 +32,7 @@ const UploaderMediaList: FC<UploaderMediaListProps> = (props) => {
           >
             <div className="flex items-start gap-2.5">
               {/* File Icon */}
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 {file.preview && file.type.startsWith("image/") ? (
                   <Image
                     src={file.preview}
@@ -41,7 +41,7 @@ const UploaderMediaList: FC<UploaderMediaListProps> = (props) => {
                   />
                 ) : (
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-border text-muted-foreground">
-                    <FileIcon className="size-6" />
+                    <FileIcon />
                   </div>
                 )}
               </div>
@@ -50,7 +50,9 @@ const UploaderMediaList: FC<UploaderMediaListProps> = (props) => {
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between mt-0.75">
                   <p className="inline-flex flex-col justify-center gap-1 truncate font-medium">
-                    <span className="text-sm">{file.name}</span>
+                    <span className="text-sm truncate max-w-[200px]">
+                      {file.name}
+                    </span>
                     <span className="text-xs text-muted-foreground">
                       {formatBytes(file.size)}
                     </span>

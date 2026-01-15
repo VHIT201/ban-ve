@@ -36,7 +36,9 @@ import type {
   PostApiAuthResendOtpBody,
   PostApiAuthResetPasswordBody,
   PostApiAuthVerifyRegistration200,
-  PostApiAuthVerifyRegistrationBody
+  PostApiAuthVerifyRegistrationBody,
+  PutApiAuthUpdateProfile200,
+  PutApiAuthUpdateProfileBody
 } from '../models';
 
 import { mainInstance } from '../mutator/custom-instance';
@@ -660,3 +662,67 @@ export function useGetApiAuthMe<TData = Awaited<ReturnType<typeof getApiAuthMe>>
 
 
 
+/**
+ * @summary Chỉnh sửa thông tin người dùng
+ */
+export const putApiAuthUpdateProfile = (
+    putApiAuthUpdateProfileBody: BodyType<PutApiAuthUpdateProfileBody>,
+ ) => {
+      
+      
+      return mainInstance<PutApiAuthUpdateProfile200>(
+      {url: `/api/auth/update-profile`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: putApiAuthUpdateProfileBody
+    },
+      );
+    }
+  
+
+
+export const getPutApiAuthUpdateProfileMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiAuthUpdateProfile>>, TError,{data: BodyType<PutApiAuthUpdateProfileBody>}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof putApiAuthUpdateProfile>>, TError,{data: BodyType<PutApiAuthUpdateProfileBody>}, TContext> => {
+
+const mutationKey = ['putApiAuthUpdateProfile'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiAuthUpdateProfile>>, {data: BodyType<PutApiAuthUpdateProfileBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  putApiAuthUpdateProfile(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutApiAuthUpdateProfileMutationResult = NonNullable<Awaited<ReturnType<typeof putApiAuthUpdateProfile>>>
+    export type PutApiAuthUpdateProfileMutationBody = BodyType<PutApiAuthUpdateProfileBody>
+    export type PutApiAuthUpdateProfileMutationError = ErrorType<void>
+
+    /**
+ * @summary Chỉnh sửa thông tin người dùng
+ */
+export const usePutApiAuthUpdateProfile = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiAuthUpdateProfile>>, TError,{data: BodyType<PutApiAuthUpdateProfileBody>}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putApiAuthUpdateProfile>>,
+        TError,
+        {data: BodyType<PutApiAuthUpdateProfileBody>},
+        TContext
+      > => {
+
+      const mutationOptions = getPutApiAuthUpdateProfileMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    

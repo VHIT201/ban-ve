@@ -14,19 +14,15 @@ page?: number;
  */
 limit?: number;
 /**
- * Trạng thái nội dung (pending - chờ duyệt, approved - đã duyệt)
+ * Lọc theo trạng thái
  */
 status?: GetApiContentStatus;
 /**
- * Lọc theo slug của danh mục
+ * Lọc theo slug danh mục
  */
-field?: string;
+category?: string;
 /**
- * Lọc theo loại file (vd: image/jpeg, application/pdf)
- */
-file_type?: string;
-/**
- * Tìm kiếm theo tiêu đề hoặc mô tả (không phân biệt hoa thường)
+ * Tìm kiếm theo tiêu đề hoặc mô tả
  */
 search?: string;
 };
