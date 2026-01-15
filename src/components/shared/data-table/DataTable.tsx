@@ -8,6 +8,8 @@ import {
   Updater,
   OnChangeFn,
   PaginationState,
+  ColumnPinningState,
+  ColumnSizingState,
 } from "@tanstack/react-table";
 
 // Internal
@@ -50,6 +52,12 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
 
   // States
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [columnPinning, setColumnPinning] = useState<ColumnPinningState>({
+    left: [],
+    right: [],
+  });
+  const [columnSizing, setColumnSizing] = useState<ColumnSizingState>({});
+
   const [rowSelection, setRowSelection] = useState<RowSelectionState>(() => {
     const initialState: RowSelectionState = {};
 
@@ -73,8 +81,6 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
 
     return initialState;
   });
-
-  console.log("DataTable Rendered", { rowSelection });
 
   // Methods
   const handlePaginationChange: OnChangeFn<PaginationState> = (updater) => {
@@ -128,15 +134,21 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
     state: {
       pagination: state?.pagination,
       rowSelection: enableRowSelection ? rowSelection : {},
+      columnPinning,
+      columnSizing,
     },
     onPaginationChange: enablePagination ? handlePaginationChange : undefined,
+    onColumnPinningChange: setColumnPinning,
+    onColumnSizingChange: setColumnSizing,
     onRowSelectionChange: enableRowSelection
       ? handleRowSelectionChange
       : undefined,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     enableRowSelection,
-    debugTable: process.env.NODE_ENV === "development",
+    enableColumnResizing: true,
+    enableColumnPinning: true,
+    columnResizeMode: "onChange",
   });
 
   // Effects
@@ -176,6 +188,8 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
       manualPagination,
       classNames,
       rowSelection,
+      columnPinning,
+      columnSizing,
     ]
   );
 

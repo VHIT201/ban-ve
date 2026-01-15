@@ -1,20 +1,28 @@
 // Core
-import { RouteObject, Navigate } from "react-router-dom";
+import { RouteObject, Navigate, redirect } from "react-router-dom";
 
 // App
-import { ROUTE_PATHS } from "@/constants/paths";
+import { BASE_PATHS, ROUTE_PATHS } from "@/constants/paths";
 import contentRoutes from "../views/contents/lib/routes";
 import copyRightRoutes from "../views/copy-right/lib/routes";
 import collaboratorRoutes from "../views/collaborators/lib/routes";
 import paymentRoutes from "../views/payment/lib/routes";
 
-import { Settings } from "lucide-react";
+import { useAuthStore } from "@/stores";
 // Admin route paths
 const { admin } = ROUTE_PATHS;
 
 // Admin routes
 const adminRoutes: RouteObject = {
   path: admin.path,
+  loader: () => {
+    const isSignedIn = useAuthStore.getState().isSignedIn;
+    if (!isSignedIn) {
+      return redirect(BASE_PATHS.auth.login.path);
+    }
+
+    return null;
+  },
   lazy: async () => {
     const { default: Admin } = await import("../layout");
     return {

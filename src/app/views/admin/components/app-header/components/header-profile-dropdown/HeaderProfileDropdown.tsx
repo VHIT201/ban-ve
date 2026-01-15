@@ -35,9 +35,9 @@ const HeaderProfileDropdown = () => {
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-            <Avatar className="h-8 w-8">
+            <Avatar className="h-8 w-8 rounded-lg">
               <AvatarImage src="/avatars/01.png" alt="@shadcn" />
-              <AvatarFallback>SN</AvatarFallback>
+              <AvatarFallback className="rounded-lg">SN</AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>

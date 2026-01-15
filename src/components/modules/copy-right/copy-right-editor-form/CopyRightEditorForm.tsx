@@ -42,8 +42,10 @@ import {
   ExternalLink,
   Copy,
   Info,
+  MailIcon,
 } from "lucide-react";
 import { CopyrightReportViolationType } from "@/api/models/copyrightReportViolationType";
+import { EnvelopeIcon } from "@phosphor-icons/react";
 
 // Schema validation
 const copyrightReportFormSchema = z.object({
@@ -51,6 +53,7 @@ const copyrightReportFormSchema = z.object({
     .string()
     .min(1, "Vui lòng nhập ID nội dung bị báo cáo")
     .length(24, "ID nội dung không hợp lệ (phải có 24 ký tự)"),
+  email: z.string().email("Email không hợp lệ"),
   reportedContentId: z
     .string()
     .optional()
@@ -212,14 +215,11 @@ const CopyRightEditorForm = ({
 
   return (
     <div className="max-w-4xl mx-auto">
-      <Card className="border-0 shadow-sm">
-        <CardHeader className="pb-6">
+      <Card className="border-0 shadow-sm p-0">
+        <CardHeader className="p-0">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-red-50">
-              <Shield className="w-5 h-5 text-red-600" />
-            </div>
             <div>
-              <CardTitle className="text-lg font-semibold text-gray-900">
+              <CardTitle className="text-lg font-semibold text-destructive">
                 {isViewMode
                   ? "Chi tiết báo cáo vi phạm"
                   : "Báo cáo vi phạm bản quyền"}
@@ -255,7 +255,7 @@ const CopyRightEditorForm = ({
               {/* Content Information Section */}
               <div className="space-y-6">
                 <div className="flex items-center gap-2">
-                  <div className="w-1 h-6 bg-red-500 rounded-full"></div>
+                  <div className="w-1 h-6 bg-red-500 "></div>
                   <h3 className="text-base font-medium text-gray-900">
                     Thông tin nội dung
                   </h3>
@@ -348,6 +348,32 @@ const CopyRightEditorForm = ({
                     )}
                   />
                 </div>
+
+                {/* Contact Email */}
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium text-gray-700">
+                        Email liên hệ
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <MailIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                          <Input
+                            placeholder="Nhập email liên hệ"
+                            className="pl-10 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 font-mono text-sm"
+                            {...field}
+                            disabled={loading || isViewMode}
+                            maxLength={24}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
 
               <Separator className="my-8" />
@@ -355,7 +381,7 @@ const CopyRightEditorForm = ({
               {/* Violation Type Section */}
               <div className="space-y-6">
                 <div className="flex items-center gap-2">
-                  <div className="w-1 h-6 bg-red-500 rounded-full"></div>
+                  <div className="w-1 h-6 bg-red-500 "></div>
                   <h3 className="text-base font-medium text-gray-900">
                     Loại vi phạm
                   </h3>
@@ -415,7 +441,7 @@ const CopyRightEditorForm = ({
                       {/* Selected Violation Type Preview */}
                       {selectedViolationConfig && (
                         <Card className="mt-4 border-gray-200 shadow-none">
-                          <CardContent className="p-4">
+                          <CardContent className="px-2">
                             <div className="flex items-start gap-3">
                               <div
                                 className={`p-2 rounded-lg bg-gradient-to-r ${selectedViolationConfig.gradient}`}
@@ -452,7 +478,7 @@ const CopyRightEditorForm = ({
               {/* Description Section */}
               <div className="space-y-6">
                 <div className="flex items-center gap-2">
-                  <div className="w-1 h-6 bg-red-500 rounded-full"></div>
+                  <div className="w-1 h-6 bg-red-500 "></div>
                   <h3 className="text-base font-medium text-gray-900">
                     Mô tả chi tiết
                   </h3>
@@ -513,7 +539,7 @@ const CopyRightEditorForm = ({
               {/* Evidence Section */}
               <div className="space-y-6">
                 <div className="flex items-center gap-2">
-                  <div className="w-1 h-6 bg-red-500 rounded-full"></div>
+                  <div className="w-1 h-6 bg-red-500 "></div>
                   <h3 className="text-base font-medium text-gray-900">
                     Bằng chứng
                   </h3>
@@ -716,10 +742,7 @@ const CopyRightEditorForm = ({
                           Đang gửi báo cáo...
                         </>
                       ) : (
-                        <>
-                          <Shield className="w-4 h-4 mr-2" />
-                          Gửi báo cáo vi phạm
-                        </>
+                        <>Gửi báo cáo vi phạm</>
                       )}
                     </Button>
                   </div>
