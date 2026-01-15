@@ -21,6 +21,7 @@ const ReportDialog: FC<Props> = (props) => {
         data,
       });
 
+      onOpenChange(false);
       toast.success("Báo cáo bản quyền đã được gửi thành công.");
     } catch (error) {
       toast.error("Đã có lỗi xảy ra khi gửi báo cáo bản quyền.");
@@ -29,8 +30,8 @@ const ReportDialog: FC<Props> = (props) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="h-[90vh] sm:max-w-2xl">
-        <DialogHeader className="text-destructive font-semibold text-xl font-mono">
+      <DialogContent className="h-[90vh] sm:max-w-2xl p-0 border-none">
+        <DialogHeader className="bg-destructive text-white rounded-t-lg p-4 font-semibold text-xl font-mono">
           Báo cáo vi phạm
         </DialogHeader>
         <ScrollArea className="overflow-y-auto px-5 py-2">

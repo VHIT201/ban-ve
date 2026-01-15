@@ -32,7 +32,6 @@ import { ResponseData } from "@/api/types/base";
 import { Category } from "@/api/models";
 import { Uploader } from "@/components/shared";
 import { useUploadMedia } from "@/hooks";
-import { Progress } from "@/components/ui/progress";
 
 // Schema validation
 const contentFormSchema = z

@@ -61,8 +61,6 @@ const Header = () => {
 
   const navigate = useNavigate();
 
-  console.log("HEADER RENDER");
-
   return (
     <header>
       {/* Dynamic Header */}
@@ -73,7 +71,7 @@ const Header = () => {
           isSlideDown ? "translate-y-0" : "-translate-y-full"
         )}
       >
-        <div className="container max-w-[1500px] mx-auto px-4">
+        <div className="max-w-[1500px] mx-auto px-4">
           <div className="flex items-center justify-between h-18">
             {/* Logo Section */}
             <Link
@@ -135,7 +133,7 @@ const Header = () => {
           "transition-transform duration-300 ease-in-out"
         )}
       >
-        <div className="container max-w-[1500px] mx-auto px-4">
+        <div className="max-w-[1500px] mx-auto px-4">
           <div className="flex items-center justify-between h-20">
             {/* Logo Section */}
             <Link

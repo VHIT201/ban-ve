@@ -39,13 +39,13 @@ export default function ResourceItem({
 }: Props) {
   const [showActions, setShowActions] = useState(false);
 
-  const API_BASE_URL = 'http://giangvien.org:3001';
+  const API_BASE_URL = "http://giangvien.org:3001";
 
   const getFullPath = (path: string) => {
     // Nếu path đã là URL đầy đủ thì trả về luôn
-    if (path.startsWith('http')) return path;
+    if (path.startsWith("http")) return path;
     // Nếu path bắt đầu bằng / thì nối trực tiếp, ngược lại thêm / ở giữa
-    return path.startsWith('/') 
+    return path.startsWith("/")
       ? `${API_BASE_URL}${path}`
       : `${API_BASE_URL}/${path}`;
   };
@@ -62,26 +62,25 @@ export default function ResourceItem({
   const handleDownload = async (e: React.MouseEvent) => {
     e.stopPropagation();
     onDownload?.(item);
-    
+
     if (!item.path) return;
-    
+
     try {
       const fullPath = getFullPath(item.path);
       const response = await fetch(fullPath);
-      if (!response.ok) throw new Error('Download failed');
-      
+      if (!response.ok) throw new Error("Download failed");
+
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = item.name || 'download';
+      a.download = item.name || "download";
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
       a.remove();
     } catch (error) {
-      console.error('Error downloading file:', error);
-
+      console.error("Error downloading file:", error);
     }
   };
 
@@ -134,7 +133,7 @@ export default function ResourceItem({
           <DropdownMenuContent align="end" className="w-40">
             <DropdownMenuItem onClick={handlePreview}>
               <Eye className="h-4 w-4 mr-2" />
-              Preview
+              Xem trước
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleDownload}>
               <Download className="h-4 w-4 mr-2" />
@@ -145,7 +144,7 @@ export default function ResourceItem({
               className="text-destructive"
             >
               <Trash2 className="h-4 w-4 mr-2" />
-              Delete
+              Xóa dữ liệu
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
