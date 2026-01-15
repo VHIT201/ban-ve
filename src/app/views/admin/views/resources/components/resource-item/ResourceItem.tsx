@@ -39,17 +39,50 @@ export default function ResourceItem({
 }: Props) {
   const [showActions, setShowActions] = useState(false);
 
+  const API_BASE_URL = 'http://giangvien.org:3001';
+
+  const getFullPath = (path: string) => {
+    // Nếu path đã là URL đầy đủ thì trả về luôn
+    if (path.startsWith('http')) return path;
+    // Nếu path bắt đầu bằng / thì nối trực tiếp, ngược lại thêm / ở giữa
+    return path.startsWith('/') 
+      ? `${API_BASE_URL}${path}`
+      : `${API_BASE_URL}/${path}`;
+  };
+
   const handlePreview = (e: React.MouseEvent) => {
     e.stopPropagation();
     onView?.(item);
     if (item.path) {
-      window.open(item.path, "_blank", "noopener,noreferrer");
+      const fullPath = getFullPath(item.path);
+      window.open(fullPath, "_blank", "noopener,noreferrer");
     }
   };
 
-  const handleDownload = (e: React.MouseEvent) => {
+  const handleDownload = async (e: React.MouseEvent) => {
     e.stopPropagation();
     onDownload?.(item);
+    
+    if (!item.path) return;
+    
+    try {
+      const fullPath = getFullPath(item.path);
+      const response = await fetch(fullPath);
+      if (!response.ok) throw new Error('Download failed');
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = item.name || 'download';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    } catch (error) {
+      console.error('Error downloading file:', error);
+
+    }
   };
 
   const handleDelete = (e: React.MouseEvent) => {

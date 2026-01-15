@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 // App
 import { DataTable, QueryBoundary } from "@/components/shared";
-import { useGetApiPaymentsHistory } from "@/api/endpoints/payments";
-import { GetApiPaymentsHistory200 } from "@/api/models";
+import { useGetApiPaymentsAll } from "@/api/endpoints/payments";
+import { GetApiPaymentsAll200 } from "@/api/models";
 
 // Internal
 import { useColumns } from "./lib/hooks";
@@ -20,14 +20,14 @@ const PaymentHistoryTable = () => {
   }>({ pageIndex: 1, pageSize: 10 });
 
   // Query
-  const getPaymentHistoryQuery = useGetApiPaymentsHistory(
+  const getPaymentHistoryQuery = useGetApiPaymentsAll(
     {
       page: pagination.pageIndex,
       limit: pagination.pageSize,
     },
     {
       query: {
-        select: (data) => (data as GetApiPaymentsHistory200).data || [],
+        select: (data) => (data as GetApiPaymentsAll200).data || [],
       },
     }
   ) as UseQueryResult<PaymentTableRow[]>;

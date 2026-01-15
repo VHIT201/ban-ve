@@ -10,7 +10,7 @@ export interface ContentResponse {
     description: string;
   };
 
-  file_id?: {
+  file?: {
     _id: string;
     name: string;
     url: string;

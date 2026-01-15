@@ -173,26 +173,19 @@ export const useColumns = (props: usePaymentTableColumnsDefsProps) => {
           );
         },
       },
-      {
-        accessorKey: "contentId",
-        header: "Content ID",
-        cell: ({ row }) => {
-          const contentId = row.getValue("contentId") as {
-            _id: string;
-            title: string;
-          };
-          return (
-            <div>
-              <span className="block font-medium">
-                {contentId?.title || "-"}
-              </span>
-              <span className="font-mono text-xs text-muted-foreground">
-                {contentId?._id || "-"}
-              </span>
-            </div>
-          );
-        },
-      },
+   {
+    accessorKey: "paymentDetails.items[0].contentId",
+    header: "Content ID",
+    cell: ({ row }) => {
+      const paymentDetails = row.original.paymentDetails as any; 
+      const contentId = paymentDetails?.items?.[0]?.contentId;
+      return (
+        <span className="font-mono text-xs text-muted-foreground">
+          {contentId || "-"}
+        </span>
+      );
+    },
+  },
       {
         accessorKey: "createdAt",
         header: "Ngày tạo",
@@ -270,3 +263,5 @@ export const useColumns = (props: usePaymentTableColumnsDefsProps) => {
     [onView, onRefund]
   );
 };
+
+

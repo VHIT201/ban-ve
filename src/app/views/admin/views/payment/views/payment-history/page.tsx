@@ -20,10 +20,10 @@ const PaymentHistory = () => {
             Quản lý các thanh toán trong hệ thống
           </p>
         </div>
-        <Button>
+        {/* <Button>
           <PlusIcon className="mr-2 size-4" />
           Thêm mới
-        </Button>
+        </Button> */}
       </div>
 
       {/* Payment History Table */}
