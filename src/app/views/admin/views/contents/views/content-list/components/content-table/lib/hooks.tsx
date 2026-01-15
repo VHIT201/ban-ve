@@ -58,7 +58,7 @@ const getFileTypeConfig = (type?: string) => {
     };
   }
   return {
-    label: type?.toUpperCase().substring(0, 4) || "FILE",
+    label: type?.toUpperCase().substring(0, 5) || "FILE",
     color: "bg-gray-100 text-gray-800 border-gray-200",
   };
 };
@@ -135,10 +135,10 @@ export const useContentTableColumnsDefs = (
         },
       },
       {
-        accessorKey: "file_id",
+        accessorKey: "file",
         header: "File",
         cell: ({ row }) => {
-          const file = row.original.file_id;
+          const file = row.original.file;
           const fileConfig = getFileTypeConfig(file?.type);
 
           return (

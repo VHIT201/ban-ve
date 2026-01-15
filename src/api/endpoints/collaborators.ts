@@ -29,6 +29,8 @@ import type {
   CollaboratorStats,
   GetApiCollaboratorsEarnings200,
   GetApiCollaboratorsEarningsCollaboratorId200,
+  GetApiCollaboratorsMe200,
+  GetApiCollaboratorsMyEarnings200,
   GetApiCollaboratorsRequestsParams,
   PutApiCollaboratorsRequestsRequestIdRejectBody
 } from '../models';
@@ -440,7 +442,12 @@ export function useGetApiCollaboratorsEarningsCollaboratorId<TData = Awaited<Ret
 
 
 /**
- * @summary Xem thông tin cộng tác viên của tôi
+ * Lấy thông tin chi tiết của cộng tác viên đang đăng nhập kèm theo:
+- Thông tin cơ bản (tên, email, số tài khoản, tỷ lệ hoa hồng)
+- Thông tin thu nhập (tổng tiền, hoa hồng, tiền admin)
+- Phân loại thu nhập theo trạng thái đơn hàng
+
+ * @summary Xem thông tin cộng tác viên của tôi (kèm theo thông tin thu nhập)
  */
 export const getApiCollaboratorsMe = (
     
@@ -448,7 +455,7 @@ export const getApiCollaboratorsMe = (
 ) => {
       
       
-      return mainInstance<CollaboratorResponse>(
+      return mainInstance<GetApiCollaboratorsMe200>(
       {url: `/api/collaborators/me`, method: 'GET', signal
     },
       );
@@ -517,7 +524,7 @@ export function useGetApiCollaboratorsMeInfinite<TData = InfiniteData<Awaited<Re
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Xem thông tin cộng tác viên của tôi
+ * @summary Xem thông tin cộng tác viên của tôi (kèm theo thông tin thu nhập)
  */
 
 export function useGetApiCollaboratorsMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCollaboratorsMe>>>, TError = ErrorType<void>>(
@@ -584,7 +591,7 @@ export function useGetApiCollaboratorsMe<TData = Awaited<ReturnType<typeof getAp
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Xem thông tin cộng tác viên của tôi
+ * @summary Xem thông tin cộng tác viên của tôi (kèm theo thông tin thu nhập)
  */
 
 export function useGetApiCollaboratorsMe<TData = Awaited<ReturnType<typeof getApiCollaboratorsMe>>, TError = ErrorType<void>>(
@@ -593,6 +600,178 @@ export function useGetApiCollaboratorsMe<TData = Awaited<ReturnType<typeof getAp
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetApiCollaboratorsMeQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Cộng tác viên có thể xem chi tiết thu nhập của chính mình
+bao gồm:
+- Tổng số tiền đơn hàng
+- Tổng hoa hồng nhận được
+- Tổng tiền admin nhận
+- Phân loại theo trạng thái đơn hàng
+
+ * @summary Xem thu nhập của cộng tác viên đang đăng nhập
+ */
+export const getApiCollaboratorsMyEarnings = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<GetApiCollaboratorsMyEarnings200>(
+      {url: `/api/collaborators/my-earnings`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiCollaboratorsMyEarningsInfiniteQueryKey = () => {
+    return [
+    'infinite', `/api/collaborators/my-earnings`
+    ] as const;
+    }
+
+export const getGetApiCollaboratorsMyEarningsQueryKey = () => {
+    return [
+    `/api/collaborators/my-earnings`
+    ] as const;
+    }
+
+    
+export const getGetApiCollaboratorsMyEarningsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>>, TError = ErrorType<void>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCollaboratorsMyEarningsInfiniteQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>> = ({ signal }) => getApiCollaboratorsMyEarnings(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiCollaboratorsMyEarningsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>>
+export type GetApiCollaboratorsMyEarningsInfiniteQueryError = ErrorType<void>
+
+
+export function useGetApiCollaboratorsMyEarningsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>>, TError = ErrorType<void>>(
+  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCollaboratorsMyEarningsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCollaboratorsMyEarningsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Xem thu nhập của cộng tác viên đang đăng nhập
+ */
+
+export function useGetApiCollaboratorsMyEarningsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiCollaboratorsMyEarningsInfiniteQueryOptions(options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const getGetApiCollaboratorsMyEarningsQueryOptions = <TData = Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>, TError = ErrorType<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCollaboratorsMyEarningsQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>> = ({ signal }) => getApiCollaboratorsMyEarnings(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiCollaboratorsMyEarningsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>>
+export type GetApiCollaboratorsMyEarningsQueryError = ErrorType<void>
+
+
+export function useGetApiCollaboratorsMyEarnings<TData = Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>, TError = ErrorType<void>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCollaboratorsMyEarnings<TData = Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCollaboratorsMyEarnings<TData = Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Xem thu nhập của cộng tác viên đang đăng nhập
+ */
+
+export function useGetApiCollaboratorsMyEarnings<TData = Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCollaboratorsMyEarnings>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiCollaboratorsMyEarningsQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

@@ -1,5 +1,6 @@
 // @ts-nocheck
 import type { ContentStatus } from './contentStatus';
+import type { ContentFileId } from './contentFileId';
 import type { User } from './user';
 
 export interface Content {
@@ -25,8 +26,8 @@ export interface Content {
   price?: number;
   /** ID danh mục */
   category_id?: string;
-  /** ID file đính kèm */
-  file_id?: string;
+  /** File đính kèm với URL đầy đủ và tất cả hình ảnh */
+  file_id?: ContentFileId;
   createdBy?: User;
   approvedBy?: User;
   approvedAt?: string;

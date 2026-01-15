@@ -25,6 +25,8 @@ import type {
 
 import type {
   CreatePaymentInput,
+  GetApiPaymentsAll200,
+  GetApiPaymentsAllParams,
   GetApiPaymentsHistory200,
   GetApiPaymentsHistoryParams,
   GetApiPaymentsPaymentId200,
@@ -865,6 +867,173 @@ export function useGetApiPaymentsHistory<TData = Awaited<ReturnType<typeof getAp
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetApiPaymentsHistoryQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Lấy danh sách tất cả thanh toán từ hệ thống có hỗ trợ lọc theo trạng thái, phương thức thanh toán, phân trang và sắp xếp
+ * @summary Lấy danh sách tất cả thanh toán với lọc theo trạng thái
+ */
+export const getApiPaymentsAll = (
+    params?: GetApiPaymentsAllParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<GetApiPaymentsAll200>(
+      {url: `/api/payments/all`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiPaymentsAllInfiniteQueryKey = (params?: GetApiPaymentsAllParams,) => {
+    return [
+    'infinite', `/api/payments/all`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+export const getGetApiPaymentsAllQueryKey = (params?: GetApiPaymentsAllParams,) => {
+    return [
+    `/api/payments/all`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetApiPaymentsAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsAll>>, GetApiPaymentsAllParams['page']>, TError = ErrorType<unknown>>(params?: GetApiPaymentsAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsAll>>, TError, TData, QueryKey, GetApiPaymentsAllParams['page']>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPaymentsAllInfiniteQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPaymentsAll>>, QueryKey, GetApiPaymentsAllParams['page']> = ({ signal, pageParam }) => getApiPaymentsAll({...params, 'page': pageParam || params?.['page']}, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsAll>>, TError, TData, QueryKey, GetApiPaymentsAllParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiPaymentsAllInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiPaymentsAll>>>
+export type GetApiPaymentsAllInfiniteQueryError = ErrorType<unknown>
+
+
+export function useGetApiPaymentsAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsAll>>, GetApiPaymentsAllParams['page']>, TError = ErrorType<unknown>>(
+ params: undefined |  GetApiPaymentsAllParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsAll>>, TError, TData, QueryKey, GetApiPaymentsAllParams['page']>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPaymentsAll>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPaymentsAll>>, QueryKey
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPaymentsAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsAll>>, GetApiPaymentsAllParams['page']>, TError = ErrorType<unknown>>(
+ params?: GetApiPaymentsAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsAll>>, TError, TData, QueryKey, GetApiPaymentsAllParams['page']>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPaymentsAll>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPaymentsAll>>, QueryKey
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPaymentsAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsAll>>, GetApiPaymentsAllParams['page']>, TError = ErrorType<unknown>>(
+ params?: GetApiPaymentsAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsAll>>, TError, TData, QueryKey, GetApiPaymentsAllParams['page']>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lấy danh sách tất cả thanh toán với lọc theo trạng thái
+ */
+
+export function useGetApiPaymentsAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiPaymentsAll>>, GetApiPaymentsAllParams['page']>, TError = ErrorType<unknown>>(
+ params?: GetApiPaymentsAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiPaymentsAll>>, TError, TData, QueryKey, GetApiPaymentsAllParams['page']>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiPaymentsAllInfiniteQueryOptions(params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const getGetApiPaymentsAllQueryOptions = <TData = Awaited<ReturnType<typeof getApiPaymentsAll>>, TError = ErrorType<unknown>>(params?: GetApiPaymentsAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsAll>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiPaymentsAllQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiPaymentsAll>>> = ({ signal }) => getApiPaymentsAll(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiPaymentsAllQueryResult = NonNullable<Awaited<ReturnType<typeof getApiPaymentsAll>>>
+export type GetApiPaymentsAllQueryError = ErrorType<unknown>
+
+
+export function useGetApiPaymentsAll<TData = Awaited<ReturnType<typeof getApiPaymentsAll>>, TError = ErrorType<unknown>>(
+ params: undefined |  GetApiPaymentsAllParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsAll>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPaymentsAll>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPaymentsAll>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPaymentsAll<TData = Awaited<ReturnType<typeof getApiPaymentsAll>>, TError = ErrorType<unknown>>(
+ params?: GetApiPaymentsAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsAll>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiPaymentsAll>>,
+          TError,
+          Awaited<ReturnType<typeof getApiPaymentsAll>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiPaymentsAll<TData = Awaited<ReturnType<typeof getApiPaymentsAll>>, TError = ErrorType<unknown>>(
+ params?: GetApiPaymentsAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsAll>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lấy danh sách tất cả thanh toán với lọc theo trạng thái
+ */
+
+export function useGetApiPaymentsAll<TData = Awaited<ReturnType<typeof getApiPaymentsAll>>, TError = ErrorType<unknown>>(
+ params?: GetApiPaymentsAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiPaymentsAll>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiPaymentsAllQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
