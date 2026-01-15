@@ -17,7 +17,10 @@ export const CATEGORY_SCHEMA = z.object({
       message: "Kích thước ảnh không được vượt quá 5MB",
     })
     .refine(
-      (file) => ["image/jpeg", "image/png", "image/webp"].includes(file.type),
+      (file) =>
+        ["image/jpg", "image/jpeg", "image/png", "image/webp"].includes(
+          file.type
+        ),
       { message: "Chỉ chấp nhận file JPEG, PNG hoặc WebP" }
     )
     .optional()

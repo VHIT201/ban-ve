@@ -9,6 +9,9 @@ import {
 } from "@/api/endpoints/categories";
 import { toast } from "sonner";
 import { CategoryFormValues } from "./components/category-dialog";
+import { useUploadMedia } from "@/hooks";
+import { extractErrorMessage } from "@/utils/error";
+import baseConfig from "@/configs/base";
 
 const Categories = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -22,16 +25,33 @@ const Categories = () => {
     },
   });
 
+  const uploadFileMutation = useUploadMedia();
+
+  // Methods
   const handleCreateCategory = async (data: CategoryFormValues) => {
     try {
+      const imageRes = await uploadFileMutation.uploadSingle(
+        data.image as unknown as File,
+        {
+          filename: data.image?.name,
+          dir: "categories",
+          private: false,
+        }
+      );
+
       await createCategoryMutation.mutateAsync({
-        data,
+        data: {
+          ...data,
+          imageUrl: imageRes?.path
+            ? `${baseConfig.mediaDomain}${imageRes.path}`
+            : undefined,
+        },
       });
 
       setIsDialogOpen(false);
       toast.success("Danh mục mới đã được tạo thành công.");
-    } catch {
-      toast.error("Đã có lỗi xảy ra khi tạo mới danh mục.");
+    } catch (error) {
+      toast.error(extractErrorMessage(error));
     }
   };
 

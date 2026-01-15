@@ -11,6 +11,7 @@ import { DataTableActionCell } from "@/components/shared/data-table/shared";
 // Internal
 import { CategoryTableRow, useCategoryTableColumnsDefsProps } from "./types";
 import { TrashIcon } from "lucide-react";
+import Image from "@/components/ui/image";
 
 export const useCategoryTableColumnsDefs = (
   props: useCategoryTableColumnsDefsProps
@@ -29,6 +30,20 @@ export const useCategoryTableColumnsDefs = (
               <div className="font-semibold text-gray-900">{category.name}</div>
               <div className="text-xs text-gray-500">/{category.slug}</div>
             </div>
+          );
+        },
+      },
+      {
+        accessorKey: "imageUrl",
+        header: "Ảnh",
+        cell: ({ row }) => {
+          const category = row.original;
+          return (
+            <Image
+              src={category.imageUrl || "/images/placeholder.png"}
+              alt={category.name}
+              className="aspect-square size-16 mx-auto rounded-sm object-cover"
+            />
           );
         },
       },

@@ -1,4 +1,5 @@
 // @ts-nocheck
+import type { ContentInputDetails } from './contentInputDetails';
 
 export interface ContentInput {
   /** Tiêu đề bắt buộc */
@@ -14,4 +15,6 @@ export interface ContentInput {
   price?: number;
   category_id: string;
   file_id: string;
+  /** Thông tin chi tiết thêm */
+  details?: ContentInputDetails;
 }

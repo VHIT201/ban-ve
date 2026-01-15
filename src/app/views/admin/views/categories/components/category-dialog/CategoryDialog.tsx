@@ -41,8 +41,6 @@ interface CategoryDialogProps {
 }
 
 const CategoryDialog = (props: CategoryDialogProps) => {
-  console.log("Rerender CategoryDialog", props.category);
-
   // Props
   const {
     open,
@@ -177,8 +175,8 @@ const CategoryDialog = (props: CategoryDialogProps) => {
                       <FormControl>
                         <div className="space-y-3">
                           <Uploader
-                            value={field.value || []}
-                            onChange={field.onChange}
+                            value={field.value ? [field.value] : []}
+                            onChange={(files) => field.onChange(files[0])}
                             maxFiles={1}
                             maxSize={50 * 1024 * 1024}
                             accept={{
