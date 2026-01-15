@@ -10,12 +10,12 @@ import { DataTableActionCell } from "@/components/shared/data-table/shared";
 
 // Internal
 import { CategoryTableRow, useCategoryTableColumnsDefsProps } from "./types";
-import { TrashIcon } from "lucide-react";
+import { EyeIcon, TrashIcon } from "lucide-react";
 
 export const useCategoryTableColumnsDefs = (
   props: useCategoryTableColumnsDefsProps
 ) => {
-  const { onEdit, onDelete } = props;
+  const { onEdit, onDelete, onViewDetails } = props;
 
   return useMemo<ColumnDef<CategoryTableRow>[]>(
     () => [
@@ -116,10 +116,17 @@ export const useCategoryTableColumnsDefs = (
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onSelect={() =>
-                      navigator.clipboard.writeText(category.slug)
+                      navigator.clipboard.writeText(category.slug || "")
                     }
                   >
                     Sao chép Slug
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => onViewDetails?.(category)}
+                    className="flex items-center gap-2"
+                  >
+                    <EyeIcon className="h-4 w-4" />
+                    <span>Xem chi tiết</span>
                   </DropdownMenuItem>
                 </Fragment>
               }
