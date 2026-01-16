@@ -55,7 +55,7 @@ const contentFormSchema = z
     images: z
       .array(z.instanceof(File))
       .min(1, "Vui lòng chọn ít nhất 1 file")
-      .max(1, "Chỉ được chọn 1 file")
+      .max(5, "Chỉ được chọn 5 file")
       .refine(
         (files) => files.every((file) => file.size <= 50 * 1024 * 1024),
         "Kích thước file không được vượt quá 50MB"
@@ -64,7 +64,7 @@ const contentFormSchema = z
     files: z
       .array(z.instanceof(File))
       .min(1, "Vui lòng chọn ít nhất 1 file")
-      .max(1, "Chỉ được chọn 1 file")
+      .max(5, "Chỉ được chọn 5 file")
       .refine(
         (files) => files.every((file) => file.size <= 50 * 1024 * 1024),
         "Kích thước file không được vượt quá 50MB"
@@ -375,9 +375,9 @@ const ContentEditorForm = ({
                 <div className="space-y-3">
                   <Uploader
                     multiple
+                    maxFiles={5}
                     value={field.value || []}
                     onChange={field.onChange}
-                    maxFiles={1}
                     maxSize={50 * 1024 * 1024}
                     accept={{ "image/*": [".png", ".jpg", ".jpeg", ".webp"] }}
                   >
@@ -423,9 +423,8 @@ const ContentEditorForm = ({
                     multiple
                     value={field.value || []}
                     onChange={field.onChange}
-                    maxFiles={1}
+                    maxFiles={5}
                     maxSize={50 * 1024 * 1024}
-                    accept={{ "image/*": [".png", ".jpg", ".jpeg", ".webp"] }}
                   >
                     <Uploader.DropZone>
                       <Uploader.Placeholder />

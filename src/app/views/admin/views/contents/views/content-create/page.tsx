@@ -5,20 +5,19 @@ import {
   usePostApiContentUpload,
 } from "@/api/endpoints/content";
 import { ContentFormValues } from "@/components/modules/content/content-editor-form/ContentEditorForm";
-import { MutationData } from "@/api/types/base";
-import { FileResponse } from "@/api/types/file";
-import { usePostApiFileUpload } from "@/api/endpoints/files";
+import { UploadedFile } from "@/api/types/file";
 import { useNavigate } from "react-router-dom";
 import { BASE_PATHS } from "@/constants/paths";
 import { Link } from "react-router-dom";
 import { ArrowLeftIcon } from "lucide-react";
+import { useUploadMedia } from "@/hooks";
 
 const ContentDetail = () => {
   // Hooks
   const navigate = useNavigate();
 
   // Mutations
-  const uploadFileMutation = usePostApiFileUpload();
+  const uploadMediaMutation = useUploadMedia();
   const createContentMutation = usePostApiContentUpload({
     mutation: {
       meta: {
@@ -30,26 +29,54 @@ const ContentDetail = () => {
   // Methods
   const handleSubmit = async (values: ContentFormValues) => {
     try {
-      if (!values.file) {
+      if (!values.images || values.images.length === 0) {
+        toast.error("Vui lòng chọn ảnh để tải lên.");
+        return;
+      }
+
+      // const imageUploadResponse = await uploadMediaMutation.uploadWithImages(
+      //   values.images[0],
+      //   values.images,
+      //   {
+      //     filename: values.images[0].name,
+      //     dir: "contents",
+      //     private: false,
+      //     compress: false,
+      //   }
+      // );
+
+      // const imageData = imageUploadResponse as unknown as UploadedFile;
+
+      if (!values.files || values.files.length === 0) {
         toast.error("Vui lòng chọn file để tải lên.");
         return;
       }
 
-      const fileUploadResponse = await uploadFileMutation.mutateAsync({
-        data: {
-          file: values.file,
-        },
-      });
-      const fileData = (
-        fileUploadResponse as unknown as MutationData<FileResponse>
-      ).data;
+      const fileUploadResponse = await uploadMediaMutation.uploadWithImages(
+        values.files[0],
+        values.files,
+        {
+          filename: values.files[0].name,
+          dir: "contents",
+          private: false,
+          compress: false,
+        }
+      );
+
+      const fileData = fileUploadResponse as unknown as UploadedFile;
 
       await createContentMutation.mutateAsync({
         data: {
           title: values.title,
           description: values.description,
           category_id: values.category_id,
-          file_id: fileData?._id,
+          file_id: fileData._id,
+          price: values.price,
+          image1: values?.images[0],
+          image2: values?.images[1],
+          image3: values?.images[2],
+          image4: values?.images[3],
+          image5: values?.images[4],
         },
       });
 
@@ -84,7 +111,7 @@ const ContentDetail = () => {
       <ContentEditorForm
         mode="create"
         isLoading={
-          uploadFileMutation.isPending || createContentMutation.isPending
+          uploadMediaMutation.isUploading || createContentMutation.isPending
         }
         onSubmit={handleSubmit}
       />
