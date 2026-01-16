@@ -1,15 +1,36 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Mail, Lock, Check, Loader2, Image as ImageIcon } from 'lucide-react';
+import {
+  User,
+  Mail,
+  Lock,
+  Check,
+  Loader2,
+  Image as ImageIcon,
+} from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
+import {
+  useGetApiAuthMe,
+  usePutApiAuthUpdateProfile,
+} from '@/api/endpoints/auth';
+import { toast } from 'sonner';
 
-// Schema validation
+/* ---------------------------------- */
+/* Schema */
+/* ---------------------------------- */
+
 const profileFormSchema = z.object({
   name: z.string().min(2, 'Tên phải có ít nhất 2 ký tự'),
   email: z.string().email('Email không hợp lệ'),
@@ -29,71 +50,97 @@ const passwordFormSchema = z
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 type PasswordFormValues = z.infer<typeof passwordFormSchema>;
 
-export default function AccountSettings() {
-  // Mock user data - replace with actual user data
-  const user = {
-    name: 'Nguyễn Văn A',
-    email: 'nguyenvana@example.com',
-    avatar: '/placeholder-user.jpg',
+/* ---------------------------------- */
+/* Helpers */
+/* ---------------------------------- */
+
+function useSavedState(timeout = 3000) {
+  const [saved, setSaved] = useState(false);
+
+  const markSaved = () => {
+    setSaved(true);
+    setTimeout(() => setSaved(false), timeout);
   };
 
-  // Form states
-  const [isProfileSaving, setIsProfileSaving] = useState(false);
-  const [isPasswordSaving, setIsPasswordSaving] = useState(false);
-  const [profileSaved, setProfileSaved] = useState(false);
-  const [passwordSaved, setPasswordSaved] = useState(false);
+  return { saved, markSaved };
+}
 
-  // Profile form
+/* ---------------------------------- */
+/* Component */
+/* ---------------------------------- */
+
+export default function AccountSettings() {
+  const { data: userData, refetch } = useGetApiAuthMe();
+
+  const profileSaved = useSavedState();
+  const passwordSaved = useSavedState();
+
+  /* -------- Profile Form -------- */
+
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      name: user.name,
-      email: user.email,
+      name: '',
+      email: '',
     },
   });
 
-  // Password form
+  useEffect(() => {
+    if (userData?.data) {
+      profileForm.reset({
+        name: userData.data.username ?? '',
+        email: userData.data.email ?? '',
+      });
+    }
+  }, [userData, profileForm]);
+
+  const {
+    mutate: updateProfile,
+    isPending: isUpdatingProfile,
+  } = usePutApiAuthUpdateProfile({
+    mutation: {
+      onSuccess: () => {
+        toast.success('Cập nhật thông tin thành công');
+        profileSaved.markSaved();
+        refetch();
+      },
+      onError: () => {
+        toast.error('Có lỗi xảy ra khi cập nhật thông tin');
+      },
+    },
+  });
+
+  const handleProfileSubmit = (values: ProfileFormValues) => {
+    updateProfile({
+      data: {
+        username: values.name,
+        email: values.email,
+      },
+    });
+  };
+
+  /* -------- Password Form -------- */
+
   const passwordForm = useForm<PasswordFormValues>({
     resolver: zodResolver(passwordFormSchema),
-    defaultValues: {
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: '',
-    },
   });
 
-  // Form handlers
-  const onProfileSubmit = async (data: ProfileFormValues) => {
-    setIsProfileSaving(true);
+  const handlePasswordSubmit = async () => {
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setProfileSaved(true);
-      setTimeout(() => setProfileSaved(false), 3000);
-    } catch (error) {
-      console.error('Error updating profile:', error);
-    } finally {
-      setIsProfileSaving(false);
+      await new Promise((r) => setTimeout(r, 1000)); // mock API
+      passwordForm.reset();
+      toast.success('Đổi mật khẩu thành công');
+      passwordSaved.markSaved();
+    } catch {
+      toast.error('Có lỗi xảy ra khi đổi mật khẩu');
     }
   };
 
-  const onPasswordSubmit = async (data: PasswordFormValues) => {
-    setIsPasswordSaving(true);
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      passwordForm.reset();
-      setPasswordSaved(true);
-      setTimeout(() => setPasswordSaved(false), 3000);
-    } catch (error) {
-      console.error('Error updating password:', error);
-    } finally {
-      setIsPasswordSaving(false);
-    }
-  };
+  const user = userData?.data;
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
+      {/* Header */}
       <div className="space-y-1">
         <h2 className="text-3xl font-bold tracking-tight">Cài đặt tài khoản</h2>
         <p className="text-muted-foreground">
@@ -101,222 +148,150 @@ export default function AccountSettings() {
         </p>
       </div>
 
-      <Card className="overflow-hidden">
+      {/* Profile */}
+      <Card>
         <CardHeader className="bg-muted/20">
-          <CardTitle className="text-xl">Hồ sơ cá nhân</CardTitle>
-          <CardDescription>
-            Quản lý thông tin cá nhân của bạn
-          </CardDescription>
+          <CardTitle>Hồ sơ cá nhân</CardTitle>
+          <CardDescription>Quản lý thông tin cá nhân</CardDescription>
         </CardHeader>
+
         <CardContent className="pt-6">
-          <form onSubmit={profileForm.handleSubmit(onProfileSubmit)} className="space-y-6">
-            <div className="flex flex-col items-center space-y-4 mb-8">
-              <div className="relative group">
-                <Avatar className="h-24 w-24 border-2 border-primary/20">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="text-2xl bg-muted">
-                    {user.name
-                      .split(' ')
-                      .map((n) => n[0])
-                      .join('')}
-                  </AvatarFallback>
-                </Avatar>
-                <button
-                  type="button"
-                  className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground rounded-full p-1.5 shadow-md hover:bg-primary/90 transition-colors"
-                >
-                  <ImageIcon className="h-4 w-4" />
-                </button>
-              </div>
-              <Button variant="outline" size="sm" type="button" className="text-sm">
+          <form
+            onSubmit={profileForm.handleSubmit(handleProfileSubmit)}
+            className="space-y-6"
+          >
+            <div className="flex flex-col items-center space-y-4">
+              <Avatar className="h-24 w-24 border">
+                <AvatarImage src="/placeholder-user.jpg" />
+                <AvatarFallback>
+                  {user?.username?.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+
+              <Button variant="outline" size="sm" type="button">
+                <ImageIcon className="w-4 h-4 mr-2" />
                 Thay đổi ảnh đại diện
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-medium leading-none flex items-center">
-                  <User className="w-4 h-4 mr-2 text-muted-foreground" />
-                  Họ và tên
-                </label>
-                <div className="relative">
-                  <Input
-                    placeholder="Nhập họ và tên"
-                    {...profileForm.register('name')}
-                    className={cn(
-                      'pl-10',
-                      profileForm.formState.errors.name && 'border-destructive'
-                    )}
-                  />
-                  {profileForm.formState.errors.name && (
-                    <p className="text-xs text-destructive mt-1">
-                      {profileForm.formState.errors.name.message}
-                    </p>
-                  )}
-                </div>
-              </div>
+            <div className="grid md:grid-cols-2 gap-6">
+              <InputField
+                label="Họ và tên"
+                icon={User}
+                error={profileForm.formState.errors.name?.message}
+                {...profileForm.register('name')}
+              />
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium leading-none flex items-center">
-                  <Mail className="w-4 h-4 mr-2 text-muted-foreground" />
-                  Địa chỉ email
-                </label>
-                <div className="relative">
-                  <Input
-                    type="email"
-                    placeholder="Nhập email"
-                    {...profileForm.register('email')}
-                    className={cn(
-                      'pl-10',
-                      profileForm.formState.errors.email && 'border-destructive'
-                    )}
-                  />
-                  {profileForm.formState.errors.email && (
-                    <p className="text-xs text-destructive mt-1">
-                      {profileForm.formState.errors.email.message}
-                    </p>
-                  )}
-                </div>
-              </div>
+              <InputField
+                label="Email"
+                icon={Mail}
+                type="email"
+                error={profileForm.formState.errors.email?.message}
+                {...profileForm.register('email')}
+              />
             </div>
 
-            <div className="flex items-center justify-between pt-2">
-              <Button
-                type="submit"
-                disabled={isProfileSaving || profileSaved}
-                className={cn(
-                  'transition-all',
-                  profileSaved && 'bg-green-500 hover:bg-green-600'
-                )}
-              >
-                {isProfileSaving ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Đang lưu...
-                  </>
-                ) : profileSaved ? (
-                  <>
-                    <Check className="mr-2 h-4 w-4" />
-                    Đã lưu
-                  </>
-                ) : (
-                  'Lưu thay đổi'
-                )}
-              </Button>
-            </div>
+            <Button
+              type="submit"
+              disabled={isUpdatingProfile || profileSaved.saved}
+              className={cn(profileSaved.saved && 'bg-green-500')}
+            >
+              {isUpdatingProfile ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : profileSaved.saved ? (
+                <Check className="w-4 h-4 mr-2" />
+              ) : null}
+              {isUpdatingProfile
+                ? 'Đang lưu...'
+                : profileSaved.saved
+                ? 'Đã lưu'
+                : 'Lưu thay đổi'}
+            </Button>
           </form>
         </CardContent>
       </Card>
 
-      <Card className="overflow-hidden">
+      {/* Security */}
+      <Card>
         <CardHeader className="bg-muted/20">
-          <CardTitle className="text-xl">Bảo mật</CardTitle>
-          <CardDescription>
-            Cập nhật mật khẩu của bạn
-          </CardDescription>
+          <CardTitle>Bảo mật</CardTitle>
+          <CardDescription>Đổi mật khẩu</CardDescription>
         </CardHeader>
+
         <CardContent className="pt-6">
-          <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="space-y-6">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium leading-none flex items-center">
-                  <Lock className="w-4 h-4 mr-2 text-muted-foreground" />
-                  Mật khẩu hiện tại
-                </label>
-                <div className="relative">
-                  <Input
-                    type="password"
-                    placeholder="Nhập mật khẩu hiện tại"
-                    {...passwordForm.register('currentPassword')}
-                    className={cn(
-                      'pl-10',
-                      passwordForm.formState.errors.currentPassword && 'border-destructive'
-                    )}
-                  />
-                  {passwordForm.formState.errors.currentPassword && (
-                    <p className="text-xs text-destructive mt-1">
-                      {passwordForm.formState.errors.currentPassword.message}
-                    </p>
-                  )}
-                </div>
-              </div>
+          <form
+            onSubmit={passwordForm.handleSubmit(handlePasswordSubmit)}
+            className="space-y-6"
+          >
+            <InputField
+              label="Mật khẩu hiện tại"
+              icon={Lock}
+              type="password"
+              error={
+                passwordForm.formState.errors.currentPassword?.message
+              }
+              {...passwordForm.register('currentPassword')}
+            />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium leading-none flex items-center">
-                    <Lock className="w-4 h-4 mr-2 text-muted-foreground" />
-                    Mật khẩu mới
-                  </label>
-                  <div className="relative">
-                    <Input
-                      type="password"
-                      placeholder="Nhập mật khẩu mới"
-                      {...passwordForm.register('newPassword')}
-                      className={cn(
-                        'pl-10',
-                        passwordForm.formState.errors.newPassword && 'border-destructive'
-                      )}
-                    />
-                    {passwordForm.formState.errors.newPassword && (
-                      <p className="text-xs text-destructive mt-1">
-                        {passwordForm.formState.errors.newPassword.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
+            <div className="grid md:grid-cols-2 gap-6">
+              <InputField
+                label="Mật khẩu mới"
+                icon={Lock}
+                type="password"
+                error={passwordForm.formState.errors.newPassword?.message}
+                {...passwordForm.register('newPassword')}
+              />
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium leading-none flex items-center">
-                    <Lock className="w-4 h-4 mr-2 text-muted-foreground" />
-                    Xác nhận mật khẩu
-                  </label>
-                  <div className="relative">
-                    <Input
-                      type="password"
-                      placeholder="Xác nhận mật khẩu mới"
-                      {...passwordForm.register('confirmPassword')}
-                      className={cn(
-                        'pl-10',
-                        passwordForm.formState.errors.confirmPassword && 'border-destructive'
-                      )}
-                    />
-                    {passwordForm.formState.errors.confirmPassword && (
-                      <p className="text-xs text-destructive mt-1">
-                        {passwordForm.formState.errors.confirmPassword.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
+              <InputField
+                label="Xác nhận mật khẩu"
+                icon={Lock}
+                type="password"
+                error={
+                  passwordForm.formState.errors.confirmPassword?.message
+                }
+                {...passwordForm.register('confirmPassword')}
+              />
             </div>
 
-            <div className="flex items-center justify-between pt-2">
-              <Button
-                type="submit"
-                disabled={isPasswordSaving || passwordSaved}
-                className={cn(
-                  'transition-all',
-                  passwordSaved && 'bg-green-500 hover:bg-green-600'
-                )}
-              >
-                {isPasswordSaving ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Đang cập nhật...
-                  </>
-                ) : passwordSaved ? (
-                  <>
-                    <Check className="mr-2 h-4 w-4" />
-                    Đã cập nhật
-                  </>
-                ) : (
-                  'Đổi mật khẩu'
-                )}
-              </Button>
-            </div>
+            <Button
+              type="submit"
+              disabled={passwordSaved.saved}
+              className={cn(passwordSaved.saved && 'bg-green-500')}
+            >
+              {passwordSaved.saved ? (
+                <>
+                  <Check className="w-4 h-4 mr-2" />
+                  Đã cập nhật
+                </>
+              ) : (
+                'Đổi mật khẩu'
+              )}
+            </Button>
           </form>
         </CardContent>
       </Card>
+    </div>
+  );
+}
+
+
+function InputField({
+  label,
+  icon: Icon,
+  error,
+  ...props
+}: any) {
+  return (
+    <div className="space-y-2">
+      <label className="text-sm font-medium flex items-center">
+        <Icon className="w-4 h-4 mr-2 text-muted-foreground" />
+        {label}
+      </label>
+      <Input
+        {...props}
+        className={cn(error && 'border-destructive')}
+      />
+      {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );
 }

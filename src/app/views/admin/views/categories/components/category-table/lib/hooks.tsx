@@ -10,7 +10,7 @@ import { DataTableActionCell } from "@/components/shared/data-table/shared";
 
 // Internal
 import { CategoryTableRow, useCategoryTableColumnsDefsProps } from "./types";
-import { EyeIcon, TrashIcon } from "lucide-react";
+import { EyeIcon, TrashIcon, PencilIcon } from "lucide-react";
 
 export const useCategoryTableColumnsDefs = (
   props: useCategoryTableColumnsDefsProps
@@ -19,6 +19,26 @@ export const useCategoryTableColumnsDefs = (
 
   return useMemo<ColumnDef<CategoryTableRow>[]>(
     () => [
+      {
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            checked={table.getIsAllPageRowsSelected()}
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            aria-label="Select all"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+            onClick={(e) => e.stopPropagation()}
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
       {
         accessorKey: "name",
         header: "Tên danh mục",
@@ -125,13 +145,18 @@ export const useCategoryTableColumnsDefs = (
                     onSelect={() => onViewDetails?.(category)}
                     className="flex items-center gap-2"
                   >
-                    <EyeIcon className="h-4 w-4" />
-                    <span>Xem chi tiết</span>
+                   
                   </DropdownMenuItem>
                 </Fragment>
               }
               onDelete={() => onDelete?.(category)}
-              onEdit={() => onEdit?.(category)}
+              actions={[
+                {
+                  label: 'Xem chi tiết',
+                  icon: EyeIcon,
+                  onAction: () => onViewDetails?.(category),
+                },
+              ]}
             />
           );
         },

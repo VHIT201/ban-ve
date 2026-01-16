@@ -26,8 +26,10 @@ export interface Content {
   price?: number;
   /** ID danh mục */
   category_id?: string;
-  /** File đính kèm với URL đầy đủ và tất cả hình ảnh */
+  /** File đính kèm */
   file_id?: ContentFileId;
+  /** Danh sách URL hình ảnh đính kèm */
+  images?: string[];
   createdBy?: User;
   approvedBy?: User;
   approvedAt?: string;
