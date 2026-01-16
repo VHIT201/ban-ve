@@ -40,15 +40,31 @@ const adminRoutes: RouteObject = {
       },
     },
     {
-      path: admin.categories.path,
-      lazy: async () => {
-        const { default: Categories } = await import(
-          "../views/categories/page"
-        );
-        return {
-          element: <Categories />,
-        };
-      },
+      path: "",
+      children: [
+        {
+          path: admin.categories.path,
+          lazy: async () => {
+            const { default: Categories } = await import(
+              "../views/categories/page"
+            );
+            return {
+              element: <Categories />,
+            };
+          },
+        },
+        {
+          path: `${admin.categories.path}/detail/:id`,
+          lazy: async () => {
+            const { default: CategoryDetail } = await import(
+              "../views/categories/components/category-detail"
+            );
+            return {
+              element: <CategoryDetail />,
+            };
+          },
+        },
+      ],
     },
     {
       path: admin.resources.path,

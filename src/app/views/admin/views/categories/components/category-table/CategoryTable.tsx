@@ -11,7 +11,7 @@ import {
   usePutApiCategoriesId,
 } from "@/api/endpoints/categories";
 import { UseQueryResult } from "@tanstack/react-query";
-import { Fragment, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import CategoryDialog from "../category-dialog";
 import { toast } from "sonner";
 import {
@@ -20,22 +20,25 @@ import {
 } from "@/components/shared/data-table/shared";
 import { CategoryFormValues } from "../category-dialog/lib/types";
 import { extractErrorMessage } from "@/utils/error";
+import { useNavigate } from "react-router-dom";
+import { ROUTE_PATHS } from "@/constants/paths";
 
 const CategoryTable = () => {
   // States
+  const navigate = useNavigate();
   const [editSelectRow, setEditSelectRow] = useState<Category | null>(null);
   const [deleteSelectRow, setDeleteSelectRow] = useState<Category | null>(null);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   // Queries
-const getCategoryList = useGetApiCategories({
-  query: {
-    select: (data: any) => {
-      const result = data.data?.categories || [];
-      return result;
-    }
-  }
-}) as UseQueryResult<Category[]>;
+  const getCategoryList = useGetApiCategories({
+    query: {
+      select: (data: any) => {
+        const result = data.data?.categories || [];
+        return result;
+      },
+    },
+  }) as UseQueryResult<Category[]>;
 
   // Mutations
   const editCategoryMutation = usePutApiCategoriesId({
@@ -57,6 +60,12 @@ const getCategoryList = useGetApiCategories({
   // Methods
   const handleColumnEdit = (category: Category) => {
     setEditSelectRow(category);
+  };
+
+  const handleViewDetails = (category: Category) => {
+    navigate(
+      `/admin/${ROUTE_PATHS.admin.categories.path}/detail/${category._id}`
+    );
   };
 
   const handleEditCategory = async (values: CategoryFormValues) => {
@@ -106,6 +115,7 @@ const getCategoryList = useGetApiCategories({
   const columns = useCategoryTableColumnsDefs({
     onEdit: handleColumnEdit,
     onDelete: handleColumnDelete,
+    onViewDetails: handleViewDetails,
   });
 
   // Memos

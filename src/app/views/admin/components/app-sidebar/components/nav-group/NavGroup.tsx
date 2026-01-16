@@ -174,13 +174,17 @@ function SidebarMenuCollapsedDropdown({
 }
 
 function checkIsActive(href: string, item: NavItem) {
+  const currentPath = href.split("?")[0];
   const itemUrl = typeof item.url === "string" ? item.url : "";
-  return (
-    href === item.url ||
-    href.split("?")[0] === item.url ||
-    !!item?.items?.filter((i) => i.url === href).length ||
-    (itemUrl !== "/admin" && href.startsWith(itemUrl + "/"))
-  );
+  
+  if (!item.items) {
+    return currentPath === itemUrl;
+  }
+  const isAnySubItemActive = item.items.some(subItem => {
+    const subItemUrl = typeof subItem.url === "string" ? subItem.url : "";
+    return currentPath === subItemUrl;
+  });
+  return isAnySubItemActive && currentPath !== itemUrl;
 }
 
 export default NavGroup;
