@@ -12,7 +12,7 @@ export interface ContentResponse {
 
   images: string[];
 
-  file?: {
+  file_id?: {
     _id: string;
     name: string;
     url: string;

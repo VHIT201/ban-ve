@@ -67,7 +67,7 @@ const ContentDetail = () => {
       {/* Content Header */}
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div className="flex items-center gap-4">
-          <Link to={BASE_PATHS.app.profile.collaborator.path}>
+          <Link to={BASE_PATHS.admin.contents.path}>
             <ArrowLeftIcon className="size-5 text-gray-500 hover:text-gray-700" />
           </Link>
           <div>
@@ -83,25 +83,33 @@ const ContentDetail = () => {
 
       {/* Content Detail */}
       <QueryBoundary query={getContentDetailQuery}>
-        {(contentDetail) => (
-          <ContentEditorForm
-            mode="edit"
-            defaultValues={{
-              title: contentDetail.title,
-              description: contentDetail.description,
-              category_id: contentDetail.category_id._id,
-              price: contentDetail.price,
-              content_file: {
-                name: contentDetail.file_id.name,
-                size: contentDetail.file_id.size,
-                type: contentDetail.file_id.type,
-                _id: contentDetail.file_id._id,
-              },
-            }}
-            isLoading={editContentMutation.isPending}
-            onSubmit={handleUpdateContent}
-          />
-        )}
+        {(contentDetail) => {
+          console.log("CONTENT DETAIL : ", contentDetail);
+
+          return (
+            <ContentEditorForm
+              mode="edit"
+              defaultValues={{
+                title: contentDetail.title,
+                description: contentDetail.description,
+                category_id: contentDetail?.category?._id,
+                price: contentDetail.price,
+                content_file: {
+                  name: contentDetail?.file_id?.name ?? "",
+                  size: contentDetail?.file_id?.size ?? 0,
+                  type: contentDetail?.file_id?.type ?? "",
+                  _id: contentDetail?.file_id?._id ?? "",
+                },
+              }}
+              defaultFiles={
+                contentDetail?.file_id?.url ? [contentDetail.file_id.url] : []
+              }
+              defaultImages={contentDetail?.images || []}
+              isLoading={editContentMutation.isPending}
+              onSubmit={handleUpdateContent}
+            />
+          );
+        }}
       </QueryBoundary>
     </div>
   );
