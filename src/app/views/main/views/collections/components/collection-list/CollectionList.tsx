@@ -7,7 +7,15 @@ import { ContentResponse } from "@/api/types/content";
 import { BlueprintCard } from "@/components/modules/content";
 import { QueryBoundary } from "@/components/shared";
 import { Button } from "@/components/ui/button";
-
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -30,6 +38,8 @@ const CollectionList: FC<Props> = (props) => {
   const { filter, onClearFilters } = props;
 
   const [sortBy, setSortBy] = useState("best-selling");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; // Số sản phẩm mỗi trang
 
   const handleViewDetail = (product: ContentResponse) => {
     navigate(`/detail/${product._id}`);
@@ -45,55 +55,64 @@ const CollectionList: FC<Props> = (props) => {
 
     switch (sortBy) {
       case "newest":
-        return sorted.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
+        return sorted.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return dateB - dateA;
+        });
 
       case "price-low":
-        return sorted.sort((a, b) => a.price - b.price);
+        return sorted.sort((a, b) => (a.price || 0) - (b.price || 0));
 
       case "price-high":
-        return sorted.sort((a, b) => b.price - a.price);
+        return sorted.sort((a, b) => (b.price || 0) - (a.price || 0));
 
       case "name-az":
-        return sorted.sort((a, b) => a.title.localeCompare(b.title, "vi"));
+        return sorted.sort((a, b) => 
+          (a.title || '').localeCompare(b.title || '', "vi")
+        );
 
       case "name-za":
-        return sorted.sort((a, b) => b.title.localeCompare(a.title, "vi"));
+        return sorted.sort((a, b) => 
+          (b.title || '').localeCompare(a.title || '', "vi")
+        );
 
       case "best-selling":
       default:
-        // Keep original order or implement best-selling logic
         return sorted;
     }
   };
 
+  // Calculate pagination
   const getBlueprintListQuery = useGetApiContent<{
     data: ContentResponse[];
     pagination?: GetApiContent200Pagination;
   }>(
-    {},
+    {
+      page: currentPage,
+      limit: itemsPerPage,
+    },
     {
       query: {
-        queryKey: [...getGetApiContentQueryKey(), filter, sortBy],
+        queryKey: [...getGetApiContentQueryKey(), filter, sortBy, currentPage],
         select: (data) => {
-          const filteredValue = (
-            data as unknown as {
-              data: ContentResponse[];
-              pagination?: GetApiContent200Pagination;
-            }
-          ).data.filter((item) => {
+          const response = data as unknown as {
+            data: ContentResponse[];
+            pagination: GetApiContent200Pagination;
+          };
+          
+          const filteredValue = response.data.filter((item) => {
             if (
               filter.categories.length > 0 &&
-              !filter.categories.includes(item.category._id)
+              (!item.category || !filter.categories.includes(item.category._id))
             ) {
               return false;
             }
 
+            const itemPrice = item.price || 0;
             if (
-              item.price < filter.priceRange[0] * 10000 ||
-              item.price > filter.priceRange[1] * 10000
+              itemPrice < filter.priceRange[0] * 10000 ||
+              itemPrice > filter.priceRange[1] * 10000
             ) {
               return false;
             }
@@ -101,11 +120,11 @@ const CollectionList: FC<Props> = (props) => {
             // Search filter
             if (filter.searchQuery && filter.searchQuery.trim() !== "") {
               const searchLower = filter.searchQuery.toLowerCase();
-              const titleMatch = item.title.toLowerCase().includes(searchLower);
-              const descMatch = item.description
-                ?.toLowerCase()
+              const titleMatch = (item.title || '').toLowerCase().includes(searchLower);
+              const descMatch = (item.description || '')
+                .toLowerCase()
                 .includes(searchLower);
-              const categoryMatch = item.category.name
+              const categoryMatch = (item.category?.name || '')
                 .toLowerCase()
                 .includes(searchLower);
 
@@ -119,9 +138,7 @@ const CollectionList: FC<Props> = (props) => {
 
           return {
             data: sortProducts(filteredValue),
-          } as {
-            data: ContentResponse[];
-            pagination?: GetApiContent200Pagination;
+            pagination: response.pagination,
           };
         },
       },
@@ -251,6 +268,93 @@ const CollectionList: FC<Props> = (props) => {
                   onAddToCart={handleAddToCart}
                 />
               ))}
+            </div>
+          );
+        }}
+      </QueryBoundary>
+
+      {/* Pagination */}
+      <QueryBoundary query={getBlueprintListQuery}>
+        {(blueprints) => {
+          if (!blueprints.data?.length) return null;
+          
+          const totalPages = Math.ceil((blueprints.pagination?.total || 0) / itemsPerPage);
+          if (totalPages <= 1) return null;
+          
+          const maxPageNumbers = 5; // Số lượng số trang hiển thị
+          let startPage = Math.max(1, currentPage - Math.floor(maxPageNumbers / 2));
+          let endPage = Math.min(totalPages, startPage + maxPageNumbers - 1);
+          
+          if (endPage - startPage + 1 < maxPageNumbers) {
+            startPage = Math.max(1, endPage - maxPageNumbers + 1);
+          }
+          
+          const pageNumbers = [];
+          for (let i = startPage; i <= endPage; i++) {
+            pageNumbers.push(i);
+          }
+          
+          return (
+            <div className="flex justify-center mt-8">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (currentPage > 1) {
+                          setCurrentPage(currentPage - 1);
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }
+                      }}
+                      className={currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}
+                    />
+                  </PaginationItem>
+                  
+                  {startPage > 1 && (
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  )}
+                  
+                  {pageNumbers.map((page) => (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        href="#"
+                        isActive={page === currentPage}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentPage(page);
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  
+                  {endPage < totalPages && (
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  )}
+                  
+                  <PaginationItem>
+                    <PaginationNext 
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (currentPage < totalPages) {
+                          setCurrentPage(currentPage + 1);
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }
+                      }}
+                      className={currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
             </div>
           );
         }}
