@@ -12,6 +12,8 @@ import { DataTableActionCell } from "@/components/shared/data-table/shared";
 import { ContentTableRow, useContentTableColumnsDefsProps } from "./types";
 import { ContentStatus } from "@/enums/content";
 import { getFileIcon, getFileTypeLabel } from "@/utils/file";
+import Image from "@/components/ui/image";
+import baseConfig from "@/configs/base";
 
 const getStatusConfig = (status?: string) => {
   switch (status?.toLowerCase()) {
@@ -88,6 +90,25 @@ export const useContentTableColumnsDefs = (
   return useMemo<ColumnDef<ContentTableRow>[]>(
     () => [
       {
+        accessorKey: "images",
+        header: "Ảnh Đại Diện",
+        cell: ({ row }) => {
+          const content = row.original;
+          const productAvatar =
+            content.images && content.images.length > 0
+              ? `${baseConfig.mediaDomain}/${content.images[0]}`
+              : null;
+
+          return (
+            <Image
+              src={productAvatar || "/images/content-placeholder.png"}
+              alt={content.title || "Ảnh đại diện"}
+              className="aspect-square size-16 mx-auto rounded-sm object-cover"
+            />
+          );
+        },
+      },
+      {
         accessorKey: "title",
         header: "Nội dung",
         cell: ({ row }) => {
@@ -139,7 +160,7 @@ export const useContentTableColumnsDefs = (
         accessorKey: "file",
         header: "File",
         cell: ({ row }) => {
-          const file = row.original.file;
+          const file = row.original.file_id;
           const fileConfig = getFileTypeConfig(file?.type);
           const FileIcon = getFileIcon(file?.type || "");
 

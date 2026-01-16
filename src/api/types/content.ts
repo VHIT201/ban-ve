@@ -10,7 +10,9 @@ export interface ContentResponse {
     description: string;
   };
 
-  file?: {
+  images: string[];
+
+  file_id?: {
     _id: string;
     name: string;
     url: string;
@@ -39,6 +41,8 @@ export interface ContentProduct {
     slug: string;
     description: string;
   };
+
+  images: string[];
 
   file_id?: {
     _id: string;

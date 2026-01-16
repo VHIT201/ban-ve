@@ -34,25 +34,13 @@ import {
 import { ReportDialog } from "@/components/shared";
 import { ContentPaymentDialog } from "@/components/modules/content";
 import { useGetApiFileIdDownload } from "@/api/endpoints/files";
-import { QueryData } from "@/api/types/base";
-import { FileResponse } from "@/api/types/file";
 import { toast } from "sonner";
 import { extractErrorMessage } from "@/utils/error";
-import { useWatermark } from "@/hooks";
-import { BASE_PATHS } from "@/constants/paths";
 import { PaymentStatusDialog } from "@/components/modules/payment";
 import { useCreateQrPayment } from "@/hooks/modules/payments";
 import { PaymentStatus } from "@/enums/payment";
-import { useAuth } from "@/contexts/AuthContext";
 import { useAuthStore } from "@/stores";
-
-const MOCK_IMAGE_LIST = [
-  "https://images.pexels.com/photos/1404948/pexels-photo-1404948.jpeg",
-  "https://images.pexels.com/photos/1404948/pexels-photo-1404948.jpeg",
-  "https://images.pexels.com/photos/1404948/pexels-photo-1404948.jpeg",
-  "https://images.pexels.com/photos/1404948/pexels-photo-1404948.jpeg",
-  "https://images.pexels.com/photos/1404948/pexels-photo-1404948.jpeg",
-];
+import baseConfig from "@/configs/base";
 
 const BlueprintDetailView: FC<Props> = (props) => {
   // Props
@@ -79,11 +67,14 @@ const BlueprintDetailView: FC<Props> = (props) => {
   const [justAdded, setJustAdded] = useState(false);
 
   // Queries
-  const getDownloadFileQuery = useGetApiFileIdDownload(content.file_id?._id || '', {
-    query: {
-      enabled: false,
-    },
-  });
+  const getDownloadFileQuery = useGetApiFileIdDownload(
+    content.file_id?._id || "",
+    {
+      query: {
+        enabled: false,
+      },
+    }
+  );
 
   // Mutations
   const createQRPaymentMutation = useCreateQrPayment({
@@ -97,19 +88,19 @@ const BlueprintDetailView: FC<Props> = (props) => {
         // Cập nhật store cục bộ sau khi gọi API thành công
         addItem(content, 1);
         setJustAdded(true);
-        
+
         // Làm mới dữ liệu giỏ hàng
-        await queryClient.invalidateQueries({ queryKey: ['/api/cart'] });
-        
+        await queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
+
         setTimeout(() => {
           setJustAdded(false);
         }, 2000);
       },
       onError: (error) => {
-        console.error('Lỗi khi thêm vào giỏ hàng:', error);
-        toast.error('Có lỗi xảy ra khi thêm vào giỏ hàng');
-      }
-    }
+        console.error("Lỗi khi thêm vào giỏ hàng:", error);
+        toast.error("Có lỗi xảy ra khi thêm vào giỏ hàng");
+      },
+    },
   });
 
   const handleAddToCart = async () => {
@@ -119,8 +110,8 @@ const BlueprintDetailView: FC<Props> = (props) => {
       await addToCart({
         data: {
           contentId: content._id,
-          quantity: 1
-        }
+          quantity: 1,
+        },
       });
     } finally {
       setIsAdding(false);
@@ -132,43 +123,45 @@ const BlueprintDetailView: FC<Props> = (props) => {
     setOpenQRPaymentDialog(true);
   };
 
-  const handleDownload = async () => {
-    const isSignedIn = useAuthStore.getState().isSignedIn;
+  // const handleDownload = async () => {
+  //   const isSignedIn = useAuthStore.getState().isSignedIn;
 
-    if (!isSignedIn) {
-      toast.warning("Vui lòng đăng nhập để tải file.");
-      return;
-    }
+  //   if (!isSignedIn) {
+  //     toast.warning("Vui lòng đăng nhập để tải file.");
+  //     return;
+  //   }
 
-    const res = await getDownloadFileQuery.refetch();
+  //   const res = await getDownloadFileQuery.refetch();
 
-    if (res.isError) {
-      toast.error(extractErrorMessage(res.error));
-      return;
-    }
+  //   if (res.isError) {
+  //     toast.error(extractErrorMessage(res.error));
+  //     return;
+  //   }
 
-    const blob = res.data;
+  //   const blob = res.data;
 
-    if (!(blob instanceof Blob)) {
-      toast.error("Dữ liệu tải về không hợp lệ.");
-      return;
-    }
+  //   if (!(blob instanceof Blob)) {
+  //     toast.error("Dữ liệu tải về không hợp lệ.");
+  //     return;
+  //   }
 
-    const url = URL.createObjectURL(blob);
+  //   const url = URL.createObjectURL(blob);
 
-    console.log("BLOB :", blob);
-    const fileName = content.file_id?.name || 'download';
-    console.log("Downloading file:", fileName);
+  //   const fileName = content.file_id?.name || "download";
+  //   console.log("Downloading file:", fileName);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+  //   const a = document.createElement("a");
+  //   a.href = url;
+  //   a.download = fileName;
+  //   document.body.appendChild(a);
+  //   a.click();
+  //   a.remove();
 
-    URL.revokeObjectURL(url);
-  };
+  //   URL.revokeObjectURL(url);
+  // };
+
+  const imageList =
+    content?.images?.map((img) => `${baseConfig.mediaDomain}/${img}`) || [];
 
   // Effects
   useEffect(() => {
@@ -196,7 +189,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
               ariaLabel="Zoom Area"
             >
               <img
-                src={MOCK_IMAGE_LIST[selectedImage]}
+                src={imageList[selectedImage]}
                 alt={content.title}
                 className="w-full h-[400px] lg:h-[550px] object-cover"
               />
@@ -212,7 +205,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
             className="w-full"
           >
             <CarouselContent className="-ml-2">
-              {MOCK_IMAGE_LIST.map((image, index) => (
+              {imageList.map((image, index) => (
                 <CarouselItem
                   key={index}
                   className="pl-2 basis-1/4 md:basis-1/5"
@@ -234,7 +227,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            {MOCK_IMAGE_LIST.length > 5 && (
+            {imageList.length > 5 && (
               <>
                 <CarouselPrevious className="-left-3 size-8 bg-white/90 backdrop-blur-sm border-white/20 hover:bg-white shadow-lg" />
                 <CarouselNext className="-right-3 size-8 bg-white/90 backdrop-blur-sm border-white/20 hover:bg-white shadow-lg" />
@@ -279,14 +272,15 @@ const BlueprintDetailView: FC<Props> = (props) => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-
           {/* Price & Rating */}
           <div className="space-y-3 pb-6 border-b border-white/10">
             <div className="text-3xl lg:text-4xl font-bold text-white">
-              {content.price ? new Intl.NumberFormat("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              }).format(content.price) : 'Liên hệ'}
+              {content.price
+                ? new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(content.price)
+                : "Liên hệ"}
             </div>
             <div className="flex items-center gap-2">
               <div className="flex items-center">
@@ -306,7 +300,6 @@ const BlueprintDetailView: FC<Props> = (props) => {
               </span>
             </div>
           </div>
-
           {/* Quick Info */}
           <div className="grid grid-cols-2 gap-4 py-6 border-b border-white/10">
             <div className="space-y-1.5">
@@ -320,7 +313,9 @@ const BlueprintDetailView: FC<Props> = (props) => {
                 Kích thước
               </div>
               <span className="text-sm font-medium text-muted-foreground">
-                {content.file_id?.size ? formatFileSize(content.file_id.size) : 'N/A'}
+                {content.file_id?.size
+                  ? formatFileSize(content.file_id.size)
+                  : "N/A"}
               </span>
             </div>
             <div className="space-y-1.5">
@@ -334,13 +329,11 @@ const BlueprintDetailView: FC<Props> = (props) => {
                 Danh mục
               </div>
               <div className="font-medium text-white">
-                {content.category?.name || 'N/A'}
+                {content?.category?.name || "N/A"}
               </div>
             </div>
           </div>
-
-// ...
-
+          // ...
           {/* Action Buttons */}
           <div className="space-y-3 pt-4">
             <div className="flex gap-3">

@@ -55,7 +55,7 @@ const contentFormSchema = z
     images: z
       .array(z.instanceof(File))
       .min(1, "Vui lòng chọn ít nhất 1 file")
-      .max(1, "Chỉ được chọn 1 file")
+      .max(5, "Tối đa chỉ được chọn 5 file")
       .refine(
         (files) => files.every((file) => file.size <= 50 * 1024 * 1024),
         "Kích thước file không được vượt quá 50MB"
@@ -64,7 +64,7 @@ const contentFormSchema = z
     files: z
       .array(z.instanceof(File))
       .min(1, "Vui lòng chọn ít nhất 1 file")
-      .max(1, "Chỉ được chọn 1 file")
+      .max(5, "Tối đa chỉ được chọn 5 file")
       .refine(
         (files) => files.every((file) => file.size <= 50 * 1024 * 1024),
         "Kích thước file không được vượt quá 50MB"
@@ -92,6 +92,8 @@ export type ContentFormValues = z.infer<typeof contentFormSchema>;
 
 interface ContentEditorFormProps {
   mode?: "create" | "edit";
+  defaultFiles?: string[];
+  defaultImages?: string[];
   defaultValues?: Partial<ContentFormValues>;
   onSubmit: (values: ContentFormValues) => void | Promise<void>;
   isLoading?: boolean;
@@ -102,11 +104,15 @@ interface ContentEditorFormProps {
 const ContentEditorForm = ({
   mode = "create",
   defaultValues,
+  defaultFiles = [],
+  defaultImages = [],
   onSubmit,
   isLoading = false,
   error = null,
   onCancel,
 }: ContentEditorFormProps) => {
+  console.log("DEFAULT VALUES : ", defaultValues, defaultFiles, defaultImages);
+
   // Fetch categories
   const { data: categoriesData, isLoading: isCategoriesLoading } =
     useGetApiCategories({
@@ -120,11 +126,7 @@ const ContentEditorForm = ({
   const categories = useMemo(() => categoriesData || [], [categoriesData]);
 
   // Upload media hook
-  const {
-    uploadSingle,
-    uploadProgress,
-    isUploading: isUploadingFile,
-  } = useUploadMedia();
+  const { uploadSingle, isUploading: isUploadingFile } = useUploadMedia();
   const [uploadError, setUploadError] = useState<string | null>(null);
 
   // Initialize form
@@ -140,15 +142,6 @@ const ContentEditorForm = ({
     },
   });
 
-  // Watch file changes
-  const selectedFiles = form.watch("files");
-  const contentFile = form.watch("content_file");
-
-  // Get upload progress for current file
-  const currentFileProgress = selectedFiles?.[0]
-    ? uploadProgress[selectedFiles[0].name]
-    : null;
-
   // Reset form when mode changes
   useEffect(() => {
     if (defaultValues) {
@@ -162,15 +155,6 @@ const ContentEditorForm = ({
       });
     }
   }, [defaultValues, form, mode]);
-
-  // Format file size
-  const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return "0 B";
-    const k = 1024;
-    const sizes = ["B", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
-  };
 
   // Format currency
   const formatCurrency = (value: number): string => {
@@ -375,29 +359,19 @@ const ContentEditorForm = ({
                 <div className="space-y-3">
                   <Uploader
                     multiple
+                    maxFiles={5}
                     value={field.value || []}
                     onChange={field.onChange}
-                    maxFiles={1}
                     maxSize={50 * 1024 * 1024}
                     accept={{ "image/*": [".png", ".jpg", ".jpeg", ".webp"] }}
                   >
                     <Uploader.DropZone>
                       <Uploader.Placeholder />
                     </Uploader.DropZone>
-                    <Uploader.MediaList />
+                    <Uploader.MediaList
+                      defaultValues={defaultImages?.map((image) => image)}
+                    />
                   </Uploader>
-
-                  {/* Current file info in edit mode */}
-                  {mode === "edit" && contentFile && !selectedFiles?.length && (
-                    <div className="rounded-lg border bg-blue-50 p-3">
-                      <p className="text-sm font-medium text-blue-900">
-                        File hiện tại: {contentFile.name}
-                      </p>
-                      <p className="text-xs text-blue-700 mt-1">
-                        {formatFileSize(contentFile.size)}
-                      </p>
-                    </div>
-                  )}
                 </div>
               </FormControl>
               <FormDescription>
@@ -423,27 +397,16 @@ const ContentEditorForm = ({
                     multiple
                     value={field.value || []}
                     onChange={field.onChange}
-                    maxFiles={1}
+                    maxFiles={5}
                     maxSize={50 * 1024 * 1024}
-                    accept={{ "image/*": [".png", ".jpg", ".jpeg", ".webp"] }}
                   >
                     <Uploader.DropZone>
                       <Uploader.Placeholder />
                     </Uploader.DropZone>
-                    <Uploader.MediaList />
+                    <Uploader.MediaList
+                      defaultValues={defaultFiles?.map((file) => file)}
+                    />
                   </Uploader>
-
-                  {/* Current file info in edit mode */}
-                  {mode === "edit" && contentFile && !selectedFiles?.length && (
-                    <div className="rounded-lg border bg-blue-50 p-3">
-                      <p className="text-sm font-medium text-blue-900">
-                        File hiện tại: {contentFile.name}
-                      </p>
-                      <p className="text-xs text-blue-700 mt-1">
-                        {formatFileSize(contentFile.size)}
-                      </p>
-                    </div>
-                  )}
                 </div>
               </FormControl>
               <FormDescription>

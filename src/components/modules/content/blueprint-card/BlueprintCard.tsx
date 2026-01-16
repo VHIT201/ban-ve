@@ -20,6 +20,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useCart } from "@/hooks/use-cart";
+import baseConfig from "@/configs/base";
 
 interface Props {
   product: ContentProduct;
@@ -52,6 +53,12 @@ const BlueprintCard: FC<Props> = (props) => {
   const formattedPrice = formatVND(product.price || 0);
   const username = product.createdBy?.email || "Anonymous";
   const categoryName = product?.category?.name || "General";
+  const productImage = useMemo(() => {
+    if (product.images && product.images.length > 0) {
+      return `${baseConfig.mediaDomain}/${product.images[0]}`;
+    }
+    return undefined;
+  }, [product.images]);
   const statusName =
     product.status === ContentStatus.APPROVED
       ? {
@@ -73,7 +80,7 @@ const BlueprintCard: FC<Props> = (props) => {
     >
       <div className="relative aspect-[1/1] overflow-hidden bg-[#F5F5F3]">
         <Image
-          src={generateImageRandom()}
+          src={productImage ?? generateImageRandom()}
           alt={title}
           wrapperClassName="h-full"
           className="object-cover h-full transition-transform duration-1000 ease-out group-hover:scale-105"
