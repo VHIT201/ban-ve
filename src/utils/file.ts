@@ -1,4 +1,5 @@
 import { ExcelFileIcon, FileIcon, PdfFileIcon } from "@/components/icons";
+import ImageFileIcon from "@/components/icons/image-file-icon";
 import { FileType } from "@/enums/file";
 import { ComponentType } from "react";
 
@@ -11,19 +12,38 @@ export const formatFileSize = (bytes: number): string => {
 };
 
 export const getFileIcon = (type: string): ComponentType => {
-  if (type === FileType.IMAGE) return ExcelFileIcon;
-  if (type === FileType.PDF) return PdfFileIcon;
-  if (type === FileType.WORD) return ExcelFileIcon;
-  if (type === FileType.EXCEL) return ExcelFileIcon;
-  return FileIcon;
+  switch (type) {
+    case FileType.JPG:
+    case FileType.IMAGE:
+      return ImageFileIcon;
+    case FileType.PDF:
+      return PdfFileIcon;
+    case FileType.WORD:
+      return ExcelFileIcon;
+    case FileType.EXCEL:
+      return ExcelFileIcon;
+    default:
+      return FileIcon;
+  }
 };
 
-export const getFileTypeLabel = (type: FileType): string => {
-  if (type === FileType.IMAGE) return "Image File";
-  if (type === FileType.PDF) return "PDF File";
-  if (type === FileType.WORD) return "Word Document";
-  if (type === FileType.EXCEL) return "Excel Spreadsheet";
-  return "Unknown File Type";
+export const getFileTypeLabel = (type: string): string => {
+  switch (type) {
+    case FileType.IMAGE:
+      return "Image File";
+    case FileType.PNG:
+      return "PNG File";
+    case FileType.JPG:
+      return "JPG File";
+    case FileType.PDF:
+      return "PDF File";
+    case FileType.WORD:
+      return "Word Document";
+    case FileType.EXCEL:
+      return "Excel Spreadsheet";
+    default:
+      return "Unknown File Type";
+  }
 };
 
 export const formatBytes = (bytes: number, decimals = 2): string => {

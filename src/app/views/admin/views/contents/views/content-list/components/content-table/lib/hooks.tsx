@@ -11,6 +11,7 @@ import { DataTableActionCell } from "@/components/shared/data-table/shared";
 // Internal
 import { ContentTableRow, useContentTableColumnsDefsProps } from "./types";
 import { ContentStatus } from "@/enums/content";
+import { getFileIcon, getFileTypeLabel } from "@/utils/file";
 
 const getStatusConfig = (status?: string) => {
   switch (status?.toLowerCase()) {
@@ -140,22 +141,20 @@ export const useContentTableColumnsDefs = (
         cell: ({ row }) => {
           const file = row.original.file;
           const fileConfig = getFileTypeConfig(file?.type);
+          const FileIcon = getFileIcon(file?.type || "");
 
           return (
             <div className="flex items-center gap-2 min-w-[150px]">
               <div className="flex items-center justify-center w-8 h-8 rounded bg-gray-100">
-                <FileText className="w-4 h-4 text-gray-600" />
+                <FileIcon />
               </div>
               <div className="flex flex-col gap-0.5 flex-1 min-w-0">
                 <div className="text-sm font-medium text-gray-900 truncate">
                   {file?.name || "Không rõ"}
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge
-                    variant="outline"
-                    className={`text-xs ${fileConfig.color}`}
-                  >
-                    {fileConfig.label}
+                  <Badge variant="outline" className={`text-xs`}>
+                    {getFileTypeLabel(file?.type ?? "")}
                   </Badge>
                   <span className="text-xs text-gray-500">
                     {formatFileSize(file?.size)}

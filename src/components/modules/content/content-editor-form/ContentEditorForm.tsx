@@ -52,6 +52,15 @@ const contentFormSchema = z
       })
       .min(0, "Giá không được âm")
       .max(1000000000, "Giá không được vượt quá 1 tỷ VNĐ"),
+    images: z
+      .array(z.instanceof(File))
+      .min(1, "Vui lòng chọn ít nhất 1 file")
+      .max(1, "Chỉ được chọn 1 file")
+      .refine(
+        (files) => files.every((file) => file.size <= 50 * 1024 * 1024),
+        "Kích thước file không được vượt quá 50MB"
+      )
+      .optional(),
     files: z
       .array(z.instanceof(File))
       .min(1, "Vui lòng chọn ít nhất 1 file")
@@ -60,23 +69,6 @@ const contentFormSchema = z
         (files) => files.every((file) => file.size <= 50 * 1024 * 1024),
         "Kích thước file không được vượt quá 50MB"
       )
-      .refine((files) => {
-        const validTypes = [
-          "application/pdf",
-          "application/acad",
-          "application/x-acad",
-          "application/autocad_dwg",
-          "image/x-dwg",
-          "application/dwg",
-          "application/x-dwg",
-          "application/x-autocad",
-          "image/vnd.dwg",
-          "drawing/dwg",
-        ];
-        return files.every(
-          (file) => validTypes.includes(file.type) || file.name.endsWith(".dwg")
-        );
-      }, "Chỉ chấp nhận file PDF hoặc DWG")
       .optional(),
     content_file: z
       .object({
@@ -370,6 +362,52 @@ const ContentEditorForm = ({
           )}
         />
 
+        {/* Image Upload */}
+        <FormField
+          control={form.control}
+          name="images"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-primary font-semibold tracking-wider">
+                Ảnh sản phẩm <span className="text-red-500">*</span>
+              </FormLabel>
+              <FormControl>
+                <div className="space-y-3">
+                  <Uploader
+                    multiple
+                    value={field.value || []}
+                    onChange={field.onChange}
+                    maxFiles={1}
+                    maxSize={50 * 1024 * 1024}
+                    accept={{ "image/*": [".png", ".jpg", ".jpeg", ".webp"] }}
+                  >
+                    <Uploader.DropZone>
+                      <Uploader.Placeholder />
+                    </Uploader.DropZone>
+                    <Uploader.MediaList />
+                  </Uploader>
+
+                  {/* Current file info in edit mode */}
+                  {mode === "edit" && contentFile && !selectedFiles?.length && (
+                    <div className="rounded-lg border bg-blue-50 p-3">
+                      <p className="text-sm font-medium text-blue-900">
+                        File hiện tại: {contentFile.name}
+                      </p>
+                      <p className="text-xs text-blue-700 mt-1">
+                        {formatFileSize(contentFile.size)}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </FormControl>
+              <FormDescription>
+                Chọn ảnh sản phẩm (PNG, JPG, JPEG, WEBP, tối đa 50MB)
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         {/* File Upload */}
         <FormField
           control={form.control}
@@ -382,14 +420,12 @@ const ContentEditorForm = ({
               <FormControl>
                 <div className="space-y-3">
                   <Uploader
+                    multiple
                     value={field.value || []}
                     onChange={field.onChange}
                     maxFiles={1}
                     maxSize={50 * 1024 * 1024}
-                    accept={{
-                      "application/pdf": [".pdf"],
-                      "application/acad": [".dwg"],
-                    }}
+                    accept={{ "image/*": [".png", ".jpg", ".jpeg", ".webp"] }}
                   >
                     <Uploader.DropZone>
                       <Uploader.Placeholder />

@@ -1,26 +1,100 @@
 "use client";
 
-import { User, Mail, Phone, MapPin, Calendar, Edit, Save } from "lucide-react";
+import { User, Mail, Phone, Calendar, Edit, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
+import { useGetApiAuthMe, usePutApiAuthUpdateProfile } from "@/api/endpoints/auth";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+
+type UserProfile = {
+  _id?: string;
+  username: string;
+  email: string;
+  phone?: string;
+  birthday?: string;
+  role?: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
 
 type ProfileData = {
-  fullName: string;
+  username: string;
   email: string;
-  phone: string;
-  birthday: string;
+
 };
 
 function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<ProfileData>({
-    fullName: "Nguyễn Văn A",
-    email: "nguyenvana@example.com",
-    phone: "0987 654 321",
-    birthday: "1990-01-01",
+    username: "",
+    email: ""
+  });
+  
+  const queryClient = useQueryClient();
+
+  // Fetch user profile with proper error handling and logging
+  const { 
+    data: userData, 
+    refetch: refetchProfile, 
+    isLoading,
+    error: fetchError
+  } = useGetApiAuthMe({
+    query: {
+      onSuccess: (response: any) => {
+        console.log('API Response:', response);
+        
+        // Directly access the data from response.data
+        const user = response?.data;
+        console.log('User data:', user);
+        
+        if (user && (user.username || user.email)) {
+          setProfile({
+            username: user.username || "",
+            email: user.email || ""
+          });
+        } else {
+          console.warn('No user data found in response');
+          toast.warning('Không tìm thấy thông tin người dùng');
+        }
+      },
+      onError: (error: Error) => {
+        console.error("Lỗi khi tải thông tin người dùng:", error);
+        toast.error("Không thể tải thông tin người dùng");
+      },
+      refetchOnWindowFocus: false
+    }
+  });
+
+  // Handle initial data load
+  useEffect(() => {
+    if (userData?.data) {
+      const user = userData.data;
+      setProfile({
+        username: user.username || "",
+        email: user.email || ""
+      });
+    }
+  }, [userData]);
+
+  // Update profile mutation
+  const { mutate: updateProfile, isPending: isUpdating } = usePutApiAuthUpdateProfile({
+    mutation: {
+      onSuccess: (response: any) => {
+        toast.success("Cập nhật thông tin thành công");
+        // Invalidate and refetch the user data
+        queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
+        refetchProfile();
+        setIsEditing(false);
+      },
+      onError: (error: Error) => {
+        console.error("Failed to update profile:", error);
+        toast.error("Cập nhật thông tin thất bại");
+      },
+    },
   });
 
   const handleInputChange = (
@@ -33,21 +107,46 @@ function ProfilePage() {
     }));
   };
 
-  const handleSave = () => {
-    console.log("Đã lưu thông tin:", profile);
-    setIsEditing(false);
+  const handleSave = async () => {
+    try {
+      await updateProfile({
+        data: {
+          username: profile.username,
+          email: profile.email
+        }
+      });
+      toast.success('Cập nhật thông tin thành công');
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast.error('Có lỗi xảy ra khi cập nhật thông tin');
+    }
   };
 
   const handleCancel = () => {
-    // Reset về giá trị ban đầu
-    setProfile({
-      fullName: "Nguyễn Văn A",
-      email: "nguyenvana@example.com",
-      phone: "0987 654 321",
-      birthday: "1990-01-01",
-    });
+    // Reset to original data from API
+    if (userData) {
+      const user = (userData as any)?.data?.user || (userData as any)?.data || userData;
+      setProfile({
+        username: user.username || "",
+        email: user.email || ""
+      });
+    }
     setIsEditing(false);
   };
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="p-6 max-w-4xl mx-auto">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <p className="text-gray-600">Đang tải thông tin người dùng...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
@@ -71,20 +170,25 @@ function ProfilePage() {
         <CardContent>
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              </div>
               <div className="space-y-2">
-                <Label htmlFor="fullName" className="flex items-center">
+                <Label htmlFor="username" className="flex items-center">
                   <User className="w-4 h-4 mr-2" />
-                  Họ và tên
+                  Tên đăng nhập
                 </Label>
                 {isEditing ? (
                   <Input
-                    id="fullName"
-                    name="fullName"
-                    value={profile.fullName}
+                    id="username"
+                    name="username"
+                    value={profile.username}
                     onChange={handleInputChange}
+                    placeholder="Nhập tên đăng nhập"
+                    disabled={isUpdating}
                   />
                 ) : (
-                  <div className="p-2 border rounded">{profile.fullName}</div>
+                  <div className="p-2 border rounded bg-gray-50 min-h-[40px]">
+                    {profile.username || <span className="text-gray-400">Chưa có thông tin</span>}
+                  </div>
                 )}
               </div>
 
@@ -95,62 +199,30 @@ function ProfilePage() {
                 </Label>
                 {isEditing ? (
                   <Input
-                    id="email"
                     type="email"
+                    id="email"
                     name="email"
                     value={profile.email}
                     onChange={handleInputChange}
+                    placeholder="Nhập địa chỉ email"
+                    disabled={isUpdating}
                   />
                 ) : (
-                  <div className="p-2 border rounded">{profile.email}</div>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phone" className="flex items-center">
-                  <Phone className="w-4 h-4 mr-2" />
-                  Số điện thoại
-                </Label>
-                {isEditing ? (
-                  <Input
-                    id="phone"
-                    name="phone"
-                    value={profile.phone}
-                    onChange={handleInputChange}
-                  />
-                ) : (
-                  <div className="p-2 border rounded">{profile.phone}</div>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="birthday" className="flex items-center">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  Ngày sinh
-                </Label>
-                {isEditing ? (
-                  <Input
-                    id="birthday"
-                    type="date"
-                    name="birthday"
-                    value={profile.birthday}
-                    onChange={handleInputChange}
-                  />
-                ) : (
-                  <div className="p-2 border rounded">
-                    {new Date(profile.birthday).toLocaleDateString("vi-VN")}
+                  <div className="p-2 border rounded bg-gray-50 min-h-[40px]">
+                    {profile.email || <span className="text-gray-400">Chưa có thông tin email</span>}
                   </div>
                 )}
               </div>
-            </div>
+
+          
 
             {isEditing && (
               <div className="flex justify-end space-x-4 pt-4 border-t mt-6">
-                <Button type="button" variant="outline" onClick={handleCancel}>
+                <Button type="button" variant="outline" onClick={handleCancel} disabled={isUpdating}>
                   Hủy
                 </Button>
-                <Button type="button" onClick={handleSave}>
-                  Lưu thay đổi
+                <Button type="button" onClick={handleSave} disabled={isUpdating}>
+                  {isUpdating ? 'Đang lưu...' : 'Lưu thay đổi'}
                 </Button>
               </div>
             )}
