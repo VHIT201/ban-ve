@@ -1,7 +1,7 @@
 const baseConfig = {
   backendDomain: "https://giangvien.org/gateway/ban-ve/",
   frontendDomain: "https://architectural-nine.vercel.app",
-  mediaDomain: "http://giangvien.org:3001",
+  mediaDomain: "https://giangvien.org/gateway/ban-ve",
 };
 
 export default baseConfig;
