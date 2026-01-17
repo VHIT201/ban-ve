@@ -47,7 +47,9 @@ const ActionColumn: FC<Props> = (props) => {
             onClick={action.onAction}
             className="group"
           >
-            <action.icon className="size-4 mr-2 group-hover:text-white" />
+            {action.icon && (
+              <action.icon className="size-4 mr-2 group-hover:text-white" />
+            )}
             {action.label}
           </DropdownMenuItem>
         ))}

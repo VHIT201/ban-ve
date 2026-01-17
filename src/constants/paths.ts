@@ -32,7 +32,7 @@ export const ROUTE_PATHS = {
   admin: {
     path: "admin",
     dashboard: { path: "dashboard" },
-    categories: { path: "categories" },
+    categories: { path: "categories", detail: { path: ":id" } },
     contents: {
       path: "contents",
       create: { path: "create" },

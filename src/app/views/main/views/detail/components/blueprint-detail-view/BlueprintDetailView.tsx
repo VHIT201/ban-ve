@@ -35,22 +35,31 @@ import { ReportDialog } from "@/components/shared";
 import { ContentPaymentDialog } from "@/components/modules/content";
 import { useGetApiFileIdDownload } from "@/api/endpoints/files";
 import { toast } from "sonner";
-import { extractErrorMessage } from "@/utils/error";
 import { PaymentStatusDialog } from "@/components/modules/payment";
 import { useCreateQrPayment } from "@/hooks/modules/payments";
 import { PaymentStatus } from "@/enums/payment";
-import { useAuthStore } from "@/stores";
 import baseConfig from "@/configs/base";
+import { useProfileStore } from "@/stores";
+import { useShallow } from "zustand/shallow";
+import EmailDialog from "@/components/shared/email-dialog";
 
 const BlueprintDetailView: FC<Props> = (props) => {
   // Props
   const { content } = props;
 
+  // Stores
+  const profileStore = useProfileStore(useShallow(({ email }) => ({ email })));
+
+  // States
+  const [userEmail, setUserEmail] = useState<string | undefined>(
+    profileStore.email,
+  );
+
   // Hooks
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   // States
+  const [openEmailDialog, setOpenEmailDialog] = useState(false);
   const [openQRPaymentDialog, setOpenQRPaymentDialog] = useState(false);
   const [openReportDialog, setOpenReportDialog] = useState(false);
   const [openPaymentStatusDialog, setOpenPaymentStatusDialog] =
@@ -58,7 +67,6 @@ const BlueprintDetailView: FC<Props> = (props) => {
 
   // Cart Store
   const addItem = useCartStore((state) => state.addItem);
-  const openCart = useCartStore((state) => state.openCart);
 
   // States
   const [selectedImage, setSelectedImage] = useState(0);
@@ -73,11 +81,12 @@ const BlueprintDetailView: FC<Props> = (props) => {
       query: {
         enabled: false,
       },
-    }
+    },
   );
 
   // Mutations
   const createQRPaymentMutation = useCreateQrPayment({
+    email: userEmail,
     orders: [{ contentId: content._id!, quantity: 1 }],
   });
 
@@ -103,6 +112,13 @@ const BlueprintDetailView: FC<Props> = (props) => {
     },
   });
 
+  const handleConfirmEmail = (email: string, acceptMarketing: boolean) => {
+    setUserEmail(email);
+    setOpenEmailDialog(false);
+    setOpenQRPaymentDialog(true);
+    createQRPaymentMutation.createPaymentQR();
+  };
+
   const handleAddToCart = async () => {
     setIsAdding(true);
     try {
@@ -119,8 +135,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
   };
 
   const handleBuyNow = () => {
-    createQRPaymentMutation.createPaymentQR();
-    setOpenQRPaymentDialog(true);
+    setOpenEmailDialog(true);
   };
 
   // const handleDownload = async () => {
@@ -390,6 +405,13 @@ const BlueprintDetailView: FC<Props> = (props) => {
       <ReportDialog
         open={openReportDialog}
         onOpenChange={setOpenReportDialog}
+      />
+
+      <EmailDialog
+        open={openEmailDialog}
+        defaultEmail={profileStore.email}
+        onOpenChange={setOpenEmailDialog}
+        onEmailSubmit={handleConfirmEmail}
       />
 
       <ContentPaymentDialog

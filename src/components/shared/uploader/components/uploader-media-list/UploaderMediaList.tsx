@@ -87,7 +87,11 @@ const UploaderMediaList: FC<UploaderMediaListProps> = (props) => {
           <a
             target="_blank"
             rel="noopener noreferrer"
-            href={`${baseConfig.mediaDomain}/${fileUrl}`}
+            href={
+              fileUrl.startsWith(baseConfig.mediaDomain)
+                ? fileUrl
+                : `${baseConfig.mediaDomain}/${fileUrl}`
+            }
             className="flex items-center gap-3 p-3  border border-input bg-card hover:bg-muted transition-colors"
           >
             {/* File Icon Container */}

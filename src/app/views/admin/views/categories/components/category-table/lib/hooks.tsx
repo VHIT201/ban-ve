@@ -14,7 +14,7 @@ import { EyeIcon, TrashIcon, PencilIcon } from "lucide-react";
 import Image from "@/components/ui/image";
 
 export const useCategoryTableColumnsDefs = (
-  props: useCategoryTableColumnsDefsProps
+  props: useCategoryTableColumnsDefsProps,
 ) => {
   const { onEdit, onDelete, onViewDetails } = props;
 
@@ -31,6 +31,14 @@ export const useCategoryTableColumnsDefs = (
               <div className="text-xs text-gray-500">/{category.slug}</div>
             </div>
           );
+        },
+      },
+      {
+        accessorKey: "level",
+        header: "Cấp danh mục",
+        cell: ({ row }) => {
+          const category = row.original;
+          return <Badge variant="outline">{`Cấp ${category.level}`}</Badge>;
         },
       },
       {
@@ -137,16 +145,17 @@ export const useCategoryTableColumnsDefs = (
                     Sao chép Slug
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onSelect={() => onViewDetails?.(category)}
+                    onSelect={() => onEdit?.(category)}
                     className="flex items-center gap-2"
-                  ></DropdownMenuItem>
+                  >
+                    Chỉnh sửa
+                  </DropdownMenuItem>
                 </Fragment>
               }
               onDelete={() => onDelete?.(category)}
               actions={[
                 {
                   label: "Xem chi tiết",
-                  icon: EyeIcon,
                   onAction: () => onViewDetails?.(category),
                 },
               ]}
@@ -156,7 +165,7 @@ export const useCategoryTableColumnsDefs = (
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   );
 };
 
@@ -173,6 +182,6 @@ export const useBulkActions = () => {
         },
       },
     ],
-    []
+    [],
   );
 };

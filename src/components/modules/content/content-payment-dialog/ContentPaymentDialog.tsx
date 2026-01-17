@@ -8,6 +8,7 @@ import {
 import Image from "@/components/ui/image";
 import { Separator } from "@/components/ui/separator";
 import { BASE_PATHS } from "@/constants/paths";
+import { useAuthStore } from "@/stores";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { Loader2Icon, QrCodeIcon } from "lucide-react";
 import { FC } from "react";

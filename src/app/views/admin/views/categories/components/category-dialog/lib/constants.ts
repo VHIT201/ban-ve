@@ -19,18 +19,21 @@ export const CATEGORY_SCHEMA = z.object({
     .refine(
       (file) =>
         ["image/jpg", "image/jpeg", "image/png", "image/webp"].includes(
-          file.type
+          file.type,
         ),
-      { message: "Chỉ chấp nhận file JPEG, PNG hoặc WebP" }
+      { message: "Chỉ chấp nhận file JPEG, PNG hoặc WebP" },
     )
     .optional()
     .nullable()
     .default(null),
 });
 
-export const DEFAULT_CATEGORY_FORM_VALUES: z.infer<typeof CATEGORY_SCHEMA> = {
+export const DEFAULT_CATEGORY_FORM_VALUES: z.infer<typeof CATEGORY_SCHEMA> & {
+  imageUrl?: string;
+} = {
   name: "",
   slug: "",
   description: "",
   image: null,
+  imageUrl: "",
 };
