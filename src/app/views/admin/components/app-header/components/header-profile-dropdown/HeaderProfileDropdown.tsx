@@ -18,15 +18,21 @@ import { BASE_PATHS } from "@/constants/paths";
 
 const HeaderProfileDropdown = () => {
   const authStore = useAuthStore(
-    useShallow(({ resetStore }) => ({ resetStore }))
+    useShallow(({ resetStore }) => ({ resetStore })),
   );
 
   const profileStore = useProfileStore(
-    useShallow(({ username, email, avatar }) => ({ username, email, avatar }))
+    useShallow(({ username, email, avatar, resetStore }) => ({
+      username,
+      email,
+      avatar,
+      resetStore,
+    })),
   );
 
   const handleLogout = () => {
     authStore.resetStore();
+    profileStore.resetStore();
     window.location.href = BASE_PATHS.auth.login.path;
   };
 

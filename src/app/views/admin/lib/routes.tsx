@@ -9,6 +9,7 @@ import collaboratorRoutes from "../views/collaborators/lib/routes";
 import paymentRoutes from "../views/payment/lib/routes";
 
 import { useAuthStore } from "@/stores";
+import categoryRoutes from "../views/categories/lib/routes";
 // Admin route paths
 const { admin } = ROUTE_PATHS;
 
@@ -45,9 +46,8 @@ const adminRoutes: RouteObject = {
         {
           path: admin.categories.path,
           lazy: async () => {
-            const { default: Categories } = await import(
-              "../views/categories/page"
-            );
+            const { default: Categories } =
+              await import("../views/categories/layout");
             return {
               element: <Categories />,
             };
@@ -56,9 +56,8 @@ const adminRoutes: RouteObject = {
         {
           path: `${admin.categories.path}/detail/:id`,
           lazy: async () => {
-            const { default: CategoryDetail } = await import(
-              "../views/categories/components/category-detail"
-            );
+            const { default: CategoryDetail } =
+              await import("../views/categories/components/category-detail");
             return {
               element: <CategoryDetail />,
             };
@@ -75,6 +74,7 @@ const adminRoutes: RouteObject = {
         };
       },
     },
+    categoryRoutes,
     paymentRoutes,
     contentRoutes,
     copyRightRoutes,

@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 interface Action {
   label: string;
-  icon: LucideIcon;
+  icon?: LucideIcon;
   onAction: () => void;
 }
 

@@ -1,6 +1,6 @@
 // Internal
 import { Button } from "@/components/ui/button";
-import { CategoryDialog, CategoryTable } from "./components";
+import { CategoryDialog, CategoryTable } from "../../components";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import {
@@ -8,12 +8,19 @@ import {
   usePostApiCategories,
 } from "@/api/endpoints/categories";
 import { toast } from "sonner";
-import { CategoryFormValues } from "./components/category-dialog";
+import { CategoryFormValues } from "../../components/category-dialog";
 import { useUploadMedia } from "@/hooks";
 import { extractErrorMessage } from "@/utils/error";
 import baseConfig from "@/configs/base";
+import { useLocation, useParams } from "react-router-dom";
 
 const Categories = () => {
+  // Hooks
+  const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+  const withChildren = location.state?.withChildren || false;
+
+  // States
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Mutations
@@ -36,7 +43,7 @@ const Categories = () => {
           filename: data.image?.name,
           dir: "categories",
           private: false,
-        }
+        },
       );
 
       await createCategoryMutation.mutateAsync({
@@ -73,8 +80,11 @@ const Categories = () => {
         </Button>
       </div>
 
-      {/* Category Table */}
-      <CategoryTable />
+      {/* Category Table - Sử dụng mode dựa trên id */}
+      <CategoryTable
+        mode={id ? "children" : withChildren ? "with-children" : "all"}
+        id={id}
+      />
 
       {/* Add Category Dialog */}
       <CategoryDialog

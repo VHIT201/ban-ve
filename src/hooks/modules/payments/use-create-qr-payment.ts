@@ -9,15 +9,17 @@ import {
 import baseConfig from "@/configs/base";
 import { PaymentMethod, PaymentStatus } from "@/enums/payment";
 import useSSEStream from "@/hooks/use-sse-stream";
-import { usePaymentStore } from "@/stores";
+import { usePaymentStore, useProfileStore } from "@/stores";
 import { OrderItem } from "@/types/order";
 import { extractErrorMessage } from "@/utils/error";
 import { isUndefined } from "lodash-es";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { useShallow } from "zustand/shallow";
 
 // Types
 interface Props {
+  email?: string;
   orders: OrderItem[];
   onConnect?: () => void;
 }
@@ -31,16 +33,16 @@ interface PaymentQR {
 // Custom Hook
 const useCreateQRPayment = (props: Props) => {
   // Props
-  const { orders, onConnect } = props;
+  const { email, orders, onConnect } = props;
 
   // States
   const [orderPayment, setOrderPayment] = useState<Order | undefined>(
-    undefined
+    undefined,
   );
   const [paymentQR, setPaymentQR] = useState<PaymentQR | null>(null);
   const [isStreaming, setIsStreaming] = useState<boolean>(false);
   const [streamingStatus, setStreamingStatus] = useState<PaymentStatus>(
-    PaymentStatus.PENDING
+    PaymentStatus.PENDING,
   );
 
   // Methods
@@ -60,7 +62,6 @@ const useCreateQRPayment = (props: Props) => {
 
   // Methods
   const handleCreatePaymentQR = async () => {
-    console.log("ORDER :", orders);
     try {
       const paymentStore = usePaymentStore.getState();
 
@@ -80,6 +81,7 @@ const useCreateQRPayment = (props: Props) => {
 
       const createOrderRes = await createOrderMutation.mutateAsync({
         data: {
+          email: email,
           items: orders,
           paymentMethod: PaymentMethod.SEPAY,
         },
@@ -91,13 +93,14 @@ const useCreateQRPayment = (props: Props) => {
       if (!createOrderData) {
         toast.error(
           extractErrorMessage(createOrderMutation.error) ||
-            "Tạo đơn hàng thất bại."
+            "Tạo đơn hàng thất bại.",
         );
         throw new Error("Tạo đơn hàng thất bại.");
       }
 
       const createPaymentQRRes = await createPaymentQRMutation.mutateAsync({
         data: {
+          email: email,
           orderId: createOrderData._id,
         },
       });
@@ -121,15 +124,19 @@ const useCreateQRPayment = (props: Props) => {
     } catch (error) {
       toast.warning(
         extractErrorMessage(error) ||
-          "Tạo đơn thanh toán thất bại. Vui lòng thử lại."
+          "Tạo đơn thanh toán thất bại. Vui lòng thử lại.",
       );
     }
   };
 
   // Stream SSE Payment
   useSSEStream({
-    enable: Boolean(paymentQR?.paymentId) && Boolean(paymentQR?.sseClientId),
-    url: `${baseConfig.backendDomain}api/sse/connect?sseClientId=${paymentQR?.sseClientId}&paymentId=${paymentQR?.paymentId}`,
+    enable:
+      Boolean(paymentQR?.paymentId) &&
+      Boolean(paymentQR?.sseClientId) &&
+      Boolean(orderPayment?.orderCode) &&
+      Boolean(email),
+    url: `${baseConfig.backendDomain}api/sse/connect?sseClientId=${paymentQR?.sseClientId}&paymentId=${paymentQR?.paymentId}&orderCode=${orderPayment?.orderCode}`,
     onEvent: (event, data: SSEPaymentMessage) => {
       if (event === "payment_status") {
         handlePaymentSSEEvent(data);
@@ -139,17 +146,17 @@ const useCreateQRPayment = (props: Props) => {
 
   const isIdle = useMemo(
     () => createOrderMutation.isIdle && createPaymentQRMutation.isIdle,
-    [createOrderMutation.isIdle, createPaymentQRMutation.isIdle]
+    [createOrderMutation.isIdle, createPaymentQRMutation.isIdle],
   );
 
   const isPending = useMemo(
     () => createOrderMutation.isPending || createPaymentQRMutation.isPending,
-    [createOrderMutation.isPending, createPaymentQRMutation.isPending]
+    [createOrderMutation.isPending, createPaymentQRMutation.isPending],
   );
 
   const isError = useMemo(
     () => createOrderMutation.isError || createPaymentQRMutation.isError,
-    [createOrderMutation.isError, createPaymentQRMutation.isError]
+    [createOrderMutation.isError, createPaymentQRMutation.isError],
   );
 
   return useMemo(
@@ -172,7 +179,7 @@ const useCreateQRPayment = (props: Props) => {
       streamingStatus,
       orderPayment,
       handleCreatePaymentQR,
-    ]
+    ],
   );
 };
 

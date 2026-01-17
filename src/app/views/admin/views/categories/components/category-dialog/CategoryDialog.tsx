@@ -186,7 +186,11 @@ const CategoryDialog = (props: CategoryDialogProps) => {
                             <Uploader.DropZone>
                               <Uploader.Placeholder />
                             </Uploader.DropZone>
-                            <Uploader.MediaList />
+                            <Uploader.MediaList
+                              defaultValues={
+                                category?.imageUrl ? [category.imageUrl] : []
+                              }
+                            />
                           </Uploader>
                         </div>
                       </FormControl>

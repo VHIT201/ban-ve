@@ -75,7 +75,7 @@ const BlueprintCard: FC<Props> = (props) => {
       onClick={handleViewDetail}
       className={cn(
         "group cursor-pointer overflow-hidden border-none shadow-none bg-transparent transition-all duration-500 hover:-translate-y-1",
-        className
+        className,
       )}
     >
       <div className="relative aspect-[1/1] overflow-hidden bg-[#F5F5F3]">
@@ -83,7 +83,7 @@ const BlueprintCard: FC<Props> = (props) => {
           src={productImage ?? generateImageRandom()}
           alt={title}
           wrapperClassName="h-full"
-          className="object-cover h-full transition-transform duration-1000 ease-out group-hover:scale-105"
+          className="object-cover h-full w-full transition-transform duration-1000 ease-out group-hover:scale-105"
         />
         <div className="absolute top-4 left-4 flex flex-wrap gap-2">
           <Badge
@@ -128,7 +128,7 @@ const BlueprintCard: FC<Props> = (props) => {
             <Badge
               variant={statusName.variant as "success" | "error"}
               className={cn(
-                "text-[10px] font-bold uppercase tracking-[0.1em] border-none py-1 px-2.5"
+                "text-[10px] font-bold uppercase tracking-[0.1em] border-none py-1 px-2.5",
               )}
             >
               {statusName.name}
@@ -163,7 +163,7 @@ const BlueprintCard: FC<Props> = (props) => {
             "h-12 rounded-none w-full px-5 font-semibold text-[12px] uppercase tracking-wider border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 bg-transparent",
             isProductInCart &&
               "bg-primary text-primary-foreground border-primary",
-            cart.isLoading && "cursor-not-allowed opacity-70"
+            cart.isLoading && "cursor-not-allowed opacity-70",
           )}
           onClick={handleAddToCart}
         >

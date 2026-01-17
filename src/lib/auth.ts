@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 // Sample user data
 export interface User {
@@ -6,18 +6,18 @@ export interface User {
   email: string;
   password: string;
   name: string;
-  role: 'user' | 'admin';
+  role: "user" | "admin";
   createdAt: Date;
 }
 
 // Tài khoản admin mẫu
 const sampleAdmin: User = {
-  id: 'admin-001',
-  email: 'lenguyenhoang9.10@gmail.com',
-  password: 'lehoang123', // Lưu ý: Trong ứng dụng thực tế cần mã hóa mật khẩu
-  name: 'Lê Nguyễn Hoàng',
-  role: 'admin',
-  createdAt: new Date()
+  id: "admin-001",
+  email: "lenguyenhoang9.10@gmail.com",
+  password: "lehoang123", // Lưu ý: Trong ứng dụng thực tế cần mã hóa mật khẩu
+  name: "Lê Nguyễn Hoàng",
+  role: "admin",
+  createdAt: new Date(),
 };
 
 // Lưu trữ người dùng trong bộ nhớ (trong ứng dụng thực tế nên dùng database)
@@ -30,10 +30,12 @@ let currentUser: User | null = null;
 export const authService = {
   // Đăng nhập
   login: (email: string, password: string): User | null => {
-    const user = users.find(u => u.email === email && u.password === password);
+    const user = users.find(
+      (u) => u.email === email && u.password === password,
+    );
     if (user) {
       currentUser = user;
-      localStorage.setItem('currentUser', JSON.stringify(user));
+      localStorage.setItem("currentUser", JSON.stringify(user));
       return user;
     }
     return null;
@@ -41,19 +43,19 @@ export const authService = {
 
   // Đăng ký người dùng mới
   register: (name: string, email: string, password: string): User | null => {
-    if (users.some(u => u.email === email)) {
+    if (users.some((u) => u.email === email)) {
       return null; // Email đã tồn tại
     }
-    
+
     const newUser: User = {
       id: `user-${Date.now()}`,
       name,
       email,
       password, // Trong ứng dụng thực tế nên mã hóa mật khẩu
-      role: 'user',
-      createdAt: new Date()
+      role: "user",
+      createdAt: new Date(),
     };
-    
+
     users.push(newUser);
     return newUser;
   },
@@ -61,7 +63,7 @@ export const authService = {
   // Lấy thông tin người dùng hiện tại
   getCurrentUser: (): User | null => {
     if (!currentUser) {
-      const storedUser = localStorage.getItem('currentUser');
+      const storedUser = localStorage.getItem("currentUser");
       if (storedUser) {
         currentUser = JSON.parse(storedUser);
       }
@@ -72,14 +74,14 @@ export const authService = {
   // Kiểm tra có phải admin không
   isAdmin: (): boolean => {
     const user = authService.getCurrentUser();
-    return user?.role === 'admin';
+    return user?.role === "admin";
   },
 
   // Đăng xuất
   logout: (): void => {
     currentUser = null;
-    localStorage.removeItem('currentUser');
-  }
+    localStorage.removeItem("currentUser");
+  },
 };
 
 // Kiểu dữ liệu cho Auth Context

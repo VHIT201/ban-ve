@@ -1,5 +1,5 @@
 // @ts-nocheck
-import type { FileType } from './fileType';
+import type { FileType } from "./fileType";
 
 export interface File {
   /** ID của file */
@@ -7,7 +7,7 @@ export interface File {
   /** Tên gốc của file */
   name: string;
   /** Đường dẫn đầy đủ để truy cập file */
-  url: string;
+  path: string;
   /** Định dạng/loại file */
   type: FileType;
   /** Kích thước file (tính bằng bytes) */
