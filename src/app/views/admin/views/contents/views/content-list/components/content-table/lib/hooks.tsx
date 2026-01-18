@@ -83,7 +83,7 @@ const formatCurrency = (price?: number): string => {
 };
 
 export const useContentTableColumnsDefs = (
-  props: useContentTableColumnsDefsProps
+  props: useContentTableColumnsDefsProps,
 ) => {
   const { onEdit, onDelete, onApprove, onReject } = props;
 
@@ -160,9 +160,11 @@ export const useContentTableColumnsDefs = (
         accessorKey: "file",
         header: "File",
         cell: ({ row }) => {
-          const file = row.original.file_id;
+          const file = row.original.file;
           const fileConfig = getFileTypeConfig(file?.type);
           const FileIcon = getFileIcon(file?.type || "");
+
+          console.log("file", file);
 
           return (
             <div className="flex items-center gap-2 min-w-[150px]">
@@ -305,6 +307,6 @@ export const useContentTableColumnsDefs = (
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [onEdit, onDelete, onApprove, onReject]
+    [onEdit, onDelete, onApprove, onReject],
   );
 };

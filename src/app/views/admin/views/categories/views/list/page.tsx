@@ -4,6 +4,8 @@ import { CategoryDialog, CategoryTable } from "../../components";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import {
+  getGetApiCategoriesIdChildrenQueryKey,
+  getGetApiCategoriesIdWithChildrenQueryKey,
   getGetApiCategoriesQueryKey,
   usePostApiCategories,
 } from "@/api/endpoints/categories";
@@ -27,7 +29,13 @@ const Categories = () => {
   const createCategoryMutation = usePostApiCategories({
     mutation: {
       meta: {
-        invalidateQueries: [getGetApiCategoriesQueryKey()],
+        invalidateQueries: [
+          getGetApiCategoriesQueryKey(),
+          id ? getGetApiCategoriesIdChildrenQueryKey(id) : [],
+          withChildren
+            ? getGetApiCategoriesIdWithChildrenQueryKey(id || "")
+            : [],
+        ],
       },
     },
   });
@@ -48,7 +56,9 @@ const Categories = () => {
 
       await createCategoryMutation.mutateAsync({
         data: {
-          ...data,
+          name: data.name,
+          description: data.description,
+          parentId: id,
           imageUrl: imageRes?.path
             ? `${baseConfig.mediaDomain}${imageRes.path}`
             : undefined,

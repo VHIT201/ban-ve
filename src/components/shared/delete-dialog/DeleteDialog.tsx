@@ -19,7 +19,7 @@ type DeleteDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
-  isDeleting?: boolean;
+  deleting?: boolean;
   title?: string;
   description?: string;
   confirmText?: string;
@@ -32,7 +32,7 @@ const DeleteDialog = ({
   open,
   onOpenChange,
   onConfirm,
-  isDeleting = false,
+  deleting = false,
   title = "Xóa dữ liệu",
   description,
   confirmText = "Xóa",
@@ -43,7 +43,7 @@ const DeleteDialog = ({
   const [confirmValue, setConfirmValue] = useState("");
 
   const handleOpenChange = (newOpen: boolean) => {
-    if (!isDeleting) {
+    if (!deleting) {
       onOpenChange(newOpen);
       if (!newOpen) {
         setConfirmValue("");
@@ -100,7 +100,7 @@ const DeleteDialog = ({
                 value={confirmValue}
                 onChange={(e) => setConfirmValue(e.target.value)}
                 placeholder={`Nhập "${confirmationText}" để xác nhận`}
-                disabled={isDeleting}
+                disabled={deleting}
                 autoComplete="off"
               />
             </div>
@@ -120,7 +120,7 @@ const DeleteDialog = ({
             type="button"
             variant="outline"
             onClick={() => handleOpenChange(false)}
-            disabled={isDeleting}
+            disabled={deleting}
           >
             Hủy
           </Button>
@@ -128,9 +128,9 @@ const DeleteDialog = ({
             type="button"
             variant="destructive"
             onClick={handleConfirm}
-            disabled={isDeleting || isConfirmDisabled}
+            disabled={deleting || isConfirmDisabled}
           >
-            {isDeleting ? (
+            {deleting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Đang xóa...
