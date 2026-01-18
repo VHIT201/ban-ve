@@ -5,6 +5,8 @@ import { Category } from "@/api/models";
 import { DataTable, QueryBoundary } from "@/components/shared";
 import { useBulkActions, useCategoryTableColumnsDefs } from "./lib/hooks";
 import {
+  getGetApiCategoriesIdChildrenQueryKey,
+  getGetApiCategoriesIdWithChildrenQueryKey,
   getGetApiCategoriesQueryKey,
   useDeleteApiCategoriesId,
   useGetApiCategories,
@@ -82,7 +84,13 @@ const CategoryTable: FC<Props> = (props) => {
   const editCategoryMutation = usePutApiCategoriesId({
     mutation: {
       meta: {
-        invalidateQueries: [getGetApiCategoriesQueryKey()],
+        invalidateQueries: [
+          getGetApiCategoriesQueryKey(),
+          mode === "children" ? getGetApiCategoriesIdChildrenQueryKey(id) : [],
+          mode === "with-children"
+            ? getGetApiCategoriesIdWithChildrenQueryKey(id || "")
+            : [],
+        ],
       },
     },
   });
@@ -90,7 +98,13 @@ const CategoryTable: FC<Props> = (props) => {
   const deleteCategoryMutation = useDeleteApiCategoriesId({
     mutation: {
       meta: {
-        invalidateQueries: [getGetApiCategoriesQueryKey()],
+        invalidateQueries: [
+          getGetApiCategoriesQueryKey(),
+          mode === "children" ? getGetApiCategoriesIdChildrenQueryKey(id) : [],
+          mode === "with-children"
+            ? getGetApiCategoriesIdWithChildrenQueryKey(id || "")
+            : [],
+        ],
       },
     },
   });
@@ -145,7 +159,9 @@ const CategoryTable: FC<Props> = (props) => {
       await editCategoryMutation.mutateAsync({
         id: editSelectRow._id!,
         data: {
-          ...values,
+          name: values.name,
+          description: values.description,
+          parentId: id,
           imageUrl: imageRes?.path
             ? `${baseConfig.mediaDomain}${imageRes.path}`
             : undefined,
@@ -191,7 +207,7 @@ const CategoryTable: FC<Props> = (props) => {
   const columns = useCategoryTableColumnsDefs({
     onEdit: handleColumnEdit,
     onDelete: handleColumnDelete,
-    onViewDetails: handleViewDetails,
+    onViewDetails: mode !== "with-children" ? handleViewDetails : undefined,
   });
 
   // Memos

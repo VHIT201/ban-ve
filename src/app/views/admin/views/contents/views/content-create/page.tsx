@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 import { ContentEditorForm } from "@/components/modules/content";
 import {
+  getGetApiContentAllQueryKey,
   getGetApiContentQueryKey,
   usePostApiContentUpload,
 } from "@/api/endpoints/content";
@@ -21,7 +22,10 @@ const ContentDetail = () => {
   const createContentMutation = usePostApiContentUpload({
     mutation: {
       meta: {
-        invalidateQueries: [getGetApiContentQueryKey()],
+        invalidateQueries: [
+          getGetApiContentQueryKey(),
+          getGetApiContentAllQueryKey(),
+        ],
       },
     },
   });
@@ -33,19 +37,6 @@ const ContentDetail = () => {
         toast.error("Vui lòng chọn ảnh để tải lên.");
         return;
       }
-
-      // const imageUploadResponse = await uploadMediaMutation.uploadWithImages(
-      //   values.images[0],
-      //   values.images,
-      //   {
-      //     filename: values.images[0].name,
-      //     dir: "contents",
-      //     private: false,
-      //     compress: false,
-      //   }
-      // );
-
-      // const imageData = imageUploadResponse as unknown as UploadedFile;
 
       if (!values.files || values.files.length === 0) {
         toast.error("Vui lòng chọn file để tải lên.");
@@ -60,7 +51,7 @@ const ContentDetail = () => {
           dir: "contents",
           private: false,
           compress: false,
-        }
+        },
       );
 
       const fileData = fileUploadResponse as unknown as UploadedFile;

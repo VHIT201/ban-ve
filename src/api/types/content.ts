@@ -10,15 +10,31 @@ export interface ContentResponse {
     description: string;
   };
 
+  category_id?: {
+    _id: string;
+    name: string;
+    slug: string;
+    description: string;
+  };
+
   images: string[];
 
-  file_id?: {
+  file?: {
     _id: string;
     name: string;
     url: string;
     type: string;
     size: number;
   };
+
+  file_id?: {
+    _id: string;
+    name: string;
+    path: string;
+    type: string;
+    size: number;
+  };
+
   price?: number;
   status?: string;
   createdBy?: {

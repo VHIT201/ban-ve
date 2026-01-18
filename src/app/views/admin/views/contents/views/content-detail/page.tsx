@@ -1,4 +1,5 @@
 import {
+  getGetApiContentAllQueryKey,
   getGetApiContentIdQueryKey,
   getGetApiContentQueryKey,
   useGetApiContentId,
@@ -25,7 +26,7 @@ const ContentDetail = () => {
   // Queries
   const getContentDetailQuery = useGetApiContentId(
     contentId,
-    {}
+    {},
   ) as UseQueryResult<ContentResponse>;
 
   // Mutations
@@ -33,6 +34,7 @@ const ContentDetail = () => {
     mutation: {
       meta: {
         invalidateQueries: [
+          getGetApiContentAllQueryKey(),
           getGetApiContentIdQueryKey(contentId),
           getGetApiContentQueryKey(),
         ],
@@ -57,7 +59,7 @@ const ContentDetail = () => {
       toast.success("Nội dung đã được cập nhật thành công.");
     } catch (error) {
       toast.error(
-        extractErrorMessage(error) || "Có lỗi không xác định xảy ra."
+        extractErrorMessage(error) || "Có lỗi không xác định xảy ra.",
       );
     }
   };
@@ -84,7 +86,7 @@ const ContentDetail = () => {
       {/* Content Detail */}
       <QueryBoundary query={getContentDetailQuery}>
         {(contentDetail) => {
-          console.log("CONTENT DETAIL : ", contentDetail);
+          console.log("CONTENT :", contentDetail);
 
           return (
             <ContentEditorForm
@@ -92,7 +94,7 @@ const ContentDetail = () => {
               defaultValues={{
                 title: contentDetail.title,
                 description: contentDetail.description,
-                category_id: contentDetail?.category?._id,
+                category_id: contentDetail?.category_id?._id,
                 price: contentDetail.price,
                 content_file: {
                   name: contentDetail?.file_id?.name ?? "",
@@ -101,8 +103,16 @@ const ContentDetail = () => {
                   _id: contentDetail?.file_id?._id ?? "",
                 },
               }}
-              defaultFiles={
-                contentDetail?.file_id?.url ? [contentDetail.file_id.url] : []
+              defaultFile={
+                contentDetail?.file_id?.path
+                  ? {
+                      id: contentDetail?.file_id?._id ?? "",
+                      name: contentDetail?.file_id?.name ?? "",
+                      size: contentDetail?.file_id?.size ?? 0,
+                      type: contentDetail?.file_id?.type ?? "",
+                      path: contentDetail?.file_id?.path ?? "",
+                    }
+                  : undefined
               }
               defaultImages={contentDetail?.images || []}
               isLoading={editContentMutation.isPending}

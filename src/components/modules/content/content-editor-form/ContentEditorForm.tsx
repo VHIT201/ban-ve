@@ -58,7 +58,7 @@ const contentFormSchema = z
       .max(5, "Tối đa chỉ được chọn 5 file")
       .refine(
         (files) => files.every((file) => file.size <= 50 * 1024 * 1024),
-        "Kích thước file không được vượt quá 50MB"
+        "Kích thước file không được vượt quá 50MB",
       )
       .optional(),
     files: z
@@ -67,7 +67,7 @@ const contentFormSchema = z
       .max(5, "Tối đa chỉ được chọn 5 file")
       .refine(
         (files) => files.every((file) => file.size <= 50 * 1024 * 1024),
-        "Kích thước file không được vượt quá 50MB"
+        "Kích thước file không được vượt quá 50MB",
       )
       .optional(),
     content_file: z
@@ -85,14 +85,20 @@ const contentFormSchema = z
     {
       message: "Vui lòng chọn file hoặc giữ file hiện tại",
       path: ["files"],
-    }
+    },
   );
 
 export type ContentFormValues = z.infer<typeof contentFormSchema>;
 
 interface ContentEditorFormProps {
   mode?: "create" | "edit";
-  defaultFiles?: string[];
+  defaultFile?: {
+    name: string;
+    size: number;
+    path: string;
+    type: string;
+    id: string;
+  };
   defaultImages?: string[];
   defaultValues?: Partial<ContentFormValues>;
   onSubmit: (values: ContentFormValues) => void | Promise<void>;
@@ -104,16 +110,16 @@ interface ContentEditorFormProps {
 const ContentEditorForm = ({
   mode = "create",
   defaultValues,
-  defaultFiles = [],
+  defaultFile,
   defaultImages = [],
   onSubmit,
   isLoading = false,
   error = null,
   onCancel,
 }: ContentEditorFormProps) => {
-  console.log("DEFAULT VALUES : ", defaultValues, defaultFiles, defaultImages);
+  console.log("DEFAULT VALUES :", defaultValues);
 
-  // Fetch categories
+  // Queries
   const { data: categoriesData, isLoading: isCategoriesLoading } =
     useGetApiCategories({
       query: {
@@ -394,7 +400,6 @@ const ContentEditorForm = ({
               <FormControl>
                 <div className="space-y-3">
                   <Uploader
-                    multiple
                     value={field.value || []}
                     onChange={field.onChange}
                     maxFiles={5}
@@ -403,8 +408,21 @@ const ContentEditorForm = ({
                     <Uploader.DropZone>
                       <Uploader.Placeholder />
                     </Uploader.DropZone>
-                    <Uploader.MediaList
-                      defaultValues={defaultFiles?.map((file) => file)}
+                    <Uploader.MediaList />
+                    <Uploader.Exists
+                      data={
+                        defaultFile
+                          ? [
+                              {
+                                id: defaultFile?.id || "",
+                                name: defaultFile?.name || "",
+                                size: defaultFile?.size || 0,
+                                path: defaultFile?.path || "",
+                                type: defaultFile?.type || "",
+                              },
+                            ]
+                          : []
+                      }
                     />
                   </Uploader>
                 </div>

@@ -37,52 +37,10 @@ const mockCategories: Category[] = [
   { _id: "7", name: "Other", slug: "other", description: "Other files" },
 ];
 
-const mockProducts: ContentResponse[] = Array.from({ length: 12 }, (_, i) => ({
-  _id: `${i + 1}`,
-  title:
-    i === 0
-      ? "Photoshop Brush Sanaá People"
-      : i === 1
-      ? "Student Starter Kit - Extended"
-      : i === 2
-      ? "Procreate Architectural Annotations Brushset"
-      : `Product ${i + 1}`,
-  description: `Description for product ${i + 1}`,
-  category_id: {
-    _id: `cat${i + 1}`,
-    name: mockCategories[i % mockCategories.length].name,
-    slug: mockCategories[i % mockCategories.length].slug,
-    description: mockCategories[i % mockCategories.length].description || "",
-  },
-  file_id: {
-    _id: `file${i + 1}`,
-    name: `product-${i + 1}.dwg`,
-    url: `/uploads/product-${i + 1}.dwg`,
-    type: "DWG",
-    size: 5242880 + i * 1000000,
-  },
-  price:
-    i === 0 ? 93000 : i === 1 ? 93000 : i === 2 ? 124000 : 150000 + i * 50000,
-  status: "approved",
-  createdBy: {
-    _id: `user${i + 1}`,
-    username: `user${i + 1}`,
-    email: `user${i + 1}@example.com`,
-  },
-  createdAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
-  updatedAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
-}));
-
-const productViews = [
-  { id: "axonometric", name: "Axonometric" },
-  { id: "axonometric-view", name: "Axonometric view" },
-  { id: "front-view", name: "Front view" },
-];
-
 const CategoryPage = () => {
   // States
   const [filteredProducts, setFilteredProducts] = useState<FilterFormValues>(
-    DEFAULT_FILTER_VALUES
+    DEFAULT_FILTER_VALUES,
   );
 
   return (

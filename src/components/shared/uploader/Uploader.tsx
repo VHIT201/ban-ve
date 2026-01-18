@@ -15,6 +15,7 @@ import { createFileWithPreview } from "./lib/utils";
 import UploaderDropZone from "./components/uploader-drop-zone";
 import UploaderMediaList from "./components/uploader-media-list";
 import UploaderPlaceholder from "./components/uploader-placeholder";
+import { UploaderExistList } from "./components";
 
 interface UploaderRootProps extends UploaderProps {
   children: ReactNode;
@@ -49,17 +50,17 @@ const Uploader: FC<UploaderRootProps> = (props) => {
           createFileWithPreview(
             file,
             FileStatus.ERROR,
-            errors[0]?.message || "File rejected"
-          )
+            errors[0]?.message || "File rejected",
+          ),
         );
 
         const newAcceptedFiles = validAcceptedFiles.map((file) =>
-          createFileWithPreview(file, FileStatus.PENDING)
+          createFileWithPreview(file, FileStatus.PENDING),
         );
 
         onChange?.([...value, ...newAcceptedFiles, ...newRejectedFiles]);
       },
-      [value, maxFiles, onChange]
+      [value, maxFiles, onChange],
     ),
   });
 
@@ -70,7 +71,7 @@ const Uploader: FC<UploaderRootProps> = (props) => {
 
       const fileWithPreview = createFileWithPreview(
         newFile,
-        FileStatus.PENDING
+        FileStatus.PENDING,
       );
       const updatedFileList = multiple
         ? [...value, fileWithPreview]
@@ -78,7 +79,7 @@ const Uploader: FC<UploaderRootProps> = (props) => {
 
       onChange?.(updatedFileList);
     },
-    [value, maxFiles, onChange]
+    [value, maxFiles, onChange],
   );
 
   const handleDeleteFile = useCallback(
@@ -86,7 +87,7 @@ const Uploader: FC<UploaderRootProps> = (props) => {
       const updatedFileList = value.filter((file) => file.name !== fileName);
       onChange?.(updatedFileList);
     },
-    [value, onChange]
+    [value, onChange],
   );
 
   // Context value
@@ -113,7 +114,7 @@ const Uploader: FC<UploaderRootProps> = (props) => {
       dropZoneStates,
       handleAddFiles,
       handleDeleteFile,
-    ]
+    ],
   );
 
   return (
@@ -124,6 +125,7 @@ const Uploader: FC<UploaderRootProps> = (props) => {
 };
 
 export default assign(Uploader, {
+  Exists: UploaderExistList,
   DropZone: UploaderDropZone,
   MediaList: UploaderMediaList,
   Placeholder: UploaderPlaceholder,
