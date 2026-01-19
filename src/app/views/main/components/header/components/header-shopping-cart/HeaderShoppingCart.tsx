@@ -22,6 +22,7 @@ import { useCart } from "@/hooks/use-cart";
 import { generateImageRandom } from "@/utils/image";
 import { cn } from "@/utils/ui";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useState } from "react";
 
 interface HeaderShoppingCartProps {
   sync?: boolean;
@@ -92,7 +93,7 @@ const HeaderShoppingCart = ({ sync = true }: HeaderShoppingCartProps) => {
                     onRemove={handleRemoveItem}
                   />
                 ))}
-                {cart.isLoading &&
+                {cart.isFetchingCartList &&
                   Array.from({ length: 3 }).map((_, index) => (
                     <CartItemSkeleton key={`skeleton-${index}`} />
                   ))}
@@ -130,57 +131,69 @@ const CartItemRow = ({
   isLoading,
   onUpdate,
   onRemove,
-}: any) => (
-  <div className="flex gap-3 pb-4 border-b last:border-b-0">
-    <img
-      src={generateImageRandom()}
-      className="w-14 h-14 rounded-md object-cover border"
-    />
+}: any) => {
+  // States
+  const [isDeleting, setIsDeleting] = useState(false);
 
-    <div className="flex-1 flex flex-col justify-between">
-      <div>
-        <p className="text-sm font-medium line-clamp-2">
-          {item.product?.title}
-        </p>
-        <p className="text-sm font-semibold text-primary mt-1">
-          {item.product?.price?.toLocaleString("vi-VN")} ₫
-        </p>
+  // Methods
+  const handleRemove = async () => {
+    setIsDeleting(true);
+    await onRemove(item.product._id);
+    setIsDeleting(false);
+  };
+
+  return (
+    <div className="flex gap-3 pb-4 border-b last:border-b-0">
+      <img
+        src={generateImageRandom()}
+        className="w-14 h-14 rounded-md object-cover border"
+      />
+
+      <div className="flex-1 flex flex-col justify-between">
+        <div>
+          <p className="text-sm font-medium line-clamp-2">
+            {item.product?.title}
+          </p>
+          <p className="text-sm font-semibold text-primary mt-1">
+            {item.product?.price?.toLocaleString("vi-VN")} ₫
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 mt-2">
+          <button
+            className="w-7 h-7 border rounded text-sm disabled:opacity-40"
+            disabled={isLoading || item.quantity <= 1}
+            onClick={() => onUpdate(item.product._id, item.quantity - 1)}
+          >
+            −
+          </button>
+
+          <span className="w-6 text-center text-sm">{item.quantity}</span>
+
+          <button
+            className="w-7 h-7 border rounded text-sm disabled:opacity-40"
+            disabled={isLoading}
+            onClick={() => onUpdate(item.product._id, item.quantity + 1)}
+          >
+            +
+          </button>
+        </div>
       </div>
 
-      <div className="flex items-center gap-2 mt-2">
-        <button
-          className="w-7 h-7 border rounded text-sm disabled:opacity-40"
-          disabled={isLoading || item.quantity <= 1}
-          onClick={() => onUpdate(item.product._id, item.quantity - 1)}
-        >
-          −
-        </button>
-
-        <span className="w-6 text-center text-sm">{item.quantity}</span>
-
-        <button
-          className="w-7 h-7 border rounded text-sm disabled:opacity-40"
-          disabled={isLoading}
-          onClick={() => onUpdate(item.product._id, item.quantity + 1)}
-        >
-          +
-        </button>
-      </div>
+      <button
+        className="text-muted-foreground hover:text-destructive"
+        disabled={isDeleting}
+        onClick={handleRemove}
+      >
+        {isDeleting ? (
+          <Loader2 className="w-4 h-4 animate-spin" />
+        ) : (
+          <XIcon className="w-4 h-4 cursor-pointer" />
+        )}
+      </button>
     </div>
-
-    <button
-      className="text-muted-foreground hover:text-destructive"
-      disabled={isLoading}
-      onClick={() => onRemove(item.product._id)}
-    >
-      {isLoading ? (
-        <Loader2 className="w-4 h-4 animate-spin" />
-      ) : (
-        <XIcon className="w-4 h-4 cursor-pointer" />
-      )}
-    </button>
-  </div>
-);
+  );
+};
 
 interface CartItemSkeletonProps {
   className?: string;

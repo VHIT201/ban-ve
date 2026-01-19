@@ -42,6 +42,7 @@ import baseConfig from "@/configs/base";
 import { useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
 import EmailDialog from "@/components/shared/email-dialog";
+import { extractErrorMessage } from "@/utils/error";
 
 const BlueprintDetailView: FC<Props> = (props) => {
   // Props
@@ -49,11 +50,6 @@ const BlueprintDetailView: FC<Props> = (props) => {
 
   // Stores
   const profileStore = useProfileStore(useShallow(({ email }) => ({ email })));
-
-  // States
-  const [userEmail, setUserEmail] = useState<string | undefined>(
-    profileStore.email,
-  );
 
   // Hooks
   const queryClient = useQueryClient();
@@ -86,12 +82,11 @@ const BlueprintDetailView: FC<Props> = (props) => {
 
   // Mutations
   const createQRPaymentMutation = useCreateQrPayment({
-    email: userEmail,
     orders: [{ contentId: content._id!, quantity: 1 }],
   });
 
   // Methods
-  const { mutate: addToCart, isPending: isAddingToCart } = usePostApiCart({
+  const { mutate: addToCart } = usePostApiCart({
     mutation: {
       onSuccess: async () => {
         // Cập nhật store cục bộ sau khi gọi API thành công
@@ -112,11 +107,10 @@ const BlueprintDetailView: FC<Props> = (props) => {
     },
   });
 
-  const handleConfirmEmail = (email: string, acceptMarketing: boolean) => {
-    setUserEmail(email);
+  const handleConfirmEmail = (email: string) => {
     setOpenEmailDialog(false);
     setOpenQRPaymentDialog(true);
-    createQRPaymentMutation.createPaymentQR();
+    createQRPaymentMutation.createPaymentQR(email);
   };
 
   const handleAddToCart = async () => {
@@ -138,42 +132,23 @@ const BlueprintDetailView: FC<Props> = (props) => {
     setOpenEmailDialog(true);
   };
 
-  // const handleDownload = async () => {
-  //   const isSignedIn = useAuthStore.getState().isSignedIn;
+  const handleDownload = async () => {
+    try {
+      if (!content.file_id?._id) return;
+      const res = await getDownloadFileQuery.refetch();
 
-  //   if (!isSignedIn) {
-  //     toast.warning("Vui lòng đăng nhập để tải file.");
-  //     return;
-  //   }
+      if (getDownloadFileQuery.isError) {
+        if (res?.error?.status === 402) {
+          toast.warning("Bạn cần mua sản phẩm để tải file");
+        }
+        return;
+      }
 
-  //   const res = await getDownloadFileQuery.refetch();
-
-  //   if (res.isError) {
-  //     toast.error(extractErrorMessage(res.error));
-  //     return;
-  //   }
-
-  //   const blob = res.data;
-
-  //   if (!(blob instanceof Blob)) {
-  //     toast.error("Dữ liệu tải về không hợp lệ.");
-  //     return;
-  //   }
-
-  //   const url = URL.createObjectURL(blob);
-
-  //   const fileName = content.file_id?.name || "download";
-  //   console.log("Downloading file:", fileName);
-
-  //   const a = document.createElement("a");
-  //   a.href = url;
-  //   a.download = fileName;
-  //   document.body.appendChild(a);
-  //   a.click();
-  //   a.remove();
-
-  //   URL.revokeObjectURL(url);
-  // };
+      toast.success("Đã tải file xuống thành công");
+    } catch (error) {
+      toast.error(extractErrorMessage(error));
+    }
+  };
 
   const imageList =
     content?.images?.map((img) => `${baseConfig.mediaDomain}/${img}`) || [];
@@ -206,7 +181,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
               <img
                 src={imageList[selectedImage]}
                 alt={content.title}
-                className="w-full h-[400px] lg:h-[550px] object-cover"
+                className="w-full h-[400px] lg:h-[550px] object-contain"
               />
             </Lens>
           </div>
@@ -389,10 +364,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
               variant="outline"
               size="lg"
               className="w-full gap-2"
-              onClick={() => {
-                if (!content.file_id?._id) return;
-                getDownloadFileQuery.refetch();
-              }}
+              onClick={handleDownload}
               disabled={getDownloadFileQuery.isLoading || !content.file_id?._id}
             >
               <DownloadIcon className="w-5 h-5 mr-2" />

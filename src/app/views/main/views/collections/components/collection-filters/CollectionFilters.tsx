@@ -67,7 +67,7 @@ const CollectionFilters = ({ onFilterChange }: Props) => {
   // Queries
   const getCategoryTreeQuery = useGetApiCategoriesAllTree({
     query: {
-      select: (data) => (data as unknown as ResponseData<any>).data.categories,
+      select: (data) => (data as unknown as ResponseData<any>).data.tree,
     },
   });
 
@@ -79,7 +79,6 @@ const CollectionFilters = ({ onFilterChange }: Props) => {
     },
   }) as UseQueryResult<Category[]>;
 
-  // Transform category tree data to TreeView format
   const transformCategoryToTreeItem = (category: any): TreeViewItem => {
     return {
       id: category._id || category.id,
@@ -93,10 +92,9 @@ const CollectionFilters = ({ onFilterChange }: Props) => {
 
   // Memoize tree data
   const treeData = useMemo(() => {
-    if (!getCategoryTreeQuery.data?.categories) return [];
-    return getCategoryTreeQuery.data.categories.map(
-      transformCategoryToTreeItem,
-    );
+    console.log("getCategoryTreeQuery.data", getCategoryTreeQuery.data);
+    if (!getCategoryTreeQuery.data) return [];
+    return getCategoryTreeQuery.data.map(transformCategoryToTreeItem);
   }, [getCategoryTreeQuery.data, selectedCategories]);
 
   // Handle TreeView selection change
@@ -252,7 +250,7 @@ const CollectionFilters = ({ onFilterChange }: Props) => {
             <CollapsibleContent className="pt-3">
               <QueryBoundary query={getCategoryTreeQuery}>
                 {() => (
-                  <div className="-mx-6 -mb-6">
+                  <div>
                     <TreeView
                       data={treeData}
                       showCheckboxes={true}
@@ -260,7 +258,7 @@ const CollectionFilters = ({ onFilterChange }: Props) => {
                       showExpandAll={false}
                       onCheckChange={handleTreeCheckChange}
                       onSelectionChange={handleTreeSelectionChange}
-                      className="border-0 shadow-none p-0"
+                      className="border-0 shadow-none"
                     />
                   </div>
                 )}

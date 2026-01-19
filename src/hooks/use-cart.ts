@@ -22,6 +22,7 @@ interface UseCartReturn {
   }>;
   isOpen: boolean;
   isLoading: boolean;
+  isFetchingCartList: boolean;
 
   // Computed
   totalItems: number;
@@ -83,13 +84,7 @@ export const useCart = ({
     },
   });
 
-  const deleteCartMutation = useDeleteApiCart({
-    mutation: {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
-      },
-    },
-  });
+  const deleteCartMutation = useDeleteApiCart();
 
   // Convert API cart items to store format
   const apiCartItems = useMemo(() => {
@@ -118,7 +113,7 @@ export const useCart = ({
   const totalPrice = useMemo(() => {
     return items.reduce(
       (total, item) => total + (item.product?.price || 0) * item.quantity,
-      0
+      0,
     );
   }, [items]);
 
@@ -127,14 +122,14 @@ export const useCart = ({
       const item = items.find((item) => item.product._id === productId);
       return item?.quantity || 0;
     },
-    [items]
+    [items],
   );
 
   const isInCart = useCallback(
     (productId: string) => {
       return items.some((item) => item.product._id === productId);
     },
-    [items]
+    [items],
   );
 
   // Actions
@@ -153,22 +148,24 @@ export const useCart = ({
         cartStore.addItem(product, quantity);
       }
     },
-    [isSignedIn, addToCartMutation, cartStore]
+    [isSignedIn, addToCartMutation, cartStore],
   );
 
   const removeItem = useCallback(
-    (productId: string) => {
+    async (productId: string) => {
       if (isSignedIn) {
-        deleteCartMutation.mutate({
+        await deleteCartMutation.mutateAsync({
           data: {
             contentId: productId,
           },
         });
+
+        queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
       } else {
         cartStore.removeItem(productId);
       }
     },
-    [isSignedIn, deleteCartMutation, cartStore]
+    [isSignedIn, deleteCartMutation, cartStore],
   );
 
   const updateQuantity = useCallback(
@@ -189,7 +186,7 @@ export const useCart = ({
         cartStore.updateQuantity(productId, quantity);
       }
     },
-    [isSignedIn, updateCartMutation, cartStore, removeItem]
+    [isSignedIn, updateCartMutation, cartStore, removeItem],
   );
 
   const incrementQuantity = useCallback(
@@ -197,7 +194,7 @@ export const useCart = ({
       const currentQuantity = getItemQuantity(productId);
       updateQuantity(productId, currentQuantity + 1);
     },
-    [getItemQuantity, updateQuantity]
+    [getItemQuantity, updateQuantity],
   );
 
   const decrementQuantity = useCallback(
@@ -207,7 +204,7 @@ export const useCart = ({
         updateQuantity(productId, currentQuantity - 1);
       }
     },
-    [getItemQuantity, updateQuantity]
+    [getItemQuantity, updateQuantity],
   );
 
   const clearCart = useCallback(() => {
@@ -260,8 +257,8 @@ export const useCart = ({
                 contentId: item.product._id,
                 quantity: item.quantity,
               },
-            })
-          )
+            }),
+          ),
         );
 
         cartStore.clearCart();
@@ -285,6 +282,8 @@ export const useCart = ({
         updateCartMutation.isPending ||
         deleteCartMutation.isPending
       : false,
+
+    isFetchingCartList: getCartQuery.isFetching,
 
     // Computed
     totalItems,

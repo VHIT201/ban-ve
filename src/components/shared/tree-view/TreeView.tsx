@@ -49,6 +49,7 @@ export interface TreeViewProps {
   className?: string;
   data: TreeViewItem[];
   title?: string;
+  showSearch?: boolean;
   showExpandAll?: boolean;
   showCheckboxes?: boolean;
   checkboxPosition?: "left" | "right";
@@ -294,14 +295,14 @@ function TreeItem({
     }
   };
 
-  const renderIcon = () => {
-    if (getIcon) {
-      return getIcon(item, depth);
-    }
+  // const renderIcon = () => {
+  //   if (getIcon) {
+  //     return getIcon(item, depth);
+  //   }
 
-    // Use the provided iconMap or fall back to default
-    return iconMap[item.type] || iconMap.folder || defaultIconMap.folder;
-  };
+  //   // Use the provided iconMap or fall back to default
+  //   return iconMap[item.type] || iconMap.folder || defaultIconMap.folder;
+  // };
 
   const getItemPath = (item: TreeViewItem, items: TreeViewItem[]): string => {
     const path: string[] = [item.name];
@@ -361,7 +362,9 @@ function TreeItem({
             data-depth={depth}
             data-folder-closed={item.children && !isOpen}
             className={`select-none cursor-pointer ${
-              isSelected ? `bg-orange-100 ${selectionStyle}` : "text-foreground"
+              isSelected
+                ? `bg-primary-100 ${selectionStyle}`
+                : "text-foreground"
             } px-1`}
             style={{ paddingLeft: `${depth * 20}px` }}
             onClick={handleClick}
@@ -420,7 +423,7 @@ function TreeItem({
                       )}
                     </div>
                   )}
-                  {renderIcon()}
+                  {/* {renderIcon()} */}
                   <span className="flex-1">{item.name}</span>
                   {selectedCount !== null && selectedCount > 0 && (
                     <Badge
@@ -430,7 +433,7 @@ function TreeItem({
                       {selectedCount} selected
                     </Badge>
                   )}
-                  <HoverCard>
+                  {/* <HoverCard>
                     <HoverCardTrigger asChild>
                       <Button
                         variant="ghost"
@@ -464,7 +467,7 @@ function TreeItem({
                         </div>
                       </div>
                     </HoverCardContent>
-                  </HoverCard>
+                  </HoverCard> */}
                 </div>
               ) : (
                 <div className="flex items-center gap-2 flex-1 pl-8 group">
@@ -494,7 +497,7 @@ function TreeItem({
                       )}
                     </div>
                   )}
-                  {renderIcon()}
+                  {/* {renderIcon()} */}
                   <span className="flex-1">{item.name}</span>
                   <HoverCard>
                     <HoverCardTrigger asChild>
@@ -605,6 +608,7 @@ export default function TreeView({
   },
   data,
   iconMap,
+  showSearch = false,
   searchPlaceholder = "Search...",
   selectionText = "selected",
   showExpandAll = true,
@@ -615,6 +619,8 @@ export default function TreeView({
   onCheckChange,
   menuItems,
 }: TreeViewProps) {
+  console.log("TreeView data", data);
+
   const [currentMousePos, setCurrentMousePos] = useState<number>(0);
   const [dragStart, setDragStart] = useState<number | null>(null);
   const [dragStartPosition, setDragStartPosition] = useState<{
@@ -880,126 +886,126 @@ export default function TreeView({
   }, [isDragging, handleMouseUp]);
 
   // Call onSelectionChange when selection changes
-  //   useEffect(() => {
-  //     if (onSelectionChange) {
-  //       onSelectionChange(getSelectedItems());
-  //     }
-  //   }, [selectedIds, onSelectionChange, getSelectedItems]);
+  useEffect(() => {
+    if (onSelectionChange) {
+      console.log("Selection changed", selectedIds);
+      onSelectionChange(getSelectedItems());
+    }
+  }, [selectedIds]);
 
   console.log("TreeView render", { selectedIds, searchQuery });
 
   return (
     <div className="flex gap-4">
-      <div
-        ref={treeRef}
-        className="bg-background p-6 rounded-xl border max-w-2xl space-y-4 w-[600px] relative shadow-lg"
-      >
-        <AnimatePresence mode="wait">
-          {selectedIds.size > 0 ? (
-            <motion.div
-              key="selection"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="h-10 flex items-center justify-between bg-background rounded-lg border px-4"
-            >
-              <div
-                className="font-medium cursor-pointer flex items-center"
-                title="Clear selection"
-                onClick={() => {
-                  setSelectedIds(new Set());
-                  lastSelectedId.current = null;
-                }}
+      <div ref={treeRef} className=" max-w-2xl space-y-4 w-[600px] relative">
+        {showSearch && (
+          <AnimatePresence mode="wait">
+            {selectedIds.size > 0 ? (
+              <motion.div
+                key="selection"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="h-10 flex items-center justify-between bg-background rounded-lg border px-4"
               >
-                <X className="h-4 w-4 mr-2" />
-                {selectedIds.size} {selectionText}
-              </div>
+                <div
+                  className="font-medium cursor-pointer flex items-center"
+                  title="Clear selection"
+                  onClick={() => {
+                    setSelectedIds(new Set());
+                    lastSelectedId.current = null;
+                  }}
+                >
+                  <X className="h-4 w-4 mr-2" />
+                  {selectedIds.size} {selectionText}
+                </div>
 
-              {showCheckboxes && (
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      const effectiveItems = getEffectiveSelectedItems();
-                      const processItem = (item: TreeViewItem) => {
-                        onCheckChange?.(item, true);
-                        item.children?.forEach(processItem);
-                      };
-                      effectiveItems.forEach(processItem);
-                    }}
-                    className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                  >
-                    {checkboxLabels.check}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      const effectiveItems = getEffectiveSelectedItems();
-                      const processItem = (item: TreeViewItem) => {
-                        onCheckChange?.(item, false);
-                        item.children?.forEach(processItem);
-                      };
-                      effectiveItems.forEach(processItem);
-                    }}
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                  >
-                    {checkboxLabels.uncheck}
-                  </Button>
+                {showCheckboxes && (
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        const effectiveItems = getEffectiveSelectedItems();
+                        const processItem = (item: TreeViewItem) => {
+                          onCheckChange?.(item, true);
+                          item.children?.forEach(processItem);
+                        };
+                        effectiveItems.forEach(processItem);
+                      }}
+                      className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                    >
+                      {checkboxLabels.check}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        const effectiveItems = getEffectiveSelectedItems();
+                        const processItem = (item: TreeViewItem) => {
+                          onCheckChange?.(item, false);
+                          item.children?.forEach(processItem);
+                        };
+                        effectiveItems.forEach(processItem);
+                      }}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      {checkboxLabels.uncheck}
+                    </Button>
+                  </div>
+                )}
+              </motion.div>
+            ) : (
+              <motion.div
+                key="search"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                className="h-10 flex items-center gap-2"
+              >
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder={searchPlaceholder}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="h-10 pl-9"
+                  />
                 </div>
-              )}
-            </motion.div>
-          ) : (
-            <motion.div
-              key="search"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              className="h-10 flex items-center gap-2"
-            >
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder={searchPlaceholder}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-10 pl-9"
-                />
-              </div>
-              {showExpandAll && (
-                <div className="flex gap-2 shrink-0">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-10 px-2"
-                    onClick={handleExpandAll}
-                  >
-                    <ChevronDown className="h-4 w-4 mr-1" />
-                    Expand All
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-10 px-2"
-                    onClick={handleCollapseAll}
-                  >
-                    <ChevronRight className="h-4 w-4 mr-1" />
-                    Collapse All
-                  </Button>
-                </div>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
+                {showExpandAll && (
+                  <div className="flex gap-2 shrink-0">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-10 px-2"
+                      onClick={handleExpandAll}
+                    >
+                      <ChevronDown className="h-4 w-4 mr-1" />
+                      Expand All
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-10 px-2"
+                      onClick={handleCollapseAll}
+                    >
+                      <ChevronRight className="h-4 w-4 mr-1" />
+                      Collapse All
+                    </Button>
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        )}
 
         <div
           ref={dragRef}
           className={cn("rounded-lg bg-card relative select-none", className)}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
+          // onMouseDown={handleMouseDown}
+          // onMouseMove={handleMouseMove}
         >
-          {isDragging && (
+          {/* {isDragging && (
             <div
               className="absolute inset-0 bg-blue-500/0 pointer-events-none"
               style={{
@@ -1012,7 +1018,7 @@ export default function TreeView({
                 ),
               }}
             />
-          )}
+          )} */}
           {filteredData.map((item) => (
             <TreeItem
               key={item.id}
