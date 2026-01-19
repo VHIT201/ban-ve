@@ -208,10 +208,10 @@ const AddFileDialog = () => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1">
-                      <p className="font-medium text-sm truncate">
+                      <p className="font-medium text-sm break-words">
                         {selectedFile.name}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-xs text-muted-foreground mt-1 break-words">
                         {formatFileSize(selectedFile.size)} •{" "}
                         {selectedFile.type || "Unknown type"}
                       </p>
