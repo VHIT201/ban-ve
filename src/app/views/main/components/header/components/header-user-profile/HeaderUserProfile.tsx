@@ -46,7 +46,7 @@ const MenuItem = ({
     "w-full justify-start gap-3 flex px-3 py-2.5 hover:text-white h-auto text-sm font-medium rounded-none! transition-all duration-200",
     variant === "destructive"
       ? "text-destructive hover:text-destructive hover:bg-destructive/10 focus:bg-destructive/10"
-      : "text-foreground hover:bg-primary focus:bg-primary focus:text-white"
+      : "text-foreground hover:bg-primary focus:bg-primary focus:text-white",
   );
 
   if (to) {
@@ -56,7 +56,9 @@ const MenuItem = ({
         className={({ isActive }) =>
           cn(
             buttonClass,
-            isActive && variant !== "destructive" ? "bg-primary text-white" : ""
+            isActive && variant !== "destructive"
+              ? "bg-primary text-white"
+              : "",
           )
         }
         onClick={onClick}
@@ -89,16 +91,17 @@ const HeaderUserProfile = () => {
   const authStore = useAuthStore(
     useShallow(({ resetStore }) => ({
       resetStore,
-    }))
+    })),
   );
 
-  const { role, email, username, avatar } = useProfileStore(
+  const { role, email, username, avatar, resetStore } = useProfileStore(
     useShallow((state) => ({
       role: state.role,
       email: state.email,
       username: state.username,
       avatar: state.avatar || "",
-    }))
+      resetStore: state.resetStore,
+    })),
   );
 
   const userData: UserData = {
@@ -116,6 +119,7 @@ const HeaderUserProfile = () => {
   };
 
   const handleLogout = () => {
+    resetStore();
     authStore.resetStore();
     window.location.href = BASE_PATHS.auth.login.path;
   };

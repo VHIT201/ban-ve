@@ -1,14 +1,5 @@
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import Image from "@/components/ui/image";
-import { Separator } from "@/components/ui/separator";
-import { BASE_PATHS } from "@/constants/paths";
-import { useAuthStore } from "@/stores";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { Loader2Icon, QrCodeIcon } from "lucide-react";
 import { FC } from "react";
@@ -25,11 +16,12 @@ const ContentPaymentDialog: FC<Props> = (props) => {
   // Props
   const { urlQRCode, loading, open, onOpenChange } = props;
 
-  // Hooks
-  const navigate = useNavigate();
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent aria-describedby="content-payment-dialog">
+      <DialogContent
+        aria-describedby="content-payment-dialog"
+        className="max-w-sm w-full border-border/40 bg-card z-50"
+      >
         <DialogHeader>
           <DialogTitle className="text-lg text-center md:text-xl font-semibold">
             Thanh toán nhanh QR
@@ -47,18 +39,6 @@ const ContentPaymentDialog: FC<Props> = (props) => {
             className="mx-auto fade-in-100 min-h-[300px]"
           />
         )}
-
-        <Separator className="my-1 w-2/3! mx-auto" />
-
-        <DialogFooter>
-          <Button
-            variant="destructive"
-            onClick={() => navigate(BASE_PATHS.app.payment.path)}
-            className="mx-auto fade-in duration-500 h-12 font-semibold hover:-translate-y-2 shadow-2xl transition-all"
-          >
-            Phương thức thanh toán khác
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

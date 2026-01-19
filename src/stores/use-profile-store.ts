@@ -8,9 +8,9 @@ import { createStorage } from "@/utils/storage";
 
 interface States {
   id: string | null;
-  username: string;
-  email: string;
-  fullName: string;
+  username: string | undefined;
+  email: string | undefined;
+  fullName: string | undefined;
   avatar: string;
   role: string | null;
   createdAt: Date | null;
@@ -40,9 +40,9 @@ export type ProfileStore = States & Actions;
 // Constants
 export const INITIAL_STATES: States = {
   id: null,
-  username: "Unknown User",
-  email: "Unknown Email",
-  fullName: "Unknown Full Name",
+  username: undefined,
+  email: undefined,
+  fullName: undefined,
   avatar: "",
   role: null,
   createdAt: null,
@@ -83,8 +83,8 @@ export const useProfileStore = create<ProfileStore>()(
     persist(profileStore, {
       name: "blue-market-profile-store",
       storage: createStorage<States>(),
-    })
-  )
+    }),
+  ),
 );
 
 export default useProfileStore;

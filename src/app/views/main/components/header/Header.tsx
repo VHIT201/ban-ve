@@ -27,7 +27,7 @@ const Header = () => {
   const authStore = useAuthStore(
     useShallow(({ isSignedIn }) => ({
       isSignedIn,
-    }))
+    })),
   );
 
   // Hooks
@@ -68,7 +68,7 @@ const Header = () => {
         className={cn(
           "fixed top-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-border/40 supports-backdrop-filter:bg-background/60",
           "transition-transform duration-300 ease-in-out",
-          isSlideDown ? "translate-y-0" : "-translate-y-full"
+          isSlideDown ? "translate-y-0" : "-translate-y-full",
         )}
       >
         <div className="max-w-[1500px] mx-auto px-4">
@@ -100,13 +100,6 @@ const Header = () => {
 
             {/* Actions Section */}
             <div className="flex items-center gap-3">
-              {
-                /* Shopping Cart Section */
-                (() => {
-                  console.log("Render Header Shopping Cart 1");
-                  return <></>;
-                })()
-              }
               <HeaderShoppingCart sync={false} />
 
               <Separator orientation="vertical" className="h-6" />
@@ -130,7 +123,7 @@ const Header = () => {
       <div
         className={cn(
           "relative top-0 z-50 w-full bg-white backdrop-blur-xl border-b border-border/40 supports-backdrop-filter:bg-background/60",
-          "transition-transform duration-300 ease-in-out"
+          "transition-transform duration-300 ease-in-out",
         )}
       >
         <div className="max-w-[1500px] mx-auto px-4">
@@ -163,13 +156,6 @@ const Header = () => {
 
             {/* Actions Section */}
             <div className="flex items-center gap-3">
-              {
-                /* Shopping Cart Section */
-                (() => {
-                  console.log("Render Header Shopping Cart 2");
-                  return <></>;
-                })()
-              }
               <HeaderShoppingCart />
 
               <Separator orientation="vertical" className="h-6" />

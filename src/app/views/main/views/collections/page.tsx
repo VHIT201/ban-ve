@@ -78,7 +78,7 @@ const CategoryPage = () => {
       <Main>
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar Filters */}
-          <aside className="lg:w-72 shrink-0 hidden lg:block">
+          <aside className="lg:w-[350px] shrink-0 hidden lg:block">
             <div className="sticky top-20">
               <CollectionFilters onFilterChange={setFilteredProducts} />
             </div>
@@ -86,7 +86,7 @@ const CategoryPage = () => {
 
           {/* Products Grid */}
           <main className="flex-1">
-            <CategoriesSection />
+            {/* <CategoriesSection /> */}
             <CollectionList
               filter={filteredProducts}
               onClearFilters={() => setFilteredProducts(DEFAULT_FILTER_VALUES)}

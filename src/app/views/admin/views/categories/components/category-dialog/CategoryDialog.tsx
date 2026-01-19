@@ -170,7 +170,7 @@ const CategoryDialog = (props: CategoryDialogProps) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold tracking-wider">
-                        File bản vẽ <span className="text-red-500">*</span>
+                        Ảnh đại diện <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <div className="space-y-3">
@@ -195,7 +195,7 @@ const CategoryDialog = (props: CategoryDialogProps) => {
                         </div>
                       </FormControl>
                       <FormDescription>
-                        Chọn file bản vẽ (PDF hoặc DWG, tối đa 50MB)
+                        Chọn ảnh đại diện cho danh mục
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

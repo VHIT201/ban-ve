@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import Image from "@/components/ui/image";
 import { ContentProduct } from "@/api/types/content";
-import { FC, useMemo } from "react";
+import { FC, useMemo, useState } from "react";
 import { formatVND } from "@/utils/currency";
 import { generateImageRandom } from "@/utils/image";
 import { ContentStatus } from "@/enums/content";
@@ -36,6 +36,7 @@ const BlueprintCard: FC<Props> = (props) => {
   // Cart hook
   const cart = useCart({ sync: false });
   const isProductInCart = cart.isInCart(product._id);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   // Methods
   const handleViewDetail = () => {
@@ -44,8 +45,11 @@ const BlueprintCard: FC<Props> = (props) => {
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (isProductInCart || isAddingToCart) return;
+    setIsAddingToCart(true);
     cart.addItem(product as any, 1);
     onAddToCart?.(product);
+    setIsAddingToCart(false);
   };
 
   // Memos
@@ -158,16 +162,16 @@ const BlueprintCard: FC<Props> = (props) => {
         <Button
           size="sm"
           variant="outline"
-          disabled={cart.isLoading}
+          disabled={isAddingToCart}
           className={cn(
             "h-12 rounded-none w-full px-5 font-semibold text-[12px] uppercase tracking-wider border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 bg-transparent",
             isProductInCart &&
               "bg-primary text-primary-foreground border-primary",
-            cart.isLoading && "cursor-not-allowed opacity-70",
+            isAddingToCart && "cursor-not-allowed opacity-70",
           )}
           onClick={handleAddToCart}
         >
-          {cart.isLoading ? (
+          {isAddingToCart ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             <ShoppingCartIcon className="w-4 h-4 mr-2" />

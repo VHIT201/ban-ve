@@ -1,7 +1,7 @@
 import { usePostApiOrders } from "@/api/endpoints/orders";
 import { usePostApiPaymentsSepayCreateQrPayment } from "@/api/endpoints/payments";
 import { Order } from "@/api/models";
-import { MutationData } from "@/api/types/base";
+import { ResponseData } from "@/api/types/base";
 import {
   CreateQRPaymentResponse,
   SSEPaymentMessage,
@@ -9,17 +9,15 @@ import {
 import baseConfig from "@/configs/base";
 import { PaymentMethod, PaymentStatus } from "@/enums/payment";
 import useSSEStream from "@/hooks/use-sse-stream";
-import { usePaymentStore, useProfileStore } from "@/stores";
+import { usePaymentStore } from "@/stores";
 import { OrderItem } from "@/types/order";
 import { extractErrorMessage } from "@/utils/error";
 import { isUndefined } from "lodash-es";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { useShallow } from "zustand/shallow";
 
 // Types
 interface Props {
-  email?: string;
   orders: OrderItem[];
   onConnect?: () => void;
 }
@@ -33,7 +31,7 @@ interface PaymentQR {
 // Custom Hook
 const useCreateQRPayment = (props: Props) => {
   // Props
-  const { email, orders, onConnect } = props;
+  const { orders, onConnect } = props;
 
   // States
   const [orderPayment, setOrderPayment] = useState<Order | undefined>(
@@ -61,7 +59,7 @@ const useCreateQRPayment = (props: Props) => {
   const createPaymentQRMutation = usePostApiPaymentsSepayCreateQrPayment();
 
   // Methods
-  const handleCreatePaymentQR = async () => {
+  const handleCreatePaymentQR = async (email: string) => {
     try {
       const paymentStore = usePaymentStore.getState();
 
@@ -87,7 +85,7 @@ const useCreateQRPayment = (props: Props) => {
         },
       });
 
-      const createOrderData = (createOrderRes as unknown as MutationData<Order>)
+      const createOrderData = (createOrderRes as unknown as ResponseData<Order>)
         .data;
 
       if (!createOrderData) {
@@ -101,7 +99,7 @@ const useCreateQRPayment = (props: Props) => {
       const createPaymentQRRes = await createPaymentQRMutation.mutateAsync({
         data: {
           email: email,
-          orderId: createOrderData._id,
+          orderId: createOrderData._id!,
         },
       });
 
@@ -134,8 +132,7 @@ const useCreateQRPayment = (props: Props) => {
     enable:
       Boolean(paymentQR?.paymentId) &&
       Boolean(paymentQR?.sseClientId) &&
-      Boolean(orderPayment?.orderCode) &&
-      Boolean(email),
+      Boolean(orderPayment?.orderCode),
     url: `${baseConfig.backendDomain}api/sse/connect?sseClientId=${paymentQR?.sseClientId}&paymentId=${paymentQR?.paymentId}&orderCode=${orderPayment?.orderCode}`,
     onEvent: (event, data: SSEPaymentMessage) => {
       if (event === "payment_status") {
