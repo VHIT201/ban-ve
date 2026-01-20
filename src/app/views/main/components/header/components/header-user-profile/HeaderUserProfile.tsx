@@ -141,9 +141,13 @@ const HeaderUserProfile = () => {
           aria-label="Mở menu người dùng"
           className="hover:bg-transparent group p-0"
         >
-          <Avatar className={cn("size-8 ring-2 ring-primary/50")}>
-            <AvatarImage src={userData.avatar} alt={userData.name} />
-            <AvatarFallback className="bg-linear-to-br from-primary/20 to-primary/10 text-primary font-semibold text-sm">
+          <Avatar className={cn("size-10 rounded-md")}>
+            <AvatarImage
+              src={userData.avatar}
+              alt={userData.name}
+              className="rounded-md"
+            />
+            <AvatarFallback className="rounded-md bg-linear-to-br from-primary/20 to-primary/10 text-primary font-semibold text-sm">
               {handleGetUsername(userData.name)}
             </AvatarFallback>
           </Avatar>

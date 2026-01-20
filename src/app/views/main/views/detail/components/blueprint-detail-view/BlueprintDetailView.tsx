@@ -43,6 +43,7 @@ import { useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
 import EmailDialog from "@/components/shared/email-dialog";
 import { extractErrorMessage } from "@/utils/error";
+import { navigate } from "next/dist/client/components/segment-cache/navigation";
 
 const BlueprintDetailView: FC<Props> = (props) => {
   // Props
@@ -53,6 +54,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
 
   // Hooks
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   // States
   const [openEmailDialog, setOpenEmailDialog] = useState(false);
@@ -63,6 +65,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
 
   // Cart Store
   const addItem = useCartStore((state) => state.addItem);
+  const totalItems = useCartStore((state) => state.totalItems);
 
   // States
   const [selectedImage, setSelectedImage] = useState(0);
