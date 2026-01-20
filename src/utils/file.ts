@@ -13,6 +13,7 @@ export const formatFileSize = (bytes: number): string => {
 
 export const getFileIcon = (type: string): ComponentType => {
   switch (type) {
+    case FileType.PNG:
     case FileType.JPG:
     case FileType.IMAGE:
       return ImageFileIcon;
