@@ -14,6 +14,7 @@ import { Eye, MoreVertical, Download, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { getFileIcon, getFileTypeLabel } from "@/utils/file";
 import { FileType } from "@/enums/file";
+import baseConfig from "@/configs/base";
 
 export interface ResourceItemData {
   _id: string;
@@ -39,15 +40,13 @@ export default function ResourceItem({
 }: Props) {
   const [showActions, setShowActions] = useState(false);
 
-  const API_BASE_URL = "http://giangvien.org:3001";
-
   const getFullPath = (path: string) => {
     // Nếu path đã là URL đầy đủ thì trả về luôn
     if (path.startsWith("http")) return path;
     // Nếu path bắt đầu bằng / thì nối trực tiếp, ngược lại thêm / ở giữa
     return path.startsWith("/")
-      ? `${API_BASE_URL}${path}`
-      : `${API_BASE_URL}/${path}`;
+      ? `${baseConfig.mediaDomain}${path}`
+      : `${baseConfig.mediaDomain}/${path}`;
   };
 
   const handlePreview = (e: React.MouseEvent) => {

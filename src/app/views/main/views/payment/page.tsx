@@ -36,7 +36,7 @@ import {
 import { useCartStore } from "@/stores/use-cart-store";
 import { useNavigate } from "react-router-dom";
 import { generateImageRandom } from "@/utils/image";
-import { useAuthStore } from "@/stores";
+import { useAuthStore, useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
 import paymentWallet from "@/assets/payment/wallet-payment.png";
 import { BASE_PATHS } from "@/constants/paths";
@@ -49,6 +49,7 @@ import PaymentQR from "./components/payment-qr/PaymentQR";
 import { useCreateQrPayment } from "@/hooks/modules/payments";
 import { PaymentStatusDialog } from "@/components/modules/payment";
 import { PaymentStatus } from "@/enums/payment";
+import { useCart } from "@/hooks/use-cart";
 
 // Zod validation schemas
 const momoSchema = z.object({
@@ -162,18 +163,16 @@ type PaymentFormValues = z.infer<typeof paymentFormSchema>;
 const PaymentPage = () => {
   // Stores
   const authStore = useAuthStore(
-    useShallow((state) => ({ isSignedIn: state.isSignedIn }))
+    useShallow((state) => ({ isSignedIn: state.isSignedIn })),
+  );
+
+  const profileStore = useProfileStore(
+    useShallow((state) => ({ email: state.email })),
   );
 
   // Hooks
+  const cart = useCart({ sync: false });
   const navigate = useNavigate();
-
-  // Cart store
-  const items = useCartStore((state) => state.items);
-  const totalPrice = useCartStore((state) => state.totalPrice());
-  const totalItems = useCartStore((state) => state.totalItems());
-  const removeItem = useCartStore((state) => state.removeItem);
-  const clearCart = useCartStore((state) => state.clearCart);
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [openPaymentStatus, setOpenPaymentStatus] = useState<boolean>(false);
@@ -182,7 +181,7 @@ const PaymentPage = () => {
   const form = useForm<PaymentFormValues>({
     resolver: zodResolver(paymentFormSchema),
     defaultValues: {
-      paymentMethod: "momo",
+      paymentMethod: "qr_code",
       discountCode: "",
       momoPhone: "",
       bankName: "",
@@ -204,35 +203,35 @@ const PaymentPage = () => {
   // Mutations
   const paymentMutation = usePostApiPayments();
   const createQRPaymentMutation = useCreateQrPayment({
-    orders: items.map((item) => ({
+    orders: cart.items.map((item) => ({
       contentId: item.product._id!,
       quantity: item.quantity,
     })),
   });
 
   useEffect(() => {
-    if (items.length === 0) {
+    if (cart.items.length === 0) {
       navigate("/collections");
     }
-  }, [items.length, navigate]);
+  }, [cart.items.length, navigate]);
 
   const handleApplyDiscount = () => {
     console.log("Apply discount code:", form.getValues("discountCode"));
   };
 
   const handleSubmitPayment = async (data: PaymentFormValues) => {
-    if (items.length === 0) {
+    if (cart.items.length === 0) {
       return;
     }
 
     setIsProcessing(true);
 
     try {
-      items.forEach(async (item) => {
+      cart.items.forEach(async (item) => {
         await paymentMutation.mutateAsync({
           data: {
             contentId: item.product._id,
-            amount: item.product.price * item.quantity,
+            amount: (item?.product?.price || 0) * item.quantity,
             paymentMethod: data.paymentMethod,
             cardDetails: {
               description: `${data.paymentMethod}-${item.product._id}-${item.quantity}-${item.product.price}`,
@@ -241,7 +240,7 @@ const PaymentPage = () => {
         });
       });
 
-      clearCart();
+      cart.clearCart();
 
       toast.success("Thanh toán thành công. Cảm ơn bạn đã mua hàng.");
       navigate("/");
@@ -253,7 +252,7 @@ const PaymentPage = () => {
     }
   };
 
-  const subtotal = totalPrice;
+  const subtotal = cart.totalPrice;
   const shipping = 0;
   const tax = 0;
   const discount = 0;
@@ -314,18 +313,23 @@ const PaymentPage = () => {
   }
 
   useEffect(() => {
-    if (items.length === 0) {
+    if (cart.items.length === 0) {
+      return;
+    }
+
+    if (!profileStore.email) {
+      toast.error("Vui lòng cập nhật email trong hồ sơ cá nhân để thanh toán.");
       return;
     }
 
     if (paymentMethod === "qr_code") {
-      createQRPaymentMutation.createPaymentQR();
+      createQRPaymentMutation.createPaymentQR(profileStore.email);
     }
-  }, [paymentMethod, items.length]);
+  }, [paymentMethod, cart.items.length]);
 
   useEffect(() => {
     if (createQRPaymentMutation.streamingStatus === PaymentStatus.COMPLETED) {
-      clearCart();
+      cart.clearCart();
       setOpenPaymentStatus(true);
     }
   }, [createQRPaymentMutation.streamingStatus]);
@@ -349,169 +353,6 @@ const PaymentPage = () => {
                   <p className="text-sm text-gray-600 mb-6">
                     Chọn phương thức thanh toán phù hợp với bạn
                   </p>
-
-                  {/* Payment Method Selection */}
-                  <div className="grid grid-cols-2 gap-3 mb-6">
-                    {/* MoMo */}
-                    <button
-                      type="button"
-                      onClick={() => form.setValue("paymentMethod", "momo")}
-                      className={`relative p-4 border-2 rounded-xl transition-all hover:border-primary/50 ${
-                        paymentMethod === "momo"
-                          ? "border-primary bg-primary/5"
-                          : "border-gray-200 bg-white"
-                      }`}
-                    >
-                      <div className="flex flex-col items-center gap-2">
-                        <div
-                          className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                            paymentMethod === "momo"
-                              ? "bg-pink-100"
-                              : "bg-gray-100"
-                          }`}
-                        >
-                          <Smartphone
-                            className={`w-6 h-6 ${
-                              paymentMethod === "momo"
-                                ? "text-pink-600"
-                                : "text-gray-600"
-                            }`}
-                          />
-                        </div>
-                        <span className="font-medium text-sm text-gray-900">
-                          MoMo
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          Ví điện tử
-                        </span>
-                      </div>
-                      {paymentMethod === "momo" && (
-                        <div className="absolute top-2 right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                          <Check className="w-4 h-4 text-white" />
-                        </div>
-                      )}
-                    </button>
-
-                    {/* Bank Transfer */}
-                    <button
-                      type="button"
-                      onClick={() =>
-                        form.setValue("paymentMethod", "bank_transfer")
-                      }
-                      className={`relative p-4 border-2 rounded-xl transition-all hover:border-primary/50 ${
-                        paymentMethod === "bank_transfer"
-                          ? "border-primary bg-primary/5"
-                          : "border-gray-200 bg-white"
-                      }`}
-                    >
-                      <div className="flex flex-col items-center gap-2">
-                        <div
-                          className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                            paymentMethod === "bank_transfer"
-                              ? "bg-blue-100"
-                              : "bg-gray-100"
-                          }`}
-                        >
-                          <Building2
-                            className={`w-6 h-6 ${
-                              paymentMethod === "bank_transfer"
-                                ? "text-blue-600"
-                                : "text-gray-600"
-                            }`}
-                          />
-                        </div>
-                        <span className="font-medium text-sm text-gray-900">
-                          Chuyển khoản
-                        </span>
-                        <span className="text-xs text-gray-500">Ngân hàng</span>
-                      </div>
-                      {paymentMethod === "bank_transfer" && (
-                        <div className="absolute top-2 right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                          <Check className="w-4 h-4 text-white" />
-                        </div>
-                      )}
-                    </button>
-
-                    {/* Credit Card */}
-                    <button
-                      type="button"
-                      onClick={() =>
-                        form.setValue("paymentMethod", "credit_card")
-                      }
-                      className={`relative p-4 border-2 rounded-xl transition-all hover:border-primary/50 ${
-                        paymentMethod === "credit_card"
-                          ? "border-primary bg-primary/5"
-                          : "border-gray-200 bg-white"
-                      }`}
-                    >
-                      <div className="flex flex-col items-center gap-2">
-                        <div
-                          className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                            paymentMethod === "credit_card"
-                              ? "bg-purple-100"
-                              : "bg-gray-100"
-                          }`}
-                        >
-                          <CreditCard
-                            className={`w-6 h-6 ${
-                              paymentMethod === "credit_card"
-                                ? "text-purple-600"
-                                : "text-gray-600"
-                            }`}
-                          />
-                        </div>
-                        <span className="font-medium text-sm text-gray-900">
-                          Thẻ tín dụng
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          Visa/Master
-                        </span>
-                      </div>
-                      {paymentMethod === "credit_card" && (
-                        <div className="absolute top-2 right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                          <Check className="w-4 h-4 text-white" />
-                        </div>
-                      )}
-                    </button>
-
-                    {/* QR Code */}
-                    <button
-                      type="button"
-                      onClick={() => form.setValue("paymentMethod", "qr_code")}
-                      className={`relative p-4 border-2 rounded-xl transition-all hover:border-primary/50 ${
-                        paymentMethod === "qr_code"
-                          ? "border-primary bg-primary/5"
-                          : "border-gray-200 bg-white"
-                      }`}
-                    >
-                      <div className="flex flex-col items-center gap-2">
-                        <div
-                          className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                            paymentMethod === "qr_code"
-                              ? "bg-green-100"
-                              : "bg-gray-100"
-                          }`}
-                        >
-                          <QrCode
-                            className={`w-6 h-6 ${
-                              paymentMethod === "qr_code"
-                                ? "text-green-600"
-                                : "text-gray-600"
-                            }`}
-                          />
-                        </div>
-                        <span className="font-medium text-sm text-gray-900">
-                          Mã QR
-                        </span>
-                        <span className="text-xs text-gray-500">Quét mã</span>
-                      </div>
-                      {paymentMethod === "qr_code" && (
-                        <div className="absolute top-2 right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                          <Check className="w-4 h-4 text-white" />
-                        </div>
-                      )}
-                    </button>
-                  </div>
 
                   {/* Payment Method Forms */}
                   <Card className="overflow-hidden">
@@ -638,7 +479,7 @@ const PaymentPage = () => {
                       type="submit"
                       size="lg"
                       loading={isProcessing}
-                      disabled={items.length === 0}
+                      disabled={cart.items.length === 0}
                       className="w-full bg-primary/60 hover:bg-primary/70 text-white h-12"
                     >
                       {`Thanh toán ${new Intl.NumberFormat("vi-VN", {
@@ -659,7 +500,7 @@ const PaymentPage = () => {
                 {/* Order Summary Header */}
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-semibold text-gray-900">
-                    Đơn hàng ({totalItems} sản phẩm)
+                    Đơn hàng ({cart.totalItems} sản phẩm)
                   </h3>
                 </div>
 
@@ -667,7 +508,7 @@ const PaymentPage = () => {
 
                 {/* Cart Items */}
                 <div className="space-y-4 py-2 max-h-[400px] overflow-y-auto">
-                  {items.map((item) => (
+                  {cart.items.map((item) => (
                     <div
                       key={item.product._id}
                       className="flex items-start gap-4 group"
@@ -689,19 +530,21 @@ const PaymentPage = () => {
                           {item.product.title}
                         </h3>
                         <p className="text-xs text-gray-500 mb-2">
-                          {item.product.category?.name || 'No category'}
+                          {item.product.category?.name || "No category"}
                         </p>
                         <p className="text-sm font-semibold text-gray-900">
                           {new Intl.NumberFormat("vi-VN", {
                             style: "currency",
                             currency: "VND",
-                          }).format(item.product.price * item.quantity)}
+                          }).format(
+                            (item?.product?.price || 0) * item.quantity,
+                          )}
                         </p>
                       </div>
                       <Button
                         size="icon"
                         variant="ghost"
-                        onClick={() => removeItem(item.product._id)}
+                        onClick={() => cart.removeItem(item.product._id)}
                         className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-red-500"
                       >
                         <X className="w-4 h-4" />
@@ -789,7 +632,7 @@ const PaymentPage = () => {
                       type="submit"
                       size="lg"
                       loading={isProcessing}
-                      disabled={items.length === 0}
+                      disabled={cart.items.length === 0}
                       className="w-full bg-primary/60 hover:bg-primary/70 text-white h-12"
                       onClick={form.handleSubmit(handleSubmitPayment)}
                     >
