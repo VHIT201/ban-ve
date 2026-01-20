@@ -19,7 +19,7 @@ import { toast } from "sonner";
 import { useCart } from "@/hooks/use-cart";
 import { cn } from "@/utils/ui";
 import { Skeleton } from "@/components/ui/skeleton";
-import baseConfig from "@/configs/base";
+import { useState } from "react";
 
 interface HeaderShoppingCartProps {
   sync?: boolean;
@@ -88,7 +88,7 @@ const HeaderShoppingCart = ({ sync = true }: HeaderShoppingCartProps) => {
                     onRemove={handleRemoveItem}
                   />
                 ))}
-                {cart.isLoading &&
+                {cart.isFetchingCartList &&
                   Array.from({ length: 3 }).map((_, index) => (
                     <CartItemSkeleton key={`skeleton-${index}`} />
                   ))}
@@ -140,38 +140,22 @@ const CartItemRow = ({
   isLoading,
   onUpdate,
   onRemove,
-}: CartItemRowProps) => {
-  // Hàm xử lý đường dẫn ảnh
-  const getImageUrl = (path: string | undefined): string => {
-    if (!path) return "";
+}: any) => {
+  // States
+  const [isDeleting, setIsDeleting] = useState(false);
 
-    // Nếu đường dẫn đã là URL đầy đủ
-    if (path.startsWith("http")) {
-      return path;
-    }
-
-    // Xử lý đường dẫn tương đối
-    const base = baseConfig.mediaDomain.endsWith("/")
-      ? baseConfig.mediaDomain.slice(0, -1)
-      : baseConfig.mediaDomain;
-
-    return `${base}/${path.replace(/^\/+/, "")}`;
+  // Methods
+  const handleRemove = async () => {
+    setIsDeleting(true);
+    await onRemove(item.product._id);
+    setIsDeleting(false);
   };
-
-  const imageUrl = getImageUrl(item.product?.images?.[0]);
-  const fallbackImage = "https://via.placeholder.com/56";
 
   return (
     <div className="flex gap-3 pb-4 border-b last:border-b-0">
       <img
-        src={imageUrl || fallbackImage}
+        src={generateImageRandom()}
         className="w-14 h-14 rounded-md object-cover border"
-        alt={item.product?.title || "Product image"}
-        onError={(e) => {
-          if (e.currentTarget.src !== fallbackImage) {
-            e.currentTarget.src = fallbackImage;
-          }
-        }}
       />
 
       <div className="flex-1 flex flex-col justify-between">
@@ -192,6 +176,33 @@ const CartItemRow = ({
           >
             −
           </button>
+
+          <span className="w-6 text-center text-sm">{item.quantity}</span>
+
+          <button
+            className="w-7 h-7 border rounded text-sm disabled:opacity-40"
+            disabled={isLoading}
+            onClick={() => onUpdate(item.product._id, item.quantity + 1)}
+          >
+            +
+          </button>
+        </div>
+      </div>
+
+      <button
+        className="text-muted-foreground hover:text-destructive"
+        disabled={isDeleting}
+        onClick={handleRemove}
+      >
+        {isDeleting ? (
+          <Loader2 className="w-4 h-4 animate-spin" />
+        ) : (
+          <XIcon className="w-4 h-4 cursor-pointer" />
+        )}
+      </button>
+    </div>
+  );
+};
 
           <span className="w-6 text-center text-sm">{item.quantity}</span>
 
