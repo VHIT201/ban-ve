@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ContentResponse } from "@/api/types/content";
 import { Category } from "@/api/models/category";
 import { ChevronRight, ChevronDown, ChevronUp, Filter, X } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 import {
   CategoriesSection,
   CollectionFilters,
@@ -38,10 +39,34 @@ const mockCategories: Category[] = [
 ];
 
 const CategoryPage = () => {
+  // Hooks
+  const [searchParams] = useSearchParams();
+  
   // States
   const [filteredProducts, setFilteredProducts] = useState<FilterFormValues>(
     DEFAULT_FILTER_VALUES,
   );
+
+  // Update filter when URL changes
+  useEffect(() => {
+    const categoryId = searchParams.get('category');
+    if (categoryId) {
+      setFilteredProducts(prev => ({
+        ...prev,
+        categories: [categoryId],
+      }));
+    } else {
+      setFilteredProducts(prev => ({
+        ...prev,
+        categories: [],
+      }));
+    }
+  }, [searchParams]);
+
+  // Handle filter change
+  const handleFilterChange = (newFilter: FilterFormValues) => {
+    setFilteredProducts(newFilter);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -80,7 +105,10 @@ const CategoryPage = () => {
           {/* Sidebar Filters */}
           <aside className="lg:w-72 shrink-0 hidden lg:block">
             <div className="sticky top-20">
-              <CollectionFilters onFilterChange={setFilteredProducts} />
+              <CollectionFilters 
+                onFilterChange={handleFilterChange} 
+                initialValues={filteredProducts}
+              />
             </div>
           </aside>
 
