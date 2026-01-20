@@ -89,13 +89,16 @@ export const useCart = ({
   // Convert API cart items to store format
   const apiCartItems = useMemo(() => {
     if (!isSignedIn || !getCartQuery.data) return [];
+    
+    console.log('Cart data from API:', JSON.stringify(getCartQuery.data, null, 2));
 
     return getCartQuery.data.map((item) => ({
       product: {
-        _id: item.contentId?._id || "",
+        _id: item.contentId?._id,
         title: item.contentId?.title || "",
         description: item.contentId?.description || "",
-        price: 0, // Thêm price từ API nếu có
+        price: item.contentId?.price || 0,
+        images: item.contentId?.images || [],
       } as ContentResponse,
       quantity: item.quantity || 0,
       addedAt: new Date().toISOString(),
