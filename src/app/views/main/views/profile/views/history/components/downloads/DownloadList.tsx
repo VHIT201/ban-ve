@@ -15,21 +15,27 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 import { toast } from "sonner";
 
 import { useGetApiFileDownloadsMyHistory } from "@/api/endpoints/files";
 import { useGetApiFileIdDownload } from "@/api/endpoints/files";
-import type { 
+import type {
   DownloadHistory,
-  GetApiFileDownloadsMyHistory200 
+  GetApiFileDownloadsMyHistory200,
 } from "@/api/models";
 import type { GetApiFileDownloadsMyHistoryParams } from "@/api/models/getApiFileDownloadsMyHistoryParams";
 
 import { extractErrorMessage } from "@/utils/error";
 import { useAuthStore } from "@/stores";
+import baseConfig from "@/configs/base";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { toInteger } from "lodash-es";
+import { getFileIcon } from "@/utils/file";
 
 interface DownloadItem {
   id: string;
@@ -58,7 +64,6 @@ interface DownloadsResponse {
   };
 }
 
-
 const getFileExtension = (filename: string) =>
   filename.split(".").pop()?.toLowerCase() || "";
 
@@ -70,28 +75,6 @@ const formatFileSize = (bytes: number): string => {
   return `${(bytes / Math.pow(k, i)).toFixed(2)} ${sizes[i]}`;
 };
 
-const getFileIcon = (ext: string) => {
-  switch (ext) {
-    case "pdf":
-      return <FileText className="h-5 w-5 text-red-500" />;
-    case "png":
-    case "jpg":
-    case "jpeg":
-    case "webp":
-      return <Image className="h-5 w-5 text-blue-500" />;
-    case "xls":
-    case "xlsx":
-      return <FileText className="h-5 w-5 text-green-600" />;
-    case "doc":
-    case "docx":
-      return <FileText className="h-5 w-5 text-blue-600" />;  
-    case "zip":
-    case "rar":
-      return <FileArchive className="h-5 w-5 text-amber-600" />;
-    default:
-      return <File className="h-5 w-5 text-gray-500" />;
-  }
-};
 const statusLabel = {
   completed: "Hoàn thành",
   failed: "Thất bại",
@@ -102,13 +85,16 @@ interface DownloadItemProps {
   download: DownloadItem;
 }
 
-const DownloadItemComponent: React.FC<DownloadItemProps & { onDownloadSuccess: () => void }> = ({ download, onDownloadSuccess }) => {
+const DownloadItemComponent: React.FC<
+  DownloadItemProps & { onDownloadSuccess: () => void }
+> = ({ download, onDownloadSuccess }) => {
   const downloadQuery = useGetApiFileIdDownload(download.fileId, {
-    query: { 
+    query: {
       enabled: false,
     },
   });
 
+  // Methods
   const handleDownload = async () => {
     const isSignedIn = useAuthStore.getState().isSignedIn;
 
@@ -121,8 +107,13 @@ const DownloadItemComponent: React.FC<DownloadItemProps & { onDownloadSuccess: (
       const res = await downloadQuery.refetch();
 
       if (res.isError) {
-        toast.error(extractErrorMessage(res.error));
-        return;
+        console.error(res.error);
+        if (res.error?.status === 404) {
+          toast.error("Không tìm thấy đơn hàng.");
+          return;
+        }
+
+        throw res.error;
       }
 
       const blob = res.data;
@@ -139,65 +130,89 @@ const DownloadItemComponent: React.FC<DownloadItemProps & { onDownloadSuccess: (
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
-      
-      // Thêm delay nhỏ để đảm bảo file đã được tải xong trước khi gọi refetch
+
       setTimeout(() => {
         onDownloadSuccess();
       }, 500);
+
+      toast.success("Tải xuống thành công.");
     } catch (error) {
-      toast.error("Có lỗi xảy ra khi tải file.");
-      console.error(error);
+      toast.error(extractErrorMessage(error));
     }
   };
 
+  const fileName = download.fileName || "Unnamed download";
+
+  const FileIcon = getFileIcon(download.fileType.toUpperCase());
+
   return (
-    <Card>
-      <CardContent className="p-4 flex justify-between items-start">
-        <div className="flex space-x-4">
-          <div className="p-2 bg-gray-50 rounded-md">
-            {getFileIcon(download.fileType)}
+    <Card
+      key={`${download.id}`}
+      className="overflow-hidden border shadow-none p-0"
+    >
+      <CardContent className="p-4">
+        <div className="flex items-start gap-4">
+          {/* File Icon */}
+          <div className="size-16">
+            <FileIcon />
           </div>
-          <div>
-            <div className="flex items-center space-x-2">
-              <h3 className="font-medium">{download.fileName}</h3>
-              <Badge
-                variant="secondary"
-                className={cn("bg-green-50 text-green-700")}
-              >
-                {statusLabel[download.status]}
-              </Badge>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              {format(download.downloadDate, "HH:mm - dd/MM/yyyy", {
-                locale: vi,
-              })}
-            </p>
-            <div className="flex gap-4 text-sm text-muted-foreground">
-              <span>{download.fileSize}</span>
-              <span>•</span>
-              <span>{download.downloadCount} lần tải</span>
+
+          {/* File Info */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <h3 className="text-sm font-semibold truncate hover:text-blue-600 transition-colors">
+                        {fileName}
+                      </h3>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="max-w-xs break-words">{fileName}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <div className="flex items-center gap-3 mt-1">
+                  <Badge variant="outline" className="text-xs font-normal">
+                    {download.fileType.split("/")[1]?.toUpperCase() ||
+                      download.fileType}
+                  </Badge>
+                  <span className="text-xs text-muted-foreground">
+                    {formatFileSize(toInteger(download.fileSize))}
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-1 shrink-0">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={handleDownload}
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Tải xuống</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </div>
           </div>
         </div>
-
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={handleDownload}
-          disabled={downloadQuery.isFetching}
-        >
-          {downloadQuery.isFetching ? (
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-          ) : (
-            <Download className="h-4 w-4 mr-2" />
-          )}
-          Tải lại
-        </Button>
       </CardContent>
     </Card>
   );
 };
-
 
 const DownloadList = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -230,7 +245,7 @@ const DownloadList = () => {
       fileType: getFileExtension(item.fileId?.name || ""),
       fileSize: formatFileSize(item.fileId?.size || 0),
       downloadDate: new Date(
-        item.lastDownloadedAt || item.createdAt || new Date()
+        item.lastDownloadedAt || item.createdAt || new Date(),
       ),
       downloadCount: item.count || 1,
       status: "completed",
@@ -252,10 +267,8 @@ const DownloadList = () => {
 
   const goToFirstPage = () => setCurrentPage(1);
   const goToLastPage = () => setCurrentPage(totalPages);
-  const goToPreviousPage = () =>
-    setCurrentPage((p) => Math.max(1, p - 1));
-  const goToNextPage = () =>
-    setCurrentPage((p) => Math.min(totalPages, p + 1));
+  const goToPreviousPage = () => setCurrentPage((p) => Math.max(1, p - 1));
+  const goToNextPage = () => setCurrentPage((p) => Math.min(totalPages, p + 1));
 
   const getPageNumbers = () => {
     const pages: number[] = [];
@@ -301,10 +314,10 @@ const DownloadList = () => {
   return (
     <div className="space-y-4">
       {downloads.map((download) => (
-        <DownloadItemComponent 
-          key={download.id} 
-          download={download} 
-          onDownloadSuccess={refetch} 
+        <DownloadItemComponent
+          key={download.id}
+          download={download}
+          onDownloadSuccess={refetch}
         />
       ))}
 

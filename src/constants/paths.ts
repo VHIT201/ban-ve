@@ -19,6 +19,7 @@ export const ROUTE_PATHS = {
         detail: { path: "detail/:id" },
       },
     },
+    downloads: { path: "downloads" },
     detail: { path: "detail/:id" },
     collections: { path: "collections" },
     payment: { path: "payment" },

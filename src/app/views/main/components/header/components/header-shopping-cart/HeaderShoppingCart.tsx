@@ -1,5 +1,4 @@
 import {
-  Trash2,
   ShoppingCartIcon,
   ShoppingBagIcon,
   Loader2,
