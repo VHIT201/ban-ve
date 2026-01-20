@@ -22,8 +22,6 @@ const profileRoutes: RouteObject = {
   },
   loader: () => {
     const isLoginedIn = useAuthStore.getState().isSignedIn;
-    console.log("Is login : ", isLoginedIn);
-
     if (isLoginedIn) {
       return null;
     }

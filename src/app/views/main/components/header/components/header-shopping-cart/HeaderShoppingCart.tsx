@@ -17,9 +17,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-
 import { useCart } from "@/hooks/use-cart";
-import { generateImageRandom } from "@/utils/image";
 import { cn } from "@/utils/ui";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
@@ -49,8 +47,6 @@ const HeaderShoppingCart = ({ sync = true }: HeaderShoppingCartProps) => {
     <Sheet
       open={cart.isOpen}
       onOpenChange={(o) => {
-        console.log("ON OPEN CHANGE");
-
         return o ? cart.openCart() : cart.closeCart();
       }}
       aria-describedby="cart-shopping"
@@ -82,11 +78,11 @@ const HeaderShoppingCart = ({ sync = true }: HeaderShoppingCartProps) => {
           <EmptyCart onClose={cart.closeCart} />
         ) : (
           <>
-            <ScrollArea className="flex-1 px-4 py-3 h-80">
+            <ScrollArea className="flex-1 px-4 py-3">
               <div className="space-y-3">
                 {cart.items.map((item, index) => (
                   <CartItemRow
-                    key={`${item.product._id}-${index}`}
+                    key={item.product._id}
                     item={item}
                     isLoading={cart.isLoading}
                     onUpdate={handleUpdateQuantity}
@@ -125,9 +121,23 @@ const EmptyCart = ({ onClose }: { onClose: () => void }) => (
   </div>
 );
 
+interface CartItemRowProps {
+  item: {
+    product: {
+      _id: string;
+      title?: string;
+      price?: number;
+      images?: string[];
+    };
+    quantity: number;
+  };
+  isLoading: boolean;
+  onUpdate: (id: string, quantity: number) => void;
+  onRemove: (id: string) => void;
+}
+
 const CartItemRow = ({
   item,
-  isUpdating,
   isLoading,
   onUpdate,
   onRemove,
@@ -195,6 +205,32 @@ const CartItemRow = ({
   );
 };
 
+          <span className="w-6 text-center text-sm">{item.quantity}</span>
+
+          <button
+            className="w-7 h-7 border rounded text-sm disabled:opacity-40"
+            disabled={isLoading}
+            onClick={() => onUpdate(item.product._id, item.quantity + 1)}
+          >
+            +
+          </button>
+        </div>
+      </div>
+
+      <button
+        className="text-muted-foreground hover:text-destructive"
+        disabled={isLoading}
+        onClick={() => onRemove(item.product._id)}
+      >
+        {isLoading ? (
+          <Loader2 className="w-4 h-4 animate-spin" />
+        ) : (
+          <XIcon className="w-4 h-4 cursor-pointer" />
+        )}
+      </button>
+    </div>
+  );
+};
 interface CartItemSkeletonProps {
   className?: string;
 }
@@ -202,7 +238,6 @@ interface CartItemSkeletonProps {
 const CartItemSkeleton = ({ className }: CartItemSkeletonProps) => (
   <div className={cn("flex gap-3 pb-4 border-b last:border-b-0", className)}>
     <Skeleton className="w-14 h-14 rounded-md shrink-0" />
-
     <div className="flex-1 space-y-2">
       <Skeleton className="h-4 w-3/4" />
       <Skeleton className="h-3 w-1/4" />
@@ -210,7 +245,19 @@ const CartItemSkeleton = ({ className }: CartItemSkeletonProps) => (
   </div>
 );
 
-const CartFooter = ({ totalItems, totalPrice, onClear, onClose }: any) => {
+interface CartFooterProps {
+  totalItems: number;
+  totalPrice: number;
+  onClear: () => void;
+  onClose: () => void;
+}
+
+const CartFooter = ({
+  totalItems,
+  totalPrice,
+  onClear,
+  onClose,
+}: CartFooterProps) => {
   const navigate = useNavigate();
 
   const handleCheckout = () => {

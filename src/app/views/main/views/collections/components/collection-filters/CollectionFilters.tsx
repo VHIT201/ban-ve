@@ -39,7 +39,7 @@ import { DEFAULT_FILTER_VALUES, FILTER_SCHEMA } from "./lib/constants";
 import { Input } from "@/components/ui/input";
 import { ResponseData } from "@/api/types/base";
 
-const CollectionFilters = ({ onFilterChange }: Props) => {
+const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
   // Hooks
   const [searchParams] = useSearchParams();
 
@@ -52,12 +52,19 @@ const CollectionFilters = ({ onFilterChange }: Props) => {
     resolver: zodResolver(FILTER_SCHEMA),
     defaultValues: {
       searchQuery: searchParams.get("search") || "",
-      categories: [searchParams.get("category") || ""].filter(Boolean),
-      priceRange: [0, 10000000],
-      minPrice: 0,
-      maxPrice: 10000000,
+      categories: initialValues?.categories || [searchParams.get("category") || ""].filter(Boolean),
+      priceRange: initialValues?.priceRange || [0, 10000000],
+      minPrice: initialValues?.minPrice || 0,
+      maxPrice: initialValues?.maxPrice || 10000000,
     },
   });
+
+  // Update form values when initialValues change
+  useEffect(() => {
+    if (initialValues) {
+      form.reset(initialValues);
+    }
+  }, [initialValues, form]);
 
   // Watch form values to detect changes
   const searchQuery = form.watch("searchQuery");
