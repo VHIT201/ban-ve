@@ -3,10 +3,6 @@ import { motion } from "framer-motion";
 import {
   Download,
   FileText,
-  Image,
-  Video,
-  FileArchive,
-  File,
   Clock,
   Package,
   CheckCircle2,
@@ -27,7 +23,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useGetApiOrdersOrderId } from "@/api/endpoints/orders";
 import type { Order } from "@/api/models/order";
 import { formatDate } from "@/utils/date";
-import { getFileIcon } from "@/utils/file";
+import { FileItem } from "./components";
 
 // Helper function to format file size
 const formatFileSize = (bytes?: number): string => {
@@ -224,6 +220,7 @@ export default function DownloadPage() {
     );
   }
 
+  // Memos
   const StatusIcon = getStatusIcon(order.status);
 
   return (
@@ -363,118 +360,12 @@ export default function DownloadPage() {
               <CardContent>
                 <div className="space-y-3">
                   {(order?.items ?? []).map((item, index) => {
-                    const FileIcon = getFileIcon("PDF");
-
                     return (
-                      <motion.div
-                        key={item.contentId || index}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{
-                          delay: 0.6 + index * 0.1,
-                          duration: 0.4,
-                          type: "spring",
-                          stiffness: 100,
-                        }}
-                        whileHover={{
-                          scale: 1.02,
-                          transition: { duration: 0.2 },
-                        }}
-                      >
-                        <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-primary/50">
-                          <CardContent className="p-4">
-                            <div className="flex items-center gap-4">
-                              {/* File Icon */}
-                              <motion.div
-                                className="flex-shrink-0"
-                                whileHover={{ rotate: 5 }}
-                                transition={{ duration: 0.2 }}
-                              >
-                                <div className="size-16 rounded-lg bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors">
-                                  <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    transition={{
-                                      delay: 0.7 + index * 0.1,
-                                      type: "spring",
-                                      stiffness: 200,
-                                    }}
-                                  >
-                                    <FileIcon />
-                                  </motion.div>
-                                </div>
-                              </motion.div>
-
-                              {/* File Info */}
-                              <div className="flex-1 min-w-0">
-                                <motion.h3
-                                  className="font-semibold text-base truncate mb-1"
-                                  initial={{ x: -10, opacity: 0 }}
-                                  animate={{ x: 0, opacity: 1 }}
-                                  transition={{ delay: 0.7 + index * 0.1 }}
-                                >
-                                  Tệp {index + 1}
-                                </motion.h3>
-                                <motion.div
-                                  className="flex items-center gap-3 text-sm text-muted-foreground"
-                                  initial={{ x: -10, opacity: 0 }}
-                                  animate={{ x: 0, opacity: 1 }}
-                                  transition={{ delay: 0.75 + index * 0.1 }}
-                                >
-                                  <span className="flex items-center gap-1">
-                                    <FileText className="h-3 w-3" />
-                                    PDF
-                                  </span>
-                                  <span className="flex items-center gap-1">
-                                    <Package className="h-3 w-3" />
-                                    {formatFileSize(0)}
-                                  </span>
-                                </motion.div>
-                              </div>
-
-                              {/* Download Button */}
-                              <motion.div
-                                className="flex-shrink-0"
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{
-                                  delay: 0.8 + index * 0.1,
-                                  type: "spring",
-                                  stiffness: 200,
-                                }}
-                              >
-                                <motion.div
-                                  whileHover={{ scale: 1.05 }}
-                                  whileTap={{ scale: 0.95 }}
-                                >
-                                  <Button
-                                    size="lg"
-                                    className="gap-2"
-                                    onClick={() => {
-                                      console.log(
-                                        "Downloading:",
-                                        item.contentId,
-                                      );
-                                    }}
-                                  >
-                                    <motion.div
-                                      animate={{ y: [0, 3, 0] }}
-                                      transition={{
-                                        repeat: Infinity,
-                                        duration: 1.5,
-                                        ease: "easeInOut",
-                                      }}
-                                    >
-                                      <Download className="h-4 w-4" />
-                                    </motion.div>
-                                    Tải xuống
-                                  </Button>
-                                </motion.div>
-                              </motion.div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </motion.div>
+                      <FileItem
+                        key={`download-file-item-${item.contentId?._id}-${index}`}
+                        item={item}
+                        index={index}
+                      />
                     );
                   })}
                 </div>
