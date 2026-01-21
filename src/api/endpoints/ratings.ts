@@ -27,15 +27,343 @@ import type {
   DeleteApiRatingsBody,
   GetApiRatings200,
   GetApiRatingsParams,
-  PostApiRatings201,
   PostApiRatingsBody,
-  PutApiRatings200,
   PutApiRatingsBody
 } from '../models';
 
 import { mainInstance } from '../mutator/custom-instance';
 import type { ErrorType , BodyType } from '../mutator/custom-instance';
 
+
+
+
+
+/**
+ * @summary Lấy danh sách tất cả bài viết kèm điểm đánh giá trung bình
+ */
+export const getApiRatingsContentSummary = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<void>(
+      {url: `/api/ratings/content-summary`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiRatingsContentSummaryInfiniteQueryKey = () => {
+    return [
+    'infinite', `/api/ratings/content-summary`
+    ] as const;
+    }
+
+export const getGetApiRatingsContentSummaryQueryKey = () => {
+    return [
+    `/api/ratings/content-summary`
+    ] as const;
+    }
+
+    
+export const getGetApiRatingsContentSummaryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiRatingsContentSummary>>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRatingsContentSummary>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiRatingsContentSummaryInfiniteQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiRatingsContentSummary>>> = ({ signal }) => getApiRatingsContentSummary(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRatingsContentSummary>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiRatingsContentSummaryInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiRatingsContentSummary>>>
+export type GetApiRatingsContentSummaryInfiniteQueryError = ErrorType<unknown>
+
+
+export function useGetApiRatingsContentSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiRatingsContentSummary>>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRatingsContentSummary>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiRatingsContentSummary>>,
+          TError,
+          Awaited<ReturnType<typeof getApiRatingsContentSummary>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiRatingsContentSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiRatingsContentSummary>>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRatingsContentSummary>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiRatingsContentSummary>>,
+          TError,
+          Awaited<ReturnType<typeof getApiRatingsContentSummary>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiRatingsContentSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiRatingsContentSummary>>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRatingsContentSummary>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lấy danh sách tất cả bài viết kèm điểm đánh giá trung bình
+ */
+
+export function useGetApiRatingsContentSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiRatingsContentSummary>>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRatingsContentSummary>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiRatingsContentSummaryInfiniteQueryOptions(options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const getGetApiRatingsContentSummaryQueryOptions = <TData = Awaited<ReturnType<typeof getApiRatingsContentSummary>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRatingsContentSummary>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiRatingsContentSummaryQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiRatingsContentSummary>>> = ({ signal }) => getApiRatingsContentSummary(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiRatingsContentSummary>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiRatingsContentSummaryQueryResult = NonNullable<Awaited<ReturnType<typeof getApiRatingsContentSummary>>>
+export type GetApiRatingsContentSummaryQueryError = ErrorType<unknown>
+
+
+export function useGetApiRatingsContentSummary<TData = Awaited<ReturnType<typeof getApiRatingsContentSummary>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRatingsContentSummary>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiRatingsContentSummary>>,
+          TError,
+          Awaited<ReturnType<typeof getApiRatingsContentSummary>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiRatingsContentSummary<TData = Awaited<ReturnType<typeof getApiRatingsContentSummary>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRatingsContentSummary>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiRatingsContentSummary>>,
+          TError,
+          Awaited<ReturnType<typeof getApiRatingsContentSummary>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiRatingsContentSummary<TData = Awaited<ReturnType<typeof getApiRatingsContentSummary>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRatingsContentSummary>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lấy danh sách tất cả bài viết kèm điểm đánh giá trung bình
+ */
+
+export function useGetApiRatingsContentSummary<TData = Awaited<ReturnType<typeof getApiRatingsContentSummary>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRatingsContentSummary>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiRatingsContentSummaryQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * @summary Lấy thống kê số sao của một bài viết
+ */
+export const getApiRatingsStatsContentId = (
+    contentId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<void>(
+      {url: `/api/ratings/stats/${contentId}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiRatingsStatsContentIdInfiniteQueryKey = (contentId?: string,) => {
+    return [
+    'infinite', `/api/ratings/stats/${contentId}`
+    ] as const;
+    }
+
+export const getGetApiRatingsStatsContentIdQueryKey = (contentId?: string,) => {
+    return [
+    `/api/ratings/stats/${contentId}`
+    ] as const;
+    }
+
+    
+export const getGetApiRatingsStatsContentIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>>, TError = ErrorType<unknown>>(contentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiRatingsStatsContentIdInfiniteQueryKey(contentId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>> = ({ signal }) => getApiRatingsStatsContentId(contentId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(contentId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiRatingsStatsContentIdInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>>
+export type GetApiRatingsStatsContentIdInfiniteQueryError = ErrorType<unknown>
+
+
+export function useGetApiRatingsStatsContentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>>, TError = ErrorType<unknown>>(
+ contentId: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiRatingsStatsContentId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiRatingsStatsContentId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiRatingsStatsContentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>>, TError = ErrorType<unknown>>(
+ contentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiRatingsStatsContentId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiRatingsStatsContentId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiRatingsStatsContentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>>, TError = ErrorType<unknown>>(
+ contentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lấy thống kê số sao của một bài viết
+ */
+
+export function useGetApiRatingsStatsContentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>>, TError = ErrorType<unknown>>(
+ contentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiRatingsStatsContentIdInfiniteQueryOptions(contentId,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const getGetApiRatingsStatsContentIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiRatingsStatsContentId>>, TError = ErrorType<unknown>>(contentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiRatingsStatsContentIdQueryKey(contentId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>> = ({ signal }) => getApiRatingsStatsContentId(contentId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(contentId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiRatingsStatsContentIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>>
+export type GetApiRatingsStatsContentIdQueryError = ErrorType<unknown>
+
+
+export function useGetApiRatingsStatsContentId<TData = Awaited<ReturnType<typeof getApiRatingsStatsContentId>>, TError = ErrorType<unknown>>(
+ contentId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiRatingsStatsContentId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiRatingsStatsContentId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiRatingsStatsContentId<TData = Awaited<ReturnType<typeof getApiRatingsStatsContentId>>, TError = ErrorType<unknown>>(
+ contentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiRatingsStatsContentId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiRatingsStatsContentId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiRatingsStatsContentId<TData = Awaited<ReturnType<typeof getApiRatingsStatsContentId>>, TError = ErrorType<unknown>>(
+ contentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lấy thống kê số sao của một bài viết
+ */
+
+export function useGetApiRatingsStatsContentId<TData = Awaited<ReturnType<typeof getApiRatingsStatsContentId>>, TError = ErrorType<unknown>>(
+ contentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRatingsStatsContentId>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiRatingsStatsContentIdQueryOptions(contentId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
 
 
 
@@ -208,7 +536,7 @@ export function useGetApiRatings<TData = Awaited<ReturnType<typeof getApiRatings
 
 
 /**
- * Tạo đánh giá mới cho một nội dung. Mỗi email chỉ được đánh giá một nội dung một lần
+ * Tạo đánh giá mới cho một nội dung. Nếu đã đăng nhập, email được lấy tự động. Nếu chưa đăng nhập, phải cung cấp email. Mỗi email chỉ được đánh giá một nội dung một lần.
  * @summary Tạo đánh giá mới
  */
 export const postApiRatings = (
@@ -217,7 +545,7 @@ export const postApiRatings = (
 ) => {
       
       
-      return mainInstance<PostApiRatings201>(
+      return mainInstance<void>(
       {url: `/api/ratings`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: postApiRatingsBody, signal
@@ -273,7 +601,7 @@ export const usePostApiRatings = <TError = ErrorType<void>,
       return useMutation(mutationOptions, queryClient);
     }
     /**
- * Cập nhật số sao của một đánh giá. Chỉ được cập nhật nếu email khớp
+ * Cập nhật số sao của một đánh giá. Nếu đã đăng nhập, email được lấy tự động. Nếu chưa đăng nhập, phải cung cấp email khớp với đánh giá.
  * @summary Cập nhật đánh giá
  */
 export const putApiRatings = (
@@ -281,7 +609,7 @@ export const putApiRatings = (
  ) => {
       
       
-      return mainInstance<PutApiRatings200>(
+      return mainInstance<void>(
       {url: `/api/ratings`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
       data: putApiRatingsBody
@@ -337,7 +665,7 @@ export const usePutApiRatings = <TError = ErrorType<void>,
       return useMutation(mutationOptions, queryClient);
     }
     /**
- * Xoá một đánh giá. Chỉ được xoá nếu email khớp
+ * Xoá một đánh giá. Nếu đã đăng nhập, email được lấy tự động. Nếu chưa đăng nhập, phải cung cấp email khớp với đánh giá.
  * @summary Xoá đánh giá
  */
 export const deleteApiRatings = (
