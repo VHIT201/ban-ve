@@ -25,21 +25,13 @@ import type { Order } from "@/api/models/order";
 import { formatDate } from "@/utils/date";
 import { FileItem } from "./components";
 
-// Helper function to format file size
-const formatFileSize = (bytes?: number): string => {
-  if (!bytes) return "0 B";
-  const sizes = ["B", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${sizes[i]}`;
-};
-
 // Helper function to get status badge variant
 const getStatusVariant = (
   status?: string,
-): "default" | "secondary" | "destructive" | "outline" => {
+): "default" | "secondary" | "destructive" | "outline" | "success" => {
   switch (status) {
     case "completed":
-      return "default";
+      return "success";
     case "pending":
       return "secondary";
     case "cancelled":
@@ -60,6 +52,19 @@ const getStatusIcon = (status?: string) => {
       return XCircle;
     default:
       return AlertCircle;
+  }
+};
+
+const getStatusLabel = (status?: string) => {
+  switch (status) {
+    case "completed":
+      return "Hoàn thành";
+    case "pending":
+      return "Đang chờ xử lý";
+    case "cancelled":
+      return "Đã hủy";
+    default:
+      return "Không xác định";
   }
 };
 
@@ -278,7 +283,7 @@ export default function DownloadPage() {
               <CardContent className="space-y-4">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">
-                    Order Code
+                    Mã đơn hàng
                   </p>
                   <p className="font-mono font-semibold text-lg">
                     {order.orderCode}
@@ -286,27 +291,27 @@ export default function DownloadPage() {
                 </div>
 
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">
-                    Purchase Date
-                  </p>
+                  <p className="text-sm text-muted-foreground mb-1">Ngày mua</p>
                   <p className="font-medium">{formatDate(order.createdAt!)}</p>
                 </div>
 
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Status</p>
+                  <p className="text-sm text-muted-foreground mb-1">
+                    Trạng thái
+                  </p>
                   <Badge
                     variant={getStatusVariant(order.status)}
                     className="gap-1"
                   >
                     <StatusIcon className="h-3 w-3" />
-                    {order.status}
+                    {getStatusLabel(order.status)}
                   </Badge>
                 </div>
 
                 {order.totalAmount && (
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">
-                      Total Amount
+                      Tổng tiền
                     </p>
                     <p className="font-semibold text-lg">
                       {new Intl.NumberFormat("vi-VN", {
@@ -363,6 +368,7 @@ export default function DownloadPage() {
                     return (
                       <FileItem
                         key={`download-file-item-${item.contentId?._id}-${index}`}
+                        orderId={order._id!}
                         item={item}
                         index={index}
                       />

@@ -99,6 +99,7 @@ export * from './getApiFileDownloadsMyHistory200';
 export * from './getApiFileDownloadsMyHistory200Data';
 export * from './getApiFileDownloadsMyHistory200DataPagination';
 export * from './getApiFileDownloadsMyHistoryParams';
+export * from './getApiFileIdDownloadParams';
 export * from './getApiOrders200';
 export * from './getApiOrdersOrderId200';
 export * from './getApiOrdersOrderIdParams';

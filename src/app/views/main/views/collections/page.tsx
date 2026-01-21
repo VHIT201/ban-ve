@@ -41,7 +41,7 @@ const mockCategories: Category[] = [
 const CategoryPage = () => {
   // Hooks
   const [searchParams] = useSearchParams();
-  
+
   // States
   const [filteredProducts, setFilteredProducts] = useState<FilterFormValues>(
     DEFAULT_FILTER_VALUES,
@@ -49,14 +49,14 @@ const CategoryPage = () => {
 
   // Update filter when URL changes
   useEffect(() => {
-    const categoryId = searchParams.get('category');
+    const categoryId = searchParams.get("category");
     if (categoryId) {
-      setFilteredProducts(prev => ({
+      setFilteredProducts((prev) => ({
         ...prev,
         categories: [categoryId],
       }));
     } else {
-      setFilteredProducts(prev => ({
+      setFilteredProducts((prev) => ({
         ...prev,
         categories: [],
       }));
@@ -105,8 +105,8 @@ const CategoryPage = () => {
           {/* Sidebar Filters */}
           <aside className="lg:w-[350px] shrink-0 hidden lg:block">
             <div className="sticky top-20">
-              <CollectionFilters 
-                onFilterChange={handleFilterChange} 
+              <CollectionFilters
+                onFilterChange={handleFilterChange}
                 initialValues={filteredProducts}
               />
             </div>

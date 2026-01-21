@@ -52,7 +52,9 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
     resolver: zodResolver(FILTER_SCHEMA),
     defaultValues: {
       searchQuery: searchParams.get("search") || "",
-      categories: initialValues?.categories || [searchParams.get("category") || ""].filter(Boolean),
+      categories:
+        initialValues?.categories ||
+        [searchParams.get("category") || ""].filter(Boolean),
       priceRange: initialValues?.priceRange || [0, 10000000],
       minPrice: initialValues?.minPrice || 0,
       maxPrice: initialValues?.maxPrice || 10000000,

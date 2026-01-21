@@ -84,7 +84,7 @@ const BestSellingData = () => {
             >
           ).data,
       },
-    }
+    },
   ) as UseQueryResult<GetApiContentStatisticsPurchaseRanking200DataItem[]>;
 
   const bestSellingProducts =
@@ -136,7 +136,7 @@ const BestSellingData = () => {
                   {/* Product Details */}
                   <div className="flex flex-col flex-1 pt-2">
                     {/* Title */}
-                    <h3 className="text-base font-semibold text-foreground line-clamp-2 mb-2">
+                    <h3 className="text-base font-semibold text-foreground line-clamp-1 mb-2">
                       {product.title}
                     </h3>
                     {/* Price - Orange accent */}
@@ -147,7 +147,7 @@ const BestSellingData = () => {
                     <Button
                       onClick={() =>
                         navigate(
-                          BASE_PATHS.app.detail.path.replace(":id", product.id)
+                          BASE_PATHS.app.detail.path.replace(":id", product.id),
                         )
                       }
                       className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 transition-colors duration-200"
@@ -165,7 +165,7 @@ const BestSellingData = () => {
             "absolute left-4 top-1/2 -translate-y-1/2 z-20 rounded-none",
             "bg-transparent/20 border-white/40 text-white backdrop-blur-sm",
             "hover:bg-white/30 hover:border-white/60",
-            "transition-all duration-200 w-10 h-10 md:w-12 md:h-12"
+            "transition-all duration-200 w-10 h-10 md:w-12 md:h-12",
           )}
         >
           <ChevronLeftIcon className="w-5 h-5 md:w-6 md:h-6" />
@@ -176,7 +176,7 @@ const BestSellingData = () => {
             "absolute right-4 top-1/2 -translate-y-1/2 z-20 rounded-none",
             "bg-transparent/20 border-white/40 text-white backdrop-blur-sm",
             "hover:bg-white/30 hover:border-white/60",
-            "transition-all duration-200 w-10 h-10 md:w-12 md:h-12"
+            "transition-all duration-200 w-10 h-10 md:w-12 md:h-12",
           )}
         >
           <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />

@@ -58,3 +58,14 @@ export const formatBytes = (bytes: number, decimals = 2): string => {
 
   return Number.parseFloat((bytes / k ** i).toFixed(dm)) + sizes[i];
 };
+
+export function downloadFile(blob: Blob, title: string) {
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = title;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  window.URL.revokeObjectURL(url);
+}

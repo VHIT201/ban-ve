@@ -1,6 +1,7 @@
 import { isAxiosError } from "axios";
 
 export const extractErrorMessage = (error: unknown) => {
+  console.error("Extracting error message from:", error);
   if (typeof error === "string") {
     return error;
   }
@@ -10,6 +11,8 @@ export const extractErrorMessage = (error: unknown) => {
   if (axiosErrorResponse?.status === 500) {
     return "Đã có lỗi xảy ra trên máy chủ, vui lòng thử lại sau";
   }
+
+  console.error("Extracted error response:", axiosErrorResponse);
 
   const errorMessage =
     axiosErrorResponse?.data.message ??

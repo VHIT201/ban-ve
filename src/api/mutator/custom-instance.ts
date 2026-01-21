@@ -32,7 +32,7 @@ let failedQueue: Array<{
 
 const processQueue = (
   error: AxiosError | null,
-  token: string | null = null
+  token: string | null = null,
 ): void => {
   failedQueue.forEach((prom) => {
     if (error) {
@@ -52,7 +52,7 @@ MAIN_AXIOS_INSTANCE.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 MAIN_AXIOS_INSTANCE.interceptors.response.use(
@@ -133,12 +133,12 @@ MAIN_AXIOS_INSTANCE.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export const mainInstance = <T>(
   config: AxiosRequestConfig,
-  options?: AxiosRequestConfig
+  options?: AxiosRequestConfig,
 ): Promise<T> => {
   const source = Axios.CancelToken.source();
   const promise = MAIN_AXIOS_INSTANCE({
@@ -162,7 +162,7 @@ export const FILE_UPLOAD_AXIOS_INSTANCE = Axios.create({
 
 export const fileUploadServiceInstance = async <T>(
   config: any,
-  options?: any
+  options?: any,
 ): Promise<T> => {
   const response = await FILE_UPLOAD_AXIOS_INSTANCE({
     ...config,

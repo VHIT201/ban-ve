@@ -21,6 +21,30 @@ import {
 } from "@/components/ui/tooltip";
 import { useCart } from "@/hooks/use-cart";
 import baseConfig from "@/configs/base";
+import { motion, AnimatePresence } from "framer-motion";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 0 },
+  visible: {
+    opacity: 1,
+    y: -20,
+    transition: {
+      opacity: { duration: 0.4 },
+      y: { duration: 0.3, delay: 0.2 }, // Delay slide lên sau fade
+    },
+  },
+};
 
 interface Props {
   product: ContentProduct;
@@ -74,21 +98,97 @@ const BlueprintCard: FC<Props> = (props) => {
           variant: "error",
         };
 
+  const index = 0;
+
   return (
-    <Card
+    <motion.div
+      whileHover={{
+        y: -8,
+        scale: 1.05,
+        rotateY: 5,
+        rotateX: 2,
+        transition: {
+          type: "spring",
+          stiffness: 300,
+          damping: 15,
+        },
+      }}
+      // Hiệu ứng xuất hiện đặc biệt
+      initial={{
+        opacity: 0,
+        y: 60,
+        scale: 0.8,
+        rotateX: -15,
+        rotateY: 10,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        rotateX: 0,
+        rotateY: 0,
+        transition: {
+          opacity: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+          y: {
+            type: "spring",
+            stiffness: 100,
+            damping: 15,
+            delay: index * 0.1 + 0.2, // Stagger theo index
+          },
+          scale: {
+            type: "spring",
+            stiffness: 200,
+            damping: 20,
+            delay: index * 0.1 + 0.1,
+          },
+          rotateX: {
+            duration: 0.8,
+            ease: "backOut",
+            delay: index * 0.1,
+          },
+          rotateY: {
+            duration: 0.8,
+            ease: "backOut",
+            delay: index * 0.1 + 0.05,
+          },
+        },
+      }}
+      // Hiệu ứng khi click
+      whileTap={{
+        scale: 0.98,
+        rotateY: -2,
+        transition: { duration: 0.1 },
+      }}
+      exit={{
+        opacity: 0,
+        scale: 0.9,
+        y: -20,
+        transition: { duration: 0.3 },
+      }}
       onClick={handleViewDetail}
       className={cn(
-        "group cursor-pointer overflow-hidden border-none shadow-none bg-transparent transition-all duration-500 hover:-translate-y-1",
+        "group cursor-pointer overflow-hidden border-none shadow-none bg-transparent",
+        "transform-gpu", // Để tối ưu hiệu ứng 3D
         className,
       )}
+      style={{
+        transformStyle: "preserve-3d",
+        perspective: "1000px",
+      }}
     >
       <div className="relative aspect-[1/1] overflow-hidden bg-[#F5F5F3]">
-        <Image
-          src={productImage ?? generateImageRandom()}
-          alt={title}
-          wrapperClassName="h-full"
-          className="object-cover h-full w-full transition-transform duration-1000 ease-out group-hover:scale-105"
-        />
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="h-full"
+        >
+          <Image
+            src={productImage ?? generateImageRandom()}
+            alt={title}
+            wrapperClassName="h-full"
+            className="object-cover h-full w-full"
+          />
+        </motion.div>
         <div className="absolute top-4 left-4 flex flex-wrap gap-2">
           <Badge
             variant="outline"
@@ -126,19 +226,32 @@ const BlueprintCard: FC<Props> = (props) => {
             </Tooltip>
           )}
         </div>
-        <div className="absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/5" />
-        <div className="absolute bottom-4 left-4 right-4 translate-y-4 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+        <motion.div
+          className="absolute inset-0 bg-black/0 group-hover:bg-black/5"
+          initial={{ backgroundColor: "rgba(0,0,0,0)" }}
+          whileHover={{ backgroundColor: "rgba(0,0,0,0.05)" }}
+          transition={{ duration: 0.4 }}
+        />
+        <AnimatePresence>
           {product.status && (
-            <Badge
-              variant={statusName.variant as "success" | "error"}
-              className={cn(
-                "text-[10px] font-bold uppercase tracking-[0.1em] border-none py-1 px-2.5",
-              )}
+            <motion.div
+              className="absolute bottom-4 left-4 right-4"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 16 }}
+              transition={{ duration: 0.4 }}
             >
-              {statusName.name}
-            </Badge>
+              <Badge
+                variant={statusName.variant as "success" | "error"}
+                className={cn(
+                  "text-[10px] font-bold uppercase tracking-[0.1em] border-none py-1 px-2.5",
+                )}
+              >
+                {statusName.name}
+              </Badge>
+            </motion.div>
           )}
-        </div>
+        </AnimatePresence>
       </div>
 
       <CardContent className="pt-6 px-0 pb-2">
@@ -179,7 +292,7 @@ const BlueprintCard: FC<Props> = (props) => {
           {isProductInCart ? "Đã có trong giỏ" : "Thêm vào giỏ hàng"}
         </Button>
       </CardFooter>
-    </Card>
+    </motion.div>
   );
 };
 
