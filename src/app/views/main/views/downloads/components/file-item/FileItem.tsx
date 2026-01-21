@@ -1,48 +1,73 @@
-import { useGetApiFileId } from "@/api/endpoints/files";
+import {
+  useGetApiFileId,
+  useGetApiFileIdDownload,
+} from "@/api/endpoints/files";
 import { OrderItem } from "@/api/models";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { extractErrorMessage } from "@/utils/error";
-import { getFileIcon } from "@/utils/file";
+import { downloadFile, getFileIcon } from "@/utils/file";
 import { motion } from "framer-motion";
 import { DownloadIcon, FileText } from "lucide-react";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface Props {
+  orderId: string;
   item: OrderItem;
   index: number;
 }
 
-const FileItem: FC<Props> = ({ item, index }) => {
+const FileItem: FC<Props> = ({ orderId, item, index }) => {
+  // States
+  const [isError, setIsError] = useState<boolean>(false);
+
   // Mutations
-  const downloadFileMutation = useGetApiFileId(item.contentId?._id!, {
-    query: {
-      enabled: false,
+  const downloadFileMutation = useGetApiFileIdDownload(
+    orderId!,
+    {
+      fileId: item.contentId?.file_id!,
     },
-  });
+    {
+      query: {
+        enabled: false,
+      },
+    },
+  );
 
   // Methods
-  const handleDownloadFile = async (fileUrl?: string) => {
+  const handleDownloadFile = async () => {
     try {
       const res = await downloadFileMutation.refetch();
 
       if (res.error) {
         toast.error("Tải tệp thất bại. Vui lòng thử lại.");
+        setIsError(true);
         return;
       }
 
-      const fileData = res.data?.data;
-      if (!fileData || !fileData.url) {
+      if (!res.data) {
         toast.error("Tệp không tồn tại hoặc không thể tải xuống.");
+        setIsError(true);
         return;
       }
+
+      downloadFile(res.data, item.contentId?.title || "downloaded-file");
+      toast.success("Tải file thành công");
+      setIsError(false);
     } catch (error) {
+      setIsError(true);
       toast.error(
         extractErrorMessage(error) || "Tải tệp thất bại. Vui lòng thử lại.",
       );
     }
   };
+
+  useEffect(() => {
+    if (isError) {
+      toast.error("Bạn đã đạt giới hạn tải xuống (5 lần) cho đơn hàng này.");
+    }
+  }, [isError]);
 
   // Memos
   const FileIcon = getFileIcon("PDF");
@@ -142,9 +167,9 @@ const FileItem: FC<Props> = ({ item, index }) => {
                 <Button
                   size="lg"
                   className="gap-2"
-                  onClick={() => {
-                    console.log("Downloading:", item.contentId);
-                  }}
+                  disabled={isError}
+                  onClick={handleDownloadFile}
+                  loading={downloadFileMutation.isFetching}
                 >
                   <motion.div
                     animate={{ y: [0, 3, 0] }}

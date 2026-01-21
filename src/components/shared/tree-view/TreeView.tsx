@@ -15,7 +15,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { X, Share2 } from "lucide-react";
+import { X } from "lucide-react";
 import {
   HoverCard,
   HoverCardContent,
@@ -261,18 +261,18 @@ function TreeItem({
     onSelect(newSelection);
   };
 
-  const handleAction = (action: string) => {
-    if (onAction) {
-      // Get all selected items, or just this item if none selected
-      const selectedItems =
-        selectedIds.size > 0
-          ? allItems
-              .flatMap((item) => getAllDescendants(item))
-              .filter((item) => selectedIds.has(item.id))
-          : [item];
-      onAction(action, selectedItems);
-    }
-  };
+  // const handleAction = (action: string) => {
+  //   if (onAction) {
+  //     // Get all selected items, or just this item if none selected
+  //     const selectedItems =
+  //       selectedIds.size > 0
+  //         ? allItems
+  //             .flatMap((item) => getAllDescendants(item))
+  //             .filter((item) => selectedIds.has(item.id))
+  //         : [item];
+  //     onAction(action, selectedItems);
+  //   }
+  // };
 
   // Helper function to get all descendants of an item (including the item itself)
   const getAllDescendants = (item: TreeViewItem): TreeViewItem[] => {
@@ -619,8 +619,6 @@ export default function TreeView({
   onCheckChange,
   menuItems,
 }: TreeViewProps) {
-  console.log("TreeView data", data);
-
   const [currentMousePos, setCurrentMousePos] = useState<number>(0);
   const [dragStart, setDragStart] = useState<number | null>(null);
   const [dragStartPosition, setDragStartPosition] = useState<{
@@ -636,7 +634,7 @@ export default function TreeView({
   const lastSelectedId = useRef<string | null>(null);
   const treeRef = useRef<HTMLDivElement>(null);
 
-  const DRAG_THRESHOLD = 10; // pixels
+  // const DRAG_THRESHOLD = 10; // pixels
 
   // Create a map of all items by ID
   const itemMap = useMemo(() => buildItemMap(data), [data]);
@@ -791,81 +789,81 @@ export default function TreeView({
     setDragStartPosition({ x: e.clientX, y: e.clientY });
   }, []);
 
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent) => {
-      // Check if primary button is still held down
-      if (!(e.buttons & 1)) {
-        setIsDragging(false);
-        setDragStart(null);
-        setDragStartPosition(null);
-        return;
-      }
+  // const handleMouseMove = useCallback(
+  //   (e: React.MouseEvent) => {
+  //     // Check if primary button is still held down
+  //     if (!(e.buttons & 1)) {
+  //       setIsDragging(false);
+  //       setDragStart(null);
+  //       setDragStartPosition(null);
+  //       return;
+  //     }
 
-      // If we haven't registered a potential drag start position, ignore
-      if (!dragStartPosition) return;
+  //     // If we haven't registered a potential drag start position, ignore
+  //     if (!dragStartPosition) return;
 
-      // Calculate distance moved
-      const deltaX = e.clientX - dragStartPosition.x;
-      const deltaY = e.clientY - dragStartPosition.y;
-      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+  //     // Calculate distance moved
+  //     const deltaX = e.clientX - dragStartPosition.x;
+  //     const deltaY = e.clientY - dragStartPosition.y;
+  //     const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-      // If we haven't started dragging yet, check if we should start
-      if (!isDragging) {
-        if (distance > DRAG_THRESHOLD) {
-          setIsDragging(true);
-          setDragStart(dragStartPosition.y);
+  //     // If we haven't started dragging yet, check if we should start
+  //     if (!isDragging) {
+  //       if (distance > DRAG_THRESHOLD) {
+  //         setIsDragging(true);
+  //         setDragStart(dragStartPosition.y);
 
-          // Clear selection if not holding shift/ctrl
-          if (!e.shiftKey && !e.ctrlKey) {
-            setSelectedIds(new Set());
-            lastSelectedId.current = null;
-          }
-        }
-        return;
-      }
+  //         // Clear selection if not holding shift/ctrl
+  //         if (!e.shiftKey && !e.ctrlKey) {
+  //           setSelectedIds(new Set());
+  //           lastSelectedId.current = null;
+  //         }
+  //       }
+  //       return;
+  //     }
 
-      // Rest of the existing drag logic
-      if (!dragRef.current) return;
+  //     // Rest of the existing drag logic
+  //     if (!dragRef.current) return;
 
-      const items = Array.from(
-        dragRef.current.querySelectorAll("[data-tree-item]"),
-      ) as HTMLElement[];
+  //     const items = Array.from(
+  //       dragRef.current.querySelectorAll("[data-tree-item]"),
+  //     ) as HTMLElement[];
 
-      const startY = dragStart;
-      const currentY = e.clientY;
-      const [selectionStart, selectionEnd] = [
-        Math.min(startY || 0, currentY),
-        Math.max(startY || 0, currentY),
-      ];
+  //     const startY = dragStart;
+  //     const currentY = e.clientY;
+  //     const [selectionStart, selectionEnd] = [
+  //       Math.min(startY || 0, currentY),
+  //       Math.max(startY || 0, currentY),
+  //     ];
 
-      const newSelection = new Set(
-        e.shiftKey || e.ctrlKey ? Array.from(selectedIds) : [],
-      );
+  //     const newSelection = new Set(
+  //       e.shiftKey || e.ctrlKey ? Array.from(selectedIds) : [],
+  //     );
 
-      items.forEach((item) => {
-        const rect = item.getBoundingClientRect();
-        const itemTop = rect.top;
-        const itemBottom = rect.top + rect.height;
+  //     items.forEach((item) => {
+  //       const rect = item.getBoundingClientRect();
+  //       const itemTop = rect.top;
+  //       const itemBottom = rect.top + rect.height;
 
-        if (itemBottom >= selectionStart && itemTop <= selectionEnd) {
-          const id = item.getAttribute("data-id");
-          const isClosedFolder =
-            item.getAttribute("data-folder-closed") === "true";
-          const parentFolderClosed = item.closest(
-            '[data-folder-closed="true"]',
-          );
+  //       if (itemBottom >= selectionStart && itemTop <= selectionEnd) {
+  //         const id = item.getAttribute("data-id");
+  //         const isClosedFolder =
+  //           item.getAttribute("data-folder-closed") === "true";
+  //         const parentFolderClosed = item.closest(
+  //           '[data-folder-closed="true"]',
+  //         );
 
-          if (id && (isClosedFolder || !parentFolderClosed)) {
-            newSelection.add(id);
-          }
-        }
-      });
+  //         if (id && (isClosedFolder || !parentFolderClosed)) {
+  //           newSelection.add(id);
+  //         }
+  //       }
+  //     });
 
-      setSelectedIds(newSelection);
-      setCurrentMousePos(e.clientY);
-    },
-    [isDragging, dragStart, selectedIds, dragStartPosition],
-  );
+  //     setSelectedIds(newSelection);
+  //     setCurrentMousePos(e.clientY);
+  //   },
+  //   [isDragging, dragStart, selectedIds, dragStartPosition],
+  // );
 
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);

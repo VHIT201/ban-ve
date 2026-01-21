@@ -44,6 +44,7 @@ import { useShallow } from "zustand/shallow";
 import EmailDialog from "@/components/shared/email-dialog";
 import { extractErrorMessage } from "@/utils/error";
 import { navigate } from "next/dist/client/components/segment-cache/navigation";
+import { Separator } from "@/components/ui/separator";
 
 const BlueprintDetailView: FC<Props> = (props) => {
   // Props
@@ -275,24 +276,10 @@ const BlueprintDetailView: FC<Props> = (props) => {
                   }).format(content.price)
                 : "Liên hệ"}
             </div>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <StarIcon
-                    key={star}
-                    className={`w-4 h-4 ${
-                      star <= rating
-                        ? "text-yellow-400 fill-yellow-400"
-                        : "text-white/20"
-                    }`}
-                  />
-                ))}
-              </div>
-              <span className="text-sm text-white/60">
-                {rating > 0 ? `${rating}/5` : "Chưa có đánh giá"}
-              </span>
-            </div>
           </div>
+          <h6 className="text-white/50 text-md leading-relaxed">
+            {content.description || "Không có mô tả cho sản phẩm này."}
+          </h6>
           {/* Quick Info */}
           <div className="grid grid-cols-2 gap-4 py-6 border-b border-white/10">
             <div className="space-y-1.5">
@@ -378,6 +365,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
       </div>
 
       <ReportDialog
+        contentId={content._id!}
         open={openReportDialog}
         onOpenChange={setOpenReportDialog}
       />

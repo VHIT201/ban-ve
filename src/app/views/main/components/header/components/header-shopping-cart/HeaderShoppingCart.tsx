@@ -78,7 +78,7 @@ const HeaderShoppingCart = ({ sync = true }: HeaderShoppingCartProps) => {
           <EmptyCart onClose={cart.closeCart} />
         ) : (
           <>
-            <ScrollArea className="flex-1 px-4 py-3">
+            <ScrollArea className="flex-1 px-4 py-3 h-[420px]">
               <div className="space-y-3">
                 {cart.items.map((item, index) => (
                   <CartItemRow

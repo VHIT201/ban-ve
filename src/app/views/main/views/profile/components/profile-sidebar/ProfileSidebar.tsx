@@ -9,6 +9,7 @@ import { usePutApiAuthUpdateProfile } from "@/api/endpoints/auth";
 import { useUploadMedia } from "@/hooks";
 import { toast } from "sonner";
 import { extractErrorMessage } from "@/utils/error";
+import baseConfig from "@/configs/base";
 
 const ProfileSidebar = () => {
   // Stores
@@ -66,7 +67,7 @@ const ProfileSidebar = () => {
         {/* User Profile Header */}
         <div className="text-center p-6 border-b border-gray-100">
           <UploadAvatarDialog
-            avatarUrl={profileStore.avatar}
+            avatarUrl={`${baseConfig.mediaDomain}/${profileStore.avatar}`}
             avatarAlt={profileStore.username!}
             onAvatarChange={handleChangeAvatar}
             className="mb-6"

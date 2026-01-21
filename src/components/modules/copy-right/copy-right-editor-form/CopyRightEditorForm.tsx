@@ -49,18 +49,7 @@ import { EnvelopeIcon } from "@phosphor-icons/react";
 
 // Schema validation
 const copyrightReportFormSchema = z.object({
-  contentId: z
-    .string()
-    .min(1, "Vui lòng nhập ID nội dung bị báo cáo")
-    .length(24, "ID nội dung không hợp lệ (phải có 24 ký tự)"),
   email: z.string().email("Email không hợp lệ"),
-  reportedContentId: z
-    .string()
-    .optional()
-    .refine(
-      (val) => !val || val.length === 0 || val.length === 24,
-      "ID nội dung gốc không hợp lệ (phải có 24 ký tự)"
-    ),
   violationType: z.nativeEnum(CopyrightReportViolationType, {
     required_error: "Vui lòng chọn loại vi phạm",
     invalid_type_error: "Loại vi phạm không hợp lệ",
@@ -154,8 +143,6 @@ const CopyRightEditorForm = ({
   useEffect(() => {
     if (defaultValues) {
       form.reset({
-        contentId: defaultValues.contentId || "",
-        reportedContentId: defaultValues.reportedContentId || "",
         violationType:
           defaultValues.violationType || CopyrightReportViolationType.copyright,
         description: defaultValues.description || "",
@@ -169,7 +156,7 @@ const CopyRightEditorForm = ({
     () =>
       violationTypeOptions.find((opt) => opt.value === selectedViolationType) ||
       violationTypeOptions[0],
-    [selectedViolationType]
+    [selectedViolationType],
   );
 
   // Add evidence URL
@@ -199,7 +186,7 @@ const CopyRightEditorForm = ({
     form.setValue(
       "evidence",
       currentEvidence.filter((_, i) => i !== index),
-      { shouldValidate: true }
+      { shouldValidate: true },
     );
   };
 
@@ -253,7 +240,7 @@ const CopyRightEditorForm = ({
               )}
 
               {/* Content Information Section */}
-              <div className="space-y-6">
+              <div>
                 <div className="flex items-center gap-2">
                   <div className="w-1 h-6 bg-red-500 "></div>
                   <h3 className="text-base font-medium text-gray-900">
@@ -263,7 +250,7 @@ const CopyRightEditorForm = ({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Content ID */}
-                  <FormField
+                  {/* <FormField
                     control={form.control}
                     name="contentId"
                     render={({ field }) => (
@@ -303,10 +290,10 @@ const CopyRightEditorForm = ({
                         <FormMessage />
                       </FormItem>
                     )}
-                  />
+                  /> */}
 
                   {/* Reported Content ID (Optional) */}
-                  <FormField
+                  {/* <FormField
                     control={form.control}
                     name="reportedContentId"
                     render={({ field }) => (
@@ -346,7 +333,7 @@ const CopyRightEditorForm = ({
                         <FormMessage />
                       </FormItem>
                     )}
-                  />
+                  /> */}
                 </div>
 
                 {/* Contact Email */}
@@ -354,7 +341,7 @@ const CopyRightEditorForm = ({
                   control={form.control}
                   name="email"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="mt-2">
                       <FormLabel className="text-sm font-medium text-gray-700">
                         Email liên hệ
                       </FormLabel>
@@ -511,10 +498,10 @@ const CopyRightEditorForm = ({
                                 field.value.length < 20
                                   ? "destructive"
                                   : field.value.length > 2000
-                                  ? "destructive"
-                                  : field.value.length > 1500
-                                  ? "secondary"
-                                  : "outline"
+                                    ? "destructive"
+                                    : field.value.length > 1500
+                                      ? "secondary"
+                                      : "outline"
                               }
                               className="text-xs"
                             >
@@ -693,8 +680,8 @@ const CopyRightEditorForm = ({
                             evidenceList.length === 0
                               ? "destructive"
                               : evidenceList.length > 10
-                              ? "destructive"
-                              : "outline"
+                                ? "destructive"
+                                : "outline"
                           }
                           className="text-xs"
                         >

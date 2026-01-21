@@ -34,12 +34,14 @@ const CollectionList: FC<Props> = (props) => {
   // Hooks
   const navigate = useNavigate();
 
+  console.log("CollectionList render", props.filter);
+
   // States
   const { filter, onClearFilters } = props;
 
   const [sortBy, setSortBy] = useState("best-selling");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6; // Số sản phẩm mỗi trang
+  const itemsPerPage = 100; // Số sản phẩm mỗi trang
 
   const handleViewDetail = (product: ContentResponse) => {
     navigate(`/detail/${product._id}`);
@@ -68,13 +70,13 @@ const CollectionList: FC<Props> = (props) => {
         return sorted.sort((a, b) => (b.price || 0) - (a.price || 0));
 
       case "name-az":
-        return sorted.sort((a, b) => 
-          (a.title || '').localeCompare(b.title || '', "vi")
+        return sorted.sort((a, b) =>
+          (a.title || "").localeCompare(b.title || "", "vi"),
         );
 
       case "name-za":
-        return sorted.sort((a, b) => 
-          (b.title || '').localeCompare(a.title || '', "vi")
+        return sorted.sort((a, b) =>
+          (b.title || "").localeCompare(a.title || "", "vi"),
         );
 
       case "best-selling":
@@ -100,7 +102,9 @@ const CollectionList: FC<Props> = (props) => {
             data: ContentResponse[];
             pagination: GetApiContent200Pagination;
           };
-          
+
+          console.log("Fetched blueprints:", response);
+
           const filteredValue = response.data.filter((item) => {
             if (
               filter.categories.length > 0 &&
@@ -120,15 +124,26 @@ const CollectionList: FC<Props> = (props) => {
             // Search filter
             if (filter.searchQuery && filter.searchQuery.trim() !== "") {
               const searchLower = filter.searchQuery.toLowerCase();
-              const titleMatch = (item.title || '').toLowerCase().includes(searchLower);
-              const descMatch = (item.description || '')
+
+              const titleMatch = (item.title || "")
                 .toLowerCase()
                 .includes(searchLower);
-              const categoryMatch = (item.category?.name || '')
+
+              const descMatch = (item.description || "")
+                .toLowerCase()
+                .includes(searchLower);
+
+              const categoryMatch = (item.category?.name || "")
                 .toLowerCase()
                 .includes(searchLower);
 
               if (!titleMatch && !descMatch && !categoryMatch) {
+                return false;
+              }
+            }
+
+            if (!filter.categories.length) {
+              if (filter.categories.includes(item.category?._id! ?? "")) {
                 return false;
               }
             }
@@ -142,7 +157,7 @@ const CollectionList: FC<Props> = (props) => {
           };
         },
       },
-    }
+    },
   ) as UseQueryResult<{
     data: ContentResponse[];
     pagination?: GetApiContent200Pagination;
@@ -277,47 +292,54 @@ const CollectionList: FC<Props> = (props) => {
       <QueryBoundary query={getBlueprintListQuery}>
         {(blueprints) => {
           if (!blueprints.data?.length) return null;
-          
-          const totalPages = Math.ceil((blueprints.pagination?.total || 0) / itemsPerPage);
+
+          const totalPages = Math.ceil(
+            (blueprints.pagination?.total || 0) / itemsPerPage,
+          );
           if (totalPages <= 1) return null;
-          
+
           const maxPageNumbers = 5; // Số lượng số trang hiển thị
-          let startPage = Math.max(1, currentPage - Math.floor(maxPageNumbers / 2));
+          let startPage = Math.max(
+            1,
+            currentPage - Math.floor(maxPageNumbers / 2),
+          );
           let endPage = Math.min(totalPages, startPage + maxPageNumbers - 1);
-          
+
           if (endPage - startPage + 1 < maxPageNumbers) {
             startPage = Math.max(1, endPage - maxPageNumbers + 1);
           }
-          
+
           const pageNumbers = [];
           for (let i = startPage; i <= endPage; i++) {
             pageNumbers.push(i);
           }
-          
+
           return (
             <div className="flex justify-center mt-8">
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
-                    <PaginationPrevious 
+                    <PaginationPrevious
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();
                         if (currentPage > 1) {
                           setCurrentPage(currentPage - 1);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                          window.scrollTo({ top: 0, behavior: "smooth" });
                         }
                       }}
-                      className={currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}
+                      className={
+                        currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+                      }
                     />
                   </PaginationItem>
-                  
+
                   {startPage > 1 && (
                     <PaginationItem>
                       <PaginationEllipsis />
                     </PaginationItem>
                   )}
-                  
+
                   {pageNumbers.map((page) => (
                     <PaginationItem key={page}>
                       <PaginationLink
@@ -326,31 +348,35 @@ const CollectionList: FC<Props> = (props) => {
                         onClick={(e) => {
                           e.preventDefault();
                           setCurrentPage(page);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                          window.scrollTo({ top: 0, behavior: "smooth" });
                         }}
                       >
                         {page}
                       </PaginationLink>
                     </PaginationItem>
                   ))}
-                  
+
                   {endPage < totalPages && (
                     <PaginationItem>
                       <PaginationEllipsis />
                     </PaginationItem>
                   )}
-                  
+
                   <PaginationItem>
-                    <PaginationNext 
+                    <PaginationNext
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();
                         if (currentPage < totalPages) {
                           setCurrentPage(currentPage + 1);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                          window.scrollTo({ top: 0, behavior: "smooth" });
                         }
                       }}
-                      className={currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}
+                      className={
+                        currentPage === totalPages
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                      }
                     />
                   </PaginationItem>
                 </PaginationContent>
