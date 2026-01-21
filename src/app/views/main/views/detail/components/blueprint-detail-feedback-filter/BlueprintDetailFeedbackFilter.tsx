@@ -6,7 +6,11 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { usePostApiRatings, usePutApiRatings, useGetApiRatingsStatsContentId } from "@/api/endpoints/ratings";
+import {
+  usePostApiRatings,
+  usePutApiRatings,
+  useGetApiRatingsStatsContentId,
+} from "@/api/endpoints/ratings";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAuthStore } from "@/stores";
@@ -30,50 +34,56 @@ interface ReviewSidebarProps {
 
 const BlueprintDetailFeedbackFilter = ({
   onRatingFilterChange,
-}: ReviewSidebarProps & { onRatingFilterChange?: (rating: number | null) => void }) => {
+}: ReviewSidebarProps & {
+  onRatingFilterChange?: (rating: number | null) => void;
+}) => {
   const { id: contentId } = useParams<{ id: string }>();
-  
-  const { data: ratingStats, isLoading, error } = useGetApiRatingsStatsContentId(
-    contentId || '',
-    {
-      query: {
-        enabled: !!contentId,
-        refetchOnWindowFocus: false,
-        queryKey: ['ratings', 'stats', contentId],
-      },
-    }
-  );
+
+  const {
+    data: ratingStats,
+    isLoading,
+    error,
+  } = useGetApiRatingsStatsContentId(contentId || "", {
+    query: {
+      enabled: !!contentId,
+      refetchOnWindowFocus: false,
+      queryKey: ["ratings", "stats", contentId],
+    },
+  });
 
   // Calculate derived values from the API response
   const averageRating = ratingStats?.data?.averageStars || 0;
   const totalReviews = ratingStats?.data?.totalRatings || 0;
-  const ratingDistribution = [5, 4, 3, 2, 1].map(stars => {
+  const ratingDistribution = [5, 4, 3, 2, 1].map((stars) => {
     const count = ratingStats?.data?.starsCount?.[stars] || 0;
-    const percentage = totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0;
+    const percentage =
+      totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0;
     return { stars, count, percentage };
   });
-  
+
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [userRating, setUserRating] = useState<number | null>(null);
-  const [guestEmail, setGuestEmail] = useState('');
+  const [guestEmail, setGuestEmail] = useState("");
   const [showEmailDialog, setShowEmailDialog] = useState(false);
   const [pendingRating, setPendingRating] = useState<number | null>(null);
   const queryClient = useQueryClient();
-  
-  const { isSignedIn } = useAuthStore(useShallow(state => ({ 
-    isSignedIn: state.isSignedIn 
-  })));
+
+  const { isSignedIn } = useAuthStore(
+    useShallow((state) => ({
+      isSignedIn: state.isSignedIn,
+    })),
+  );
 
   const { mutate: submitRating, isPending: isSubmitting } = usePostApiRatings({
     mutation: {
       onSuccess: () => {
         toast.success("Cảm ơn bạn đã đánh giá!");
         // Invalidate both the ratings list and the stats query
-        queryClient.invalidateQueries({ 
-          queryKey: ['ratings'] 
+        queryClient.invalidateQueries({
+          queryKey: ["ratings"],
         });
-        queryClient.invalidateQueries({ 
-          queryKey: ['ratings', 'stats', contentId] 
+        queryClient.invalidateQueries({
+          queryKey: ["ratings", "stats", contentId],
         });
       },
       onError: (error) => {
@@ -91,7 +101,7 @@ const BlueprintDetailFeedbackFilter = ({
 
   const handleUserRating = (rating: number) => {
     setPendingRating(rating);
-    
+
     if (isSignedIn) {
       submitRatingNow(rating);
     } else {
@@ -100,8 +110,8 @@ const BlueprintDetailFeedbackFilter = ({
   };
 
   const submitRatingNow = (rating: number, email?: string) => {
-    const contentId = window.location.pathname.split('/').pop() || '';
-    
+    const contentId = window.location.pathname.split("/").pop() || "";
+
     submitRating({
       data: {
         contentId,
@@ -114,7 +124,7 @@ const BlueprintDetailFeedbackFilter = ({
 
   const handleEmailSubmit = () => {
     if (!guestEmail) {
-      toast.error('Vui lòng nhập email của bạn');
+      toast.error("Vui lòng nhập email của bạn");
       return;
     }
     if (pendingRating) {
@@ -159,18 +169,15 @@ const BlueprintDetailFeedbackFilter = ({
               className="w-full"
             />
             <div className="flex justify-end gap-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => setShowEmailDialog(false)}
                 disabled={isSubmitting}
               >
                 Hủy
               </Button>
-              <Button 
-                onClick={handleEmailSubmit}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'Đang gửi...' : 'Gửi đánh giá'}
+              <Button onClick={handleEmailSubmit} disabled={isSubmitting}>
+                {isSubmitting ? "Đang gửi..." : "Gửi đánh giá"}
               </Button>
             </div>
           </div>
@@ -196,22 +203,21 @@ const BlueprintDetailFeedbackFilter = ({
                   key={rating}
                   onClick={() => handleUserRating(rating)}
                   disabled={isSubmitting}
-                  className="p-1 rounded-full hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
-                  aria-label={`${rating} star${rating > 1 ? 's' : ''}`}
+                  className="cursor-pointer p-1 rounded-full hover:bg-primary/20 backdrop-blur-md disabled:opacity-50 disabled:cursor-not-allowed"
+                  aria-label={`${rating} star${rating > 1 ? "s" : ""}`}
                 >
                   <Star
                     className={cn(
                       "h-6 w-6 transition-colors",
-                      (userRating !== null && rating <= userRating)
+                      userRating !== null && rating <= userRating
                         ? "fill-amber-400 text-amber-400"
-                        : "text-muted-foreground/30"
+                        : "text-muted-foreground/30",
                     )}
                   />
                 </button>
               ))}
             </div>
           </div>
-          
 
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <span className="font-medium text-foreground">
@@ -319,5 +325,3 @@ const BlueprintDetailFeedbackFilter = ({
 };
 
 export default BlueprintDetailFeedbackFilter;
-
-
