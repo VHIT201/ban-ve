@@ -1,8 +1,8 @@
 // @ts-nocheck
 
 export type PutApiRatingsBody = {
-  /** Email của người đánh giá */
-  email: string;
+  /** Email của người đánh giá (không cần nếu đã đăng nhập) */
+  email?: string;
   /** ID của đánh giá cần cập nhật */
   id: string;
   /**

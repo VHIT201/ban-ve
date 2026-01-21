@@ -480,12 +480,19 @@ export function useGetApiFilePendingLarge<TData = Awaited<ReturnType<typeof getA
 
 
 /**
- * Tải xuống file và tất cả ảnh minh họa liên quan (image1, image2, image3, image4).
+ * Tải xuống file và tất cả ảnh minh họa liên quan (image1, image2, image3, image4) từ một đơn hàng đã thanh toán.
 - Nếu chỉ có file chính: Trả về file đó trực tiếp
 - Nếu có nhiều file (file chính + ảnh minh họa): Trả về file ZIP chứa tất cả các file
-- File ZIP sẽ có tên dựa trên tên file chính (ví dụ: test4.zip)
 
- * @summary Tải xuống file (yêu cầu đăng nhập và thanh toán)
+**Xác thực:**
+- **Khách vãng lai**: Không cần token, chỉ cần orderId của đơn hàng
+- **Người dùng đăng nhập**: Cần token JWT trong header Authorization và orderId phải khớp với userId
+
+**Giới hạn tải xuống:**
+- Khách vãng lai: 3 lần/đơn hàng
+- Người dùng đăng nhập: 5 lần/đơn hàng
+
+ * @summary Tải xuống file từ đơn hàng (khách hoặc người dùng đăng nhập)
  */
 export const getApiFileIdDownload = (
     id: string,
@@ -563,7 +570,7 @@ export function useGetApiFileIdDownloadInfinite<TData = InfiniteData<Awaited<Ret
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Tải xuống file (yêu cầu đăng nhập và thanh toán)
+ * @summary Tải xuống file từ đơn hàng (khách hoặc người dùng đăng nhập)
  */
 
 export function useGetApiFileIdDownloadInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiFileIdDownload>>>, TError = ErrorType<void>>(
@@ -630,7 +637,7 @@ export function useGetApiFileIdDownload<TData = Awaited<ReturnType<typeof getApi
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Tải xuống file (yêu cầu đăng nhập và thanh toán)
+ * @summary Tải xuống file từ đơn hàng (khách hoặc người dùng đăng nhập)
  */
 
 export function useGetApiFileIdDownload<TData = Awaited<ReturnType<typeof getApiFileIdDownload>>, TError = ErrorType<void>>(

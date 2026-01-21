@@ -7,7 +7,7 @@ export interface Order {
   _id?: string;
   /** ID người dùng (optional cho guest) */
   userId?: string;
-  /** Email của khách hàng (bắt buộc cho guest) */
+  /** Email của khách hàng (bắt buộc cho guest, ẩn nếu đã đăng nhập) */
   email?: string;
   /** Mã đơn hàng công khai (unique) */
   orderCode?: string;

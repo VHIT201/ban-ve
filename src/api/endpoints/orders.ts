@@ -27,6 +27,8 @@ import type {
   CreateOrderInput,
   GetApiOrders200,
   GetApiOrdersOrderId200,
+  GetApiOrdersOrderIdParams,
+  GetApiOrdersParams,
   PostApiOrders201
 } from '../models';
 
@@ -109,13 +111,14 @@ export const usePostApiOrders = <TError = ErrorType<void>,
  * @summary Lấy danh sách đơn hàng
  */
 export const getApiOrders = (
-    
+    params?: GetApiOrdersParams,
  signal?: AbortSignal
 ) => {
       
       
       return mainInstance<GetApiOrders200>(
-      {url: `/api/orders`, method: 'GET', signal
+      {url: `/api/orders`, method: 'GET',
+        params, signal
     },
       );
     }
@@ -123,75 +126,75 @@ export const getApiOrders = (
 
 
 
-export const getGetApiOrdersInfiniteQueryKey = () => {
+export const getGetApiOrdersInfiniteQueryKey = (params?: GetApiOrdersParams,) => {
     return [
-    'infinite', `/api/orders`
+    'infinite', `/api/orders`, ...(params ? [params]: [])
     ] as const;
     }
 
-export const getGetApiOrdersQueryKey = () => {
+export const getGetApiOrdersQueryKey = (params?: GetApiOrdersParams,) => {
     return [
-    `/api/orders`
+    `/api/orders`, ...(params ? [params]: [])
     ] as const;
     }
 
     
-export const getGetApiOrdersInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiOrders>>>, TError = ErrorType<void>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData>>, }
+export const getGetApiOrdersInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiOrders>>, GetApiOrdersParams['page']>, TError = ErrorType<void>>(params?: GetApiOrdersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData, QueryKey, GetApiOrdersParams['page']>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiOrdersInfiniteQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiOrdersInfiniteQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiOrders>>> = ({ signal }) => getApiOrders(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiOrders>>, QueryKey, GetApiOrdersParams['page']> = ({ signal, pageParam }) => getApiOrders({...params, 'page': pageParam || params?.['page']}, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData, QueryKey, GetApiOrdersParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetApiOrdersInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiOrders>>>
 export type GetApiOrdersInfiniteQueryError = ErrorType<void>
 
 
-export function useGetApiOrdersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiOrders>>>, TError = ErrorType<void>>(
-  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData>> & Pick<
+export function useGetApiOrdersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiOrders>>, GetApiOrdersParams['page']>, TError = ErrorType<void>>(
+ params: undefined |  GetApiOrdersParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData, QueryKey, GetApiOrdersParams['page']>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiOrders>>,
           TError,
-          Awaited<ReturnType<typeof getApiOrders>>
+          Awaited<ReturnType<typeof getApiOrders>>, QueryKey
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiOrdersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiOrders>>>, TError = ErrorType<void>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData>> & Pick<
+export function useGetApiOrdersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiOrders>>, GetApiOrdersParams['page']>, TError = ErrorType<void>>(
+ params?: GetApiOrdersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData, QueryKey, GetApiOrdersParams['page']>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiOrders>>,
           TError,
-          Awaited<ReturnType<typeof getApiOrders>>
+          Awaited<ReturnType<typeof getApiOrders>>, QueryKey
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiOrdersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiOrders>>>, TError = ErrorType<void>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData>>, }
+export function useGetApiOrdersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiOrders>>, GetApiOrdersParams['page']>, TError = ErrorType<void>>(
+ params?: GetApiOrdersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData, QueryKey, GetApiOrdersParams['page']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Lấy danh sách đơn hàng
  */
 
-export function useGetApiOrdersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiOrders>>>, TError = ErrorType<void>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData>>, }
+export function useGetApiOrdersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiOrders>>, GetApiOrdersParams['page']>, TError = ErrorType<void>>(
+ params?: GetApiOrdersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData, QueryKey, GetApiOrdersParams['page']>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiOrdersInfiniteQueryOptions(options)
+  const queryOptions = getGetApiOrdersInfiniteQueryOptions(params,options)
 
   const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -203,16 +206,16 @@ export function useGetApiOrdersInfinite<TData = InfiniteData<Awaited<ReturnType<
 
 
 
-export const getGetApiOrdersQueryOptions = <TData = Awaited<ReturnType<typeof getApiOrders>>, TError = ErrorType<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData>>, }
+export const getGetApiOrdersQueryOptions = <TData = Awaited<ReturnType<typeof getApiOrders>>, TError = ErrorType<void>>(params?: GetApiOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiOrdersQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiOrdersQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiOrders>>> = ({ signal }) => getApiOrders(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiOrders>>> = ({ signal }) => getApiOrders(params, signal);
 
       
 
@@ -226,7 +229,7 @@ export type GetApiOrdersQueryError = ErrorType<void>
 
 
 export function useGetApiOrders<TData = Awaited<ReturnType<typeof getApiOrders>>, TError = ErrorType<void>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData>> & Pick<
+ params: undefined |  GetApiOrdersParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiOrders>>,
           TError,
@@ -236,7 +239,7 @@ export function useGetApiOrders<TData = Awaited<ReturnType<typeof getApiOrders>>
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiOrders<TData = Awaited<ReturnType<typeof getApiOrders>>, TError = ErrorType<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData>> & Pick<
+ params?: GetApiOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiOrders>>,
           TError,
@@ -246,7 +249,7 @@ export function useGetApiOrders<TData = Awaited<ReturnType<typeof getApiOrders>>
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiOrders<TData = Awaited<ReturnType<typeof getApiOrders>>, TError = ErrorType<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData>>, }
+ params?: GetApiOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -254,11 +257,11 @@ export function useGetApiOrders<TData = Awaited<ReturnType<typeof getApiOrders>>
  */
 
 export function useGetApiOrders<TData = Awaited<ReturnType<typeof getApiOrders>>, TError = ErrorType<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData>>, }
+ params?: GetApiOrdersParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrders>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiOrdersQueryOptions(options)
+  const queryOptions = getGetApiOrdersQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -275,12 +278,14 @@ export function useGetApiOrders<TData = Awaited<ReturnType<typeof getApiOrders>>
  */
 export const getApiOrdersOrderId = (
     orderId: string,
+    params?: GetApiOrdersOrderIdParams,
  signal?: AbortSignal
 ) => {
       
       
       return mainInstance<GetApiOrdersOrderId200>(
-      {url: `/api/orders/${orderId}`, method: 'GET', signal
+      {url: `/api/orders/${orderId}`, method: 'GET',
+        params, signal
     },
       );
     }
@@ -288,75 +293,82 @@ export const getApiOrdersOrderId = (
 
 
 
-export const getGetApiOrdersOrderIdInfiniteQueryKey = (orderId?: string,) => {
+export const getGetApiOrdersOrderIdInfiniteQueryKey = (orderId?: string,
+    params?: GetApiOrdersOrderIdParams,) => {
     return [
-    'infinite', `/api/orders/${orderId}`
+    'infinite', `/api/orders/${orderId}`, ...(params ? [params]: [])
     ] as const;
     }
 
-export const getGetApiOrdersOrderIdQueryKey = (orderId?: string,) => {
+export const getGetApiOrdersOrderIdQueryKey = (orderId?: string,
+    params?: GetApiOrdersOrderIdParams,) => {
     return [
-    `/api/orders/${orderId}`
+    `/api/orders/${orderId}`, ...(params ? [params]: [])
     ] as const;
     }
 
     
-export const getGetApiOrdersOrderIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiOrdersOrderId>>>, TError = ErrorType<void>>(orderId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData>>, }
+export const getGetApiOrdersOrderIdInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiOrdersOrderId>>, GetApiOrdersOrderIdParams['page']>, TError = ErrorType<void>>(orderId: string,
+    params?: GetApiOrdersOrderIdParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData, QueryKey, GetApiOrdersOrderIdParams['page']>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiOrdersOrderIdInfiniteQueryKey(orderId);
+  const queryKey =  queryOptions?.queryKey ?? getGetApiOrdersOrderIdInfiniteQueryKey(orderId,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiOrdersOrderId>>> = ({ signal }) => getApiOrdersOrderId(orderId, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiOrdersOrderId>>, QueryKey, GetApiOrdersOrderIdParams['page']> = ({ signal, pageParam }) => getApiOrdersOrderId(orderId,{...params, 'page': pageParam || params?.['page']}, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, enabled: !!(orderId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(orderId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData, QueryKey, GetApiOrdersOrderIdParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetApiOrdersOrderIdInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiOrdersOrderId>>>
 export type GetApiOrdersOrderIdInfiniteQueryError = ErrorType<void>
 
 
-export function useGetApiOrdersOrderIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiOrdersOrderId>>>, TError = ErrorType<void>>(
- orderId: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData>> & Pick<
+export function useGetApiOrdersOrderIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiOrdersOrderId>>, GetApiOrdersOrderIdParams['page']>, TError = ErrorType<void>>(
+ orderId: string,
+    params: undefined |  GetApiOrdersOrderIdParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData, QueryKey, GetApiOrdersOrderIdParams['page']>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiOrdersOrderId>>,
           TError,
-          Awaited<ReturnType<typeof getApiOrdersOrderId>>
+          Awaited<ReturnType<typeof getApiOrdersOrderId>>, QueryKey
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiOrdersOrderIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiOrdersOrderId>>>, TError = ErrorType<void>>(
- orderId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData>> & Pick<
+export function useGetApiOrdersOrderIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiOrdersOrderId>>, GetApiOrdersOrderIdParams['page']>, TError = ErrorType<void>>(
+ orderId: string,
+    params?: GetApiOrdersOrderIdParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData, QueryKey, GetApiOrdersOrderIdParams['page']>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiOrdersOrderId>>,
           TError,
-          Awaited<ReturnType<typeof getApiOrdersOrderId>>
+          Awaited<ReturnType<typeof getApiOrdersOrderId>>, QueryKey
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiOrdersOrderIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiOrdersOrderId>>>, TError = ErrorType<void>>(
- orderId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData>>, }
+export function useGetApiOrdersOrderIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiOrdersOrderId>>, GetApiOrdersOrderIdParams['page']>, TError = ErrorType<void>>(
+ orderId: string,
+    params?: GetApiOrdersOrderIdParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData, QueryKey, GetApiOrdersOrderIdParams['page']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Lấy thông tin đơn hàng theo ID
  */
 
-export function useGetApiOrdersOrderIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiOrdersOrderId>>>, TError = ErrorType<void>>(
- orderId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData>>, }
+export function useGetApiOrdersOrderIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiOrdersOrderId>>, GetApiOrdersOrderIdParams['page']>, TError = ErrorType<void>>(
+ orderId: string,
+    params?: GetApiOrdersOrderIdParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData, QueryKey, GetApiOrdersOrderIdParams['page']>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiOrdersOrderIdInfiniteQueryOptions(orderId,options)
+  const queryOptions = getGetApiOrdersOrderIdInfiniteQueryOptions(orderId,params,options)
 
   const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -368,16 +380,17 @@ export function useGetApiOrdersOrderIdInfinite<TData = InfiniteData<Awaited<Retu
 
 
 
-export const getGetApiOrdersOrderIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError = ErrorType<void>>(orderId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData>>, }
+export const getGetApiOrdersOrderIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError = ErrorType<void>>(orderId: string,
+    params?: GetApiOrdersOrderIdParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiOrdersOrderIdQueryKey(orderId);
+  const queryKey =  queryOptions?.queryKey ?? getGetApiOrdersOrderIdQueryKey(orderId,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiOrdersOrderId>>> = ({ signal }) => getApiOrdersOrderId(orderId, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiOrdersOrderId>>> = ({ signal }) => getApiOrdersOrderId(orderId,params, signal);
 
       
 
@@ -391,7 +404,8 @@ export type GetApiOrdersOrderIdQueryError = ErrorType<void>
 
 
 export function useGetApiOrdersOrderId<TData = Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError = ErrorType<void>>(
- orderId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData>> & Pick<
+ orderId: string,
+    params: undefined |  GetApiOrdersOrderIdParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiOrdersOrderId>>,
           TError,
@@ -401,7 +415,8 @@ export function useGetApiOrdersOrderId<TData = Awaited<ReturnType<typeof getApiO
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiOrdersOrderId<TData = Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError = ErrorType<void>>(
- orderId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData>> & Pick<
+ orderId: string,
+    params?: GetApiOrdersOrderIdParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiOrdersOrderId>>,
           TError,
@@ -411,7 +426,8 @@ export function useGetApiOrdersOrderId<TData = Awaited<ReturnType<typeof getApiO
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiOrdersOrderId<TData = Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError = ErrorType<void>>(
- orderId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData>>, }
+ orderId: string,
+    params?: GetApiOrdersOrderIdParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -419,11 +435,12 @@ export function useGetApiOrdersOrderId<TData = Awaited<ReturnType<typeof getApiO
  */
 
 export function useGetApiOrdersOrderId<TData = Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError = ErrorType<void>>(
- orderId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData>>, }
+ orderId: string,
+    params?: GetApiOrdersOrderIdParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiOrdersOrderId>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiOrdersOrderIdQueryOptions(orderId,options)
+  const queryOptions = getGetApiOrdersOrderIdQueryOptions(orderId,params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

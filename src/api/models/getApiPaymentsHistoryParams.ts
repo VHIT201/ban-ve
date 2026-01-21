@@ -2,11 +2,13 @@
 
 export type GetApiPaymentsHistoryParams = {
 /**
- * Số trang hiện tại
+ * Mã đơn hàng (Dùng cho Guest)
  */
-page?: number;
+orderCode?: string;
 /**
- * Số lượng bản ghi mỗi trang
+ * Email đặt hàng (Dùng cho Guest)
  */
+email?: string;
+page?: number;
 limit?: number;
 };
