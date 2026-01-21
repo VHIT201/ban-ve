@@ -200,6 +200,6 @@ export const useColumns = (props: useCollaboratorTableColumnsDefsProps) => {
         },
       },
     ],
-    [onView, onApprove, onReject, onEdit]
+    [onView, onApprove, onReject, onEdit],
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -30,18 +30,23 @@ const personalFormSchema = z.object({
     .max(50, "Tên đăng nhập không được vượt quá 50 ký tự")
     .regex(
       /^[\p{L}\s]+$/u,
-      "Tên đăng nhập chỉ được chứa chữ cái và khoảng trắng"
+      "Tên đăng nhập chỉ được chứa chữ cái và khoảng trắng",
     ),
   email: z.string().email("Email không hợp lệ"),
 });
 
-type PersonalFormData = z.infer<typeof personalFormSchema>;
+export type PersonalFormData = z.infer<typeof personalFormSchema>;
 
-const PersonalFormView = () => {
+interface Props {
+  onSubmit?: (data: PersonalFormData) => Promise<void>;
+}
+
+const PersonalFormView: FC<Props> = ({ onSubmit }) => {
+  // Queries
   const { data: userData, isLoading } = useGetApiAuthMe();
   const user = userData?.data;
 
-  const [saving, setSaving] = React.useState(false);
+  const [saving, setSaving] = useState(false);
 
   const form = useForm<PersonalFormData>({
     resolver: zodResolver(personalFormSchema),
@@ -51,7 +56,7 @@ const PersonalFormView = () => {
     },
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
       form.reset({
         username: user.username || "",
@@ -60,12 +65,10 @@ const PersonalFormView = () => {
     }
   }, [user, form]);
 
-  const onSubmit = async (data: PersonalFormData) => {
+  const handleSubmit = async (data: PersonalFormData) => {
     setSaving(true);
     try {
-      // TODO: call API update profile
-      await new Promise((r) => setTimeout(r, 1500));
-
+      await onSubmit?.(data);
       toast.success("Cập nhật thông tin cá nhân thành công");
     } finally {
       setSaving(false);
@@ -133,7 +136,10 @@ const PersonalFormView = () => {
 
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-6"
+            >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}

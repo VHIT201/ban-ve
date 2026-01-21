@@ -1,8 +1,8 @@
 // @ts-nocheck
 
 export type PostApiRatingsBody = {
-  /** Email của người đánh giá */
-  email: string;
+  /** Email của người đánh giá (không cần nếu đã đăng nhập) */
+  email?: string;
   /** ID của nội dung cần đánh giá */
   contentId: string;
   /**

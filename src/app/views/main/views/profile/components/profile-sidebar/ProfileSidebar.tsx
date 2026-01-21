@@ -1,16 +1,63 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { NavLink } from "react-router-dom";
 import { SIDEBAR_MENU } from "./lib/constants";
 import { cn } from "@/lib/utils";
 import { useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
+import { UploadAvatarDialog } from "@/components/shared";
+import { usePutApiAuthUpdateProfile } from "@/api/endpoints/auth";
+import { useUploadMedia } from "@/hooks";
+import { toast } from "sonner";
+import { extractErrorMessage } from "@/utils/error";
 
 const ProfileSidebar = () => {
   // Stores
   const profileStore = useProfileStore(
-    useShallow(({ username, email, avatar }) => ({ username, email, avatar }))
+    useShallow(({ username, email, avatar, setStore }) => ({
+      username,
+      email,
+      avatar,
+      setStore,
+    })),
   );
+
+  // Mutations
+  const updateUserProfileMutation = usePutApiAuthUpdateProfile();
+  const uploadMediaMutation = useUploadMedia();
+
+  // Methods
+  const handleChangeAvatar = async (file: File) => {
+    try {
+      const resBlob = await uploadMediaMutation.uploadSingle(file, {
+        filename: file.name,
+        dir: "avatars",
+        private: true,
+      });
+
+      if (!resBlob) {
+        toast.error("Tải ảnh đại diện lên thất bại. Vui lòng thử lại.");
+        return;
+      }
+
+      await updateUserProfileMutation.mutateAsync({
+        data: {
+          avatar: resBlob.path,
+          username: profileStore.username,
+          email: profileStore.email,
+        },
+      });
+
+      profileStore.setStore({
+        avatar: resBlob.path,
+        username: profileStore.username,
+        email: profileStore.email,
+      });
+    } catch (error) {
+      toast.error(
+        extractErrorMessage(error) || "Cập nhật ảnh đại diện thất bại",
+      );
+    }
+  };
 
   // Template
   return (
@@ -18,18 +65,12 @@ const ProfileSidebar = () => {
       <CardContent className="p-0">
         {/* User Profile Header */}
         <div className="text-center p-6 border-b border-gray-100">
-          <Avatar className="w-20 h-20 mx-auto mb-4 ring-4 ring-gray-100">
-            <AvatarImage
-              src={profileStore.avatar}
-              alt={profileStore.username}
-            />
-            <AvatarFallback className="text-lg font-semibold bg-primary text-white">
-              {profileStore.username
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
-            </AvatarFallback>
-          </Avatar>
+          <UploadAvatarDialog
+            avatarUrl={profileStore.avatar}
+            avatarAlt={profileStore.username!}
+            onAvatarChange={handleChangeAvatar}
+            className="mb-6"
+          />
           <h3 className="font-semibold text-base text-primary mb-1">
             {profileStore.username}
           </h3>
@@ -49,7 +90,7 @@ const ProfileSidebar = () => {
                   "w-full cursor-pointer flex items-center gap-3 px-4 py-3 text-left rounded-none transition-all duration-200",
                   isActive
                     ? "bg-primary text-white shadow-none"
-                    : "text-gray-600 hover:bg-gray-100 hover:text-primary"
+                    : "text-gray-600 hover:bg-gray-100 hover:text-primary",
                 )
               }
             >
@@ -58,7 +99,7 @@ const ProfileSidebar = () => {
                   <item.icon
                     className={cn(
                       "size-5 transition-transform",
-                      isActive && "scale-110"
+                      isActive && "scale-110",
                     )}
                   />
                   <span className="text-sm font-medium">{item.title}</span>
