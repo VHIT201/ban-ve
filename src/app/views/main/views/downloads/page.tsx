@@ -69,14 +69,11 @@ const getStatusIcon = (status?: string) => {
 
 export default function DownloadPage() {
   const [searchParams] = useSearchParams();
-  const orderCode = searchParams.get("orderCode");
+  const orderId = searchParams.get("orderId");
 
-  // Fetch order data by orderCode
-  // Note: You may need to create a specific endpoint for fetching by orderCode
-  // For now, we'll use the orderId endpoint as a placeholder
-  const { data, isLoading, error } = useGetApiOrdersOrderId(orderCode || "", {
+  const { data, isLoading, error } = useGetApiOrdersOrderId(orderId || "", {
     query: {
-      enabled: !!orderCode,
+      enabled: !!orderId,
     },
   });
 
@@ -162,9 +159,9 @@ export default function DownloadPage() {
             <XCircle className="h-4 w-4" />
             <AlertTitle>Order Not Found</AlertTitle>
             <AlertDescription>
-              We couldn't find an order with code <strong>{orderCode}</strong>.
-              Please check your email or contact support if you believe this is
-              an error.
+              Chúng tôi không thể tìm thấy đơn hàng với mã{" "}
+              <strong>{orderId}</strong>. Vui lòng kiểm tra lại mã đơn hàng hoặc
+              liên hệ với bộ phận hỗ trợ.
             </AlertDescription>
           </Alert>
         </motion.div>
