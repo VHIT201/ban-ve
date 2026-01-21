@@ -20,6 +20,7 @@ import { useCart } from "@/hooks/use-cart";
 import { cn } from "@/utils/ui";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
+import { generateImageRandom } from "@/utils/image";
 
 interface HeaderShoppingCartProps {
   sync?: boolean;
@@ -135,12 +136,7 @@ interface CartItemRowProps {
   onRemove: (id: string) => void;
 }
 
-const CartItemRow = ({
-  item,
-  isLoading,
-  onUpdate,
-  onRemove,
-}: any) => {
+const CartItemRow = ({ item, isLoading, onUpdate, onRemove }: any) => {
   // States
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -195,33 +191,6 @@ const CartItemRow = ({
         onClick={handleRemove}
       >
         {isDeleting ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
-        ) : (
-          <XIcon className="w-4 h-4 cursor-pointer" />
-        )}
-      </button>
-    </div>
-  );
-};
-
-          <span className="w-6 text-center text-sm">{item.quantity}</span>
-
-          <button
-            className="w-7 h-7 border rounded text-sm disabled:opacity-40"
-            disabled={isLoading}
-            onClick={() => onUpdate(item.product._id, item.quantity + 1)}
-          >
-            +
-          </button>
-        </div>
-      </div>
-
-      <button
-        className="text-muted-foreground hover:text-destructive"
-        disabled={isLoading}
-        onClick={() => onRemove(item.product._id)}
-      >
-        {isLoading ? (
           <Loader2 className="w-4 h-4 animate-spin" />
         ) : (
           <XIcon className="w-4 h-4 cursor-pointer" />
