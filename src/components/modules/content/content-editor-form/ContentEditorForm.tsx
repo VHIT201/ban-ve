@@ -402,7 +402,7 @@ const ContentEditorForm = ({
                   <Uploader
                     value={field.value || []}
                     onChange={field.onChange}
-                    maxFiles={5}
+                    maxFiles={1}
                     maxSize={50 * 1024 * 1024}
                   >
                     <Uploader.DropZone>

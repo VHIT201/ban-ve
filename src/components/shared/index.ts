@@ -7,3 +7,4 @@ export { default as DeleteDialog } from "./delete-dialog";
 export { default as ReportDialog } from "./report-dialog";
 export { default as TreeView } from "./tree-view";
 export { default as UploadAvatarDialog } from "./upload-avatar-dialog";
+export { default as TreeSelect } from "./tree-select";

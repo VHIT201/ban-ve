@@ -88,8 +88,8 @@ const UploadAvatarDialog: FC<Props> = ({
   return (
     <Dialog>
       <div className={cn("relative w-fit h-fit mx-auto", className)}>
-        <Avatar className={cn("relative z-10", "size-32 border-3")}>
-          <AvatarImage src={avatarUrl} alt={avatarAlt} className="size-32" />
+        <Avatar className={cn("relative z-10", "size-48 border-3")}>
+          <AvatarImage src={avatarUrl} alt={avatarAlt} className="size-48" />
           <AvatarFallback className="text-lg font-semibold bg-primary text-white">
             {avatarAlt
               ?.split(" ")

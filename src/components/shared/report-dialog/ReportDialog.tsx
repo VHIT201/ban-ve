@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ReportDialog: FC<Props> = (props) => {
   // Props
-  const { open, onOpenChange } = props;
+  const { contentId, open, onOpenChange } = props;
 
   // Mutations
   const createCopyRightReportMutation = usePostApiReports();
@@ -18,7 +18,10 @@ const ReportDialog: FC<Props> = (props) => {
   const handleCreateReport = async (data: CopyrightReportFormValues) => {
     try {
       await createCopyRightReportMutation.mutateAsync({
-        data,
+        data: {
+          ...data,
+          contentId: contentId,
+        },
       });
 
       onOpenChange(false);
@@ -36,6 +39,9 @@ const ReportDialog: FC<Props> = (props) => {
         </DialogHeader>
         <ScrollArea className="overflow-y-auto px-5 py-2">
           <CopyRightEditorForm
+            defaultValues={{
+              contentId: contentId,
+            }}
             loading={createCopyRightReportMutation.isPending}
             onSubmit={handleCreateReport}
           />

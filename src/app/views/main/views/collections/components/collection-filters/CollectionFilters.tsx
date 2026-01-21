@@ -21,7 +21,7 @@ import {
   useGetApiCategories,
   useGetApiCategoriesAllTree,
 } from "@/api/endpoints/categories";
-import { QueryBoundary } from "@/components/shared";
+import { QueryBoundary, TreeSelect } from "@/components/shared";
 import { UseQueryResult } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -38,10 +38,12 @@ import { FilterFormValues, Props } from "./lib/types";
 import { DEFAULT_FILTER_VALUES, FILTER_SCHEMA } from "./lib/constants";
 import { Input } from "@/components/ui/input";
 import { ResponseData } from "@/api/types/base";
+import { TreeNode } from "@/components/shared/tree-select/TreeSelect";
 
 const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
   // Hooks
   const [searchParams] = useSearchParams();
+  const [selected, setSelected] = useState<string[]>([]);
 
   // States
   const [isPriceOpen, setIsPriceOpen] = useState(true);
@@ -80,14 +82,6 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
     },
   });
 
-  const getCategoryListQuery = useGetApiCategories({
-    query: {
-      select: (data) =>
-        (data as unknown as ResponseData<{ categories: Category[] }>).data
-          .categories,
-    },
-  }) as UseQueryResult<Category[]>;
-
   const transformCategoryToTreeItem = (category: any): TreeViewItem => {
     return {
       id: category._id || category.id,
@@ -105,73 +99,6 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
     if (!getCategoryTreeQuery.data) return [];
     return getCategoryTreeQuery.data.map(transformCategoryToTreeItem);
   }, [getCategoryTreeQuery.data, selectedCategories]);
-
-  // Handle TreeView selection change
-  const handleTreeSelectionChange = useCallback(
-    (selectedItems: TreeViewItem[]) => {
-      const categoryIds = selectedItems.map((item) => item.id);
-      form.setValue("categories", categoryIds, { shouldValidate: true });
-    },
-    [form],
-  );
-
-  // Handle TreeView checkbox change
-  const handleTreeCheckChange = (item: TreeViewItem, checked: boolean) => {
-    const updateCheckedState = (
-      items: TreeViewItem[],
-      itemId: string,
-      isChecked: boolean,
-    ): string[] => {
-      let checkedIds: string[] = [];
-
-      const findAndUpdateItem = (currentItem: TreeViewItem): void => {
-        if (currentItem.id === itemId) {
-          // Update this item and all children
-          if (isChecked) {
-            checkedIds.push(currentItem.id);
-          }
-          if (currentItem.children) {
-            const addAllChildren = (child: TreeViewItem) => {
-              if (isChecked) {
-                checkedIds.push(child.id);
-              }
-              child.children?.forEach(addAllChildren);
-            };
-            currentItem.children.forEach(addAllChildren);
-          }
-        }
-        currentItem.children?.forEach(findAndUpdateItem);
-      };
-
-      items.forEach(findAndUpdateItem);
-      return checkedIds;
-    };
-
-    const currentCategories = form.getValues("categories");
-    const updatedIds = updateCheckedState(treeData, item.id, checked);
-
-    let newCategories: string[];
-    if (checked) {
-      // Add the item and its children
-      newCategories = [...new Set([...currentCategories, ...updatedIds])];
-    } else {
-      // Remove the item and its children
-      newCategories = currentCategories.filter(
-        (id) => !updatedIds.includes(id) && id !== item.id,
-      );
-    }
-
-    form.setValue("categories", newCategories, { shouldValidate: true });
-  };
-
-  const handleCategoryToggle = (categoryId: string) => {
-    const currentCategories = form.getValues("categories");
-    const newCategories = currentCategories.includes(categoryId)
-      ? currentCategories.filter((id) => id !== categoryId)
-      : [...currentCategories, categoryId];
-
-    form.setValue("categories", newCategories, { shouldValidate: true });
-  };
 
   const handlePriceRangeChange = (value: number[]) => {
     form.setValue("priceRange", [value[0], value[1]] as [number, number], {
@@ -205,12 +132,27 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
   };
 
   const onSubmit = (data: FilterFormValues) => {
-    onFilterChange?.(data);
+    onFilterChange?.({ ...data, categories: selected });
   };
 
   useEffect(() => {
     onFilterChange?.(form.getValues());
   }, []);
+
+  const mapApiNodeToTreeNode = (node: any[]): TreeNode[] => {
+    return node.map((item: any) => ({
+      id: item.id,
+      label: item.name,
+      disabled: false,
+      children: item.children?.length
+        ? mapApiNodeToTreeNode(item.children)
+        : undefined,
+    })) as TreeNode[];
+  };
+
+  const mappedTreeData: TreeNode[] = mapApiNodeToTreeNode(
+    treeData as any,
+  ) as TreeNode[];
 
   return (
     <Form {...form}>
@@ -258,19 +200,20 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-3">
               <QueryBoundary query={getCategoryTreeQuery}>
-                {() => (
-                  <div>
-                    <TreeView
-                      data={treeData}
-                      showCheckboxes={true}
-                      checkboxPosition="left"
-                      showExpandAll={false}
-                      onCheckChange={handleTreeCheckChange}
-                      onSelectionChange={handleTreeSelectionChange}
-                      className="border-0 shadow-none"
-                    />
-                  </div>
-                )}
+                {() => {
+                  return (
+                    <div>
+                      <TreeSelect
+                        nodes={mappedTreeData}
+                        value={selected}
+                        onChange={setSelected}
+                        placeholder="Chọn danh mục"
+                        searchable={true}
+                        maxHeight="350px"
+                      />
+                    </div>
+                  );
+                }}
               </QueryBoundary>
             </CollapsibleContent>
           </Collapsible>
@@ -319,7 +262,7 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
                               )
                             }
                             placeholder="0"
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                            className="w-full px-3 py-2 text-sm rounded-none border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                           />
                           <span className="text-xs text-gray-500 block">
                             {new Intl.NumberFormat("vi-VN", {
@@ -349,7 +292,7 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
                               )
                             }
                             placeholder="100000000"
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                            className="w-full px-3 py-2 text-sm rounded-none border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                           />
                           <span className="text-xs text-gray-500 block">
                             {new Intl.NumberFormat("vi-VN", {

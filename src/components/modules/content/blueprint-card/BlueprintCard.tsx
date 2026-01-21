@@ -262,7 +262,7 @@ const BlueprintCard: FC<Props> = (props) => {
           </div>
         </div>
 
-        <h3 className="text-xl font-medium text-foreground leading-tight mb-2 group-hover:underline underline-offset-4 decoration-1 transition-all">
+        <h3 className="text-xl font-medium text-foreground leading-tight line-clamp-1 mb-2 group-hover:underline underline-offset-4 decoration-1 transition-all">
           {title}
         </h3>
 

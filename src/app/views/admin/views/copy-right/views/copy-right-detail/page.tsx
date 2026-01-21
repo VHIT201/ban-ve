@@ -143,7 +143,7 @@ const CopyRightDetail = () => {
   // Methods
   const handleUpdateStatus = async (
     status: CopyrightReportStatus,
-    notes?: string
+    notes?: string,
   ) => {
     try {
       await updateStatusMutation.mutateAsync({
@@ -157,7 +157,7 @@ const CopyRightDetail = () => {
       toast.success(
         status === CopyrightReportStatus.resolved
           ? "Báo cáo đã được giải quyết thành công"
-          : "Báo cáo đã được từ chối"
+          : "Báo cáo đã được từ chối",
       );
 
       // Refetch data
@@ -311,8 +311,6 @@ const CopyRightDetail = () => {
                     <CopyRightEditorForm
                       mode="view"
                       defaultValues={{
-                        contentId: report.contentId?._id || "",
-                        reportedContentId: report.reportedContentId?._id || "",
                         violationType: report.violationType,
                         description: report.description || "",
                         evidence: report.evidence || [],
@@ -443,7 +441,7 @@ const CopyRightDetail = () => {
                                       ID:{" "}
                                       {report.reportedContentId._id?.substring(
                                         0,
-                                        12
+                                        12,
                                       )}
                                       ...
                                     </p>
