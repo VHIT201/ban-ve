@@ -21,6 +21,7 @@ interface Props {
 const FileItem: FC<Props> = ({ orderId, item, index }) => {
   // States
   const [isError, setIsError] = useState<boolean>(false);
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   // Mutations
   const downloadFileMutation = useGetApiFileIdDownload(
@@ -52,10 +53,14 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
         return;
       }
 
+      setIsDownloading(true);
       downloadFile(res.data, item.contentId?.title || "downloaded-file");
       toast.success("Tải file thành công");
+
+      setIsDownloading(false);
       setIsError(false);
     } catch (error) {
+      console.error("Download file error:", error);
       setIsError(true);
       toast.error(
         extractErrorMessage(error) || "Tải tệp thất bại. Vui lòng thử lại.",
@@ -167,9 +172,9 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
                 <Button
                   size="lg"
                   className="gap-2"
-                  disabled={isError}
+                  disabled={isError || isDownloading}
                   onClick={handleDownloadFile}
-                  loading={downloadFileMutation.isFetching}
+                  loading={downloadFileMutation.isFetching || isDownloading}
                 >
                   <motion.div
                     animate={{ y: [0, 3, 0] }}
