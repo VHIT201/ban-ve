@@ -71,12 +71,21 @@ const getStatusLabel = (status?: string) => {
 export default function DownloadPage() {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get("orderId");
+  const orderCode = searchParams.get("orderCode");
+  const orderUserGmail = searchParams.get("email");
 
-  const { data, isLoading, error } = useGetApiOrdersOrderId(orderId || "", {
-    query: {
-      enabled: !!orderId,
+  const { data, isLoading, error } = useGetApiOrdersOrderId(
+    orderId || "",
+    {
+      orderCode: orderCode || undefined,
+      email: orderUserGmail || undefined,
     },
-  });
+    {
+      query: {
+        enabled: !!orderId,
+      },
+    },
+  );
 
   const order = data?.data as Order | undefined;
 
