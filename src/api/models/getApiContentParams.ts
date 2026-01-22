@@ -18,11 +18,19 @@ limit?: number;
  */
 status?: GetApiContentStatus;
 /**
- * Lọc theo slug danh mục
+ * Lọc theo slug danh mục hoặc categoryId (có thể truyền nhiều ID cách nhau bằng dấu phẩy)
  */
 category?: string;
 /**
  * Tìm kiếm theo tiêu đề hoặc mô tả
  */
 search?: string;
+/**
+ * Giá thấp nhất
+ */
+minPrice?: number;
+/**
+ * Giá cao nhất
+ */
+maxPrice?: number;
 };

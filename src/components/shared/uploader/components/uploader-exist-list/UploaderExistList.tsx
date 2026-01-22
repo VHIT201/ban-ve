@@ -227,6 +227,7 @@ const UploaderExistList: FC<Props> = (props) => {
                         </Tooltip>
                       </TooltipProvider>
 
+                      {/* Delete button commented out as requested
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -250,6 +251,7 @@ const UploaderExistList: FC<Props> = (props) => {
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
+                      */}
                     </div>
                   </div>
 
