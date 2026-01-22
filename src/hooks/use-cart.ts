@@ -208,20 +208,23 @@ export const useCart = ({
     [getItemQuantity, updateQuantity],
   );
 
-  const clearCart = useCallback(() => {
+  const clearCart = useCallback(async () => {
     if (isSignedIn) {
       // Xóa tất cả items từ API
-      items.forEach((item) => {
-        deleteCartMutation.mutate({
-          data: {
-            contentId: item.product._id,
-          },
-        });
-      });
+      await Promise.all(
+        items.map((item) =>
+          deleteCartMutation.mutateAsync({
+            data: {
+              contentId: item.product._id,
+            },
+          })
+        )
+      );
+      await queryClient.invalidateQueries({ queryKey: ['/api/cart'] });
     } else {
       cartStore.clearCart();
     }
-  }, [isSignedIn, items, deleteCartMutation, cartStore]);
+  }, [isSignedIn, items, deleteCartMutation, cartStore, queryClient]);
 
   // UI Actions (luôn dùng store cho UI state)
   const openCart = useCallback(() => {
