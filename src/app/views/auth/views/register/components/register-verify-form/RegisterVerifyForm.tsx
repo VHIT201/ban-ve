@@ -72,9 +72,10 @@ const RegisterVerifyForm: FC<Props> = (props) => {
       });
 
       setCountdown(30);
-      toast.success("Gửi lại mã OTP thành công. Vui lòng kiểm tra email.");
-    } catch {
-      toast.error("Gửi lại mã OTP thất bại. Vui lòng thử lại.");
+      toast.success("✅ Đã gửi lại mã OTP thành công. Vui lòng kiểm tra hộp thư đến hoặc thư mục spam.");
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Không thể gửi lại mã OTP. Vui lòng thử lại sau.';
+      toast.error(`❌ ${errorMessage}`);
     }
   };
 
@@ -87,12 +88,34 @@ const RegisterVerifyForm: FC<Props> = (props) => {
         },
       });
 
-      toast.success("Xác thực thành công");
-      navigate(BASE_PATHS.auth.login.path);
-
-      toast.success("Bạn có thể đăng nhập ngay bây giờ.");
-    } catch {
-      toast.error("Xác thực thất bại. Vui lòng thử lại.");
+      toast.success("✅ Xác thực tài khoản thành công!");
+      toast.info("🔒 Bạn có thể đăng nhập ngay bây giờ.", {
+        duration: 5000,
+      });
+      
+      // Chuyển hướng sau khi hiển thị thông báo
+      setTimeout(() => {
+        navigate(BASE_PATHS.auth.login.path);
+      }, 1500);
+      
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Mã xác thực không chính xác hoặc đã hết hạn.';
+      
+      if (error.response?.status === 400) {
+        if (error.response?.data?.errors?.otp) {
+          form.setError('otp', {
+            type: 'manual',
+            message: error.response.data.errors.otp[0]
+          });
+        }
+        toast.error(`❌ ${errorMessage}`);
+      } else if (error.response?.status === 404) {
+        toast.error("❌ Email chưa được đăng ký hoặc đã bị xóa.");
+      } else if (error.response?.status === 422) {
+        toast.error("❌ Mã OTP không hợp lệ hoặc đã hết hạn. Vui lòng thử lại.");
+      } else {
+        toast.error("❌ Có lỗi xảy ra khi xác thực. Vui lòng thử lại sau.");
+      }
     }
   };
 

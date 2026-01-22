@@ -95,7 +95,6 @@ const HeaderShoppingCart = ({ sync = true }: HeaderShoppingCartProps) => {
                   ))}
               </div>
             </ScrollArea>
-
             <CartFooter
               totalItems={cart.totalItems}
               totalPrice={cart.totalPrice}
