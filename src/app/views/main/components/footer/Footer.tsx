@@ -54,22 +54,30 @@ const Footer = () => {
             Hỗ trợ
           </h4>
           <ul className="space-y-4">
-            {[
-              "Trung tâm trợ giúp",
-              "Cấp phép",
-              "Điều khoản sử dụng",
-              "Chính sách bảo mật",
-              "Liên hệ",
-            ].map((item) => (
-              <li key={item}>
-                <Link
-                  to="#"
-                  className="text-xs text-black/50 hover:text-black transition-colors font-medium"
-                >
-                  {item}
-                </Link>
-              </li>
-            ))}
+            <li>
+              <Link
+                to="/terms"
+                className="text-xs text-black/50 hover:text-black transition-colors font-medium"
+              >
+                Điều khoản sử dụng
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/privacy"
+                className="text-xs text-black/50 hover:text-black transition-colors font-medium"
+              >
+                Chính sách bảo mật
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/contact"
+                className="text-xs text-black/50 hover:text-black transition-colors font-medium"
+              >
+                Liên hệ
+              </Link>
+            </li>
           </ul>
         </div>
 

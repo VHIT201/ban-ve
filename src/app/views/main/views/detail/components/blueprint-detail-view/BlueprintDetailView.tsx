@@ -309,7 +309,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
                 Danh mục
               </div>
               <div className="font-medium text-white">
-                {content?.category?.name || "N/A"}
+                {content?.category_id?.name || "N/A"}
               </div>
             </div>
           </div>

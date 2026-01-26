@@ -26,11 +26,15 @@ const bannerSlides = [
   {
     id: 1,
     gradient: "from-blue-600 via-blue-500 to-orange-400",
-    title: "Kho Dữ Liệu Hàng Đầu",
+    title: "Kho dữ liệu miễn phí",
     subtitle: "Mua, Bán & Tải Dữ Liệu Chất Lượng Cao!",
     description:
       "Khám phá kho bản vẽ kiến trúc chuyên nghiệp với hơn 1000+ thiết kế độc đáo. Giải pháp toàn diện cho mọi dự án của bạn.",
-    primaryAction: { text: "Tìm Kiếm Dữ Liệu", icon: Search },
+    primaryAction: { 
+      text: "Tìm Kiếm Dữ Liệu", 
+      icon: Search,
+      href: "/collections?minPrice=0&maxPrice=0"
+    },
     secondaryAction: { text: "Xem Gói Dịch Vụ", icon: Building },
     illustration: "dashboard",
   },
@@ -129,6 +133,11 @@ const BannerSection = () => {
                             "transition-all duration-200 font-semibold",
                             "px-6 h-12"
                           )}
+                          onClick={() => {
+                            if (slide.id === 1) {
+                              window.location.href = '/collections?minPrice=0&maxPrice=0';
+                            }
+                          }}
                         >
                           {slide.primaryAction.text}
                         </Button>
@@ -143,9 +152,13 @@ const BannerSection = () => {
                             "px-6 h-12"
                           )}
                           onClick={() => {
-                            document
-                              .getElementById("featured-projects")
-                              ?.scrollIntoView({ behavior: "smooth" });
+                            if (slide.primaryAction.href) {
+                              window.location.href = slide.primaryAction.href;
+                            } else {
+                              document
+                                .getElementById("featured-projects")
+                                ?.scrollIntoView({ behavior: "smooth" });
+                            }
                           }}
                         >
                           {slide.secondaryAction.text}

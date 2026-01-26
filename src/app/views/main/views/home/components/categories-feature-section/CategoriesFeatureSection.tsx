@@ -18,27 +18,27 @@ interface BestSellingProduct {
 const bestSellingProducts: BestSellingProduct[] = [
   {
     id: 1,
-    title: "Dữ Liệu Doanh Nghiệp",
+    title: "Dữ Liệu Giáo Dục",
     image: cartCategoryIcon,
   },
   {
     id: 2,
-    title: "Dữ Liệu Người Dùng",
+    title: "Dữ Liệu Bài Báo",
     image: userCategoryIcon,
   },
   {
     id: 3,
-    title: "Dữ Liệu Thương Mại",
+    title: "Dữ Liệu Bản Vẽ Thiết Kế",
     image: tradeCategoryIcon,
   },
   {
     id: 4,
-    title: "Dữ liệu CNTT",
+    title: "Bài Giảng Và Giáo Trình",
     image: softwareCategoryIcon,
   },
   {
     id: 5,
-    title: "Dữ liệu Bản Vẽ",
+    title: "Dữ liệu đề cương chi tiết",
     image: drawCategoryIcon,
   },
 ];

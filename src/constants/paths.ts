@@ -27,6 +27,7 @@ export const ROUTE_PATHS = {
     search: { path: "search" },
     terms: { path: "terms" },
     privacy: { path: "privacy" },
+    contact: { path: "contact" },
     cookiePolicy: { path: "cookie-policy" },
   },
 

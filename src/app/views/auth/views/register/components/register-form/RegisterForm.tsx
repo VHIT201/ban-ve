@@ -56,8 +56,25 @@ const RegisterForm: FC<Props> = (props) => {
 
       onSubmit(values);
       toast.success("Đăng ký thành công! Vui lòng kiểm tra email để xác thực.");
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Đã có lỗi xảy ra khi đăng ký. Vui lòng thử lại sau.';
+      
+      if (error.response?.status === 400 && error.response?.data?.errors) {
+        // Handle validation errors
+        const { errors } = error.response.data;
+        Object.keys(errors).forEach((field) => {
+          const message = errors[field]?.[0];
+          if (message) {
+            form.setError(field as any, {
+              type: 'manual',
+              message: message
+            });
+          }
+        });
+      } else {
+        // Show general error message
+        toast.error(errorMessage);
+      }
     }
   };
 
