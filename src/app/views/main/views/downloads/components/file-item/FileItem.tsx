@@ -1,6 +1,7 @@
 import {
   useGetApiFileId,
   useGetApiFileIdDownload,
+  useGetApiFileDownloadFreeContentId,
 } from "@/api/endpoints/files";
 import { OrderItem } from "@/api/models";
 import { ResponseData } from "@/api/types/base";
@@ -40,8 +41,11 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
   const [isError, setIsError] = useState<boolean>(false);
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
+  // Check if file is free
+  const isFreeFile = item.contentId?.price === 0;
+
   // Mutations
-  const downloadFileMutation = useGetApiFileIdDownload(
+  const downloadPaidFile = useGetApiFileIdDownload(
     orderId!,
     {
       fileId: item.contentId?.file_id!,
@@ -53,10 +57,25 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
     },
   );
 
+  const downloadFreeFile = useGetApiFileDownloadFreeContentId(
+    item.contentId?._id!,
+    {
+      query: {
+        enabled: false,
+      },
+    },
+  );
+
   // Methods
   const handleDownloadFile = async () => {
     try {
-      const res = await downloadFileMutation.refetch();
+      let res;
+      
+      if (isFreeFile) {
+        res = await downloadFreeFile.refetch();
+      } else {
+        res = await downloadPaidFile.refetch();
+      }
 
       if (res.error) {
         const message = await parseBlobError(res?.error);
@@ -190,7 +209,7 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
                   className="gap-2"
                   disabled={isError || isDownloading}
                   onClick={handleDownloadFile}
-                  loading={downloadFileMutation.isFetching || isDownloading}
+                  loading={(isFreeFile ? downloadFreeFile.isFetching : downloadPaidFile.isFetching) || isDownloading}
                 >
                   <motion.div
                     animate={{ y: [0, 3, 0] }}
