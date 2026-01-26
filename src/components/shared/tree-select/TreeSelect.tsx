@@ -106,7 +106,7 @@ const filterTree = (nodes: TreeNode[], query: string): FilteredTreeState => {
 interface TreeNodeComponentProps {
   node: TreeNode;
   selected: Set<string>;
-  onToggle: (id: string) => void;
+  onToggle: (ids: string[]) => void;
   onToggleExpand: (id: string) => void;
   expanded: ExpandedState;
   searchQuery: string;
@@ -127,7 +127,19 @@ const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
 
   const handleCheckboxChange = (checked: boolean) => {
     if (!isDisabled) {
-      onToggle(node.id);
+      const childIds = node.children
+        ? node.children.map((child) => child.id)
+        : [];
+      const withChildrenIds = node.children
+        ? node.children
+            .map((child) => child?.children?.map((grandchild) => grandchild.id))
+            .filter(Boolean)
+            .flat()
+        : [];
+
+      node.children && node.children.length > 0
+        ? onToggle([node.id, ...childIds, ...withChildrenIds])
+        : onToggle([node.id]);
     }
   };
 
@@ -165,7 +177,7 @@ const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
             isSelected && "font-semibold text-primary",
             isDisabled && "opacity-50 cursor-not-allowed",
           )}
-          onClick={() => !isDisabled && onToggle(node.id)}
+          onClick={() => handleCheckboxChange(!isSelected)}
         >
           {node.label}
         </label>
@@ -217,11 +229,18 @@ const TreeSelect: React.FC<TreeSelectProps> = ({
     [searchQuery, expanded, searchExpanded],
   );
 
-  const handleToggle = (id: string) => {
-    const newValue = selected.has(id)
-      ? value.filter((v) => v !== id)
-      : [...value, id];
-    onChange(newValue);
+  const handleToggle = (ids: string[]) => {
+    const next = new Set(value);
+
+    ids.forEach((id) => {
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+    });
+
+    onChange(Array.from(next));
   };
 
   const handleToggleExpand = (id: string) => {
@@ -261,7 +280,7 @@ const TreeSelect: React.FC<TreeSelectProps> = ({
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0" align="start">
+      <PopoverContent className="w  p-0" align="start">
         <div className="flex flex-col">
           {/* Search input */}
           {searchable && (
