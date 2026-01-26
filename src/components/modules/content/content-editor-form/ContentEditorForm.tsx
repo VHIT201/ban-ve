@@ -27,11 +27,20 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { useGetApiCategories } from "@/api/endpoints/categories";
-import { Loader2, DollarSign, AlertCircle, X } from "lucide-react";
+import { Loader2, DollarSign, AlertCircle, X, Check, FileText } from "lucide-react";
 import { ResponseData } from "@/api/types/base";
 import { Category } from "@/api/models";
 import { Uploader } from "@/components/shared";
 import { useUploadMedia } from "@/hooks";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 // Schema validation
 const contentFormSchema = z
@@ -134,6 +143,8 @@ const ContentEditorForm = ({
   // Upload media hook
   const { uploadSingle, isUploading: isUploadingFile } = useUploadMedia();
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [formValues, setFormValues] = useState<ContentFormValues | null>(null);
 
   // Initialize form
   const form = useForm<ContentFormValues>({
@@ -171,6 +182,19 @@ const ContentEditorForm = ({
   };
 
   const handleSubmit = async (values: ContentFormValues) => {
+    // Store form values and show confirmation dialog
+    setFormValues(values);
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmSubmit = async () => {
+    if (formValues) {
+      await submitForm(formValues);
+      setShowConfirmDialog(false);
+    }
+  };
+
+  const submitForm = async (values: ContentFormValues) => {
     try {
       setUploadError(null);
 
@@ -209,6 +233,90 @@ const ContentEditorForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        {/* Confirmation Dialog */}
+        <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-xl flex items-center gap-2">
+                <FileText className="w-5 h-5 text-blue-600" />
+                Điều Khoản Miễn Trừ Trách Nhiệm và Xác Nhận Đăng Bài
+              </DialogTitle>
+              <DialogDescription className="text-left pt-4 space-y-4">
+                <div className="space-y-4 text-gray-700">
+                  <div className="p-4 bg-amber-50 border border-amber-100 rounded-lg">
+                    <h3 className="font-semibold text-amber-800 mb-2">THÔNG BÁO QUAN TRỌNG</h3>
+                    <p className="text-sm">
+                      Trước khi đăng tải nội dung, vui lòng đọc kỹ các điều khoản sau:
+                    </p>
+                  </div>
+                  </div>
+
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <h4 className="font-semibold mb-2">1. Miễn Trừ Trách Nhiệm</h4>
+                    <ul className="list-disc pl-5 space-y-2 text-sm">
+                      <li>Nền tảng không chịu trách nhiệm về nội dung do người dùng đăng tải.</li>
+                      <li>Bạn hoàn toàn chịu trách nhiệm về bản quyền và tính hợp pháp của nội dung.</li>
+                      <li>Chúng tôi có quyền gỡ bỏ bất kỳ nội dung nào vi phạm điều khoản dịch vụ.</li>
+                    </ul>
+                  </div>
+
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <h4 className="font-semibold mb-2">2. Thông Tin Bài Đăng</h4>
+                    <div className="space-y-2 text-sm">
+                      <p><span className="font-medium">Tiêu đề:</span> {formValues?.title || 'Chưa có tiêu đề'}</p>
+                      <p><span className="font-medium">Danh mục:</span> {
+                        categories.find(c => c._id === formValues?.category_id)?.name || 'Chưa chọn'
+                      }</p>
+                      <p><span className="font-medium">Giá:</span> {
+                        formValues?.price ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(formValues.price) : 'Miễn phí'
+                      }</p>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-red-50 border border-red-100 rounded-lg">
+                    <h4 className="font-semibold text-red-700 mb-2">3. Cam Kết Của Người Đăng</h4>
+                    <p className="text-sm text-red-700">
+                      Bằng việc nhấn "Xác nhận đăng bài", bạn cam kết:
+                    </p>
+                    <ul className="list-disc pl-5 mt-2 space-y-1 text-sm text-red-700">
+                      <li>Tôi là chủ sở hữu hoặc có đầy đủ quyền đối với nội dung đăng tải</li>
+                      <li>Nội dung không vi phạm bản quyền hoặc quyền sở hữu trí tuệ</li>
+                      <li>Tôi đã đọc và đồng ý với tất cả điều khoản sử dụng</li>
+                    </ul>
+                  </div>
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="sm:justify-between pt-4 border-t">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setShowConfirmDialog(false)}
+                className="min-w-[100px]"
+              >
+                Hủy bỏ
+              </Button>
+              <Button 
+                type="button" 
+                onClick={handleConfirmSubmit}
+                disabled={isLoading || isUploadingFile}
+                className="bg-blue-600 hover:bg-blue-700 min-w-[150px]"
+              >
+                {isLoading || isUploadingFile ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Đang xử lý...
+                  </>
+                ) : (
+                  <>
+                    <Check className="w-4 h-4 mr-2" />
+                    Xác nhận đăng bài
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         {/* Error Alert */}
         {error && (
           <Alert variant="destructive">
@@ -443,38 +551,35 @@ const ContentEditorForm = ({
           </Alert>
         )}
 
-        {/* Actions */}
-        <div className="flex items-center gap-3 pt-4 border-t justify-between">
-          {onCancel && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
-              disabled={isLoading}
-            >
-              Hủy
-            </Button>
-          )}
-          <Button
-            type="submit"
-            disabled={
-              isLoading || isUploadingFile || form.formState.isDirty === false
-            }
-            loading={isLoading || isUploadingFile}
-            className="ml-auto"
-          >
-            {isLoading || isUploadingFile ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                {isUploadingFile ? "Đang upload..." : "Đang xử lý..."}
-              </>
-            ) : mode === "create" ? (
-              "Tạo mới"
-            ) : (
-              "Cập nhật"
+        {/* Form actions */}
+        <div className="flex items-center justify-end gap-4 pt-4 border-t">
+            {onCancel && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onCancel}
+                disabled={isLoading || isUploadingFile}
+              >
+                Hủy
+              </Button>
             )}
-          </Button>
-        </div>
+            <Button 
+              type="submit" 
+              disabled={isLoading || isUploadingFile}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              {isLoading || isUploadingFile ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Đang xử lý...
+                </>
+              ) : mode === 'create' ? (
+                'Đăng bài'
+              ) : (
+                'Cập nhật'
+              )}
+            </Button>
+          </div>
       </form>
     </Form>
   );
