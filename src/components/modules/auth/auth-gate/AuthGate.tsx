@@ -14,10 +14,10 @@ import { Props } from "./lib/types";
 const AuthGate: FC<Props> = (props) => {
   // Stores
   const authStore = useAuthStore(
-    useShallow(({ isSignedIn }) => ({ isSignedIn }))
+    useShallow(({ isSignedIn }) => ({ isSignedIn })),
   );
   const profileStore = useProfileStore(
-    useShallow(({ setStore }) => ({ setStore }))
+    useShallow(({ setStore }) => ({ setStore })),
   );
 
   // Queries
@@ -34,6 +34,7 @@ const AuthGate: FC<Props> = (props) => {
       username: getProfileUserQuery.data.username,
       email: getProfileUserQuery.data.email,
       role: getProfileUserQuery.data.role,
+      avatar: getProfileUserQuery.data.avatar,
       createdAt: getProfileUserQuery.data.createdAt
         ? new Date(getProfileUserQuery.data.createdAt)
         : null,

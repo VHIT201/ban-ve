@@ -14,6 +14,7 @@ import { useShallow } from "zustand/shallow";
 import { HEADER_USER_PROFILE_MENU } from "./lib/constant";
 import { UserRole } from "@/enums/roles";
 import { BASE_PATHS } from "@/constants/paths";
+import baseConfig from "@/configs/base";
 
 // Types
 interface UserData {
@@ -133,6 +134,8 @@ const HeaderUserProfile = () => {
       .substring(0, 2);
   };
 
+  const userAvatar = `${baseConfig.mediaDomain}/${userData.avatar}`;
+
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
@@ -143,7 +146,7 @@ const HeaderUserProfile = () => {
         >
           <Avatar className={cn("size-10 rounded-md")}>
             <AvatarImage
-              src={userData.avatar}
+              src={userAvatar}
               alt={userData.name}
               className="rounded-md"
             />
@@ -162,7 +165,7 @@ const HeaderUserProfile = () => {
         <div className="flex items-center gap-3 p-4">
           <Avatar className={cn("ring-2 ring-background rounded-lg")}>
             <AvatarImage
-              src={userData.avatar}
+              src={userAvatar}
               alt={userData.name}
               className="rounded-lg"
             />
