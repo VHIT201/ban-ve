@@ -6,11 +6,48 @@ import { Button } from "@/components/ui/button";
 import ContentTable from "@/components/modules/content/content-table";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import { useProfileStore } from "@/stores";
+import { useShallow } from "zustand/shallow";
+import { useGetApiContentMyContents } from "@/api/endpoints/content";
+import { ContentResponse } from "@/api/types/content";
+import { UseQueryResult } from "@tanstack/react-query";
+import { PaginationState } from "@tanstack/react-table";
+import { useState } from "react";
 
 // Internal
 
 const ContentList = () => {
+  // Stores
+  const authProfile = useProfileStore(useShallow(({ email }) => ({ email })));
+
+  // Hooks
   const navigate = useNavigate();
+
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0, // 0-based for React Table
+    pageSize: 10,
+  });
+
+  const getContentListQuery = useGetApiContentMyContents<{
+    data: ContentResponse[];
+    pagination: {
+      total: number;
+      totalPages: number;
+      currentPage: number;
+      itemsPerPage: number;
+    };
+  }>({
+    page: pagination.pageIndex + 1, // API 1-based
+    limit: pagination.pageSize,
+  }) as UseQueryResult<{
+    data: ContentResponse[];
+    pagination: {
+      total: number;
+      totalPages: number;
+      currentPage: number;
+      itemsPerPage: number;
+    };
+  }>;
 
   return (
     <Card className="space-y-6">
@@ -32,7 +69,11 @@ const ContentList = () => {
 
       {/* Content Table */}
       <CardContent>
-        <ContentTable />
+        <ContentTable
+          queryData={getContentListQuery}
+          pagination={pagination}
+          onPaginationChange={setPagination}
+        />
       </CardContent>
     </Card>
   );

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useEffect, useState } from "react";
+import { FC } from "react";
 
 // Hàm định dạng tiền tệ VNĐ
 const formatCurrency = (amount: number): string => {
@@ -16,39 +16,22 @@ interface CollaboratorRevenueData {
   totalRevenue: number;
   totalCommission: number;
   totalOrders: number;
-  commissionRate: number;
+  totalAdmin: number;
 }
 
-const MOCK_REVENUE_DATA: CollaboratorRevenueData = {
-  totalRevenue: 12500000,
-  totalCommission: 1250000,
-  totalOrders: 42,
-  commissionRate: 10,
-};
+interface Props {
+  loading?: boolean;
+  revenueData: CollaboratorRevenueData;
+}
 
-const CollaboratorRevenue = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [revenueData, setRevenueData] =
-    useState<CollaboratorRevenueData | null>(null);
-
-  useEffect(() => {
-    // Simulate API call
-    const timer = setTimeout(() => {
-      setRevenueData(MOCK_REVENUE_DATA);
-      setIsLoading(false);
-    }, 800);
-
-    return () => clearTimeout(timer);
-  }, []);
+const CollaboratorRevenue: FC<Props> = (props) => {
+  const { loading: isLoading, revenueData } = props;
 
   // Responsive grid columns and styles
   const gridCols = "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
-  const cardSpacing = "space-y-4 sm:space-y-0 sm:space-x-4";
-  const cardPadding = "p-4";
   const titleSize = "text-lg";
   const valueSize = "text-xl sm:text-2xl";
   const descriptionSize = "text-xs sm:text-sm";
-  const cardMinWidth = "min-w-0";
   const cardContentPadding = "p-4 pt-0";
 
   if (isLoading) {
@@ -152,6 +135,38 @@ const CollaboratorRevenue = () => {
             className={`flex flex-row items-center justify-between space-y-0 p-4 pb-2`}
           >
             <CardTitle className="text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+              Triết khấu quản trị
+            </CardTitle>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              className="h-4 w-4 text-muted-foreground"
+            >
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+            </svg>
+          </CardHeader>
+          <CardContent className={cardContentPadding}>
+            <div className={`font-bold ${valueSize} break-words`}>
+              {revenueData?.totalAdmin
+                ? formatCurrency(revenueData.totalAdmin)
+                : "0"}
+            </div>
+            <p className={`text-muted-foreground ${descriptionSize} mt-1`}>
+              Khấu trừ dành cho quản trị viên
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="h-full flex flex-col">
+          <CardHeader
+            className={`flex flex-row items-center justify-between space-y-0 p-4 pb-2`}
+          >
+            <CardTitle className="text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis">
               Tổng đơn hàng
             </CardTitle>
             <svg
@@ -174,36 +189,6 @@ const CollaboratorRevenue = () => {
             </div>
             <p className={`text-muted-foreground ${descriptionSize} mt-1`}>
               Tổng số đơn hàng đã bán
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="h-full flex flex-col">
-          <CardHeader
-            className={`flex flex-row items-center justify-between space-y-0 p-4 pb-2`}
-          >
-            <CardTitle className="text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis">
-              Tỷ lệ hoa hồng
-            </CardTitle>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              className="h-4 w-4 text-muted-foreground"
-            >
-              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-            </svg>
-          </CardHeader>
-          <CardContent className={cardContentPadding}>
-            <div className={`font-bold ${valueSize} break-words`}>
-              {revenueData?.commissionRate ?? 0}%
-            </div>
-            <p className={`text-muted-foreground ${descriptionSize} mt-1`}>
-              Tỷ lệ hoa hồng hiện tại
             </p>
           </CardContent>
         </Card>

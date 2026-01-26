@@ -73,7 +73,7 @@ function CollaboratorForm() {
         onError: () => {
           toast.error(`Gửi đơn thất bại`);
         },
-      }
+      },
     );
   };
 
@@ -168,7 +168,13 @@ function CollaboratorForm() {
   );
 }
 
-function CollaboratorStatus({ data }: { data: any }) {
+function CollaboratorStatus({
+  data,
+  loading,
+}: {
+  data: any;
+  loading: boolean;
+}) {
   const getStatusBadge = (status: CollaboratorResponseStatus) => {
     switch (status) {
       case CollaboratorResponseStatus.approved:
@@ -192,6 +198,18 @@ function CollaboratorStatus({ data }: { data: any }) {
     }
   };
 
+  console.log("Collaborator Status Data:", data?.earnings);
+
+  const revenueData = useMemo(() => {
+    const earnings = data?.earnings?.byStatus?.timeout || null;
+    return {
+      totalRevenue: earnings?.totalAmount || 0,
+      totalCommission: earnings?.totalCommission || 0,
+      totalOrders: earnings?.count || 0,
+      totalAdmin: earnings?.totalAdminAmount || 0,
+    };
+  }, [data]);
+
   return (
     <Tabs defaultValue="info">
       <TabsList>
@@ -200,7 +218,7 @@ function CollaboratorStatus({ data }: { data: any }) {
       </TabsList>
 
       <TabsContent value="info" className="space-y-6">
-        <CollaboratorRevenue />
+        <CollaboratorRevenue revenueData={revenueData} loading={loading} />
 
         <Card className="border border-gray-200 shadow-sm">
           <CardHeader className="border-b border-gray-100">
@@ -334,7 +352,10 @@ const Collaborator = () => {
   return (
     <div className="space-y-6">
       {collaboratorMe ? (
-        <CollaboratorStatus data={collaboratorMe} />
+        <CollaboratorStatus
+          data={collaboratorMe}
+          loading={getCollaboratorMeQuery.isFetching}
+        />
       ) : (
         <CollaboratorForm />
       )}
