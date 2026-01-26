@@ -103,6 +103,15 @@ const mainRoutes: RouteObject = {
       },
     },
     { ...profileRoutes },
+    {
+      path: app.contact.path,
+      lazy: async () => {
+        const { default: Contact } = await import("../views/contact/page");
+        return {
+          element: <Contact />,
+        };
+      },
+    },
   ],
 };
 
