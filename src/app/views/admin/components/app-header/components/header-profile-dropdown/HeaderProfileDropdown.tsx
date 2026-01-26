@@ -15,6 +15,16 @@ import { Link } from "react-router-dom";
 import { useAuthStore, useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
 import { BASE_PATHS } from "@/constants/paths";
+import baseConfig from "@/configs/base";
+
+const handleGetUsername = (name: string) => {
+  return name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase()
+    .substring(0, 2);
+};
 
 const HeaderProfileDropdown = () => {
   const authStore = useAuthStore(
@@ -42,8 +52,13 @@ const HeaderProfileDropdown = () => {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="h-8 w-8 rounded-lg">
-              <AvatarImage src="/avatars/01.png" alt="@shadcn" />
-              <AvatarFallback className="rounded-lg">SN</AvatarFallback>
+              <AvatarImage
+                src={`${baseConfig.mediaDomain}/${profileStore.avatar}`}
+                alt="@shadcn"
+              />
+              <AvatarFallback className="bg-linear-to-br from-primary/20 to-primary/10 text-primary font-semibold text-sm rounded-lg">
+                {handleGetUsername(profileStore?.username ?? "Unknown")}
+              </AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>

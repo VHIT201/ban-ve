@@ -20,6 +20,16 @@ import { Link } from "react-router-dom";
 import { useAuthStore, useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
 import { BASE_PATHS } from "@/constants/paths";
+import baseConfig from "@/configs/base";
+
+const handleGetUsername = (name: string) => {
+  return name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase()
+    .substring(0, 2);
+};
 
 const NavUser = () => {
   const { isMobile } = useSidebar();
@@ -56,10 +66,12 @@ const NavUser = () => {
               >
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
-                    src={profileStore.avatar}
+                    src={`${baseConfig.mediaDomain}/${profileStore.avatar}`}
                     alt={profileStore.username}
                   />
-                  <AvatarFallback className="rounded-lg">SN</AvatarFallback>
+                  <AvatarFallback className="rounded-md bg-linear-to-br from-primary/20 to-primary/10 text-primary font-semibold text-sm">
+                    {handleGetUsername(profileStore.username || "User")}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-start text-sm leading-tight">
                   <span className="truncate font-semibold">
@@ -77,13 +89,6 @@ const NavUser = () => {
             >
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
-                  <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage
-                      src={profileStore.avatar}
-                      alt={profileStore.username}
-                    />
-                    <AvatarFallback className="rounded-lg">SN</AvatarFallback>
-                  </Avatar>
                   <div className="grid flex-1 text-start text-sm leading-tight">
                     <span className="truncate font-semibold">
                       {profileStore.username}

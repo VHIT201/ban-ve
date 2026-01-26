@@ -3,13 +3,14 @@ import {
   useGetApiFileIdDownload,
 } from "@/api/endpoints/files";
 import { OrderItem } from "@/api/models";
+import { ResponseData } from "@/api/types/base";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { extractErrorMessage } from "@/utils/error";
 import { downloadFile, getFileIcon } from "@/utils/file";
 import { motion } from "framer-motion";
 import { DownloadIcon, FileText } from "lucide-react";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { toast } from "sonner";
 
 interface Props {
@@ -17,6 +18,22 @@ interface Props {
   item: OrderItem;
   index: number;
 }
+
+export const parseBlobError = async (error: any): Promise<string> => {
+  const blob = error?.response?.data;
+
+  if (blob instanceof Blob) {
+    const text = await blob.text();
+    try {
+      const json = JSON.parse(text);
+      return json.message ?? "Unknown error";
+    } catch {
+      return text;
+    }
+  }
+
+  return "Unknown error";
+};
 
 const FileItem: FC<Props> = ({ orderId, item, index }) => {
   // States
@@ -42,8 +59,13 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
       const res = await downloadFileMutation.refetch();
 
       if (res.error) {
-        toast.error("Tải tệp thất bại. Vui lòng thử lại.");
+        const message = await parseBlobError(res?.error);
+
+        console.log("Download file error response:", res);
+
+        toast.error(message || "Tải tệp thất bại. Vui lòng thử lại sau.");
         setIsError(true);
+
         return;
       }
 
@@ -67,12 +89,6 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
       );
     }
   };
-
-  useEffect(() => {
-    if (isError) {
-      toast.error("Bạn đã đạt giới hạn tải xuống (5 lần) cho đơn hàng này.");
-    }
-  }, [isError]);
 
   // Memos
   const FileIcon = getFileIcon("PDF");

@@ -62,11 +62,15 @@ MAIN_AXIOS_INSTANCE.interceptors.response.use(
       _retry?: boolean;
     };
 
+    console.log("Response error:", error);
+
     if (isUndefined(error.response)) {
       return Promise.reject(error);
     }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
+      console.log("Response error 1 : ", error);
+
       // Skip token refresh for login endpoint
       if (originalRequest.url?.includes("/api/auth/login")) {
         return Promise.reject(error);
@@ -89,6 +93,7 @@ MAIN_AXIOS_INSTANCE.interceptors.response.use(
       isRefreshing = true;
 
       try {
+        console.log("Response error 2 : ", error);
         const refreshToken = useAuthStore.getState().refreshToken;
 
         if (!refreshToken) {
@@ -120,6 +125,7 @@ MAIN_AXIOS_INSTANCE.interceptors.response.use(
 
         return MAIN_AXIOS_INSTANCE(originalRequest);
       } catch (refreshError) {
+        console.log("Response error 3 : ", error);
         processQueue(refreshError as AxiosError, null);
 
         useAuthStore.getState().resetStore();
@@ -132,6 +138,7 @@ MAIN_AXIOS_INSTANCE.interceptors.response.use(
       }
     }
 
+    console.log("Response error 4 : ", error);
     return Promise.reject(error);
   },
 );
