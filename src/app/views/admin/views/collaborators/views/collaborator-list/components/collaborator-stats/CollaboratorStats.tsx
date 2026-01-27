@@ -1,13 +1,21 @@
 // Core
 import { UseQueryResult } from "@tanstack/react-query";
-import { TrendingUp, Users, Package, DollarSign } from "lucide-react";
+import { TrendingUp, Users, Package, DollarSign, ShoppingCart } from "lucide-react";
 
 // App
 import { QueryBoundary } from "@/components/shared";
-import { useGetApiCollaboratorsStats } from "@/api/endpoints/collaborators";
+import { useGetApiCollaboratorsEarnings } from "@/api/endpoints/collaborators";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CollaboratorStats } from "@/api/models";
+import { GetApiCollaboratorsEarnings200 } from "@/api/models";
+
+interface ApiResponse {
+  message: string;
+  message_en: string;
+  data: GetApiCollaboratorsEarnings200;
+  status: string;
+  timeStamp: string;
+}
 
 interface StatCardProps {
   title: string;
@@ -48,10 +56,11 @@ const StatCardSkeleton = () => {
 };
 
 const CollaboratorStats = () => {
-  // Query
-  const getStatsQuery = useGetApiCollaboratorsStats() as UseQueryResult<
-    CollaboratorStats[]
+  // Earnings Query
+  const getEarningsQuery = useGetApiCollaboratorsEarnings() as UseQueryResult<
+    ApiResponse
   >;
+  
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -67,7 +76,7 @@ const CollaboratorStats = () => {
       </div>
 
       <QueryBoundary
-        query={getStatsQuery}
+        query={getEarningsQuery}
         fetchingView={
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <StatCardSkeleton />
@@ -77,8 +86,9 @@ const CollaboratorStats = () => {
           </div>
         }
       >
-        {(statsData) => {
-          const summary = statsData.summary || {};
+        {(earningsData) => {
+          const data = earningsData?.data || {};
+          const summary = data || {};
 
           return (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -86,35 +96,38 @@ const CollaboratorStats = () => {
                 title="Tổng cộng tác viên"
                 value={summary.totalCollaborators || 0}
                 icon={Users}
-                trend={`${statsData.data?.length || 0} đang hoạt động`}
+                trend={`${summary.collaborators?.length || 0} đang hoạt động`}
               />
               <StatCard
-                title="Tổng sản phẩm"
-                value={summary.totalResources || 0}
+                title="Tổng đơn hàng"
+                value={summary.totalOrders || 0}
                 icon={Package}
                 trend="Từ tất cả cộng tác viên"
               />
               <StatCard
-                title="Tổng thu nhập"
-                value={formatCurrency(summary.totalEarnings || 0)}
+                title="Tổng giá trị đơn"
+                value={formatCurrency(summary.totalAmount || 0)}
                 icon={DollarSign}
-                trend="Tích lũy"
+                trend="Tổng giá trị tất cả đơn hàng"
               />
               <StatCard
-                title="Hoa hồng TB"
-                value={`${summary.averageCommission?.toFixed(1) || 0}%`}
+                title="Tổng hoa hồng"
+                value={formatCurrency(summary.totalCommission || 0)}
                 icon={TrendingUp}
-                trend="Trung bình"
+                trend="70% của tổng giá trị"
               />
             </div>
           );
         }}
       </QueryBoundary>
 
+
       {/* Top Collaborators Table */}
-      <QueryBoundary query={getStatsQuery}>
-        {(statsData) => {
-          const topCollaborators = statsData.data?.slice(0, 5) || [];
+      <QueryBoundary query={getEarningsQuery}>
+        {(earningsData) => {
+          const data = earningsData?.data || {};
+          const summary = data || {};
+          const topCollaborators = summary.collaborators?.slice(0, 5) || [];
 
           if (topCollaborators.length === 0) {
             return null;
@@ -127,7 +140,7 @@ const CollaboratorStats = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {topCollaborators.map((collaborator, index) => (
+                  {topCollaborators.map((collaborator: any, index: number) => (
                     <div
                       key={collaborator._id}
                       className="flex items-center justify-between p-3 py-4 rounded-none border bg-card"
@@ -138,19 +151,19 @@ const CollaboratorStats = () => {
                         </div>
                         <div>
                           <div className="font-medium">
-                            {collaborator.username}
+                            {collaborator.email}
                           </div>
                           <div className="text-xs text-muted-foreground">
-                            {collaborator.email}
+                            Hoa hồng: {collaborator.commissionRate}%
                           </div>
                         </div>
                       </div>
                       <div className="text-right">
                         <div className="font-semibold">
-                          {formatCurrency(collaborator.totalEarnings)}
+                          {formatCurrency(collaborator.totalCommission || 0)}
                         </div>
                         <div className="text-xs text-muted-foreground">
-                          {collaborator.totalResources} tài nguyên
+                          {collaborator.totalOrders || 0} đơn hàng
                         </div>
                       </div>
                     </div>

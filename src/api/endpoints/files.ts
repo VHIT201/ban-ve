@@ -53,7 +53,7 @@ import type { ErrorType , BodyType } from '../mutator/custom-instance';
 /**
  * Tải lên file lên máy chủ và lưu thông tin vào cơ sở dữ liệu.
 Yêu cầu phải đăng nhập với quyền admin hoặc cộng tác viên.
-Hỗ trợ các định dạng: 3D, PDF, hình ảnh, tài liệu văn bản, v.v.
+Hỗ trợ các định dạng: 3D, PDF, ZIP, RAR, hình ảnh, tài liệu văn bản, v.v.
 
  * @summary Tải lên file (Yêu cầu quyền admin hoặc cộng tác viên)
  */
