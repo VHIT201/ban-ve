@@ -27,7 +27,14 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { useGetApiCategories } from "@/api/endpoints/categories";
-import { Loader2, DollarSign, AlertCircle, X, Check, FileText } from "lucide-react";
+import {
+  Loader2,
+  DollarSign,
+  AlertCircle,
+  X,
+  Check,
+  FileText,
+} from "lucide-react";
 import { ResponseData } from "@/api/types/base";
 import { Category } from "@/api/models";
 import { Uploader } from "@/components/shared";
@@ -39,11 +46,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 
 // Schema validation
-const contentFormSchema = z
+const contentFormSchemaStatic = z
   .object({
     title: z
       .string()
@@ -97,7 +103,7 @@ const contentFormSchema = z
     },
   );
 
-export type ContentFormValues = z.infer<typeof contentFormSchema>;
+export type ContentFormValues = z.infer<typeof contentFormSchemaStatic>;
 
 interface ContentEditorFormProps {
   mode?: "create" | "edit";
@@ -126,7 +132,75 @@ const ContentEditorForm = ({
   error = null,
   onCancel,
 }: ContentEditorFormProps) => {
-  console.log("DEFAULT VALUES :", defaultValues);
+  const contentFormSchema = useMemo(() => {
+    const baseSchema = z.object({
+      title: z
+        .string()
+        .min(3, "Tiêu đề phải có ít nhất 3 ký tự")
+        .max(200, "Tiêu đề không được vượt quá 200 ký tự"),
+      description: z
+        .string()
+        .min(10, "Mô tả phải có ít nhất 10 ký tự")
+        .max(1000, "Mô tả không được vượt quá 1000 ký tự"),
+      category_id: z.string().min(1, "Vui lòng chọn danh mục"),
+      price: z
+        .number({
+          required_error: "Vui lòng nhập giá",
+          invalid_type_error: "Giá phải là số",
+        })
+        .min(0, "Giá không được âm")
+        .max(1000000000, "Giá không được vượt quá 1 tỷ VNĐ"),
+      images: z
+        .array(z.instanceof(File))
+        .min(1, "Vui lòng chọn ít nhất 1 file")
+        .max(5, "Tối đa chỉ được chọn 5 file")
+        .refine(
+          (files) => files.every((file) => file.size <= 50 * 1024 * 1024),
+          "Kích thước file không được vượt quá 50MB",
+        )
+        .optional(),
+      content_file: z
+        .object({
+          _id: z.string(),
+          name: z.string(),
+          type: z.string(),
+          size: z.number(),
+        })
+        .optional(),
+    });
+
+    // Tạo schema cho files dựa trên mode và defaultFile
+    const filesSchema = defaultFile
+      ? z
+          .array(z.instanceof(File))
+          .max(5, "Tối đa chỉ được chọn 5 file")
+          .refine((files) => {
+            if (!files || files.length === 0) return true;
+            return files.every((file) => file.size <= 50 * 1024 * 1024);
+          }, "Kích thước file không được vượt quá 50MB")
+          .optional()
+      : z
+          .array(z.instanceof(File))
+          .min(1, "Vui lòng chọn ít nhất 1 file")
+          .max(5, "Tối đa chỉ được chọn 5 file")
+          .refine(
+            (files) => files.every((file) => file.size <= 50 * 1024 * 1024),
+            "Kích thước file không được vượt quá 50MB",
+          )
+          .optional();
+
+    return baseSchema.extend({ files: filesSchema }).refine(
+      (data) => {
+        const hasExistingFile = defaultFile || data.content_file;
+        const hasNewFiles = data.files && data.files.length > 0;
+        return hasExistingFile || hasNewFiles;
+      },
+      {
+        message: "Vui lòng chọn file hoặc giữ file hiện tại",
+        path: ["files"],
+      },
+    );
+  }, [defaultFile]);
 
   // Queries
   const { data: categoriesData, isLoading: isCategoriesLoading } =
@@ -244,59 +318,91 @@ const ContentEditorForm = ({
               <DialogDescription className="text-left pt-4 space-y-4">
                 <div className="space-y-4 text-gray-700">
                   <div className="p-4 bg-amber-50 border border-amber-100 rounded-lg">
-                    <h3 className="font-semibold text-amber-800 mb-2">THÔNG BÁO QUAN TRỌNG</h3>
+                    <h3 className="font-semibold text-amber-800 mb-2">
+                      THÔNG BÁO QUAN TRỌNG
+                    </h3>
                     <p className="text-sm">
-                      Trước khi đăng tải nội dung, vui lòng đọc kỹ các điều khoản sau:
+                      Trước khi đăng tải nội dung, vui lòng đọc kỹ các điều
+                      khoản sau:
                     </p>
                   </div>
-                  </div>
+                </div>
 
-                  <div className="p-4 bg-gray-50 rounded-lg">
-                    <h4 className="font-semibold mb-2">1. Miễn Trừ Trách Nhiệm</h4>
-                    <ul className="list-disc pl-5 space-y-2 text-sm">
-                      <li>Nền tảng không chịu trách nhiệm về nội dung do người dùng đăng tải.</li>
-                      <li>Bạn hoàn toàn chịu trách nhiệm về bản quyền và tính hợp pháp của nội dung.</li>
-                      <li>Chúng tôi có quyền gỡ bỏ bất kỳ nội dung nào vi phạm điều khoản dịch vụ.</li>
-                    </ul>
-                  </div>
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <h4 className="font-semibold mb-2">
+                    1. Miễn Trừ Trách Nhiệm
+                  </h4>
+                  <ul className="list-disc pl-5 space-y-2 text-sm">
+                    <li>
+                      Nền tảng không chịu trách nhiệm về nội dung do người dùng
+                      đăng tải.
+                    </li>
+                    <li>
+                      Bạn hoàn toàn chịu trách nhiệm về bản quyền và tính hợp
+                      pháp của nội dung.
+                    </li>
+                    <li>
+                      Chúng tôi có quyền gỡ bỏ bất kỳ nội dung nào vi phạm điều
+                      khoản dịch vụ.
+                    </li>
+                  </ul>
+                </div>
 
-                  <div className="p-4 bg-gray-50 rounded-lg">
-                    <h4 className="font-semibold mb-2">2. Thông Tin Bài Đăng</h4>
-                    <div className="space-y-2 text-sm">
-                      <p><span className="font-medium">Tiêu đề:</span> {formValues?.title || 'Chưa có tiêu đề'}</p>
-                      <p><span className="font-medium">Danh mục:</span> {
-                        categories.find(c => c._id === formValues?.category_id)?.name || 'Chưa chọn'
-                      }</p>
-                      <p><span className="font-medium">Giá:</span> {
-                        formValues?.price ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(formValues.price) : 'Miễn phí'
-                      }</p>
-                    </div>
-                  </div>
-
-                  <div className="p-4 bg-red-50 border border-red-100 rounded-lg">
-                    <h4 className="font-semibold text-red-700 mb-2">3. Cam Kết Của Người Đăng</h4>
-                    <p className="text-sm text-red-700">
-                      Bằng việc nhấn "Xác nhận đăng bài", bạn cam kết:
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <h4 className="font-semibold mb-2">2. Thông Tin Bài Đăng</h4>
+                  <div className="space-y-2 text-sm">
+                    <p>
+                      <span className="font-medium">Tiêu đề:</span>{" "}
+                      {formValues?.title || "Chưa có tiêu đề"}
                     </p>
-                    <ul className="list-disc pl-5 mt-2 space-y-1 text-sm text-red-700">
-                      <li>Tôi là chủ sở hữu hoặc có đầy đủ quyền đối với nội dung đăng tải</li>
-                      <li>Nội dung không vi phạm bản quyền hoặc quyền sở hữu trí tuệ</li>
-                      <li>Tôi đã đọc và đồng ý với tất cả điều khoản sử dụng</li>
-                    </ul>
+                    <p>
+                      <span className="font-medium">Danh mục:</span>{" "}
+                      {categories.find((c) => c._id === formValues?.category_id)
+                        ?.name || "Chưa chọn"}
+                    </p>
+                    <p>
+                      <span className="font-medium">Giá:</span>{" "}
+                      {formValues?.price
+                        ? new Intl.NumberFormat("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }).format(formValues.price)
+                        : "Miễn phí"}
+                    </p>
                   </div>
+                </div>
+
+                <div className="p-4 bg-red-50 border border-red-100 rounded-lg">
+                  <h4 className="font-semibold text-red-700 mb-2">
+                    3. Cam Kết Của Người Đăng
+                  </h4>
+                  <p className="text-sm text-red-700">
+                    Bằng việc nhấn "Xác nhận đăng bài", bạn cam kết:
+                  </p>
+                  <ul className="list-disc pl-5 mt-2 space-y-1 text-sm text-red-700">
+                    <li>
+                      Tôi là chủ sở hữu hoặc có đầy đủ quyền đối với nội dung
+                      đăng tải
+                    </li>
+                    <li>
+                      Nội dung không vi phạm bản quyền hoặc quyền sở hữu trí tuệ
+                    </li>
+                    <li>Tôi đã đọc và đồng ý với tất cả điều khoản sử dụng</li>
+                  </ul>
+                </div>
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="sm:justify-between pt-4 border-t">
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
+                type="button"
+                variant="outline"
                 onClick={() => setShowConfirmDialog(false)}
                 className="min-w-[100px]"
               >
                 Hủy bỏ
               </Button>
-              <Button 
-                type="button" 
+              <Button
+                type="button"
                 onClick={handleConfirmSubmit}
                 disabled={isLoading || isUploadingFile}
                 className="bg-blue-600 hover:bg-blue-700 min-w-[150px]"
@@ -553,33 +659,33 @@ const ContentEditorForm = ({
 
         {/* Form actions */}
         <div className="flex items-center justify-end gap-4 pt-4 border-t">
-            {onCancel && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onCancel}
-                disabled={isLoading || isUploadingFile}
-              >
-                Hủy
-              </Button>
-            )}
-            <Button 
-              type="submit" 
+          {onCancel && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onCancel}
               disabled={isLoading || isUploadingFile}
-              className="bg-blue-600 hover:bg-blue-700"
             >
-              {isLoading || isUploadingFile ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Đang xử lý...
-                </>
-              ) : mode === 'create' ? (
-                'Đăng bài'
-              ) : (
-                'Cập nhật'
-              )}
+              Hủy
             </Button>
-          </div>
+          )}
+          <Button
+            type="submit"
+            disabled={isLoading || isUploadingFile}
+            className="bg-blue-600 hover:bg-blue-700"
+          >
+            {isLoading || isUploadingFile ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Đang xử lý...
+              </>
+            ) : mode === "create" ? (
+              "Đăng bài"
+            ) : (
+              "Cập nhật"
+            )}
+          </Button>
+        </div>
       </form>
     </Form>
   );

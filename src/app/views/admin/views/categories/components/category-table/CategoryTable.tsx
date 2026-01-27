@@ -42,7 +42,7 @@ const CategoryTable: FC<Props> = (props) => {
   const navigate = useNavigate();
   const [editSelectRow, setEditSelectRow] = useState<Category | null>(null);
   const [deleteSelectRow, setDeleteSelectRow] = useState<Category | null>(null);
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 50 });
 
   // Queries
   const getCategoryList = useGetApiCategories({
@@ -203,6 +203,8 @@ const CategoryTable: FC<Props> = (props) => {
     setPagination(updater);
   };
 
+  console.log("Pagination Data:", pagination);
+
   // Columns
   const columns = useCategoryTableColumnsDefs({
     onEdit: handleColumnEdit,
@@ -221,8 +223,6 @@ const CategoryTable: FC<Props> = (props) => {
             mode === "with-children"
               ? activeQuery?.data?.children || []
               : activeQuery.data || [];
-
-          console.log("Display Data:", activeQuery);
 
           return (
             <DataTable
