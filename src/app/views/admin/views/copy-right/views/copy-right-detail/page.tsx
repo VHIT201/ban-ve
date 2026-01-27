@@ -42,7 +42,6 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { UseQueryResult } from "@tanstack/react-query";
-import { Response } from "@/api/types/base";
 
 const getStatusConfig = (status?: string) => {
   switch (status?.toLowerCase()) {
