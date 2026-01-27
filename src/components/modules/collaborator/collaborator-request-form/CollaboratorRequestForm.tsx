@@ -267,23 +267,23 @@ const CollaboratorRequestForm = ({
               <FormLabel>
                 Số tài khoản ngân hàng <span className="text-red-500">*</span>
               </FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-                  <Input
-                    placeholder="Nhập số tài khoản (6-20 chữ số)..."
-                    className="pl-10 font-mono"
-                    {...field}
-                    disabled={isDisabled}
-                    maxLength={20}
-                    onChange={(e) => {
-                      // Only allow numbers
-                      const value = e.target.value.replace(/\D/g, "");
-                      field.onChange(value);
-                    }}
-                  />
-                </div>
-              </FormControl>
+                <FormControl>
+                  <div className="relative">
+                    <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+                    <Input
+                      placeholder="Nhập số tài khoản (6-20 chữ số)..."
+                      className="pl-10 font-mono"
+                      {...field}
+                      disabled={isDisabled}
+                      maxLength={20}
+                      onChange={(e) => {
+                        // Only allow numbers
+                        const value = e.target.value.replace(/\D/g, "");
+                        field.onChange(value);
+                      }}
+                    />
+                  </div>
+                </FormControl>
               <FormDescription>
                 Số tài khoản ngân hàng để nhận hoa hồng (6-20 chữ số)
               </FormDescription>
@@ -301,27 +301,38 @@ const CollaboratorRequestForm = ({
               <FormLabel>
                 Ngân hàng <span className="text-red-500">*</span>
               </FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                disabled={isDisabled}
-              >
+              {isViewMode ? (
                 <FormControl>
-                  <SelectTrigger>
-                    <div className="flex items-center gap-2">
-                      <Building2 className="h-4 w-4 text-gray-500" />
-                      <SelectValue placeholder="Chọn ngân hàng" />
-                    </div>
-                  </SelectTrigger>
+                  <div className="flex items-center gap-2 p-3 border rounded-md bg-muted/50">
+                    <Building2 className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm">
+                      {field.value || "Chưa chọn ngân hàng"}
+                    </span>
+                  </div>
                 </FormControl>
-                <SelectContent className="max-h-[300px]">
-                  {vietnameseBanks.map((bank) => (
-                    <SelectItem key={bank} value={bank}>
-                      {bank}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              ) : (
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  disabled={isDisabled}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <div className="flex items-center gap-2">
+                        <Building2 className="h-4 w-4 text-gray-500" />
+                        <SelectValue placeholder="Chọn ngân hàng" />
+                      </div>
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="max-h-[300px]">
+                    {vietnameseBanks.map((bank) => (
+                      <SelectItem key={bank} value={bank}>
+                        {bank}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
               <FormDescription>
                 Chọn ngân hàng nơi bạn mở tài khoản
               </FormDescription>

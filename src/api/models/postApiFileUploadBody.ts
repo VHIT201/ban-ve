@@ -2,7 +2,7 @@
 
 export type PostApiFileUploadBody = {
   /** File cần tải lên (bắt buộc, tối đa 100MB)
-Hỗ trợ các định dạng: 3D, PDF, hình ảnh, tài liệu văn bản
+Hỗ trợ các định dạng: 3D, PDF, ZIP, RAR, hình ảnh, tài liệu văn bản
  */
   file: Blob;
   /** Ảnh minh họa 1 (tùy chọn, chỉ chấp nhận định dạng ảnh) */

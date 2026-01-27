@@ -5,5 +5,7 @@ export enum FileType {
   IMAGE = "IMAGE",
   WORD = "WORD",
   EXCEL = "EXCEL",
+  RAR = "RAR",
+  ZIP = "ZIP",
   OTHER = "OTHER",
 }

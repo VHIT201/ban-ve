@@ -6,22 +6,20 @@ import { UseQueryResult } from "@tanstack/react-query";
 import { OrderDataItem } from "./components";
 import { SearchX } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { useState } from "react";
 
 const OrderDataList = () => {
   // Queries
-  const getOrderListQuery = useGetApiOrders({
+  const getOrderListQuery = useGetApiOrders(undefined, {
     query: {
-      select: (data) =>
-        (data as unknown as QueryData<FilterData<Order[]>>).data,
+      select: (data: any) => data.data,
     },
-  }) as UseQueryResult<FilterData<Order[]>>;
+  }) as UseQueryResult<{ orders: Order[]; pagination: any }>;
 
   return (
     <div className="space-y-6">
       <QueryBoundary query={getOrderListQuery}>
         {(filteredOrders) => {
-          if (!filteredOrders || filteredOrders.orders.length === 0) {
+          if (!filteredOrders || !filteredOrders.orders || filteredOrders.orders.length === 0) {
             return (
               <Card className="border border-gray-200 shadow-sm">
                 <CardContent className="py-16 text-center">
