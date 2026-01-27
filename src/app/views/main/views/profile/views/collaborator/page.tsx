@@ -42,7 +42,10 @@ const collaboratorApplySchema = z.object({
   bankAccount: z
     .string()
     .min(1, "Vui lòng nhập số tài khoản")
+    .min(9, "Số tài khoản phải có ít nhất 9 chữ số")
+    .max(20, "Số tài khoản không được quá 20 chữ số")
     .regex(/^[0-9]+$/, "Số tài khoản chỉ được chứa số"),
+
   bankName: z.string().min(1, "Vui lòng nhập tên ngân hàng"),
   commissionRate: z
     .number()

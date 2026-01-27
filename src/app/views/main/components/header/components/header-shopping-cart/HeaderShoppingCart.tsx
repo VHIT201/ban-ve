@@ -21,6 +21,7 @@ import { cn } from "@/utils/ui";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
 import { generateImageRandom } from "@/utils/image";
+import baseConfig from "@/configs/base";
 
 interface HeaderShoppingCartProps {
   sync?: boolean;
@@ -149,7 +150,12 @@ const CartItemRow = ({ item, isLoading, onUpdate, onRemove }: any) => {
   return (
     <div className="flex gap-3 pb-4 border-b last:border-b-0">
       <img
-        src={generateImageRandom()}
+        src={
+          item.product.images?.[0]
+            ? `${baseConfig.mediaDomain}/${item.product.images[0]}`
+            : generateImageRandom()
+        }
+        alt={item.product?.title || "Sản phẩm"}
         className="w-14 h-14 rounded-md object-cover border"
       />
 

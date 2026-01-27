@@ -3,7 +3,7 @@ import {
   usePutApiContentId,
 } from "@/api/endpoints/content";
 import { ContentResponse } from "@/api/types/content";
-import { ContentInput } from "@/api/models/contentInput";
+import { ContentFormValues } from "@/components/modules/content/content-editor-form/ContentEditorForm";
 import { ContentEditorForm } from "@/components/modules/content";
 import { QueryBoundary } from "@/components/shared";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -11,13 +11,14 @@ import { BASE_PATHS } from "@/constants/paths";
 import { useRequiredPathParams } from "@/hooks";
 import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeftIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const ContentDetail = () => {
   // Hooks
   const { id } = useRequiredPathParams(["id"]);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   // Queries
   const getContentDetailQuery = useGetApiContentId(
@@ -28,7 +29,7 @@ const ContentDetail = () => {
   const editContentMutation = usePutApiContentId();
 
   // Methods
-const handleUpdateContent = async (contentId: string, formData: ContentInput) => {
+const handleUpdateContent = async (contentId: string, formData: ContentFormValues) => {
   try {
     await editContentMutation.mutateAsync({
       id: contentId,
@@ -37,17 +38,18 @@ const handleUpdateContent = async (contentId: string, formData: ContentInput) =>
         description: formData.description,
         category_id: formData.category_id,
         price: formData.price,
-        file_id: formData.file_id
+        file_id: formData.content_file?._id || ""
       }
     }, {
       onSuccess: async () => {
         await queryClient.invalidateQueries({ 
-          queryKey: ['/api/content', contentId] 
+          queryKey: ['/api/content/my-contents'] 
         });
         await queryClient.invalidateQueries({ 
           queryKey: ['/api/content'] 
         });
         toast.success("Nội dung đã được cập nhật thành công.");
+        navigate(BASE_PATHS.app.profile.collaborator.path);
       },
       onError: (error) => {
         console.error('Error updating content:', error);
@@ -85,14 +87,14 @@ const handleUpdateContent = async (contentId: string, formData: ContentInput) =>
               defaultValues={{
                 title: contentDetail.title,
                 description: contentDetail.description,
-                category_id: contentDetail.category_id._id,
+                category_id: contentDetail.category_id?._id || "",
                 price: contentDetail.price,
-               content_file: {
+                content_file: contentDetail.file_id ? {
                   _id: contentDetail.file_id._id,
                   name: contentDetail.file_id.name,
                   type: contentDetail.file_id.type,
                   size: contentDetail.file_id.size
-                }
+                } : undefined
               }}
               onSubmit={(data) => handleUpdateContent(contentDetail._id, data)}
             />

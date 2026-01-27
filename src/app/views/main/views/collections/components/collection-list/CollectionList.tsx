@@ -107,54 +107,54 @@ const CollectionList: FC<Props> = (props) => {
             pagination: GetApiContent200Pagination;
           };
 
-          const filteredValue = response.data.filter((item) => {
-            // if (
-            //   filter.categories.length > 0 &&
-            //   (!item.category || !filter.categories.includes(item.category._id))
-            // ) {
-            //   return false;
-            // }
+          // const filteredValue = response.data.filter((item) => {
+          //   // if (
+          //   //   filter.categories.length > 0 &&
+          //   //   (!item.category || !filter.categories.includes(item.category._id))
+          //   // ) {
+          //   //   return false;
+          //   // }
 
-            // const itemPrice = item.price || 0;
-            // if (
-            //   itemPrice < filter.priceRange[0] * 10000 ||
-            //   itemPrice > filter.priceRange[1] * 10000
-            // ) {
-            //   return false;
-            // }
+          //   // const itemPrice = item.price || 0;
+          //   // if (
+          //   //   itemPrice < filter.priceRange[0] * 10000 ||
+          //   //   itemPrice > filter.priceRange[1] * 10000
+          //   // ) {
+          //   //   return false;
+          //   // }
 
-            // // Search filter
-            // if (filter.searchQuery && filter.searchQuery.trim() !== "") {
-            //   const searchLower = filter.searchQuery.toLowerCase();
+          //   // // Search filter
+          //   // if (filter.searchQuery && filter.searchQuery.trim() !== "") {
+          //   //   const searchLower = filter.searchQuery.toLowerCase();
 
-            //   const titleMatch = (item.title || "")
-            //     .toLowerCase()
-            //     .includes(searchLower);
+          //   //   const titleMatch = (item.title || "")
+          //   //     .toLowerCase()
+          //   //     .includes(searchLower);
 
-            //   const descMatch = (item.description || "")
-            //     .toLowerCase()
-            //     .includes(searchLower);
+          //   //   const descMatch = (item.description || "")
+          //   //     .toLowerCase()
+          //   //     .includes(searchLower);
 
-            //   const categoryMatch = (item.category?.name || "")
-            //     .toLowerCase()
-            //     .includes(searchLower);
+          //   //   const categoryMatch = (item.category?.name || "")
+          //   //     .toLowerCase()
+          //   //     .includes(searchLower);
 
-            //   if (!titleMatch && !descMatch && !categoryMatch) {
-            //     return false;
-            //   }
-            // }
+          //   //   if (!titleMatch && !descMatch && !categoryMatch) {
+          //   //     return false;
+          //   //   }
+          //   // }
 
-            // if (!filter.categories.length) {
-            //   if (filter.categories.includes(item.category?._id! ?? "")) {
-            //     return false;
-            //   }
-            // }
+          //   // if (!filter.categories.length) {
+          //   //   if (filter.categories.includes(item.category?._id! ?? "")) {
+          //   //     return false;
+          //   //   }
+          //   // }
 
-            return true;
-          });
+          //   return true;
+          // });
 
           return {
-            data: sortProducts(filteredValue),
+            data: sortProducts(response.data),
             pagination: response.pagination,
           };
         },
