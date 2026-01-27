@@ -137,10 +137,10 @@ export const useContentTableColumnsDefs = (
       },
 
       {
-        accessorKey: "file_id",
+        accessorKey: "file",
         header: "File",
         cell: ({ row }) => {
-          const file = row.original.file_id;
+          const file = row.original.file;
           const fileConfig = getFileTypeConfig(file?.type);
 
           return (

@@ -17,5 +17,8 @@ export const FileType = {
   SKP: 'SKP',
   RVT: 'RVT',
   IFC: 'IFC',
+  ZIP: 'ZIP',
+  RAR: 'RAR',
+  '7Z': '7Z',
   OTHER: 'OTHER',
 } as const;

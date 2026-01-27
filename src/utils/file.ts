@@ -23,6 +23,10 @@ export const getFileIcon = (type: string): ComponentType => {
       return ExcelFileIcon;
     case FileType.EXCEL:
       return ExcelFileIcon;
+    case FileType.RAR:
+      return FileIcon;
+    case FileType.ZIP:
+      return FileIcon;
     default:
       return FileIcon;
   }
@@ -42,8 +46,12 @@ export const getFileTypeLabel = (type: string): string => {
       return "Word Document";
     case FileType.EXCEL:
       return "Excel Spreadsheet";
+    case FileType.RAR:
+      return "RAR File";
+    case FileType.ZIP:
+      return "ZIP File";
     default:
-      return "Unknown File Type";
+      return "OTHER";
   }
 };
 
