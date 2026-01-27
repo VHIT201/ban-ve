@@ -154,23 +154,6 @@ export const useColumns = (props: useCollaboratorTableColumnsDefsProps) => {
             });
           }
 
-          if (isPending && onApprove) {
-            actions.push({
-              label: "Phê duyệt",
-              onClick: () => onApprove(collaborator),
-              icon: CheckCircle2,
-            });
-          }
-
-          if (isPending && onReject) {
-            actions.push({
-              label: "Từ chối",
-              onClick: () => onReject(collaborator),
-              icon: XCircle,
-              variant: "destructive" as const,
-            });
-          }
-
           return (
             <DataTableActionCell
               rowName={`#${collaborator._id?.substring(0, 8)}`}
@@ -179,15 +162,7 @@ export const useColumns = (props: useCollaboratorTableColumnsDefsProps) => {
                 actions.length > 0 ? (
                   <>
                     {actions.map((action, index) => (
-                      <DropdownMenuItem
-                        key={index}
-                        onClick={action.onClick}
-                        className={
-                          action.variant === "destructive"
-                            ? "text-destructive"
-                            : ""
-                        }
-                      >
+                      <DropdownMenuItem key={index} onClick={action.onClick}>
                         <action.icon className="w-4 h-4 mr-2" />
                         {action.label}
                       </DropdownMenuItem>

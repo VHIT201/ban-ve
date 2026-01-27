@@ -173,19 +173,19 @@ export const useColumns = (props: usePaymentTableColumnsDefsProps) => {
           );
         },
       },
-   {
-    accessorKey: "paymentDetails.items[0].contentId",
-    header: "Content ID",
-    cell: ({ row }) => {
-      const paymentDetails = row.original.paymentDetails as any; 
-      const contentId = paymentDetails?.items?.[0]?.contentId;
-      return (
-        <span className="font-mono text-xs text-muted-foreground">
-          {contentId || "-"}
-        </span>
-      );
-    },
-  },
+      {
+        accessorKey: "paymentDetails.items[0].contentId",
+        header: "Content ID",
+        cell: ({ row }) => {
+          const paymentDetails = row.original.paymentDetails as any;
+          const contentId = paymentDetails?.items?.[0]?.contentId;
+          return (
+            <span className="font-mono text-xs text-muted-foreground">
+              {contentId || "-"}
+            </span>
+          );
+        },
+      },
       {
         accessorKey: "createdAt",
         header: "Ngày tạo",
@@ -211,7 +211,6 @@ export const useColumns = (props: usePaymentTableColumnsDefsProps) => {
         header: () => <MoreHorizontal className="h-4 w-4" />,
         cell: ({ row }) => {
           const payment = row.original;
-          const isCompleted = payment.status === "completed";
 
           const actions = [];
 
@@ -223,15 +222,6 @@ export const useColumns = (props: usePaymentTableColumnsDefsProps) => {
             });
           }
 
-          if (isCompleted && onRefund) {
-            actions.push({
-              label: "Hoàn tiền",
-              onClick: () => onRefund(payment),
-              icon: Ban,
-              variant: "destructive" as const,
-            });
-          }
-
           return (
             <DataTableActionCell
               rowName={`GD #${payment._id?.substring(0, 8)}`}
@@ -239,15 +229,7 @@ export const useColumns = (props: usePaymentTableColumnsDefsProps) => {
                 actions.length > 0 ? (
                   <>
                     {actions.map((action, index) => (
-                      <DropdownMenuItem
-                        key={index}
-                        onClick={action.onClick}
-                        className={
-                          action.variant === "destructive"
-                            ? "text-destructive"
-                            : ""
-                        }
-                      >
+                      <DropdownMenuItem key={index} onClick={action.onClick}>
                         <action.icon className="w-4 h-4 mr-2" />
                         {action.label}
                       </DropdownMenuItem>
@@ -260,8 +242,6 @@ export const useColumns = (props: usePaymentTableColumnsDefsProps) => {
         },
       },
     ],
-    [onView, onRefund]
+    [onView, onRefund],
   );
 };
-
-
