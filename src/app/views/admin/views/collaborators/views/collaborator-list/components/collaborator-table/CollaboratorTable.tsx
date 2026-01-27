@@ -36,7 +36,7 @@ const CollaboratorTable = () => {
         select: (data) =>
           (data as unknown as Response<CollaboratorRequest[]>).data,
       },
-    }
+    },
   ) as UseQueryResult<CollaboratorRequest[]>;
 
   // Methods
@@ -48,7 +48,7 @@ const CollaboratorTable = () => {
   };
 
   const handleStatusFilterChange = (
-    status: "pending" | "approved" | "rejected" | undefined
+    status: "pending" | "approved" | "rejected" | undefined,
   ) => {
     setStatusFilter(status);
     setPagination({ pageIndex: 1, pageSize: 10 }); // Reset to first page
@@ -87,7 +87,7 @@ const CollaboratorTable = () => {
               handleStatusFilterChange(
                 e.target.value === "all"
                   ? undefined
-                  : (e.target.value as "pending" | "approved" | "rejected")
+                  : (e.target.value as "pending" | "approved" | "rejected"),
               )
             }
             className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

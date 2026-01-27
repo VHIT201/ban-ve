@@ -33,9 +33,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ReportDialog } from "@/components/shared";
 import { ContentPaymentDialog } from "@/components/modules/content";
-import { 
+import {
   useGetApiFileIdDownload,
-  useGetApiFileDownloadFreeContentId 
+  useGetApiFileDownloadFreeContentId,
 } from "@/api/endpoints/files";
 import { toast } from "sonner";
 import { PaymentStatusDialog } from "@/components/modules/payment";
@@ -48,6 +48,10 @@ import EmailDialog from "@/components/shared/email-dialog";
 import { extractErrorMessage } from "@/utils/error";
 import { navigate } from "next/dist/client/components/segment-cache/navigation";
 import { Separator } from "@/components/ui/separator";
+import { useCountDown } from "@/hooks";
+import { BlueprintDownload } from "./components";
+
+const DOWNLOAD_COUNTDOWN_SECONDS = 5;
 
 const BlueprintDetailView: FC<Props> = (props) => {
   // Props
@@ -69,7 +73,12 @@ const BlueprintDetailView: FC<Props> = (props) => {
 
   // Cart Store
   const addItem = useCartStore((state) => state.addItem);
-  const totalItems = useCartStore((state) => state.totalItems);
+
+  // Hooks
+  const countdown = useCountDown({
+    seconds: DOWNLOAD_COUNTDOWN_SECONDS,
+    autoStart: false,
+  });
 
   // States
   const [selectedImage, setSelectedImage] = useState(0);
@@ -77,30 +86,9 @@ const BlueprintDetailView: FC<Props> = (props) => {
   const [isAdding, setIsAdding] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
 
-  // Queries
-  const getDownloadFileQuery = useGetApiFileIdDownload(
-    content.file_id?._id || "",
-    {},
-    {
-      query: {
-        enabled: false,
-      },
-    },
-  );
-
-  // Query cho tải file miễn phí
-  const getFreeDownloadQuery = useGetApiFileDownloadFreeContentId(
-    content._id || "",
-    {
-      query: {
-        enabled: false,
-      },
-    },
-  );
-
   // Mutations
   const createQRPaymentMutation = useCreateQrPayment({
-    orders: [{ contentId: content._id || '', quantity: 1 }],
+    orders: [{ contentId: content._id || "", quantity: 1 }],
   });
 
   // Methods
@@ -148,54 +136,6 @@ const BlueprintDetailView: FC<Props> = (props) => {
 
   const handleBuyNow = () => {
     setOpenEmailDialog(true);
-  };
-
-  const handleDownload = async () => {
-    try {
-      if (!content.file_id?._id) return;
-
-      // Nếu file miễn phí (giá = 0đ hoặc undefined)
-      if (content.price === 0 || content.price === undefined) {
-        const res = await getFreeDownloadQuery.refetch();
-        
-        if (res.error) {
-          toast.error(extractErrorMessage(res.error) || "Tải file thất bại");
-          return;
-        }
-
-        if (res.data) {
-          // Tạo link tải xuống
-          const url = window.URL.createObjectURL(new Blob([res.data]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', `${content.title || 'tai-xuong'}.pdf`);
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-          window.URL.revokeObjectURL(url);
-          
-          toast.success("Đã tải file miễn phí thành công");
-          return;
-        }
-      }
-
-      // Nếu file có phí, sử dụng API cũ
-      const res = await getDownloadFileQuery.refetch();
-
-      if (res.isError) {
-        const error = res.error as any;
-        if (error?.status === 402) {
-          toast.warning("Bạn cần mua sản phẩm để tải file");
-        } else {
-          toast.error("Có lỗi xảy ra khi tải file");
-        }
-        return;
-      }
-
-      toast.success("Đã tải file xuống thành công");
-    } catch (error) {
-      toast.error(extractErrorMessage(error));
-    }
   };
 
   const imageList =
@@ -353,7 +293,9 @@ const BlueprintDetailView: FC<Props> = (props) => {
                 Danh mục
               </div>
               <div className="font-medium text-white">
-                {typeof content.category_id === 'object' ? content.category_id.name : "N/A"}
+                {typeof content.category_id === "object"
+                  ? content.category_id.name
+                  : "N/A"}
               </div>
             </div>
           </div>
@@ -394,19 +336,8 @@ const BlueprintDetailView: FC<Props> = (props) => {
                 Mua ngay
               </Button>
             </div>
-            <Button
-              variant="outline"
-              size="lg"
-              className="w-full gap-2"
-              onClick={handleDownload}
-              disabled={(content.price === 0 || content.price === undefined) ? 
-                getFreeDownloadQuery.isLoading : 
-                getDownloadFileQuery.isLoading || !content.file_id?._id}
-            >
-              <DownloadIcon className="w-5 h-5 mr-2" />
-              Tải file xuống
-            </Button>
           </div>
+          <BlueprintDownload content={content} />
         </div>
       </div>
 
