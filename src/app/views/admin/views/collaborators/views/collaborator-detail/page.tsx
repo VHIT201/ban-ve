@@ -48,8 +48,8 @@ const CollaboratorDetail = () => {
     {
       query: {
         select: (data) =>
-          (data as unknown as Response<CollaboratorRequest[]>).data.find(
-            (request) => request._id === id
+          data.data.requests.find(
+            (request: CollaboratorRequest) => request._id === id
           )!,
       },
     }

@@ -15,11 +15,7 @@ const OrderDetail = () => {
   const { id: orderId } = useRequiredPathParams(["id"]);
 
   // Queries
-  const getOrderDetailQuery = useGetApiOrdersOrderId(orderId, {
-    query: {
-      select: (data) => (data as unknown as ResponseData<Order>).data,
-    },
-  }) as UseQueryResult<Order>;
+  const getOrderDetailQuery = useGetApiOrdersOrderId(orderId) as UseQueryResult<any>;
 
   return (
     <div className="space-y-6">
@@ -46,18 +42,18 @@ const OrderDetail = () => {
       {/* Content */}
       <QueryBoundary query={getOrderDetailQuery}>
         {(order) => (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left Column - Products List */}
-            <div className="lg:col-span-2">
-              <OrderDetailSoldList items={order.items} />
-            </div>
-
-            {/* Right Column - Order Information */}
-            <div className="lg:col-span-1">
-              <OrderDetailInformation order={order} />
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column - Products List */}
+          <div className="lg:col-span-2">
+            <OrderDetailSoldList items={getOrderDetailQuery.data.data.items} />
           </div>
-        )}
+
+          {/* Right Column - Order Information */}
+          <div className="lg:col-span-1">
+            <OrderDetailInformation order={getOrderDetailQuery.data.data} />
+          </div>
+        </div>
+      )}
       </QueryBoundary>
     </div>
   );
