@@ -50,17 +50,17 @@ const CategoryPage = () => {
   // Update filter when URL changes
   useEffect(() => {
     const categoryId = searchParams.get("category");
-    if (categoryId) {
-      setFilteredProducts((prev) => ({
-        ...prev,
-        categories: [categoryId],
-      }));
-    } else {
-      setFilteredProducts((prev) => ({
-        ...prev,
-        categories: [],
-      }));
-    }
+    const minPrice = searchParams.get("minPrice");
+    const maxPrice = searchParams.get("maxPrice");
+    
+    setFilteredProducts((prev) => ({
+      ...prev,
+      categories: categoryId ? [categoryId] : [],
+      priceRange: [
+        minPrice ? parseInt(minPrice) / 10000 : 0,
+        maxPrice ? parseInt(maxPrice) / 10000 : 10000000
+      ],
+    }));
   }, [searchParams]);
 
   // Handle filter change
