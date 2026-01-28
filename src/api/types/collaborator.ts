@@ -19,6 +19,7 @@ export interface CollaboratorRequest {
   rejectionReason?: string; // khi rejected
   createdAt: string;
   updatedAt: string;
+  isreject?: boolean; // field from API response
 }
 
 export interface CollaboratorMe {

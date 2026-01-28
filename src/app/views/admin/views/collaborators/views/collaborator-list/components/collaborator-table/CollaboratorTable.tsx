@@ -30,14 +30,18 @@ const CollaboratorTable = () => {
   const getCollaboratorsQuery = useGetApiCollaboratorsRequests(
     {
       status: statusFilter,
+      page: pagination.pageIndex,
+      limit: pagination.pageSize,
     },
     {
       query: {
-        select: (data) =>
-          (data as unknown as Response<CollaboratorRequest[]>).data,
+        select: (data) => ({
+          requests: data.data.requests,
+          pagination: data.data.pagination,
+        }),
       },
     },
-  ) as UseQueryResult<CollaboratorRequest[]>;
+  ) as UseQueryResult<{requests: CollaboratorRequest[], pagination: any}>;
 
   // Methods
   const handlePaginationChange = (newPagination: {
@@ -102,11 +106,11 @@ const CollaboratorTable = () => {
 
       {/* Table */}
       <QueryBoundary query={getCollaboratorsQuery}>
-        {(collaboratorData) => (
+        {(data) => (
           <DataTable
             columns={columns}
-            data={collaboratorData ?? []}
-            rowCount={collaboratorData.length || 0}
+            data={data?.requests ?? []}
+            rowCount={data?.pagination?.total ?? 0}
             manualPagination
             enablePagination
             state={{ pagination }}
