@@ -14,8 +14,8 @@ import baseConfig from "@/configs/base";
 const ProfileSidebar = () => {
   // Stores
   const profileStore = useProfileStore(
-    useShallow(({ username, email, avatar, setStore }) => ({
-      username,
+    useShallow(({ fullName, email, avatar, setStore }) => ({
+      fullName,
       email,
       avatar,
       setStore,
@@ -43,14 +43,14 @@ const ProfileSidebar = () => {
       await updateUserProfileMutation.mutateAsync({
         data: {
           avatar: resBlob.path,
-          username: profileStore.username,
+          fullname: profileStore.fullName,
           email: profileStore.email,
         },
       });
 
       profileStore.setStore({
         avatar: resBlob.path,
-        username: profileStore.username,
+        fullName: profileStore.fullName,
         email: profileStore.email,
       });
     } catch (error) {
@@ -68,12 +68,12 @@ const ProfileSidebar = () => {
         <div className="text-center p-6 border-b border-gray-100">
           <UploadAvatarDialog
             avatarUrl={`${baseConfig.mediaDomain}/${profileStore.avatar}`}
-            avatarAlt={profileStore.username!}
+            avatarAlt={profileStore.fullName!}
             onAvatarChange={handleChangeAvatar}
             className="mb-6"
           />
           <h3 className="font-semibold text-base text-primary mb-1">
-            {profileStore.username}
+            {profileStore.fullName}
           </h3>
           <p className="text-xs text-gray-500 truncate px-2">
             {profileStore.email}

@@ -31,7 +31,7 @@ const AuthGate: FC<Props> = (props) => {
 
   if (getProfileUserQuery.isSuccess) {
     profileStore.setStore({
-      username: getProfileUserQuery.data.username,
+      fullname: getProfileUserQuery.data.fullname,
       email: getProfileUserQuery.data.email,
       role: getProfileUserQuery.data.role,
       avatar: getProfileUserQuery.data.avatar,

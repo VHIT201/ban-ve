@@ -24,13 +24,13 @@ import { getRoleLabel, getRoleVariant } from "@/utils/role";
 import { toast } from "sonner";
 
 const personalFormSchema = z.object({
-  username: z
+  fullname: z
     .string()
-    .min(3, "Tên đăng nhập phải có ít nhất 3 ký tự")
-    .max(50, "Tên đăng nhập không được vượt quá 50 ký tự")
+    .min(3, "Họ và tên phải có ít nhất 3 ký tự")
+    .max(50, "Họ và tên không được vượt quá 50 ký tự")
     .regex(
       /^[\p{L}\s]+$/u,
-      "Tên đăng nhập chỉ được chứa chữ cái và khoảng trắng",
+      "Họ và tên chỉ được chứa chữ cái và khoảng trắng",
     ),
   email: z.string().email("Email không hợp lệ"),
 });
@@ -51,7 +51,7 @@ const PersonalFormView: FC<Props> = ({ onSubmit }) => {
   const form = useForm<PersonalFormData>({
     resolver: zodResolver(personalFormSchema),
     defaultValues: {
-      username: "",
+      fullname: "",
       email: "",
     },
   });
@@ -59,7 +59,7 @@ const PersonalFormView: FC<Props> = ({ onSubmit }) => {
   useEffect(() => {
     if (user) {
       form.reset({
-        username: user.username || "",
+        fullname: user.fullname || "",
         email: user.email || "",
       });
     }
@@ -143,10 +143,10 @@ const PersonalFormView: FC<Props> = ({ onSubmit }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
-                  name="username"
+                  name="fullname"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Tên đăng nhập</FormLabel>
+                      <FormLabel>Họ và tên</FormLabel>
                       <FormControl>
                         <Input
                           {...field}

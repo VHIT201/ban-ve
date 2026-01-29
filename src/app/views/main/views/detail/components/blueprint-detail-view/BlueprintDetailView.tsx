@@ -232,14 +232,14 @@ const BlueprintDetailView: FC<Props> = (props) => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>
+                {/* <DropdownMenuItem>
                   <HeartIcon className="size-4 mr-2" />
                   Yêu thích
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <ShareIcon className="size-4 mr-2" />
                   Chia sẻ
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 <DropdownMenuItem
                   variant="destructive"
                   onClick={() => setOpenReportDialog(true)}

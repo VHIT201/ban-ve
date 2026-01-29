@@ -12,14 +12,15 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Props, RegisterFormValues } from "./lib/types";
-import { User, MailIcon, LockIcon, Loader2Icon } from "lucide-react";
+import { User, MailIcon, LockIcon, Loader2Icon, Eye, EyeOff } from "lucide-react";
 import { FC, useState, useEffect } from "react";
 import {
-  DEFAULT_REGISTER_FORM_VALUES,
+
   REGISTER_FORM_SCHEMA,
 } from "./lib/constants";
 import { Link } from "react-router-dom";
@@ -31,10 +32,20 @@ const RegisterForm: FC<Props> = (props) => {
   // Props
   const { onSubmit } = props;
 
+  // State
+  const [alwaysShowConfirmPassword, setAlwaysShowConfirmPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   // Hooks
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(REGISTER_FORM_SCHEMA),
-    defaultValues: DEFAULT_REGISTER_FORM_VALUES,
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   });
 
   // Mutations
@@ -49,7 +60,7 @@ const RegisterForm: FC<Props> = (props) => {
       await registerMutation.mutateAsync({
         data: {
           email: values.email,
-          username: values.name,
+          fullname: values.name,
           password: values.password,
         },
       });
@@ -134,11 +145,20 @@ const RegisterForm: FC<Props> = (props) => {
                 <div className="relative">
                   <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="Nhập mật khẩu"
-                    className="pl-10 h-10"
+                    className="pl-10 pr-10 h-10"
+                    autoComplete="new-password"
                     {...field}
+                    maxLength={30}
                   />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    onClick={() => setShowPassword((v) => !v)}
+                  >
+                    {showPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                  </button>
                 </div>
               </FormControl>
               <FormMessage />
@@ -156,11 +176,20 @@ const RegisterForm: FC<Props> = (props) => {
                 <div className="relative">
                   <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"}
                     placeholder="Nhập lại mật khẩu"
-                    className="pl-10 h-10"
+                    className="pl-10 pr-10 h-10"
+                    autoComplete="new-password"
                     {...field}
+                    maxLength={30}
                   />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    onClick={() => setShowConfirmPassword((v) => !v)}
+                  >
+                    {showConfirmPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                  </button>
                 </div>
               </FormControl>
               <FormMessage />
