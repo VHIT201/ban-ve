@@ -43,9 +43,8 @@ const ContentDetail = () => {
         return;
       }
 
-      const fileUploadResponse = await uploadMediaMutation.uploadWithImages(
+      const fileUploadResponse = await uploadMediaMutation.uploadSingle(
         values.files[0],
-        values.files,
         {
           filename: values.files[0].name,
           dir: "contents",

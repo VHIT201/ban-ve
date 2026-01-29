@@ -106,7 +106,9 @@ const UploaderExistList: FC<Props> = (props) => {
             <CardContent className="p-4">
               <div className="flex items-start gap-4">
                 {/* File Icon */}
-                <FileIcon />
+                <div className="size-16">
+                  <FileIcon />
+                </div>
 
                 {/* File Info */}
                 <div className="flex-1 min-w-0">
