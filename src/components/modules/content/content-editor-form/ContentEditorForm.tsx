@@ -26,7 +26,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { useGetApiCategories } from "@/api/endpoints/categories";
+import {
+  useGetApiCategories,
+  useGetApiCategoriesAllTree,
+} from "@/api/endpoints/categories";
 import {
   Loader2,
   DollarSign,
@@ -37,7 +40,7 @@ import {
 } from "lucide-react";
 import { ResponseData } from "@/api/types/base";
 import { Category } from "@/api/models";
-import { Uploader } from "@/components/shared";
+import { TreeSelect, Uploader } from "@/components/shared";
 import { useUploadMedia } from "@/hooks";
 import {
   Dialog,
@@ -47,6 +50,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { TreeViewItem } from "@/components/shared/tree-view/TreeView";
+import { TreeNode } from "@/components/shared/tree-select/TreeSelect";
+import { isEmpty } from "lodash-es";
 
 // Schema validation
 const contentFormSchemaStatic = z
@@ -202,18 +208,6 @@ const ContentEditorForm = ({
     );
   }, [defaultFile]);
 
-  // Queries
-  const { data: categoriesData, isLoading: isCategoriesLoading } =
-    useGetApiCategories({
-      query: {
-        select: (data) =>
-          (data as unknown as ResponseData<{ categories: Category[] }>).data
-            .categories,
-      },
-    });
-
-  const categories = useMemo(() => categoriesData || [], [categoriesData]);
-
   // Upload media hook
   const { uploadSingle, isUploading: isUploadingFile } = useUploadMedia();
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -255,6 +249,32 @@ const ContentEditorForm = ({
     }).format(value);
   };
 
+  const selectedCategory = form.getValues("category_id");
+
+  const transformCategoryToTreeItem = (category: any): TreeViewItem => {
+    return {
+      id: category._id || category.id,
+      name: category.name,
+      type:
+        category.children && category.children.length > 0 ? "folder" : "file",
+      children: category.children?.map(transformCategoryToTreeItem),
+      checked: selectedCategory === (category._id || category.id),
+    };
+  };
+
+  // Queries
+  const getCategoryTreeQuery = useGetApiCategoriesAllTree({
+    query: {
+      select: (data) => (data as unknown as ResponseData<any>).data.tree,
+    },
+  });
+
+  const treeData = useMemo(() => {
+    if (!getCategoryTreeQuery.data) return [];
+    return getCategoryTreeQuery.data.map(transformCategoryToTreeItem);
+  }, [getCategoryTreeQuery.data]);
+
+  // Methods
   const handleSubmit = async (values: ContentFormValues) => {
     // Store form values and show confirmation dialog
     setFormValues(values);
@@ -303,6 +323,21 @@ const ContentEditorForm = ({
       setUploadError(error instanceof Error ? error.message : "Có lỗi xảy ra");
     }
   };
+
+  const mapApiNodeToTreeNode = (node: any[]): TreeNode[] => {
+    return node.map((item: any) => ({
+      id: item.id,
+      label: item.name,
+      disabled: false,
+      children: item.children?.length
+        ? mapApiNodeToTreeNode(item.children)
+        : undefined,
+    })) as TreeNode[];
+  };
+
+  const mappedTreeData: TreeNode[] = mapApiNodeToTreeNode(
+    treeData as any,
+  ) as TreeNode[];
 
   return (
     <Form {...form}>
@@ -355,11 +390,11 @@ const ContentEditorForm = ({
                       <span className="font-medium">Tiêu đề:</span>{" "}
                       {formValues?.title || "Chưa có tiêu đề"}
                     </p>
-                    <p>
+                    {/* <p>
                       <span className="font-medium">Danh mục:</span>{" "}
                       {categories.find((c) => c._id === formValues?.category_id)
                         ?.name || "Chưa chọn"}
-                    </p>
+                    </p> */}
                     <p>
                       <span className="font-medium">Giá:</span>{" "}
                       {formValues?.price
@@ -490,35 +525,21 @@ const ContentEditorForm = ({
               <FormLabel className="text-primary font-semibold tracking-wider">
                 Danh mục <span className="text-red-500">*</span>
               </FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                disabled={isLoading || isCategoriesLoading}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder={
-                        isCategoriesLoading
-                          ? "Đang tải danh mục..."
-                          : "Chọn danh mục"
-                      }
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category._id} value={category._id || ""}>
-                      <div className="flex items-center gap-2">
-                        <span>{category.name}</span>
-                        <Badge variant="outline" className="text-xs">
-                          /{category.slug}
-                        </Badge>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+
+              <TreeSelect
+                multiple={false}
+                nodes={mappedTreeData}
+                value={isEmpty(field.value) ? [] : [field.value]}
+                onChange={(selected) => {
+                  console.log("Selected category ID:", selected);
+                  field.onChange(selected[0] || "");
+                }}
+                placeholder="Chọn danh mục"
+                searchable={true}
+                maxHeight="350px"
+                className="max-w-[300px]"
+              />
+
               <FormDescription>
                 Chọn danh mục phù hợp để người dùng dễ dàng tìm kiếm
               </FormDescription>
