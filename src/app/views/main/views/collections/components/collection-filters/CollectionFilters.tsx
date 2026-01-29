@@ -95,7 +95,6 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
 
   // Memoize tree data
   const treeData = useMemo(() => {
-    console.log("getCategoryTreeQuery.data", getCategoryTreeQuery.data);
     if (!getCategoryTreeQuery.data) return [];
     return getCategoryTreeQuery.data.map(transformCategoryToTreeItem);
   }, [getCategoryTreeQuery.data, selectedCategories]);
@@ -199,22 +198,14 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
               )}
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-3">
-              <QueryBoundary query={getCategoryTreeQuery}>
-                {() => {
-                  return (
-                    <div>
-                      <TreeSelect
-                        nodes={mappedTreeData}
-                        value={selected}
-                        onChange={setSelected}
-                        placeholder="Chọn danh mục"
-                        searchable={true}
-                        maxHeight="350px"
-                      />
-                    </div>
-                  );
-                }}
-              </QueryBoundary>
+              <TreeSelect
+                nodes={mappedTreeData}
+                value={selected}
+                onChange={setSelected}
+                placeholder="Chọn danh mục"
+                searchable={true}
+                maxHeight="350px"
+              />
             </CollapsibleContent>
           </Collapsible>
           {/* Price Filter */}

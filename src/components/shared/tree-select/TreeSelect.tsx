@@ -1,7 +1,5 @@
-"use client";
-
 import React, { useState, useMemo } from "react";
-import { ChevronRight, ChevronDown, Search, X } from "lucide-react";
+import { ChevronRight, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -22,12 +20,14 @@ export interface TreeNode {
 }
 
 interface TreeSelectProps {
+  multiple?: boolean;
   nodes: TreeNode[];
   value: string[];
   onChange: (selected: string[]) => void;
   placeholder?: string;
   searchable?: boolean;
   maxHeight?: string;
+  className?: string;
 }
 
 interface ExpandedState {
@@ -104,6 +104,7 @@ const filterTree = (nodes: TreeNode[], query: string): FilteredTreeState => {
 
 // Tree node component
 interface TreeNodeComponentProps {
+  multiple?: boolean;
   node: TreeNode;
   selected: Set<string>;
   onToggle: (ids: string[]) => void;
@@ -113,6 +114,7 @@ interface TreeNodeComponentProps {
 }
 
 const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
+  multiple = true,
   node,
   selected,
   onToggle,
@@ -127,19 +129,25 @@ const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
 
   const handleCheckboxChange = (checked: boolean) => {
     if (!isDisabled) {
-      const childIds = node.children
-        ? node.children.map((child) => child.id)
-        : [];
-      const withChildrenIds = node.children
-        ? node.children
-            .map((child) => child?.children?.map((grandchild) => grandchild.id))
-            .filter(Boolean)
-            .flat()
-        : [];
+      if (multiple) {
+        const childIds = node.children
+          ? node.children.map((child) => child.id)
+          : [];
+        const withChildrenIds = node.children
+          ? (node.children
+              .map((child) =>
+                child?.children?.map((grandchild) => grandchild.id),
+              )
+              .filter(Boolean)
+              .flat() as string[])
+          : [];
 
-      node.children && node.children.length > 0
-        ? onToggle([node.id, ...childIds, ...withChildrenIds])
-        : onToggle([node.id]);
+        node.children && node.children.length > 0
+          ? onToggle([node.id, ...childIds, ...withChildrenIds])
+          : onToggle([node.id]);
+      } else {
+        onToggle([node.id]);
+      }
     }
   };
 
@@ -205,12 +213,14 @@ const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
 
 // Main Tree Select component
 const TreeSelect: React.FC<TreeSelectProps> = ({
+  multiple = true,
   nodes,
   value,
   onChange,
   placeholder = "Select items...",
   searchable = true,
   maxHeight = "400px",
+  className,
 }) => {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -230,17 +240,26 @@ const TreeSelect: React.FC<TreeSelectProps> = ({
   );
 
   const handleToggle = (ids: string[]) => {
-    const next = new Set(value);
+    if (multiple) {
+      const next = new Set(value);
 
-    ids.forEach((id) => {
-      if (next.has(id)) {
-        next.delete(id);
+      ids.forEach((id) => {
+        if (next.has(id)) {
+          next.delete(id);
+        } else {
+          next.add(id);
+        }
+      });
+
+      onChange(Array.from(next));
+    } else {
+      const id = ids[0];
+      if (selected.has(id)) {
+        onChange([]);
       } else {
-        next.add(id);
+        onChange([id]);
       }
-    });
-
-    onChange(Array.from(next));
+    }
   };
 
   const handleToggleExpand = (id: string) => {
@@ -270,7 +289,10 @@ const TreeSelect: React.FC<TreeSelectProps> = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between bg-transparent"
+          className={cn(
+            "w-full justify-between bg-transparent hover:bg-gray-100 hover:text-primary border-foreground/20",
+            className,
+          )}
         >
           <span className="truncate text-left">{selectedLabel}</span>
           <div className="flex items-center gap-1">
@@ -280,7 +302,10 @@ const TreeSelect: React.FC<TreeSelectProps> = ({
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w  p-0" align="start">
+      <PopoverContent
+        className="w-[var(--radix-popover-trigger-width)] p-0"
+        align="start"
+      >
         <div className="flex flex-col">
           {/* Search input */}
           {searchable && (
@@ -308,6 +333,7 @@ const TreeSelect: React.FC<TreeSelectProps> = ({
               ) : (
                 filteredNodes.map((node) => (
                   <TreeNodeComponent
+                    multiple={multiple}
                     key={node.id}
                     node={node}
                     selected={selected}
