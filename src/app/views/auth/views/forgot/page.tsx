@@ -36,7 +36,12 @@ const ForgotPassword = () => {
     },
   });
 
-  const resetPasswordMutation = usePostApiAuthResetPassword({});
+  const resetPasswordMutation = usePostApiAuthResetPassword({
+    mutation: {
+      retry: 0,
+    },
+  });
+  
 
   const handleResetPassword = useCallback(
     async (otp: string, newPassword: string) => {

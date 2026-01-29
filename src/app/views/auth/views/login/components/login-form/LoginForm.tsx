@@ -11,9 +11,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LOGIN_FORM_DEFAULT_VALUES, LOGIN_FORM_SCHEMA } from "./lib/constants";
 import { LoginFormValues } from "./lib/types";
-import { Loader2Icon, LockIcon, MailIcon } from "lucide-react";
+import { Loader2Icon, LockIcon, MailIcon, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Props } from "./lib/types";
 import { Link } from "react-router-dom";
 import { BASE_PATHS } from "@/constants/paths";
@@ -27,6 +27,9 @@ import { PostApiAuthLogin200Data } from "@/api/models";
 import { extractErrorMessage } from "@/utils/error";
 
 const LoginForm: FC<Props> = () => {
+  // State
+  const [showPassword, setShowPassword] = useState(false);
+
   // Stores
   const authStore = useAuthStore(
     useShallow(({ setStore }) => ({
@@ -120,11 +123,19 @@ const LoginForm: FC<Props> = () => {
                 <div className="relative">
                   <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="Nhập mật khẩu"
-                    className="pl-10 h-10"
+                    className="pl-10 pr-10 h-10"
+                    autoComplete="current-password"
                     {...field}
                   />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    onClick={() => setShowPassword((v) => !v)}
+                  >
+                    {showPassword ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                  </button>
                 </div>
               </FormControl>
               <FormMessage />

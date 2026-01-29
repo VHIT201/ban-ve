@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 // App
 import {
@@ -123,6 +124,7 @@ const formatDateTime = (dateString?: string): string => {
 const CopyRightDetail = () => {
   const navigate = useNavigate();
   const { id } = useRequiredPathParams(["id"]);
+  const queryClient = useQueryClient();
 
   // State
   const [isResolveDialogOpen, setIsResolveDialogOpen] = useState(false);
@@ -137,7 +139,15 @@ const CopyRightDetail = () => {
   }) as UseQueryResult<CopyrightReport>;
 
   // Mutations
-  const updateStatusMutation = usePutApiReportsReportIdStatus();
+  const updateStatusMutation = usePutApiReportsReportIdStatus({
+    mutation: {
+      onSuccess: () => {
+        // Invalidate queries to refetch data
+        queryClient.invalidateQueries({ queryKey: [`/api/reports/${id}`] });
+        queryClient.invalidateQueries({ queryKey: [`/api/reports`] });
+      },
+    },
+  });
 
   // Methods
   const handleUpdateStatus = async (
@@ -158,9 +168,6 @@ const CopyRightDetail = () => {
           ? "Báo cáo đã được giải quyết thành công"
           : "Báo cáo đã được từ chối",
       );
-
-      // Refetch data
-      getReportDetailQuery.refetch();
 
       // Close dialogs
       setIsResolveDialogOpen(false);
@@ -356,40 +363,45 @@ const CopyRightDetail = () => {
                       <CardTitle className="text-base">Người báo cáo</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      {report.reporterId ? (
+                      {report.reporterId || report.reporterEmail ? (
                         <div className="space-y-3">
                           <div className="flex items-center gap-3">
                             <Avatar className="w-12 h-12">
                               <AvatarFallback className="bg-linear-to-br from-blue-500 to-cyan-600 text-white">
-                                {report.reporterId.username?.[0]?.toUpperCase() ||
+                                {report.reporterId?.username?.[0]?.toUpperCase() ||
+                                  report.reporterEmail?.[0]?.toUpperCase() ||
                                   "?"}
                               </AvatarFallback>
                             </Avatar>
                             <div className="flex-1 min-w-0">
                               <p className="font-semibold truncate">
-                                {report.reporterId.username || "Không rõ"}
+                                {report.reporterEmail || report.reporterId?.email || "Không rõ"}
                               </p>
                               <p className="text-sm text-muted-foreground truncate">
-                                {report.reporterId.email || "Không có email"}
+                                {report.reporterEmail || report.reporterId?.email || "Không có email"}
                               </p>
                             </div>
                           </div>
                           <Separator />
                           <div className="space-y-2 text-sm">
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">ID:</span>
-                              <span className="font-mono text-xs">
-                                {report.reporterId._id?.substring(0, 12)}...
-                              </span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">
-                                Vai trò:
-                              </span>
-                              <Badge variant="outline">
-                                {report.reporterId.role || "User"}
-                              </Badge>
-                            </div>
+                            {report.reporterId?._id && (
+                              <div className="flex justify-between">
+                                <span className="text-muted-foreground">ID:</span>
+                                <span className="font-mono text-xs">
+                                  {report.reporterId._id.substring(0, 12)}...
+                                </span>
+                              </div>
+                            )}
+                            {report.reporterId?.role && (
+                              <div className="flex justify-between">
+                                <span className="text-muted-foreground">
+                                  Vai trò:
+                                </span>
+                                <Badge variant="outline">
+                                  {report.reporterId.role}
+                                </Badge>
+                              </div>
+                            )}
                           </div>
                         </div>
                       ) : (

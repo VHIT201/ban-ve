@@ -3,7 +3,7 @@ import type { GetApiCollaboratorsMe200Earnings } from './getApiCollaboratorsMe20
 
 export type GetApiCollaboratorsMe200 = {
   _id?: string;
-  username?: string;
+  fullname?: string;
   email?: string;
   role?: string;
   commissionRate?: number;

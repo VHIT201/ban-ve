@@ -23,6 +23,7 @@ const RESET_PASSWORD_SCHEMA = z
     newPassword: z
       .string()
       .min(8, "Mật khẩu phải có ít nhất 8 ký tự")
+      .max(30,"Mật khẩu phải có tối đa 30 ký tự")
       .regex(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>/?]).{8,}$/,
         "Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt"

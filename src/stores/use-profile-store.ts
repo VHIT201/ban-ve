@@ -8,9 +8,8 @@ import { createStorage } from "@/utils/storage";
 
 interface States {
   id: string | null;
-  username: string | undefined;
+  fullname: string | undefined;
   email: string | undefined;
-  fullName: string | undefined;
   avatar: string;
   role: string | null;
   createdAt: Date | null;
@@ -20,9 +19,8 @@ interface States {
 // Actions
 interface SetStoreActionValues {
   id?: States["id"];
-  username?: States["username"];
+  fullname?: States["fullname"];
   email?: States["email"];
-  fullName?: States["fullName"];
   avatar?: States["avatar"];
   role?: States["role"];
   createdAt?: States["createdAt"];
@@ -40,9 +38,8 @@ export type ProfileStore = States & Actions;
 // Constants
 export const INITIAL_STATES: States = {
   id: null,
-  username: undefined,
+  fullname: undefined,
   email: undefined,
-  fullName: undefined,
   avatar: "",
   role: null,
   createdAt: null,
@@ -57,9 +54,8 @@ const profileStore: StateCreator<ProfileStore> = (set) => ({
   // Actions
   setStore: ({
     id,
-    username,
+    fullname,
     email,
-    fullName,
     avatar,
     role,
     createdAt,
@@ -67,9 +63,8 @@ const profileStore: StateCreator<ProfileStore> = (set) => ({
   }) =>
     set((state) => ({
       id: isUndefined(id) ? state.id : id,
-      username: isUndefined(username) ? state.username : username,
+      fullname: isUndefined(fullname) ? state.fullname : fullname,
       email: isUndefined(email) ? state.email : email,
-      fullName: isUndefined(fullName) ? state.fullName : fullName,
       avatar: isUndefined(avatar) ? state.avatar : avatar,
       role: isUndefined(role) ? state.role : role,
       createdAt: isUndefined(createdAt) ? state.createdAt : createdAt,
