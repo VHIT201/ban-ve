@@ -5,6 +5,6 @@ export type PutApiAuthUpdateProfileBody = {
   fullname?: string;
   /** Email */
   email?: string;
-  /** URL avatar hoặc base64 string */
-  avatar?: string;
+  /** File ảnh đại diện tải lên từ máy */
+  avatar?: Blob;
 };

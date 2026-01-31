@@ -669,11 +669,21 @@ export const putApiAuthUpdateProfile = (
     putApiAuthUpdateProfileBody: BodyType<PutApiAuthUpdateProfileBody>,
  ) => {
       
-      
+      const formData = new FormData();
+if(putApiAuthUpdateProfileBody.fullname !== undefined) {
+ formData.append(`fullname`, putApiAuthUpdateProfileBody.fullname)
+ }
+if(putApiAuthUpdateProfileBody.email !== undefined) {
+ formData.append(`email`, putApiAuthUpdateProfileBody.email)
+ }
+if(putApiAuthUpdateProfileBody.avatar !== undefined) {
+ formData.append(`avatar`, putApiAuthUpdateProfileBody.avatar)
+ }
+
       return mainInstance<PutApiAuthUpdateProfile200>(
       {url: `/api/auth/update-profile`, method: 'PUT',
-      headers: {'Content-Type': 'application/json', },
-      data: putApiAuthUpdateProfileBody
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData
     },
       );
     }

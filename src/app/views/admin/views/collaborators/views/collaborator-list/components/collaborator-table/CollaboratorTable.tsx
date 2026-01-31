@@ -30,7 +30,7 @@ const CollaboratorTable = () => {
   const getCollaboratorsQuery = useGetApiCollaboratorsRequests(
     {
       status: statusFilter,
-      page: pagination.pageIndex,
+      page: pagination.pageIndex + 1, // Convert 0-based to 1-based for API
       limit: pagination.pageSize,
     },
     {
@@ -41,7 +41,9 @@ const CollaboratorTable = () => {
         }),
       },
     },
-  ) as UseQueryResult<{requests: CollaboratorRequest[], pagination: any}>;
+  ) as UseQueryResult<{requests: CollaboratorRequest[], pagination: any}> & {
+    refetch: () => void;
+  };
 
   // Methods
   const handlePaginationChange = (newPagination: {
@@ -55,7 +57,7 @@ const CollaboratorTable = () => {
     status: "pending" | "approved" | "rejected" | undefined,
   ) => {
     setStatusFilter(status);
-    setPagination({ pageIndex: 1, pageSize: 10 }); // Reset to first page
+    setPagination({ pageIndex: 0, pageSize: 10 }); // Reset to first page (0-based)
   };
 
   // Columns
@@ -65,16 +67,35 @@ const CollaboratorTable = () => {
     },
     onApprove: (collaborator) => {
       // TODO: Implement approve logic with mutation
+      // Ví dụ:
+      // approveMutation.mutate(collaborator._id, {
+      //   onSuccess: () => {
+      //     getCollaboratorsQuery.refetch();
+      //   }
+      // });
       console.log("Approve collaborator:", collaborator._id);
     },
     onReject: (collaborator) => {
       // TODO: Implement reject logic with mutation
+      // Ví dụ:
+      // rejectMutation.mutate(collaborator._id, {
+      //   onSuccess: () => {
+      //     getCollaboratorsQuery.refetch();
+      //   }
+      // });
       console.log("Reject collaborator:", collaborator._id);
     },
     onDelete: (collaborator) => {
       // TODO: Implement delete logic with mutation
+      // Ví dụ:
+      // deleteMutation.mutate(collaborator._id, {
+      //   onSuccess: () => {
+      //     getCollaboratorsQuery.refetch();
+      //   }
+      // });
       console.log("Delete collaborator:", collaborator._id);
     },
+    refetch: getCollaboratorsQuery.refetch,
   });
 
   return (
