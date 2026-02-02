@@ -36,6 +36,7 @@ import type { ErrorType } from '../mutator/custom-instance';
  */
 export const getApiAdminStats = (
     params?: GetApiAdminStatsParams,
+    params?: GetApiAdminStatsParams,
  signal?: AbortSignal
 ) => {
       
@@ -68,6 +69,7 @@ export const getGetApiAdminStatsInfiniteQueryOptions = <TData = InfiniteData<Awa
 
 const {query: queryOptions} = options ?? {};
 
+  const queryKey =  queryOptions?.queryKey ?? getGetApiAdminStatsInfiniteQueryKey(params);
   const queryKey =  queryOptions?.queryKey ?? getGetApiAdminStatsInfiniteQueryKey(params);
 
   
@@ -136,9 +138,11 @@ export const getGetApiAdminStatsQueryOptions = <TData = Awaited<ReturnType<typeo
 const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiAdminStatsQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getGetApiAdminStatsQueryKey(params);
 
   
 
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAdminStats>>> = ({ signal }) => getApiAdminStats(params, signal);
     const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAdminStats>>> = ({ signal }) => getApiAdminStats(params, signal);
 
       
