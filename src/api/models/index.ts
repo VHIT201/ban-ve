@@ -57,6 +57,7 @@ export * from './getApiAdminContentsPending200';
 export * from './getApiAdminContentsPending200Pagination';
 export * from './getApiAdminContentsPendingParams';
 export * from './getApiAdminStats200';
+export * from './getApiAdminStatsParams';
 export * from './getApiAuthMe200';
 export * from './getApiCart200';
 export * from './getApiCollaboratorsEarnings200';
