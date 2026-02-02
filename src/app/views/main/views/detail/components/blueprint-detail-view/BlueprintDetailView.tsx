@@ -309,7 +309,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
                     style: "currency",
                     currency: "VND",
                   }).format(content.price)
-                : "Liên hệ"}
+                : "Miễn phí"}
             </div>
           </div>
           <h6 className="text-white/50 text-md leading-relaxed">
@@ -354,7 +354,6 @@ const BlueprintDetailView: FC<Props> = (props) => {
               </div>
             </div>
           </div>
-          // ...
           {/* Action Buttons */}
           <div className="space-y-3 pt-4">
             <div className="flex gap-3">

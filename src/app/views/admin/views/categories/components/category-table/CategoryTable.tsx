@@ -1,5 +1,6 @@
 // App
 import { Category } from "@/api/models";
+import type { GetApiCategories200Pagination } from "@/api/models/getApiCategories200Pagination";
 
 // Internal
 import { DataTable, QueryBoundary } from "@/components/shared";
@@ -15,7 +16,7 @@ import {
   usePutApiCategoriesId,
 } from "@/api/endpoints/categories";
 import { UseQueryResult } from "@tanstack/react-query";
-import { FC, Fragment, useMemo, useState } from "react";
+import { FC, Fragment, useEffect, useMemo, useState } from "react";
 import CategoryDialog from "../category-dialog";
 import { toast } from "sonner";
 import {
@@ -42,26 +43,31 @@ const CategoryTable: FC<Props> = (props) => {
   const navigate = useNavigate();
   const [editSelectRow, setEditSelectRow] = useState<Category | null>(null);
   const [deleteSelectRow, setDeleteSelectRow] = useState<Category | null>(null);
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 50 });
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+
+  useEffect(() => {
+    setPagination({ pageIndex: 0, pageSize: 10 });
+  }, [id, mode]);
 
   // Queries
-  const getCategoryList = useGetApiCategories({
+  const getCategoryList = useGetApiCategories(
+    {
+      page: pagination.pageIndex + 1,
+      limit: pagination.pageSize,
+    },
+    {
     query: {
       enabled: mode === "all",
-      select: (data: any) => {
-        const result = data.data?.categories || [];
-        return result;
-      },
     },
-  }) as UseQueryResult<Category[]>;
+    },
+  ) as UseQueryResult<{ items: Category[]; pagination?: GetApiCategories200Pagination }>;
 
   const getCategoryChildrenList = useGetApiCategoriesIdChildren(id || "", {
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
+  }, {
     query: {
       enabled: mode === "children" && Boolean(id),
-      select: (data: any) => {
-        const result = data.data?.children || [];
-        return result;
-      },
     },
   }) as UseQueryResult<Category[]>;
 
@@ -70,10 +76,6 @@ const CategoryTable: FC<Props> = (props) => {
     {
       query: {
         enabled: mode === "with-children" && Boolean(id),
-        select: (data: any) => {
-          const result = data.data?.children || [];
-          return result;
-        },
       },
     },
   ) as UseQueryResult<Category[]>;
@@ -126,6 +128,16 @@ const CategoryTable: FC<Props> = (props) => {
     getCategoryWithChildrenList,
   ]);
 
+  useEffect(() => {
+    if (mode !== "all") return;
+
+    const total = (getCategoryList.data as any)?.pagination?.total ?? 0;
+    const maxPageIndex = Math.max(0, Math.ceil(total / pagination.pageSize) - 1);
+    if (pagination.pageIndex > maxPageIndex) {
+      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+    }
+  }, [getCategoryList.data, mode, pagination.pageIndex, pagination.pageSize]);
+
   // Methods
   const handleColumnEdit = (category: Category) => {
     setEditSelectRow(category);
@@ -162,9 +174,7 @@ const CategoryTable: FC<Props> = (props) => {
           name: values.name,
           description: values.description,
           parentId: id,
-          imageUrl: imageRes?.path
-            ? `${baseConfig.mediaDomain}${imageRes.path}`
-            : undefined,
+          imageUrl: imageRes?.url ?? undefined,
         },
       });
 
@@ -220,15 +230,20 @@ const CategoryTable: FC<Props> = (props) => {
       <QueryBoundary query={activeQuery}>
         {(activeData) => {
           const displayData =
-            mode === "with-children"
-              ? activeQuery?.data?.children || []
-              : activeQuery.data || [];
+            mode === "all"
+              ? ((activeData as any)?.data?.categories ?? [])
+              : ((activeData as any)?.data?.children ?? []);
+
+          const rowCount =
+            mode === "all"
+              ? (((activeData as any)?.pagination?.total ?? 0) as number)
+              : displayData.length;
 
           return (
             <DataTable
               columns={columns}
               data={displayData}
-              rowCount={displayData.length}
+              rowCount={rowCount}
               manualPagination
               enablePagination
               enableRowSelection

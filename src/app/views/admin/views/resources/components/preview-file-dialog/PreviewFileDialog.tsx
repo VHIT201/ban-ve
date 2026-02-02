@@ -1,4 +1,4 @@
-import { FileResponse } from "@/api/types/file";
+import { ResourceItemData } from "../../types/types";
 import { AlertDialogHeader } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,7 +25,7 @@ const getFileIcon = (type: string) => {
   return "📁";
 };
 interface Props {
-  previewItem: FileResponse | null;
+  previewItem: ResourceItemData | null;
   onClose: () => void;
 }
 

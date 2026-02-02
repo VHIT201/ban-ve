@@ -20,7 +20,7 @@ const CollaboratorTable = () => {
   const [pagination, setPagination] = useState<{
     pageIndex: number;
     pageSize: number;
-  }>({ pageIndex: 1, pageSize: 10 });
+  }>({ pageIndex: 0, pageSize: 10 });
 
   const [statusFilter, setStatusFilter] = useState<
     "pending" | "approved" | "rejected" | undefined
@@ -79,7 +79,7 @@ const CollaboratorTable = () => {
       // TODO: Implement reject logic with mutation
       // Ví dụ:
       // rejectMutation.mutate(collaborator._id, {
-      //   onSuccess: () => {
+      //   onSuccess: () => { 
       //     getCollaboratorsQuery.refetch();
       //   }
       // });

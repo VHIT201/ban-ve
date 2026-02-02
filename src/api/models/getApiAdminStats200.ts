@@ -1,8 +1,9 @@
 // @ts-nocheck
-import type { Stats } from './stats';
+import type { GetApiAdminStats200Range } from './getApiAdminStats200Range';
+import type { GetApiAdminStats200Data } from './getApiAdminStats200Data';
 
 export type GetApiAdminStats200 = {
   success?: boolean;
-  period?: 'week' | 'month' | 'quarter';
-  data?: Stats;
+  range?: GetApiAdminStats200Range;
+  data?: GetApiAdminStats200Data;
 };

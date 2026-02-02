@@ -24,7 +24,10 @@ const CopyRightTable = () => {
   }>({ pageIndex: 0, pageSize: 10 });
 
   const getCopyRightListQuery = useGetApiReports(
-    {},
+    {
+      page: pagination.pageIndex + 1,
+      limit: pagination.pageSize,
+    },
   ) as UseQueryResult<GetApiReports200>;
 
   // Methods
