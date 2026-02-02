@@ -28,7 +28,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import {
   useGetApiCategories,
-  useGetApiCategoriesAllTree,
 } from "@/api/endpoints/categories";
 import {
   Loader2,
@@ -78,8 +77,8 @@ const contentFormSchemaStatic = z
       .min(1, "Vui lòng chọn ít nhất 1 file")
       .max(5, "Tối đa chỉ được chọn 5 file")
       .refine(
-        (files) => files.every((file) => file.size <= 50 * 1024 * 1024),
-        "Kích thước file không được vượt quá 50MB",
+        (files) => files.every((file) => file.size <= 100 * 1024 * 1024),
+        "Kích thước file không được vượt quá 100MB",
       )
       .optional(),
     files: z
@@ -87,8 +86,8 @@ const contentFormSchemaStatic = z
       .min(1, "Vui lòng chọn ít nhất 1 file")
       .max(5, "Tối đa chỉ được chọn 5 file")
       .refine(
-        (files) => files.every((file) => file.size <= 50 * 1024 * 1024),
-        "Kích thước file không được vượt quá 50MB",
+        (files) => files.every((file) => file.size <= 100 * 1024 * 1024),
+        "Kích thước file không được vượt quá 100MB",
       )
       .optional(),
     content_file: z
@@ -161,8 +160,8 @@ const ContentEditorForm = ({
         .min(1, "Vui lòng chọn ít nhất 1 file")
         .max(5, "Tối đa chỉ được chọn 5 file")
         .refine(
-          (files) => files.every((file) => file.size <= 50 * 1024 * 1024),
-          "Kích thước file không được vượt quá 50MB",
+          (files) => files.every((file) => file.size <= 100 * 1024 * 1024),
+          "Kích thước file không được vượt quá 100MB",
         )
         .optional(),
       content_file: z
@@ -182,16 +181,16 @@ const ContentEditorForm = ({
           .max(5, "Tối đa chỉ được chọn 5 file")
           .refine((files) => {
             if (!files || files.length === 0) return true;
-            return files.every((file) => file.size <= 50 * 1024 * 1024);
-          }, "Kích thước file không được vượt quá 50MB")
+            return files.every((file) => file.size <= 100 * 1024 * 1024);
+          }, "Kích thước file không được vượt quá 100MB")
           .optional()
       : z
           .array(z.instanceof(File))
           .min(1, "Vui lòng chọn ít nhất 1 file")
           .max(5, "Tối đa chỉ được chọn 5 file")
           .refine(
-            (files) => files.every((file) => file.size <= 50 * 1024 * 1024),
-            "Kích thước file không được vượt quá 50MB",
+            (files) => files.every((file) => file.size <= 100 * 1024 * 1024),
+            "Kích thước file không được vượt quá 100MB",
           )
           .optional();
 
@@ -263,11 +262,16 @@ const ContentEditorForm = ({
   };
 
   // Queries
-  const getCategoryTreeQuery = useGetApiCategoriesAllTree({
-    query: {
-      select: (data) => (data as unknown as ResponseData<any>).data.tree,
+  const getCategoryTreeQuery = useGetApiCategories(
+    {
+      view: "tree",
     },
-  });
+    {
+      query: {
+        select: (data) => (data as unknown as ResponseData<any>).data.tree,
+      },
+    }
+  );
 
   const treeData = useMemo(() => {
     if (!getCategoryTreeQuery.data) return [];
@@ -603,7 +607,7 @@ const ContentEditorForm = ({
                     maxFiles={5}
                     value={field.value || []}
                     onChange={field.onChange}
-                    maxSize={50 * 1024 * 1024}
+                    maxSize={100 * 1024 * 1024}
                     accept={{ "image/*": [".png", ".jpg", ".jpeg", ".webp"] }}
                   >
                     <Uploader.DropZone>
@@ -616,7 +620,7 @@ const ContentEditorForm = ({
                 </div>
               </FormControl>
               <FormDescription>
-                Chọn ảnh sản phẩm (PNG, JPG, JPEG, WEBP, tối đa 50MB)
+                Chọn ảnh sản phẩm (PNG, JPG, JPEG, WEBP, tối đa 100MB)
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -638,7 +642,7 @@ const ContentEditorForm = ({
                     value={field.value || []}
                     onChange={field.onChange}
                     maxFiles={1}
-                    maxSize={50 * 1024 * 1024}
+                    maxSize={100 * 1024 * 1024}
                   >
                     <Uploader.DropZone>
                       <Uploader.Placeholder />
@@ -663,7 +667,7 @@ const ContentEditorForm = ({
                 </div>
               </FormControl>
               <FormDescription>
-                Chọn file bản vẽ (PDF hoặc DWG, tối đa 50MB)
+                Chọn file bản vẽ (PDF hoặc DWG, tối đa 100MB)
               </FormDescription>
               <FormMessage />
             </FormItem>

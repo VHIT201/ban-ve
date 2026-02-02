@@ -143,9 +143,12 @@ export const CategoryDetail = () => {
     isError,
     refetch,
   } = useGetApiCategoriesIdChildren(id ?? "", {
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
+  }, {
     query: {
       enabled: !!id,
-      queryKey: ["subcategories", id],
+      queryKey: ["subcategories", id, pagination.pageIndex + 1, pagination.pageSize],
     },
   });
 

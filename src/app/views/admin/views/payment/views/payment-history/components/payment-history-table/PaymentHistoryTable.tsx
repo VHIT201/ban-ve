@@ -6,8 +6,7 @@ import { useNavigate } from "react-router-dom";
 // App
 import { DataTable, QueryBoundary } from "@/components/shared";
 import { useGetApiPaymentsAll } from "@/api/endpoints/payments";
-import { GetApiPaymentsAll200 } from "@/api/models";
-
+  
 // Internal
 import { useColumns } from "./lib/hooks";
 import { PaymentTableRow } from "./lib/types";
@@ -17,20 +16,26 @@ const PaymentHistoryTable = () => {
   const [pagination, setPagination] = useState<{
     pageIndex: number;
     pageSize: number;
-  }>({ pageIndex: 1, pageSize: 10 });
+  }>({ pageIndex: 0, pageSize: 10 });
 
   // Query
   const getPaymentHistoryQuery = useGetApiPaymentsAll(
     {
-      page: pagination.pageIndex,
+      page: pagination.pageIndex + 1,
       limit: pagination.pageSize,
     },
     {
       query: {
-        select: (data) => (data as GetApiPaymentsAll200).data || [],
+        select: (data) => {
+          const response = data as any;
+          return {
+            data: response?.data || [],
+            pagination: response?.pagination || { total: 0 }
+          };
+        },
       },
     }
-  ) as UseQueryResult<PaymentTableRow[]>;
+  ) as UseQueryResult<{ data: PaymentTableRow[]; pagination: { total: number; page: number; limit: number; totalPages: number } }>;
 
   // Hooks
   const navigate = useNavigate();
@@ -72,8 +77,8 @@ const PaymentHistoryTable = () => {
         {(paymentData) => (
           <DataTable
             columns={columns}
-            data={paymentData ?? []}
-            rowCount={paymentData?.length || 0}
+            data={paymentData?.data ?? []}
+            rowCount={paymentData?.pagination?.total || 0}
             manualPagination
             enablePagination
             state={{ pagination }}

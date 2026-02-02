@@ -221,7 +221,7 @@ export const useContentTableColumnsDefs = (
         header: "Người tạo",
         cell: ({ row }) => {
           const createdBy = row.original.createdBy;
-          const initials = createdBy?.username?.[0]?.toUpperCase() || "?";
+          const initials = createdBy?.fullname?.[0]?.toUpperCase() || "?";
 
           return (
             <div className="flex items-center gap-2 min-w-[140px]">
@@ -230,7 +230,7 @@ export const useContentTableColumnsDefs = (
               </Avatar>
               <div className="flex flex-col gap-0.5 flex-1 min-w-0">
                 <div className="text-sm font-medium text-gray-900 truncate">
-                  {createdBy?.username || "Không rõ"}
+                  {createdBy?.fullname || "Không rõ"}
                 </div>
                 {createdBy?.email && (
                   <div className="text-xs text-gray-500 truncate">

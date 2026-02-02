@@ -25,6 +25,17 @@ import type {
 
 import type {
   Category,
+  GetApiCategories200,
+  GetApiCategoriesAllFlat200,
+  GetApiCategoriesAllFlatParams,
+  GetApiCategoriesAllTree200,
+  GetApiCategoriesAllTreeParams,
+  GetApiCategoriesId200,
+  GetApiCategoriesIdChildren200,
+  GetApiCategoriesIdChildrenParams,
+  GetApiCategoriesIdWithChildren200,
+  GetApiCategoriesIdWithChildrenParams,
+  GetApiCategoriesParams,
   PostApiCategoriesBody,
   PutApiCategoriesIdBody
 } from '../models';
@@ -104,13 +115,14 @@ export const usePostApiCategories = <TError = ErrorType<void>,
  * @summary Lấy danh sách tất cả danh mục gốc (không có parentId)
  */
 export const getApiCategories = (
-    
+    params?: GetApiCategoriesParams,
  signal?: AbortSignal
 ) => {
       
       
-      return mainInstance<Category[]>(
-      {url: `/api/categories`, method: 'GET', signal
+      return mainInstance<GetApiCategories200>(
+      {url: `/api/categories`, method: 'GET',
+        params, signal
     },
       );
     }
@@ -118,75 +130,75 @@ export const getApiCategories = (
 
 
 
-export const getGetApiCategoriesInfiniteQueryKey = () => {
+export const getGetApiCategoriesInfiniteQueryKey = (params?: GetApiCategoriesParams,) => {
     return [
-    'infinite', `/api/categories`
+    'infinite', `/api/categories`, ...(params ? [params]: [])
     ] as const;
     }
 
-export const getGetApiCategoriesQueryKey = () => {
+export const getGetApiCategoriesQueryKey = (params?: GetApiCategoriesParams,) => {
     return [
-    `/api/categories`
+    `/api/categories`, ...(params ? [params]: [])
     ] as const;
     }
 
     
-export const getGetApiCategoriesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCategories>>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, }
+export const getGetApiCategoriesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCategories>>, GetApiCategoriesParams['page']>, TError = ErrorType<unknown>>(params?: GetApiCategoriesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData, QueryKey, GetApiCategoriesParams['page']>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesInfiniteQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesInfiniteQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategories>>> = ({ signal }) => getApiCategories(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategories>>, QueryKey, GetApiCategoriesParams['page']> = ({ signal, pageParam }) => getApiCategories({...params, 'page': pageParam || params?.['page']}, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData, QueryKey, GetApiCategoriesParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetApiCategoriesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCategories>>>
 export type GetApiCategoriesInfiniteQueryError = ErrorType<unknown>
 
 
-export function useGetApiCategoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategories>>>, TError = ErrorType<unknown>>(
-  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>> & Pick<
+export function useGetApiCategoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategories>>, GetApiCategoriesParams['page']>, TError = ErrorType<unknown>>(
+ params: undefined |  GetApiCategoriesParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData, QueryKey, GetApiCategoriesParams['page']>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategories>>,
           TError,
-          Awaited<ReturnType<typeof getApiCategories>>
+          Awaited<ReturnType<typeof getApiCategories>>, QueryKey
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCategoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategories>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>> & Pick<
+export function useGetApiCategoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategories>>, GetApiCategoriesParams['page']>, TError = ErrorType<unknown>>(
+ params?: GetApiCategoriesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData, QueryKey, GetApiCategoriesParams['page']>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategories>>,
           TError,
-          Awaited<ReturnType<typeof getApiCategories>>
+          Awaited<ReturnType<typeof getApiCategories>>, QueryKey
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCategoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategories>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, }
+export function useGetApiCategoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategories>>, GetApiCategoriesParams['page']>, TError = ErrorType<unknown>>(
+ params?: GetApiCategoriesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData, QueryKey, GetApiCategoriesParams['page']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Lấy danh sách tất cả danh mục gốc (không có parentId)
  */
 
-export function useGetApiCategoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategories>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, }
+export function useGetApiCategoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategories>>, GetApiCategoriesParams['page']>, TError = ErrorType<unknown>>(
+ params?: GetApiCategoriesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData, QueryKey, GetApiCategoriesParams['page']>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiCategoriesInfiniteQueryOptions(options)
+  const queryOptions = getGetApiCategoriesInfiniteQueryOptions(params,options)
 
   const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -198,16 +210,16 @@ export function useGetApiCategoriesInfinite<TData = InfiniteData<Awaited<ReturnT
 
 
 
-export const getGetApiCategoriesQueryOptions = <TData = Awaited<ReturnType<typeof getApiCategories>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, }
+export const getGetApiCategoriesQueryOptions = <TData = Awaited<ReturnType<typeof getApiCategories>>, TError = ErrorType<unknown>>(params?: GetApiCategoriesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategories>>> = ({ signal }) => getApiCategories(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategories>>> = ({ signal }) => getApiCategories(params, signal);
 
       
 
@@ -221,7 +233,7 @@ export type GetApiCategoriesQueryError = ErrorType<unknown>
 
 
 export function useGetApiCategories<TData = Awaited<ReturnType<typeof getApiCategories>>, TError = ErrorType<unknown>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>> & Pick<
+ params: undefined |  GetApiCategoriesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategories>>,
           TError,
@@ -231,7 +243,7 @@ export function useGetApiCategories<TData = Awaited<ReturnType<typeof getApiCate
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCategories<TData = Awaited<ReturnType<typeof getApiCategories>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>> & Pick<
+ params?: GetApiCategoriesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategories>>,
           TError,
@@ -241,7 +253,7 @@ export function useGetApiCategories<TData = Awaited<ReturnType<typeof getApiCate
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCategories<TData = Awaited<ReturnType<typeof getApiCategories>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, }
+ params?: GetApiCategoriesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -249,11 +261,11 @@ export function useGetApiCategories<TData = Awaited<ReturnType<typeof getApiCate
  */
 
 export function useGetApiCategories<TData = Awaited<ReturnType<typeof getApiCategories>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, }
+ params?: GetApiCategoriesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategories>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiCategoriesQueryOptions(options)
+  const queryOptions = getGetApiCategoriesQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -269,13 +281,14 @@ export function useGetApiCategories<TData = Awaited<ReturnType<typeof getApiCate
  * @summary Lấy tất cả danh mục (dạng danh sách phẳng, bao gồm danh mục con)
  */
 export const getApiCategoriesAllFlat = (
-    
+    params?: GetApiCategoriesAllFlatParams,
  signal?: AbortSignal
 ) => {
       
       
-      return mainInstance<Category[]>(
-      {url: `/api/categories/all/flat`, method: 'GET', signal
+      return mainInstance<GetApiCategoriesAllFlat200>(
+      {url: `/api/categories/all/flat`, method: 'GET',
+        params, signal
     },
       );
     }
@@ -283,75 +296,75 @@ export const getApiCategoriesAllFlat = (
 
 
 
-export const getGetApiCategoriesAllFlatInfiniteQueryKey = () => {
+export const getGetApiCategoriesAllFlatInfiniteQueryKey = (params?: GetApiCategoriesAllFlatParams,) => {
     return [
-    'infinite', `/api/categories/all/flat`
+    'infinite', `/api/categories/all/flat`, ...(params ? [params]: [])
     ] as const;
     }
 
-export const getGetApiCategoriesAllFlatQueryKey = () => {
+export const getGetApiCategoriesAllFlatQueryKey = (params?: GetApiCategoriesAllFlatParams,) => {
     return [
-    `/api/categories/all/flat`
+    `/api/categories/all/flat`, ...(params ? [params]: [])
     ] as const;
     }
 
     
-export const getGetApiCategoriesAllFlatInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData>>, }
+export const getGetApiCategoriesAllFlatInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, GetApiCategoriesAllFlatParams['page']>, TError = ErrorType<unknown>>(params?: GetApiCategoriesAllFlatParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData, QueryKey, GetApiCategoriesAllFlatParams['page']>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesAllFlatInfiniteQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesAllFlatInfiniteQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>> = ({ signal }) => getApiCategoriesAllFlat(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, QueryKey, GetApiCategoriesAllFlatParams['page']> = ({ signal, pageParam }) => getApiCategoriesAllFlat({...params, 'page': pageParam || params?.['page']}, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData, QueryKey, GetApiCategoriesAllFlatParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetApiCategoriesAllFlatInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>>
 export type GetApiCategoriesAllFlatInfiniteQueryError = ErrorType<unknown>
 
 
-export function useGetApiCategoriesAllFlatInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>>, TError = ErrorType<unknown>>(
-  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData>> & Pick<
+export function useGetApiCategoriesAllFlatInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, GetApiCategoriesAllFlatParams['page']>, TError = ErrorType<unknown>>(
+ params: undefined |  GetApiCategoriesAllFlatParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData, QueryKey, GetApiCategoriesAllFlatParams['page']>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategoriesAllFlat>>,
           TError,
-          Awaited<ReturnType<typeof getApiCategoriesAllFlat>>
+          Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, QueryKey
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCategoriesAllFlatInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData>> & Pick<
+export function useGetApiCategoriesAllFlatInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, GetApiCategoriesAllFlatParams['page']>, TError = ErrorType<unknown>>(
+ params?: GetApiCategoriesAllFlatParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData, QueryKey, GetApiCategoriesAllFlatParams['page']>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategoriesAllFlat>>,
           TError,
-          Awaited<ReturnType<typeof getApiCategoriesAllFlat>>
+          Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, QueryKey
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCategoriesAllFlatInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData>>, }
+export function useGetApiCategoriesAllFlatInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, GetApiCategoriesAllFlatParams['page']>, TError = ErrorType<unknown>>(
+ params?: GetApiCategoriesAllFlatParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData, QueryKey, GetApiCategoriesAllFlatParams['page']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Lấy tất cả danh mục (dạng danh sách phẳng, bao gồm danh mục con)
  */
 
-export function useGetApiCategoriesAllFlatInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData>>, }
+export function useGetApiCategoriesAllFlatInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, GetApiCategoriesAllFlatParams['page']>, TError = ErrorType<unknown>>(
+ params?: GetApiCategoriesAllFlatParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData, QueryKey, GetApiCategoriesAllFlatParams['page']>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiCategoriesAllFlatInfiniteQueryOptions(options)
+  const queryOptions = getGetApiCategoriesAllFlatInfiniteQueryOptions(params,options)
 
   const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -363,16 +376,16 @@ export function useGetApiCategoriesAllFlatInfinite<TData = InfiniteData<Awaited<
 
 
 
-export const getGetApiCategoriesAllFlatQueryOptions = <TData = Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData>>, }
+export const getGetApiCategoriesAllFlatQueryOptions = <TData = Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError = ErrorType<unknown>>(params?: GetApiCategoriesAllFlatParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesAllFlatQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesAllFlatQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>> = ({ signal }) => getApiCategoriesAllFlat(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>> = ({ signal }) => getApiCategoriesAllFlat(params, signal);
 
       
 
@@ -386,7 +399,7 @@ export type GetApiCategoriesAllFlatQueryError = ErrorType<unknown>
 
 
 export function useGetApiCategoriesAllFlat<TData = Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError = ErrorType<unknown>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData>> & Pick<
+ params: undefined |  GetApiCategoriesAllFlatParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategoriesAllFlat>>,
           TError,
@@ -396,7 +409,7 @@ export function useGetApiCategoriesAllFlat<TData = Awaited<ReturnType<typeof get
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCategoriesAllFlat<TData = Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData>> & Pick<
+ params?: GetApiCategoriesAllFlatParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategoriesAllFlat>>,
           TError,
@@ -406,7 +419,7 @@ export function useGetApiCategoriesAllFlat<TData = Awaited<ReturnType<typeof get
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCategoriesAllFlat<TData = Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData>>, }
+ params?: GetApiCategoriesAllFlatParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -414,11 +427,11 @@ export function useGetApiCategoriesAllFlat<TData = Awaited<ReturnType<typeof get
  */
 
 export function useGetApiCategoriesAllFlat<TData = Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData>>, }
+ params?: GetApiCategoriesAllFlatParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllFlat>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiCategoriesAllFlatQueryOptions(options)
+  const queryOptions = getGetApiCategoriesAllFlatQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -434,13 +447,14 @@ export function useGetApiCategoriesAllFlat<TData = Awaited<ReturnType<typeof get
  * @summary Lấy cây danh mục (dạng phân cấp, hierarchical)
  */
 export const getApiCategoriesAllTree = (
-    
+    params?: GetApiCategoriesAllTreeParams,
  signal?: AbortSignal
 ) => {
       
       
-      return mainInstance<void>(
-      {url: `/api/categories/all/tree`, method: 'GET', signal
+      return mainInstance<GetApiCategoriesAllTree200>(
+      {url: `/api/categories/all/tree`, method: 'GET',
+        params, signal
     },
       );
     }
@@ -448,75 +462,75 @@ export const getApiCategoriesAllTree = (
 
 
 
-export const getGetApiCategoriesAllTreeInfiniteQueryKey = () => {
+export const getGetApiCategoriesAllTreeInfiniteQueryKey = (params?: GetApiCategoriesAllTreeParams,) => {
     return [
-    'infinite', `/api/categories/all/tree`
+    'infinite', `/api/categories/all/tree`, ...(params ? [params]: [])
     ] as const;
     }
 
-export const getGetApiCategoriesAllTreeQueryKey = () => {
+export const getGetApiCategoriesAllTreeQueryKey = (params?: GetApiCategoriesAllTreeParams,) => {
     return [
-    `/api/categories/all/tree`
+    `/api/categories/all/tree`, ...(params ? [params]: [])
     ] as const;
     }
 
     
-export const getGetApiCategoriesAllTreeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllTree>>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData>>, }
+export const getGetApiCategoriesAllTreeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, GetApiCategoriesAllTreeParams['page']>, TError = ErrorType<unknown>>(params?: GetApiCategoriesAllTreeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData, QueryKey, GetApiCategoriesAllTreeParams['page']>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesAllTreeInfiniteQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesAllTreeInfiniteQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesAllTree>>> = ({ signal }) => getApiCategoriesAllTree(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, QueryKey, GetApiCategoriesAllTreeParams['page']> = ({ signal, pageParam }) => getApiCategoriesAllTree({...params, 'page': pageParam || params?.['page']}, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData, QueryKey, GetApiCategoriesAllTreeParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetApiCategoriesAllTreeInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCategoriesAllTree>>>
 export type GetApiCategoriesAllTreeInfiniteQueryError = ErrorType<unknown>
 
 
-export function useGetApiCategoriesAllTreeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllTree>>>, TError = ErrorType<unknown>>(
-  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData>> & Pick<
+export function useGetApiCategoriesAllTreeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, GetApiCategoriesAllTreeParams['page']>, TError = ErrorType<unknown>>(
+ params: undefined |  GetApiCategoriesAllTreeParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData, QueryKey, GetApiCategoriesAllTreeParams['page']>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategoriesAllTree>>,
           TError,
-          Awaited<ReturnType<typeof getApiCategoriesAllTree>>
+          Awaited<ReturnType<typeof getApiCategoriesAllTree>>, QueryKey
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCategoriesAllTreeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllTree>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData>> & Pick<
+export function useGetApiCategoriesAllTreeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, GetApiCategoriesAllTreeParams['page']>, TError = ErrorType<unknown>>(
+ params?: GetApiCategoriesAllTreeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData, QueryKey, GetApiCategoriesAllTreeParams['page']>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategoriesAllTree>>,
           TError,
-          Awaited<ReturnType<typeof getApiCategoriesAllTree>>
+          Awaited<ReturnType<typeof getApiCategoriesAllTree>>, QueryKey
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCategoriesAllTreeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllTree>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData>>, }
+export function useGetApiCategoriesAllTreeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, GetApiCategoriesAllTreeParams['page']>, TError = ErrorType<unknown>>(
+ params?: GetApiCategoriesAllTreeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData, QueryKey, GetApiCategoriesAllTreeParams['page']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Lấy cây danh mục (dạng phân cấp, hierarchical)
  */
 
-export function useGetApiCategoriesAllTreeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllTree>>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData>>, }
+export function useGetApiCategoriesAllTreeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, GetApiCategoriesAllTreeParams['page']>, TError = ErrorType<unknown>>(
+ params?: GetApiCategoriesAllTreeParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData, QueryKey, GetApiCategoriesAllTreeParams['page']>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiCategoriesAllTreeInfiniteQueryOptions(options)
+  const queryOptions = getGetApiCategoriesAllTreeInfiniteQueryOptions(params,options)
 
   const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -528,16 +542,16 @@ export function useGetApiCategoriesAllTreeInfinite<TData = InfiniteData<Awaited<
 
 
 
-export const getGetApiCategoriesAllTreeQueryOptions = <TData = Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData>>, }
+export const getGetApiCategoriesAllTreeQueryOptions = <TData = Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError = ErrorType<unknown>>(params?: GetApiCategoriesAllTreeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesAllTreeQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesAllTreeQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesAllTree>>> = ({ signal }) => getApiCategoriesAllTree(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesAllTree>>> = ({ signal }) => getApiCategoriesAllTree(params, signal);
 
       
 
@@ -551,7 +565,7 @@ export type GetApiCategoriesAllTreeQueryError = ErrorType<unknown>
 
 
 export function useGetApiCategoriesAllTree<TData = Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError = ErrorType<unknown>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData>> & Pick<
+ params: undefined |  GetApiCategoriesAllTreeParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategoriesAllTree>>,
           TError,
@@ -561,7 +575,7 @@ export function useGetApiCategoriesAllTree<TData = Awaited<ReturnType<typeof get
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCategoriesAllTree<TData = Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData>> & Pick<
+ params?: GetApiCategoriesAllTreeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategoriesAllTree>>,
           TError,
@@ -571,7 +585,7 @@ export function useGetApiCategoriesAllTree<TData = Awaited<ReturnType<typeof get
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCategoriesAllTree<TData = Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData>>, }
+ params?: GetApiCategoriesAllTreeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -579,11 +593,11 @@ export function useGetApiCategoriesAllTree<TData = Awaited<ReturnType<typeof get
  */
 
 export function useGetApiCategoriesAllTree<TData = Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData>>, }
+ params?: GetApiCategoriesAllTreeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesAllTree>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiCategoriesAllTreeQueryOptions(options)
+  const queryOptions = getGetApiCategoriesAllTreeQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -600,12 +614,14 @@ export function useGetApiCategoriesAllTree<TData = Awaited<ReturnType<typeof get
  */
 export const getApiCategoriesIdChildren = (
     id: string,
+    params?: GetApiCategoriesIdChildrenParams,
  signal?: AbortSignal
 ) => {
       
       
-      return mainInstance<void>(
-      {url: `/api/categories/${id}/children`, method: 'GET', signal
+      return mainInstance<GetApiCategoriesIdChildren200>(
+      {url: `/api/categories/${id}/children`, method: 'GET',
+        params, signal
     },
       );
     }
@@ -613,75 +629,82 @@ export const getApiCategoriesIdChildren = (
 
 
 
-export const getGetApiCategoriesIdChildrenInfiniteQueryKey = (id?: string,) => {
+export const getGetApiCategoriesIdChildrenInfiniteQueryKey = (id?: string,
+    params?: GetApiCategoriesIdChildrenParams,) => {
     return [
-    'infinite', `/api/categories/${id}/children`
+    'infinite', `/api/categories/${id}/children`, ...(params ? [params]: [])
     ] as const;
     }
 
-export const getGetApiCategoriesIdChildrenQueryKey = (id?: string,) => {
+export const getGetApiCategoriesIdChildrenQueryKey = (id?: string,
+    params?: GetApiCategoriesIdChildrenParams,) => {
     return [
-    `/api/categories/${id}/children`
+    `/api/categories/${id}/children`, ...(params ? [params]: [])
     ] as const;
     }
 
     
-export const getGetApiCategoriesIdChildrenInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData>>, }
+export const getGetApiCategoriesIdChildrenInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, GetApiCategoriesIdChildrenParams['page']>, TError = ErrorType<void>>(id: string,
+    params?: GetApiCategoriesIdChildrenParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData, QueryKey, GetApiCategoriesIdChildrenParams['page']>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesIdChildrenInfiniteQueryKey(id);
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesIdChildrenInfiniteQueryKey(id,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>> = ({ signal }) => getApiCategoriesIdChildren(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, QueryKey, GetApiCategoriesIdChildrenParams['page']> = ({ signal, pageParam }) => getApiCategoriesIdChildren(id,{...params, 'page': pageParam || params?.['page']}, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData, QueryKey, GetApiCategoriesIdChildrenParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetApiCategoriesIdChildrenInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>>
 export type GetApiCategoriesIdChildrenInfiniteQueryError = ErrorType<void>
 
 
-export function useGetApiCategoriesIdChildrenInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>>, TError = ErrorType<void>>(
- id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData>> & Pick<
+export function useGetApiCategoriesIdChildrenInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, GetApiCategoriesIdChildrenParams['page']>, TError = ErrorType<void>>(
+ id: string,
+    params: undefined |  GetApiCategoriesIdChildrenParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData, QueryKey, GetApiCategoriesIdChildrenParams['page']>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategoriesIdChildren>>,
           TError,
-          Awaited<ReturnType<typeof getApiCategoriesIdChildren>>
+          Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, QueryKey
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCategoriesIdChildrenInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData>> & Pick<
+export function useGetApiCategoriesIdChildrenInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, GetApiCategoriesIdChildrenParams['page']>, TError = ErrorType<void>>(
+ id: string,
+    params?: GetApiCategoriesIdChildrenParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData, QueryKey, GetApiCategoriesIdChildrenParams['page']>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategoriesIdChildren>>,
           TError,
-          Awaited<ReturnType<typeof getApiCategoriesIdChildren>>
+          Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, QueryKey
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCategoriesIdChildrenInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData>>, }
+export function useGetApiCategoriesIdChildrenInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, GetApiCategoriesIdChildrenParams['page']>, TError = ErrorType<void>>(
+ id: string,
+    params?: GetApiCategoriesIdChildrenParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData, QueryKey, GetApiCategoriesIdChildrenParams['page']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Lấy danh mục con của một danh mục cụ thể
  */
 
-export function useGetApiCategoriesIdChildrenInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData>>, }
+export function useGetApiCategoriesIdChildrenInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, GetApiCategoriesIdChildrenParams['page']>, TError = ErrorType<void>>(
+ id: string,
+    params?: GetApiCategoriesIdChildrenParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData, QueryKey, GetApiCategoriesIdChildrenParams['page']>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiCategoriesIdChildrenInfiniteQueryOptions(id,options)
+  const queryOptions = getGetApiCategoriesIdChildrenInfiniteQueryOptions(id,params,options)
 
   const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -693,16 +716,17 @@ export function useGetApiCategoriesIdChildrenInfinite<TData = InfiniteData<Await
 
 
 
-export const getGetApiCategoriesIdChildrenQueryOptions = <TData = Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData>>, }
+export const getGetApiCategoriesIdChildrenQueryOptions = <TData = Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError = ErrorType<void>>(id: string,
+    params?: GetApiCategoriesIdChildrenParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesIdChildrenQueryKey(id);
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesIdChildrenQueryKey(id,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>> = ({ signal }) => getApiCategoriesIdChildren(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>> = ({ signal }) => getApiCategoriesIdChildren(id,params, signal);
 
       
 
@@ -716,7 +740,8 @@ export type GetApiCategoriesIdChildrenQueryError = ErrorType<void>
 
 
 export function useGetApiCategoriesIdChildren<TData = Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError = ErrorType<void>>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData>> & Pick<
+ id: string,
+    params: undefined |  GetApiCategoriesIdChildrenParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategoriesIdChildren>>,
           TError,
@@ -726,7 +751,8 @@ export function useGetApiCategoriesIdChildren<TData = Awaited<ReturnType<typeof 
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCategoriesIdChildren<TData = Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData>> & Pick<
+ id: string,
+    params?: GetApiCategoriesIdChildrenParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategoriesIdChildren>>,
           TError,
@@ -736,7 +762,8 @@ export function useGetApiCategoriesIdChildren<TData = Awaited<ReturnType<typeof 
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCategoriesIdChildren<TData = Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData>>, }
+ id: string,
+    params?: GetApiCategoriesIdChildrenParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -744,11 +771,12 @@ export function useGetApiCategoriesIdChildren<TData = Awaited<ReturnType<typeof 
  */
 
 export function useGetApiCategoriesIdChildren<TData = Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData>>, }
+ id: string,
+    params?: GetApiCategoriesIdChildrenParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdChildren>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiCategoriesIdChildrenQueryOptions(id,options)
+  const queryOptions = getGetApiCategoriesIdChildrenQueryOptions(id,params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -765,12 +793,14 @@ export function useGetApiCategoriesIdChildren<TData = Awaited<ReturnType<typeof 
  */
 export const getApiCategoriesIdWithChildren = (
     id: string,
+    params?: GetApiCategoriesIdWithChildrenParams,
  signal?: AbortSignal
 ) => {
       
       
-      return mainInstance<void>(
-      {url: `/api/categories/${id}/with-children`, method: 'GET', signal
+      return mainInstance<GetApiCategoriesIdWithChildren200>(
+      {url: `/api/categories/${id}/with-children`, method: 'GET',
+        params, signal
     },
       );
     }
@@ -778,75 +808,82 @@ export const getApiCategoriesIdWithChildren = (
 
 
 
-export const getGetApiCategoriesIdWithChildrenInfiniteQueryKey = (id?: string,) => {
+export const getGetApiCategoriesIdWithChildrenInfiniteQueryKey = (id?: string,
+    params?: GetApiCategoriesIdWithChildrenParams,) => {
     return [
-    'infinite', `/api/categories/${id}/with-children`
+    'infinite', `/api/categories/${id}/with-children`, ...(params ? [params]: [])
     ] as const;
     }
 
-export const getGetApiCategoriesIdWithChildrenQueryKey = (id?: string,) => {
+export const getGetApiCategoriesIdWithChildrenQueryKey = (id?: string,
+    params?: GetApiCategoriesIdWithChildrenParams,) => {
     return [
-    `/api/categories/${id}/with-children`
+    `/api/categories/${id}/with-children`, ...(params ? [params]: [])
     ] as const;
     }
 
     
-export const getGetApiCategoriesIdWithChildrenInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData>>, }
+export const getGetApiCategoriesIdWithChildrenInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, GetApiCategoriesIdWithChildrenParams['page']>, TError = ErrorType<void>>(id: string,
+    params?: GetApiCategoriesIdWithChildrenParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData, QueryKey, GetApiCategoriesIdWithChildrenParams['page']>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesIdWithChildrenInfiniteQueryKey(id);
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesIdWithChildrenInfiniteQueryKey(id,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>> = ({ signal }) => getApiCategoriesIdWithChildren(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, QueryKey, GetApiCategoriesIdWithChildrenParams['page']> = ({ signal, pageParam }) => getApiCategoriesIdWithChildren(id,{...params, 'page': pageParam || params?.['page']}, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData, QueryKey, GetApiCategoriesIdWithChildrenParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetApiCategoriesIdWithChildrenInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>>
 export type GetApiCategoriesIdWithChildrenInfiniteQueryError = ErrorType<void>
 
 
-export function useGetApiCategoriesIdWithChildrenInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>>, TError = ErrorType<void>>(
- id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData>> & Pick<
+export function useGetApiCategoriesIdWithChildrenInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, GetApiCategoriesIdWithChildrenParams['page']>, TError = ErrorType<void>>(
+ id: string,
+    params: undefined |  GetApiCategoriesIdWithChildrenParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData, QueryKey, GetApiCategoriesIdWithChildrenParams['page']>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>,
           TError,
-          Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>
+          Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, QueryKey
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCategoriesIdWithChildrenInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData>> & Pick<
+export function useGetApiCategoriesIdWithChildrenInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, GetApiCategoriesIdWithChildrenParams['page']>, TError = ErrorType<void>>(
+ id: string,
+    params?: GetApiCategoriesIdWithChildrenParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData, QueryKey, GetApiCategoriesIdWithChildrenParams['page']>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>,
           TError,
-          Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>
+          Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, QueryKey
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetApiCategoriesIdWithChildrenInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData>>, }
+export function useGetApiCategoriesIdWithChildrenInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, GetApiCategoriesIdWithChildrenParams['page']>, TError = ErrorType<void>>(
+ id: string,
+    params?: GetApiCategoriesIdWithChildrenParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData, QueryKey, GetApiCategoriesIdWithChildrenParams['page']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Lấy thông tin chi tiết một danh mục kèm danh mục con
  */
 
-export function useGetApiCategoriesIdWithChildrenInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData>>, }
+export function useGetApiCategoriesIdWithChildrenInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, GetApiCategoriesIdWithChildrenParams['page']>, TError = ErrorType<void>>(
+ id: string,
+    params?: GetApiCategoriesIdWithChildrenParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData, QueryKey, GetApiCategoriesIdWithChildrenParams['page']>>, }
  , queryClient?: QueryClient 
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiCategoriesIdWithChildrenInfiniteQueryOptions(id,options)
+  const queryOptions = getGetApiCategoriesIdWithChildrenInfiniteQueryOptions(id,params,options)
 
   const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -858,16 +895,17 @@ export function useGetApiCategoriesIdWithChildrenInfinite<TData = InfiniteData<A
 
 
 
-export const getGetApiCategoriesIdWithChildrenQueryOptions = <TData = Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData>>, }
+export const getGetApiCategoriesIdWithChildrenQueryOptions = <TData = Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError = ErrorType<void>>(id: string,
+    params?: GetApiCategoriesIdWithChildrenParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesIdWithChildrenQueryKey(id);
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCategoriesIdWithChildrenQueryKey(id,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>> = ({ signal }) => getApiCategoriesIdWithChildren(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>> = ({ signal }) => getApiCategoriesIdWithChildren(id,params, signal);
 
       
 
@@ -881,7 +919,8 @@ export type GetApiCategoriesIdWithChildrenQueryError = ErrorType<void>
 
 
 export function useGetApiCategoriesIdWithChildren<TData = Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError = ErrorType<void>>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData>> & Pick<
+ id: string,
+    params: undefined |  GetApiCategoriesIdWithChildrenParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>,
           TError,
@@ -891,7 +930,8 @@ export function useGetApiCategoriesIdWithChildren<TData = Awaited<ReturnType<typ
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCategoriesIdWithChildren<TData = Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData>> & Pick<
+ id: string,
+    params?: GetApiCategoriesIdWithChildrenParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>,
           TError,
@@ -901,7 +941,8 @@ export function useGetApiCategoriesIdWithChildren<TData = Awaited<ReturnType<typ
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiCategoriesIdWithChildren<TData = Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData>>, }
+ id: string,
+    params?: GetApiCategoriesIdWithChildrenParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -909,11 +950,12 @@ export function useGetApiCategoriesIdWithChildren<TData = Awaited<ReturnType<typ
  */
 
 export function useGetApiCategoriesIdWithChildren<TData = Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError = ErrorType<void>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData>>, }
+ id: string,
+    params?: GetApiCategoriesIdWithChildrenParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCategoriesIdWithChildren>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiCategoriesIdWithChildrenQueryOptions(id,options)
+  const queryOptions = getGetApiCategoriesIdWithChildrenQueryOptions(id,params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -934,7 +976,7 @@ export const getApiCategoriesId = (
 ) => {
       
       
-      return mainInstance<void>(
+      return mainInstance<GetApiCategoriesId200>(
       {url: `/api/categories/${id}`, method: 'GET', signal
     },
       );

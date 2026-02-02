@@ -258,7 +258,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
                     style: "currency",
                     currency: "VND",
                   }).format(content.price)
-                : "Liên hệ"}
+                : "Miễn phí"}
             </div>
           </div>
           <h6 className="text-white/50 text-md leading-relaxed">

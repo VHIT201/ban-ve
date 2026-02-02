@@ -8,12 +8,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationEllipsis,
+} from "@/components/ui/pagination";
 import { Search, Grid3x3, List } from "lucide-react";
 import { useDeleteApiFileId, useGetApiFile } from "@/api/endpoints/files";
 import { DeleteDialog, QueryBoundary } from "@/components/shared";
 import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
-import { FileResponse } from "@/api/types/file";
-import { ResponseData } from "@/api/types/base";
+import { ResourceItemData } from "./types/types";
+import { GetApiFile200 } from "@/api/models/getApiFile200";
+import { Pagination as PaginationType } from "@/api/models/pagination";
 import {
   AddFileDialog,
   PreviewFileDialog,
@@ -24,33 +34,42 @@ import ResourceItem from "./components/resource-item/ResourceItem";
 
 const Resources = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [previewItem, setPreviewItem] = useState<FileResponse | null>(null);
-  const [deleteItem, setDeleteItem] = useState<FileResponse | null>(null);
+  const [previewItem, setPreviewItem] = useState<ResourceItemData | null>(null);
+  const [deleteItem, setDeleteItem] = useState<ResourceItemData | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("name");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
 
   // API Query
   const queryClient = useQueryClient();
 
-  const getFileListQuery = useGetApiFile({
-    query: {
-      select: (data) => (data as unknown as ResponseData<FileResponse[]>).data,
+  const getFileListQuery = useGetApiFile(
+    {
+      page: currentPage,
+      limit: itemsPerPage,
     },
-  }) as UseQueryResult<FileResponse[]>;
+    {
+      query: {
+        select: (data: GetApiFile200) => data,
+      },
+    }
+  ) as UseQueryResult<GetApiFile200>;
 
-  const fileList = getFileListQuery.data || [];
+  const fileList = (getFileListQuery.data?.data?.files || []) as ResourceItemData[];
+  const pagination = getFileListQuery.data?.data?.pagination as PaginationType;
 
   const filteredItems = fileList
-    .filter((item) =>
+    .filter((item: ResourceItemData) =>
       item.name.toLowerCase().includes(searchQuery.toLowerCase())
     )
-    .sort((a, b) => {
+    .sort((a: ResourceItemData, b: ResourceItemData) => {
       switch (sortBy) {
         case "size":
-          return b.size - a.size;
+          return (b.size || 0) - (a.size || 0);
         case "date":
           return (
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime()
           );
         case "type":
           return a.type.localeCompare(b.type);
@@ -59,6 +78,51 @@ const Resources = () => {
           return a.name.localeCompare(b.name);
       }
     });
+
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Handle items per page change
+  const handleItemsPerPageChange = (newLimit: number) => {
+    setItemsPerPage(newLimit);
+    setCurrentPage(1); // Reset to first page when changing items per page
+  };
+
+  // Generate pagination array
+  const generatePaginationItems = () => {
+    if (!pagination) return [];
+    
+    const { page = 1, totalPages = 1 } = pagination;
+    const items = [];
+    
+    // Always show first page
+    if (page > 3) {
+      items.push(1);
+      if (page > 4) {
+        items.push('ellipsis');
+      }
+    }
+    
+    // Show pages around current page
+    const start = Math.max(1, page - 1);
+    const end = Math.min(totalPages, page + 1);
+    
+    for (let i = start; i <= end; i++) {
+      items.push(i);
+    }
+    
+    // Always show last page
+    if (page < totalPages - 2) {
+      if (page < totalPages - 3) {
+        items.push('ellipsis');
+      }
+      items.push(totalPages);
+    }
+    
+    return items;
+  };
 
   // Mutations
   const deleteFileMutation = useDeleteApiFileId({
@@ -126,6 +190,17 @@ const Resources = () => {
                   <SelectItem value="type">Loại file</SelectItem>
                 </SelectContent>
               </Select>
+              <Select value={itemsPerPage.toString()} onValueChange={(value) => handleItemsPerPageChange(Number(value))}>
+                <SelectTrigger className="w-[100px]">
+                  <SelectValue placeholder="Hiển thị" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="12">12</SelectItem>
+                  <SelectItem value="24">24</SelectItem>
+                  <SelectItem value="48">48</SelectItem>
+                  <SelectItem value="96">96</SelectItem>
+                </SelectContent>
+              </Select>
               <div className="flex border rounded-md ml-auto">
                 <Button
                   variant={viewMode === "grid" ? "default" : "ghost"}
@@ -154,22 +229,22 @@ const Resources = () => {
                 <>
                   {viewMode === "grid" ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {filteredItems.map((item) => (
+                      {filteredItems.map((item: ResourceItemData) => (
                         <ResourceItem
                           key={item._id}
                           item={item}
-                          onClick={setPreviewItem}
+                          onView={setPreviewItem}
                           onDelete={setDeleteItem}
                         />
                       ))}
                     </div>
                   ) : (
                     <div className="space-y-2">
-                      {filteredItems.map((item) => (
+                      {filteredItems.map((item: ResourceItemData) => (
                         <ResourceItemCompact
                           key={item._id}
                           item={item}
-                          onClick={setPreviewItem}
+                          onView={setPreviewItem}
                           onDelete={setDeleteItem}
                         />
                       ))}
@@ -191,6 +266,50 @@ const Resources = () => {
               )}
             </QueryBoundary>
           </div>
+
+          {/* Pagination */}
+          {pagination && pagination.totalPages && pagination.totalPages > 1 && (
+            <div className="border-t bg-background px-0 py-4">
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-muted-foreground">
+                  Hiển thị {(pagination.page! - 1) * pagination.limit! + 1} -{' '}
+                  {Math.min(pagination.page! * pagination.limit!, pagination.total || 0)} của{' '}
+                  {pagination.total} file
+                </div>
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        onClick={() => handlePageChange(Math.max(1, pagination.page! - 1))}
+                        className={pagination.page! <= 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                      />
+                    </PaginationItem>
+                    {generatePaginationItems().map((item, index) => (
+                      <PaginationItem key={index}>
+                        {item === 'ellipsis' ? (
+                          <PaginationEllipsis />
+                        ) : (
+                          <PaginationLink
+                            onClick={() => handlePageChange(item as number)}
+                            isActive={pagination.page === item}
+                            className="cursor-pointer"
+                          >
+                            {item}
+                          </PaginationLink>
+                        )}
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext
+                        onClick={() => handlePageChange(Math.min(pagination.totalPages!, pagination.page! + 1))}
+                        className={pagination.page! >= pagination.totalPages! ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -198,7 +317,7 @@ const Resources = () => {
         open={!!deleteItem}
         onOpenChange={(open) => !open && setDeleteItem(null)}
         onConfirm={handleDeleteFile}
-        isDeleting={deleteFileMutation.isPending}
+        deleting={deleteFileMutation.isPending}
         title="Xóa file"
         description={`Bạn có chắc chắn muốn xóa file "${deleteItem?.name}"? Hành động này không thể hoàn tác.`}
       />

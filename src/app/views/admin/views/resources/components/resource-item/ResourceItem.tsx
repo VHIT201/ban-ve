@@ -16,14 +16,7 @@ import { getFileIcon, getFileTypeLabel } from "@/utils/file";
 import { FileType } from "@/enums/file";
 import baseConfig from "@/configs/base";
 
-export interface ResourceItemData {
-  _id: string;
-  name: string;
-  type: string;
-  size?: number;
-  createdAt?: string;
-  path?: string;
-}
+import { ResourceItemData } from "../types";
 
 interface Props {
   item: ResourceItemData;

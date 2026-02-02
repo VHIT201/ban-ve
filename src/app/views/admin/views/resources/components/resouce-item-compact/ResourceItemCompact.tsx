@@ -13,15 +13,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getFileIcon } from "@/utils/file";
 import { FileType } from "@/enums/file";
-
-export interface ResourceItemData {
-  _id: string;
-  name: string;
-  type: string;
-  size: number;
-  createdAt: string;
-  path?: string;
-}
+import { ResourceItemData } from "../../types/types";
 
 interface Props {
   item: ResourceItemData;
