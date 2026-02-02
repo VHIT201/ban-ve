@@ -354,7 +354,6 @@ const BlueprintDetailView: FC<Props> = (props) => {
               </div>
             </div>
           </div>
-          // ...
           {/* Action Buttons */}
           <div className="space-y-3 pt-4">
             <div className="flex gap-3">
