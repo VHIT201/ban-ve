@@ -13,13 +13,10 @@ import {
 } from "@/components/modules/content";
 import {
   useGetApiContent,
-  useGetApiContentStatisticsDownloadRanking,
 } from "@/api/endpoints/content";
-import { ContentResponse } from "@/api/types/content";
+import { ContentProduct } from "@/api/types/content";
 import {
   GetApiContent200Pagination,
-  GetApiContentStatisticsDownloadRanking200DataItem,
-  GetApiContentStatisticsDownloadRanking200DataItemContentInfo,
 } from "@/api/models";
 import { UseQueryResult } from "@tanstack/react-query";
 import { QueryBoundary } from "@/components/shared";
@@ -33,24 +30,25 @@ const DailyBestDownloaded = () => {
 
   // Queries
   // Queries
-  const getBluerintListQuery = useGetApiContentStatisticsDownloadRanking(
+  const getBluerintListQuery = useGetApiContent(
     {
       limit: 10,
+      sort: 'newest',
     },
     {
       query: {
         select: (data) =>
           (
             data as unknown as ResponseData<
-              GetApiContentStatisticsDownloadRanking200DataItem[]
+              ContentProduct[]
             >
           ).data,
       },
     }
-  ) as UseQueryResult<GetApiContentStatisticsDownloadRanking200DataItem[]>;
+  ) as UseQueryResult<ContentProduct[]>;
 
   // Methods
-  const handleViewDetail = (blueprint: ContentResponse) => {
+  const handleViewDetail = (blueprint: ContentProduct) => {
     navigate(`/detail/${blueprint._id}`);
   };
 
@@ -90,15 +88,11 @@ const DailyBestDownloaded = () => {
                 <CarouselContent className="-ml-10">
                   {products.map((product) => (
                     <CarouselItem
-                      key={product?.contentId}
+                      key={product?._id}
                       className="pl-10 md:basis-1/2 lg:basis-1/4"
                     >
                       <BlueprintCard
-                        product={{
-                          _id: product.contentId!,
-                          ...(product.contentInfo as GetApiContentStatisticsDownloadRanking200DataItemContentInfo),
-                          downloadCount: product.downloadCount,
-                        }}
+                        product={product}
                         onViewDetail={handleViewDetail}
                       />
                     </CarouselItem>

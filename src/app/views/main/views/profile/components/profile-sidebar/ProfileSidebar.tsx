@@ -6,7 +6,6 @@ import { useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
 import { UploadAvatarDialog } from "@/components/shared";
 import { usePutApiAuthUpdateProfile } from "@/api/endpoints/auth";
-import { useUploadMedia } from "@/hooks";
 import { toast } from "sonner";
 import { extractErrorMessage } from "@/utils/error";
 import baseConfig from "@/configs/base";
@@ -24,32 +23,23 @@ const ProfileSidebar = () => {
 
   // Mutations
   const updateUserProfileMutation = usePutApiAuthUpdateProfile();
-  const uploadMediaMutation = useUploadMedia();
 
   // Methods
   const handleChangeAvatar = async (file: File) => {
     try {
-      const resBlob = await uploadMediaMutation.uploadSingle(file, {
-        filename: file.name,
-        dir: "avatars",
-        private: true,
-      });
-
-      if (!resBlob) {
-        toast.error("Tải ảnh đại diện lên thất bại. Vui lòng thử lại.");
-        return;
-      }
-
+      // Gửi thẳng file (Blob) lên API update-profile
       await updateUserProfileMutation.mutateAsync({
         data: {
-          avatar: resBlob.path,
+          avatar: file, // Gửi file dạng Blob
           fullname: profileStore.fullName,
           email: profileStore.email,
         },
       });
 
+      // Tạo URL tạm thời để hiển thị avatar mới
+      const avatarUrl = URL.createObjectURL(file);
       profileStore.setStore({
-        avatar: resBlob.path,
+        avatar: avatarUrl,
         fullName: profileStore.fullName,
         email: profileStore.email,
       });
@@ -67,7 +57,7 @@ const ProfileSidebar = () => {
         {/* User Profile Header */}
         <div className="text-center p-6 border-b border-gray-100">
           <UploadAvatarDialog
-            avatarUrl={`${baseConfig.mediaDomain}/${profileStore.avatar}`}
+            avatarUrl={profileStore.avatar?.startsWith('blob:') ? profileStore.avatar : `${baseConfig.mediaDomain}/${profileStore.avatar}`}
             avatarAlt={profileStore.fullName!}
             onAvatarChange={handleChangeAvatar}
             className="mb-6"

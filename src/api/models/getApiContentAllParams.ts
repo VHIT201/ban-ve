@@ -1,4 +1,5 @@
 // @ts-nocheck
+import type { GetApiContentAllSort } from './getApiContentAllSort';
 
 export type GetApiContentAllParams = {
 /**
@@ -12,4 +13,8 @@ page?: number;
  * @maximum 100
  */
 limit?: number;
+/**
+ * Sắp xếp theo thời gian (mới nhất hoặc cũ nhất)
+ */
+sort?: GetApiContentAllSort;
 };

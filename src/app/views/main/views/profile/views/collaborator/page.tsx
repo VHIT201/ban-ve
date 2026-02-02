@@ -69,12 +69,14 @@ function CollaboratorForm() {
     applyMutation.mutate(
       { data },
       {
-        onSuccess: () => {
-          toast.success("Đã gửi đơn đăng ký thành công!");
+        onSuccess: (response) => {
+          const message = response?.message || "Đã gửi đơn đăng ký thành công!";
+          toast.success(message);
           form.reset();
         },
-        onError: () => {
-          toast.error(`Gửi đơn thất bại`);
+        onError: (error: any) => {
+          const message = error?.response?.data?.message || error?.message || "Gửi đơn thất bại";
+          toast.error(message);
         },
       },
     );

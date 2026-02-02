@@ -90,7 +90,7 @@ const currentPage = pageIndex + 1; // UI = 1-based
           <Select
             onValueChange={(value) => {
               table.setPagination({
-                pageIndex: currentPage,
+                pageIndex: 0, // Reset to first page (0-based) when changing page size
                 pageSize: Number(value),
               });
             }}

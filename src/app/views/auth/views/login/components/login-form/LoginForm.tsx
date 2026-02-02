@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LOGIN_FORM_DEFAULT_VALUES, LOGIN_FORM_SCHEMA } from "./lib/constants";
+import { LOGIN_FORM_SCHEMA } from "./lib/constants";
 import { LoginFormValues } from "./lib/types";
 import { Loader2Icon, LockIcon, MailIcon, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -40,7 +40,6 @@ const LoginForm: FC<Props> = () => {
   // Hooks
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(LOGIN_FORM_SCHEMA),
-    defaultValues: LOGIN_FORM_DEFAULT_VALUES,
   });
 
   // Mutations
