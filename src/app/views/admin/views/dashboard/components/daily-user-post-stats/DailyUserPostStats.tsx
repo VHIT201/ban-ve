@@ -2,7 +2,6 @@ import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
@@ -14,19 +13,28 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
-import { useEffect, useState } from "react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useMemo } from "react";
 
 export const description = "An interactive area chart";
+
+type PeriodType = 'week' | 'month' | 'quarter';
+
+interface DailyUserPostStatsProps {
+  period: PeriodType;
+}
+
+const PERIOD_LABELS: Record<PeriodType, string> = {
+  week: '7 ngày trước',
+  month: '30 ngày trước',
+  quarter: '3 tháng trước'
+}
+
+const PERIOD_DAYS: Record<PeriodType, number> = {
+  week: 7,
+  month: 30,
+  quarter: 90
+}
 
 const chartData = [
   { date: "2024-04-01", desktop: 222, mobile: 150 },
@@ -136,73 +144,26 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const DailyUserPostStats = () => {
-  const isMobile = useIsMobile();
-  const [timeRange, setTimeRange] = useState("90d");
+const DailyUserPostStats = ({ period }: DailyUserPostStatsProps) => {
+  const daysToShow = PERIOD_DAYS[period];
 
-  useEffect(() => {
-    if (isMobile) {
-      setTimeRange("7d");
-    }
-  }, [isMobile]);
-
-  const filteredData = chartData.filter((item) => {
-    const date = new Date(item.date);
-    const referenceDate = new Date("2024-06-30");
-    let daysToSubtract = 90;
-    if (timeRange === "30d") {
-      daysToSubtract = 30;
-    } else if (timeRange === "7d") {
-      daysToSubtract = 7;
-    }
-    const startDate = new Date(referenceDate);
-    startDate.setDate(startDate.getDate() - daysToSubtract);
-    return date >= startDate;
-  });
+  const filteredData = useMemo(() => {
+    return chartData.filter((item) => {
+      const date = new Date(item.date);
+      const referenceDate = new Date("2024-06-30");
+      const startDate = new Date(referenceDate);
+      startDate.setDate(startDate.getDate() - daysToShow);
+      return date >= startDate;
+    });
+  }, [daysToShow]);
 
   return (
     <Card className="@container/card h-[500px]">
       <CardHeader>
         <CardTitle>Thống kê hằng ngày</CardTitle>
         <CardDescription>
-          <span className="hidden @[540px]/card:block">
-            Thống kê 3 tháng trước
-          </span>
-          <span className="@[540px]/card:hidden">3 tháng trước</span>
+          Thống kê {PERIOD_LABELS[period]}
         </CardDescription>
-        <CardAction>
-          <ToggleGroup
-            type="single"
-            value={timeRange}
-            onValueChange={setTimeRange}
-            variant="outline"
-            className="hidden *:data-[slot=toggle-group-item]:!px-4 @[767px]/card:flex"
-          >
-            <ToggleGroupItem value="90d">3 tháng trước</ToggleGroupItem>
-            <ToggleGroupItem value="30d">30 ngày trước</ToggleGroupItem>
-            <ToggleGroupItem value="7d">7 ngày trước</ToggleGroupItem>
-          </ToggleGroup>
-          <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger
-              className="flex w-40 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden"
-              size="sm"
-              aria-label="Select a value"
-            >
-              <SelectValue placeholder="3 tháng trước" />
-            </SelectTrigger>
-            <SelectContent className="rounded-xl">
-              <SelectItem value="90d" className="rounded-lg">
-                3 tháng trước
-              </SelectItem>
-              <SelectItem value="30d" className="rounded-lg">
-                30 ngày trước
-              </SelectItem>
-              <SelectItem value="7d" className="rounded-lg">
-                7 ngày trước
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </CardAction>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
