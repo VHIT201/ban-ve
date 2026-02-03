@@ -1,3 +1,5 @@
+"use client";
+
 // Core
 import { FC, Fragment } from "react";
 import { useShallow } from "zustand/shallow";

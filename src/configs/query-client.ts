@@ -3,7 +3,6 @@ import { QueryClient } from "@tanstack/react-query";
 import { isAxiosError, HttpStatusCode } from "axios";
 
 // App
-import router from "@/routes";
 import { Response } from "@/api/types/base";
 import { BASE_PATHS } from "@/constants/paths";
 import { useAuthStore } from "@/stores";
@@ -21,14 +20,6 @@ const handleDelayRetry = (failureCount: number) =>
 const handleRetry = (failureCount: number, error: Error) => {
   // Check retry count and is axios error
   if (failureCount > RETRY_COUNT || !isAxiosError<Response>(error)) {
-    return false;
-  }
-
-  // Expired token error
-  if (error.response?.status === HttpStatusCode.Unauthorized) {
-    useAuthStore.getState().resetStore();
-
-    router.navigate(BASE_PATHS.auth.login.path);
     return false;
   }
 
@@ -63,7 +54,7 @@ const queryClient = new QueryClient({
 
       if (meta?.invalidateQueries?.length) {
         const promises = meta.invalidateQueries.map((qk) =>
-          queryClient.refetchQueries({ queryKey: qk })
+          queryClient.refetchQueries({ queryKey: qk }),
         );
 
         await Promise.all(promises);

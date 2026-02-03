@@ -5,9 +5,9 @@ import {
   RouterErrorBoundary,
   RouterHydrateFallbackElement,
 } from "../components";
-import mainRoutes from "../views/main/lib/routes";
-import authRoutes from "../views/auth/lib/routes";
-import adminRoutes from "../views/admin/lib/routes";
+import mainRoutes from "../(public)/lib/routes";
+import authRoutes from "../auth/lib/routes";
+import adminRoutes from "../admin/lib/routes";
 
 const appRoutes: RouteObject[] = [
   {

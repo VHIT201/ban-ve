@@ -1,17 +1,26 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-
   body {
-    font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system,
-      BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-      "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-      "Segoe UI Symbol", "Noto Color Emoji";
-    font-feature-settings: "tnum" on, "lnum" on;
+    font-family:
+      var(--font-sans),
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      Arial,
+      "Noto Sans",
+      sans-serif,
+      "Apple Color Emoji",
+      "Segoe UI Emoji",
+      "Segoe UI Symbol",
+      "Noto Color Emoji";
+    font-feature-settings:
+      "tnum" on,
+      "lnum" on;
   }
 }
 

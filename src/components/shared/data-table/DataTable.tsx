@@ -1,3 +1,5 @@
+"use client";
+
 // Core
 import { useEffect, useState, ReactNode, useMemo } from "react";
 import {
@@ -92,7 +94,7 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
             state?.pagination || {
               pageIndex: DEFAULT_PAGE_INDEX,
               pageSize: DEFAULT_PAGE_SIZE,
-            }
+            },
           )
         : updater;
 
@@ -100,7 +102,7 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
   };
 
   const handleRowSelectionChange = (
-    updaterOrValue: Updater<RowSelectionState>
+    updaterOrValue: Updater<RowSelectionState>,
   ) => {
     setRowSelection((prev) => {
       const newRowSelection =
@@ -110,7 +112,7 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
 
       if (onSelectedRowsChange) {
         const selectedRowIds = Object.keys(newRowSelection).filter(
-          (id) => newRowSelection[id]
+          (id) => newRowSelection[id],
         );
         const selectedRows = selectedRowIds.map((id) => data[parseInt(id, 10)]);
         onSelectedRowsChange(selectedRows);
@@ -190,7 +192,7 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
       rowSelection,
       columnPinning,
       columnSizing,
-    ]
+    ],
   );
 
   return (

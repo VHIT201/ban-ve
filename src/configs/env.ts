@@ -1,18 +1,22 @@
-// Core
-import { z } from 'zod'
+import { z } from "zod";
 
 const envConfigSchema = z.object({
-  VITE_STORE_SECRET_KEY: z.string().min(1)
-})
+  NEXT_PUBLIC_STORE_SECRET_KEY: z
+    .string()
+    .min(1, "NEXT_PUBLIC_STORE_SECRET_KEY is required")
+    .default("123"),
+});
 
 const envConfigParser = envConfigSchema.safeParse({
-  VITE_STORE_SECRET_KEY: import.meta.env.VITE_STORE_SECRET_KEY
-})
+  NEXT_PUBLIC_STORE_SECRET_KEY: process.env.NEXT_PUBLIC_STORE_SECRET_KEY,
+});
 
 if (!envConfigParser.success) {
-  console.error(envConfigParser.error.issues)
-  throw new Error('Invalid .env variable values')
+  console.error("❌ Invalid environment variables:");
+  console.error(envConfigParser.error.flatten().fieldErrors);
+  throw new Error("Invalid .env variable values");
 }
 
-const envConfig = envConfigParser.data
-export default envConfig
+const envConfig = envConfigParser.data;
+
+export default envConfig;

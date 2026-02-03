@@ -1,3 +1,5 @@
+"use client";
+
 // Core
 import { z } from "zod";
 import { ReactNode } from "react";
@@ -64,7 +66,7 @@ const DynamicFilter = <T extends z.ZodTypeAny>(props: Props<T>) => {
 
   // Helper function để xác định field type từ Zod schema
   const getFieldTypeFromSchema = (
-    fieldSchema: z.ZodTypeAny
+    fieldSchema: z.ZodTypeAny,
   ): FieldConfig["type"] => {
     const unwrappedSchema = unwrapSchema(fieldSchema);
 
@@ -84,7 +86,7 @@ const DynamicFilter = <T extends z.ZodTypeAny>(props: Props<T>) => {
     field: ControllerRenderProps<FieldValues, string>,
     name: string,
     config: FieldConfig,
-    fieldSchema: z.ZodTypeAny
+    fieldSchema: z.ZodTypeAny,
   ): ReactNode => {
     // Ưu tiên custom render function
     if (config.render) {
@@ -251,7 +253,7 @@ const DynamicFilter = <T extends z.ZodTypeAny>(props: Props<T>) => {
                         field,
                         name,
                         config,
-                        fieldSchema as z.ZodTypeAny
+                        fieldSchema as z.ZodTypeAny,
                       )}
                     </FormControl>
                     {config.description && (

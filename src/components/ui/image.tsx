@@ -1,3 +1,5 @@
+"use client";
+
 import { FC, ImgHTMLAttributes, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "./skeleton";
@@ -49,7 +51,7 @@ const Image: FC<ImageProps> = ({
   ...props
 }) => {
   const [imageState, setImageState] = useState<"loading" | "loaded" | "error">(
-    "loading"
+    "loading",
   );
   const [currentSrc, setCurrentSrc] = useState<string>(src);
 
@@ -84,7 +86,7 @@ const Image: FC<ImageProps> = ({
         className={cn(
           "flex items-center justify-center bg-gray-100 text-gray-400",
           aspectRatio && `aspect-[${aspectRatio}]`,
-          className
+          className,
         )}
         role="img"
         aria-label={alt}
@@ -125,7 +127,7 @@ const Image: FC<ImageProps> = ({
               className={cn(
                 "absolute inset-0 w-full h-full",
                 aspectRatio && `aspect-[${aspectRatio}]`,
-                skeletonClassName
+                skeletonClassName,
               )}
             />
           )}
@@ -143,7 +145,7 @@ const Image: FC<ImageProps> = ({
           "transition-opacity duration-300",
           imageState === "loading" ? "opacity-0" : "opacity-100",
           aspectRatio && `aspect-[${aspectRatio}]`,
-          className
+          className,
         )}
         {...props}
       />

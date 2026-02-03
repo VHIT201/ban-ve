@@ -1,3 +1,5 @@
+"use client";
+
 // App
 import DataTable from "@/components/shared/data-table/DataTable";
 

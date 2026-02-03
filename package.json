@@ -4,12 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "kill": "fuser -k 5000/tcp",
-    "build": "tsc --noCheck && vite build",
-    "lint": "eslint .",
-    "optimize": "vite optimize",
-    "preview": "vite preview",
+    "dev": "next dev -p 5000",
+    "build": "next build",
+    "start": "next start -p 5000",
+    "lint": "next lint",
     "g:api": "orval --config ./orval.config.ts",
     "w:api": "orval --config ./orval.config.ts --watch"
   },

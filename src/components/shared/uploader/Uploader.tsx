@@ -1,3 +1,5 @@
+"use client";
+
 // Core
 import { FC, useCallback, useMemo, ReactNode } from "react";
 import { FileRejection, useDropzone } from "react-dropzone";
