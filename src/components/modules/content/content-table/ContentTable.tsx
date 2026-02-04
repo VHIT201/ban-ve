@@ -12,7 +12,7 @@ import {
 } from "@/api/endpoints/content";
 import { ContentResponse } from "@/api/types/content";
 import { UseQueryResult } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { BASE_PATHS } from "@/constants/paths";
 import { toast } from "sonner";
 import { DataTableDeleteDialog } from "@/components/shared/data-table/shared";
@@ -48,7 +48,7 @@ const ContentTable = (props: Props) => {
       pageSize: prev.pageSize,
     }));
   }, [pagination?.pageSize]);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const deleteContentMutation = useDeleteApiContentId({
     mutation: {
@@ -83,7 +83,7 @@ const ContentTable = (props: Props) => {
   };
 
   const handleEdit = (content: ContentResponse) => {
-    navigate(
+    router.push(
       `${BASE_PATHS.app.profile.collaborator.path}/content-edit/${content._id}`,
     );
   };

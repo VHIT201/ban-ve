@@ -14,7 +14,7 @@ export const createStorage = <S>(): PersistStorage<S> => {
 
       const originalText = AES.decrypt(
         cipherText,
-        envConfig.VITE_STORE_SECRET_KEY
+        envConfig.NEXT_PUBLIC_STORE_SECRET_KEY
       ).toString(enc.Utf8);
       if (!originalText) return null;
 
@@ -23,7 +23,7 @@ export const createStorage = <S>(): PersistStorage<S> => {
     setItem: (name, value) => {
       const cipherText = AES.encrypt(
         JSON.stringify(value),
-        envConfig.VITE_STORE_SECRET_KEY
+        envConfig.NEXT_PUBLIC_STORE_SECRET_KEY
       ).toString();
       localStorage.setItem(name, cipherText);
     },

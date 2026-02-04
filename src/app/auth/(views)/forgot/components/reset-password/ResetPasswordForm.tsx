@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,7 +16,7 @@ import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { BASE_PATHS } from "@/constants/paths";
 
 const RESET_PASSWORD_SCHEMA = z
@@ -56,7 +58,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
   const [isSuccess, setIsSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const submittingRef = useRef(false);
 
@@ -86,7 +88,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
       
       setTimeout(() => {
         toast.dismiss();
-        navigate(BASE_PATHS.auth.login.path);
+        router.push(BASE_PATHS.auth.login.path);
       }, 800);
     } catch (error: any) {
       submittingRef.current = false;
@@ -117,7 +119,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
         <Button
           variant="link"
           className="mt-4 text-primary"
-          onClick={() => navigate(BASE_PATHS.auth.login.path)}
+          onClick={() => router.push(BASE_PATHS.auth.login.path)}
         >
           Đến trang đăng nhập
         </Button>

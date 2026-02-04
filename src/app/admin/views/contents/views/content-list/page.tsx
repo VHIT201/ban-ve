@@ -1,3 +1,5 @@
+"use client";
+
 // Internal
 import { useState } from "react";
 import { PlusIcon } from "lucide-react";
@@ -7,10 +9,10 @@ import { Button } from "@/components/ui/button";
 
 // Internal
 import { ContentTable } from "./components";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 const ContentList = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   return (
     <div className="space-y-6">
@@ -24,7 +26,7 @@ const ContentList = () => {
             Quản lý các nội dung trong hệ thống
           </p>
         </div>
-        <Button onClick={() => navigate("create")}>
+        <Button onClick={() => router.push("create")}>
           <PlusIcon className="mr-2 size-4" />
           Thêm mới
         </Button>

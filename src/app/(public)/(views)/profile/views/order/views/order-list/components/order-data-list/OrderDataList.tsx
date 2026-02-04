@@ -9,15 +9,15 @@ import { Card, CardContent } from "@/components/ui/card";
 function OrderDataList() {
   const getOrderListQuery = useGetApiOrders(undefined, {
     query: {
-      select: (data: any) => data.data,
+      select: (data: any) => data.data?.orders ?? [],
     },
-  }) as UseQueryResult<{ orders: Order[]; pagination: any }>;
+  }) as UseQueryResult<Order[]>;
 
   return (
     <div className="space-y-6">
       <QueryBoundary query={getOrderListQuery}>
         {(filteredOrders) => {
-          if (!filteredOrders || !filteredOrders.orders || filteredOrders.orders.length === 0) {
+          if (!filteredOrders || filteredOrders.length === 0) {
             return (
               <Card className="border border-gray-200 shadow-sm">
                 <CardContent className="py-16 text-center">
@@ -44,12 +44,12 @@ function OrderDataList() {
                   Danh sách đơn hàng
                 </h2>
                 <div className="text-sm text-gray-500">
-                  {filteredOrders.orders.length} đơn hàng
+                  {filteredOrders.length} đơn hàng
                 </div>
               </div>
 
               <div className="grid grid-cols-1 gap-4">
-                {filteredOrders.orders.map((order) => (
+                {filteredOrders.map((order) => (
                   <OrderDataItem key={order._id} order={order} />
                 ))}
               </div>

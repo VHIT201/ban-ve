@@ -1,5 +1,7 @@
+'use client'
+
 // Core
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { FileIcon, SearchIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -11,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useEffect, useState } from 'react';
 
-export default function SearchResults() {
+const SearchResults = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');

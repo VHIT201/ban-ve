@@ -97,18 +97,18 @@ const HeaderUserProfile = () => {
     })),
   );
 
-  const { role, email, username, avatar, resetStore } = useProfileStore(
+  const { role, email, fullName, avatar, resetStore } = useProfileStore(
     useShallow((state) => ({
       role: state.role,
       email: state.email,
-      username: state.username,
+      fullName: state.fullName,
       avatar: state.avatar || "",
       resetStore: state.resetStore,
     })),
   );
 
   const userData: UserData = {
-    name: username || "User",
+    name: fullName || "User",
     email: email || "",
     avatar: avatar || "",
     role: role || "",

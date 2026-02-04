@@ -1,7 +1,11 @@
-import { Outlet } from "react-router-dom";
+import { ReactNode } from "react";
 
-const Contents = () => {
-  return <Outlet />;
+interface ContentsLayoutProps {
+  children: ReactNode;
+}
+
+const ContentsLayout = ({ children }: ContentsLayoutProps) => {
+  return <>{children}</>;
 };
 
-export default Contents;
+export default ContentsLayout;

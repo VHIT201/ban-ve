@@ -5,6 +5,7 @@ import { useState, ReactNode } from "react";
 import { isAxiosError, HttpStatusCode } from "axios";
 import { Response } from "@/api/types/base";
 import { useAuthStore } from "@/stores";
+import { AuthSync } from "@/components/auth";
 
 interface ProvidersProps {
   children: ReactNode;
@@ -60,6 +61,9 @@ export function Providers({ children }: ProvidersProps) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthSync />
+      {children}
+    </QueryClientProvider>
   );
 }

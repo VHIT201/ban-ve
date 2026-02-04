@@ -1,3 +1,5 @@
+"use client";
+
 import useDialogState from "@/hooks/use-dialog-state";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -11,7 +13,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { useAuthStore, useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
 import { BASE_PATHS } from "@/constants/paths";
@@ -76,13 +78,13 @@ const HeaderProfileDropdown = () => {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
-              <Link to="/">
+              <Link href="/">
                 Trang chủ
                 <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link to="/admin/settings">
+              <Link href="/admin/settings">
                 Hồ sơ
                 <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
               </Link>

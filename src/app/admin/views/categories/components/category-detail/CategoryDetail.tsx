@@ -1,4 +1,6 @@
-import { useParams, useNavigate } from "react-router-dom";
+"use client";
+
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { PlusIcon, Trash2, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
@@ -86,8 +88,9 @@ const categoryFormSchema = z.object({
 type CategoryFormValues = z.infer<typeof categoryFormSchema>;
 
 export const CategoryDetail = () => {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+  const params = useParams<{ id: string }>();
+  const id = params.id;
+  const router = useRouter();
 
   const [pagination, setPagination] = useState(DEFAULT_PAGINATION);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -202,7 +205,7 @@ export const CategoryDetail = () => {
 
   const handleViewDetails = (category: Category) => {
     if (category?._id) {
-      navigate(`/admin/categories/detail/${category._id}`);
+      router.push(`/admin/categories/detail/${category._id}`);
     }
   };
 
@@ -245,7 +248,7 @@ export const CategoryDetail = () => {
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="icon" onClick={() => navigate(-1)}>
+          <Button variant="outline" size="icon" onClick={() => router.back()}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <h1 className="text-2xl font-bold">

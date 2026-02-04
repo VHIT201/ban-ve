@@ -1,2 +1,2 @@
-export { PaymentDetailPage as default } from './PaymentDetailPage';
-export * from './PaymentDetailPage';
+export { default } from './PaymentDetailPage';
+export { default as PaymentDetailPage } from './PaymentDetailPage';
