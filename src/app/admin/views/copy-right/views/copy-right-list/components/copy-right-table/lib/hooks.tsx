@@ -154,7 +154,8 @@ export const useColumns = (props: useCopyrightReportTableColumnsDefsProps) => {
         header: "Người báo cáo",
         cell: ({ row }) => {
           const reporter = row.original.reporterId;
-          const initials = reporter?.username?.[0]?.toUpperCase() || "?";
+          const displayName = reporter?.fullname || reporter?.username || reporter?.email || "Không rõ";
+          const initials = displayName[0]?.toUpperCase() || "?";
 
           return (
             <div className="flex items-center gap-2 min-w-[160px]">
@@ -165,7 +166,7 @@ export const useColumns = (props: useCopyrightReportTableColumnsDefsProps) => {
               </Avatar>
               <div className="flex flex-col gap-0.5 flex-1 min-w-0">
                 <div className="text-sm font-medium text-gray-900 truncate">
-                  {reporter?.username || "Không rõ"}
+                  {displayName}
                 </div>
                 {reporter?.email && (
                   <div className="text-xs text-gray-500 truncate">
@@ -323,7 +324,8 @@ export const useColumns = (props: useCopyrightReportTableColumnsDefsProps) => {
             return <span className="text-sm text-gray-400">N/A</span>;
           }
 
-          const initials = resolvedBy.username?.[0]?.toUpperCase() || "?";
+          const displayName = resolvedBy.fullname || resolvedBy.username || resolvedBy.email || "N/A";
+          const initials = displayName[0]?.toUpperCase() || "?";
 
           return (
             <div className="flex flex-col gap-1 min-w-[140px]">
@@ -335,7 +337,7 @@ export const useColumns = (props: useCopyrightReportTableColumnsDefsProps) => {
                 </Avatar>
                 <div className="flex flex-col gap-0.5">
                   <div className="text-sm font-medium text-gray-900">
-                    {resolvedBy.username}
+                    {displayName}
                   </div>
                   {resolvedAt && (
                     <div className="text-xs text-gray-500">

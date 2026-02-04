@@ -22,7 +22,7 @@ const CollaboratorTable = () => {
   const [pagination, setPagination] = useState<{
     pageIndex: number;
     pageSize: number;
-  }>({ pageIndex: 1, pageSize: 10 });
+  }>({ pageIndex: 0, pageSize: 10 });
 
   const [statusFilter, setStatusFilter] = useState<
     "pending" | "approved" | "rejected" | undefined
@@ -32,14 +32,14 @@ const CollaboratorTable = () => {
   const getCollaboratorsQuery = useGetApiCollaboratorsRequests(
     {
       status: statusFilter,
-      page: pagination.pageIndex,
+      page: pagination.pageIndex + 1, // API uses 1-based indexing
       limit: pagination.pageSize,
     },
     {
       query: {
-        select: (data) => ({
-          requests: data.requests ?? [],
-          pagination: data.pagination,
+        select: (data: any) => ({
+          requests: data?.data?.requests ?? data?.requests ?? [],
+          pagination: data?.data?.pagination ?? data?.pagination,
         }),
       },
     },
@@ -57,7 +57,7 @@ const CollaboratorTable = () => {
     status: "pending" | "approved" | "rejected" | undefined,
   ) => {
     setStatusFilter(status);
-    setPagination({ pageIndex: 1, pageSize: 10 }); // Reset to first page
+    setPagination({ pageIndex: 0, pageSize: 10 }); // Reset to first page (0-indexed)
   };
 
   // Columns
