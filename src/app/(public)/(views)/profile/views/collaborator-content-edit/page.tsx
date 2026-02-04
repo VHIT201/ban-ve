@@ -1,24 +1,22 @@
-import {
-  useGetApiContentId,
-  usePutApiContentId,
-} from "@/api/endpoints/content";
+import { useGetApiContentId, usePutApiContentId } from "@/api/endpoints/content";
 import { ContentResponse } from "@/api/types/content";
 import { ContentFormValues } from "@/components/modules/content/content-editor-form/ContentEditorForm";
 import { ContentEditorForm } from "@/components/modules/content";
 import { QueryBoundary } from "@/components/shared";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { BASE_PATHS } from "@/constants/paths";
-import { useRequiredPathParams } from "@/hooks";
 import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeftIcon } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 const ContentDetail = () => {
   // Hooks
-  const { id } = useRequiredPathParams(["id"]);
+  const params = useParams();
+  const id = params.id as string;
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // Queries
   const getContentDetailQuery = useGetApiContentId(
@@ -49,7 +47,7 @@ const handleUpdateContent = async (contentId: string, formData: ContentFormValue
           queryKey: ['/api/content'] 
         });
         toast.success("Nội dung đã được cập nhật thành công.");
-        navigate(BASE_PATHS.app.profile.collaborator.path);
+        router.push(BASE_PATHS.app.profile.collaborator.path);
       },
       onError: (error) => {
         console.error('Error updating content:', error);
@@ -66,7 +64,7 @@ const handleUpdateContent = async (contentId: string, formData: ContentFormValue
     <Card className="space-y-6">
       <CardHeader className="flex flex-wrap items-end justify-between gap-2">
         <div className="flex items-center gap-4">
-          <Link to={BASE_PATHS.app.profile.collaborator.path}>
+          <Link href={BASE_PATHS.app.profile.collaborator.path}>
             <ArrowLeftIcon className="size-5 text-gray-500 hover:text-gray-700" />
           </Link>
           <div>

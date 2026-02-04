@@ -6845,6 +6845,10 @@
     white-space: pre-wrap;
   }
 
+  .\!text-white {
+    color: var(--color-white) !important;
+  }
+
   .text-\[\#1a1a1a\] {
     color: #1a1a1a;
   }
@@ -9225,8 +9229,26 @@
     background-color: var(--color-muted);
   }
 
+  .disabled\:bg-primary\/60:disabled {
+    background-color: var(--color-primary);
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .disabled\:bg-primary\/60:disabled {
+      background-color: color-mix(in oklab, var(--color-primary) 60%, transparent);
+    }
+  }
+
+  .disabled\:\!text-white:disabled {
+    color: var(--color-white) !important;
+  }
+
   .disabled\:text-gray-500:disabled {
     color: var(--color-gray-500);
+  }
+
+  .disabled\:\!opacity-100:disabled {
+    opacity: 1 !important;
   }
 
   .disabled\:opacity-40:disabled {
@@ -11052,6 +11074,10 @@
 
   .\[\&_svg\]\:shrink-0 svg {
     flex-shrink: 0;
+  }
+
+  .\[\&_svg\]\:\!text-white svg {
+    color: var(--color-white) !important;
   }
 
   .\[\&_svg\:not\(\[class\*\=\'size-\'\]\)\]\:size-4 svg:not([class*="size-"]) {

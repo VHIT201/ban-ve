@@ -2,14 +2,13 @@ import { OrderItem } from "@/api/models";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Package, ShoppingBag } from "lucide-react";
-import { FC } from "react";
 import { generateImageRandom } from "@/utils/image";
 
 interface Props {
   items?: OrderItem[];
 }
 
-const OrderDetailSoldList: FC<Props> = ({ items = [] }) => {
+function OrderDetailSoldList({ items = [] }: Props) {
   if (items.length === 0) {
     return (
       <Card className="border border-gray-200 shadow-sm">

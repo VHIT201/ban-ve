@@ -1,14 +1,12 @@
 import { useGetApiOrders } from "@/api/endpoints/orders";
 import { Order } from "@/api/models";
-import { FilterData, QueryData } from "@/api/types/base";
 import { QueryBoundary } from "@/components/shared";
 import { UseQueryResult } from "@tanstack/react-query";
 import { OrderDataItem } from "./components";
 import { SearchX } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
-const OrderDataList = () => {
-  // Queries
+function OrderDataList() {
   const getOrderListQuery = useGetApiOrders(undefined, {
     query: {
       select: (data: any) => data.data,
@@ -61,6 +59,6 @@ const OrderDataList = () => {
       </QueryBoundary>
     </div>
   );
-};
+}
 
 export default OrderDataList;

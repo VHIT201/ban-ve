@@ -1,3 +1,5 @@
+"use client";
+
 // In CommentItem.tsx
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
@@ -6,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { Comment } from "@/api/models/comment";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 interface CommentItemProps {
   comment: Comment & {
@@ -88,7 +90,7 @@ export const CommentItem = ({ comment }: CommentItemProps) => {
                   {comment.contentDetails.title}
                 </p>
                 <Link 
-                  to={`/contents/${comment.contentDetails._id}${comment.contentDetails.slug ? `-${comment.contentDetails.slug}` : ''}`}
+                  href={`/contents/${comment.contentDetails._id}${comment.contentDetails.slug ? `-${comment.contentDetails.slug}` : ''}`}
                   className="inline-flex items-center text-xs text-blue-500 hover:underline mt-1"
                   target="_blank"
                 >

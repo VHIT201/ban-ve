@@ -17,6 +17,10 @@ if (!envConfigParser.success) {
   throw new Error("Invalid .env variable values");
 }
 
-const envConfig = envConfigParser.data;
+// Create alias for backward compatibility
+const envConfig = {
+  ...envConfigParser.data,
+  VITE_STORE_SECRET_KEY: envConfigParser.data.NEXT_PUBLIC_STORE_SECRET_KEY,
+};
 
 export default envConfig;

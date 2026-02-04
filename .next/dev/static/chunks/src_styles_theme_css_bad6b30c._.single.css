@@ -6244,6 +6244,10 @@
     white-space: pre-wrap;
   }
 
+  .\!text-white {
+    color: var(--color-white) !important;
+  }
+
   .text-\[\#1a1a1a\] {
     color: #1a1a1a;
   }
@@ -7924,8 +7928,16 @@
     cursor: not-allowed;
   }
 
+  .disabled\:\!text-white:disabled {
+    color: var(--color-white) !important;
+  }
+
   .disabled\:text-gray-500:disabled {
     color: var(--color-gray-500);
+  }
+
+  .disabled\:\!opacity-100:disabled {
+    opacity: 1 !important;
   }
 
   .disabled\:opacity-40:disabled {
@@ -9401,6 +9413,10 @@
 
   .\[\&_svg\]\:shrink-0 svg {
     flex-shrink: 0;
+  }
+
+  .\[\&_svg\]\:\!text-white svg {
+    color: var(--color-white) !important;
   }
 
   .\[\&_svg\:not\(\[class\*\=\'size-\'\]\)\]\:size-4 svg:not([class*="size-"]) {

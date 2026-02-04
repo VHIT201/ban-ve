@@ -1,3 +1,5 @@
+"use client";
+
 import { useMemo, useState, useEffect } from "react";
 import {
   RefreshCw,
@@ -7,9 +9,6 @@ import {
   ChevronsRight,
   Download,
   File,
-  Image,
-  FileText,
-  FileArchive,
   Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -64,9 +63,6 @@ interface DownloadsResponse {
   };
 }
 
-const getFileExtension = (filename: string) =>
-  filename.split(".").pop()?.toLowerCase() || "";
-
 const formatFileSize = (bytes: number): string => {
   if (!bytes) return "0 Bytes";
   const k = 1024;
@@ -85,16 +81,13 @@ interface DownloadItemProps {
   download: DownloadItem;
 }
 
-const DownloadItemComponent: React.FC<
-  DownloadItemProps & { onDownloadSuccess: () => void }
-> = ({ download, onDownloadSuccess }) => {
+function DownloadItemComponent({ download, onDownloadSuccess }: DownloadItemProps & { onDownloadSuccess: () => void }) {
   const downloadQuery = useGetApiFileIdDownload(download.fileId, {
     query: {
       enabled: false,
     },
   });
 
-  // Methods
   const handleDownload = async () => {
     const isSignedIn = useAuthStore.getState().isSignedIn;
 
@@ -142,7 +135,6 @@ const DownloadItemComponent: React.FC<
   };
 
   const fileName = download.fileName || "Unnamed download";
-
   const FileIcon = getFileIcon(download.fileType.toUpperCase());
 
   return (
@@ -152,12 +144,10 @@ const DownloadItemComponent: React.FC<
     >
       <CardContent className="p-4">
         <div className="flex items-start gap-4">
-          {/* File Icon */}
           <div className="size-16">
             <FileIcon />
           </div>
 
-          {/* File Info */}
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
@@ -185,7 +175,6 @@ const DownloadItemComponent: React.FC<
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex items-center gap-1 shrink-0">
                 <TooltipProvider>
                   <Tooltip>
@@ -212,9 +201,9 @@ const DownloadItemComponent: React.FC<
       </CardContent>
     </Card>
   );
-};
+}
 
-const DownloadList = () => {
+function DownloadList() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -242,7 +231,7 @@ const DownloadList = () => {
       id: item._id!,
       fileId: item.fileId?._id!,
       fileName: item.fileId?.name || "Không có tên",
-      fileType: getFileExtension(item.fileId?.name || ""),
+      fileType: item.fileId?.name?.split(".").pop()?.toLowerCase() || "",
       fileSize: formatFileSize(item.fileId?.size || 0),
       downloadDate: new Date(
         item.lastDownloadedAt || item.createdAt || new Date(),
@@ -279,6 +268,7 @@ const DownloadList = () => {
     for (let i = start; i <= end; i++) pages.push(i);
     return pages;
   };
+
   if (isLoading && !isRefetching) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -358,6 +348,6 @@ const DownloadList = () => {
       )}
     </div>
   );
-};
+}
 
 export default DownloadList;

@@ -6,8 +6,7 @@ import { PersonalFormData } from "./components/personal-form-view/PersonalFormVi
 import { toast } from "sonner";
 import { extractErrorMessage } from "@/utils/error";
 
-const Personal = () => {
-  // Stores
+function Personal() {
   const profileStore = useProfileStore(
     useShallow(({ avatar, setStore }) => ({
       avatar,
@@ -15,10 +14,8 @@ const Personal = () => {
     })),
   );
 
-  // Mutations
   const updateUserProfileMutation = usePutApiAuthUpdateProfile();
 
-  // Methods
   const handleUpdateProfile = async (data: PersonalFormData) => {
     try {
       await updateUserProfileMutation.mutateAsync({
@@ -46,6 +43,6 @@ const Personal = () => {
       <PersonalFormView onSubmit={handleUpdateProfile} />
     </div>
   );
-};
+}
 
 export default Personal;

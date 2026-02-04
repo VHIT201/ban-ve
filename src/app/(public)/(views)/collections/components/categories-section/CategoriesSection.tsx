@@ -1,7 +1,9 @@
+"use client";
+
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "@/components/ui/image";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { useGetApiCategories } from "@/api/endpoints/categories";
 import { Category } from "@/api/models";
 import { UseQueryResult } from "@tanstack/react-query";
@@ -12,7 +14,7 @@ import CategoriesSectionSkeleton from "./CategoriesSectionSkeleton";
 
 const CategoriesSection = () => {
   // Hooks
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // Queries
   const getCategoryListQuery = useGetApiCategories({
@@ -25,11 +27,11 @@ const CategoriesSection = () => {
 
   // Methods
   const handleCategoryClick = (category: Category) => {
-    navigate(`/collections?category=${category._id}`);
+    router.push(`/collections?category=${category._id}`);
   };
 
   const handleViewAll = () => {
-    navigate("/collections");
+    router.push("/collections");
   };
 
   return (

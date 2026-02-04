@@ -1,3 +1,5 @@
+"use client";
+
 import { useMemo, useState } from "react";
 import { useGetApiPaymentsHistory } from "@/api/endpoints/payments";
 import { TransactionItem } from "./TransactionItem";
@@ -17,7 +19,7 @@ export const TransactionList = () => {
   } = useGetApiPaymentsHistory({
     page: currentPage,
     limit: limit,
-  });
+  }) as any;
   const transactions = useMemo(() => {
     if (!paymentHistory?.data) return [];
 

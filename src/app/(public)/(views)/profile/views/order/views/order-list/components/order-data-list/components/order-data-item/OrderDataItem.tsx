@@ -7,16 +7,12 @@ import {
   Package,
   Eye,
   Download,
-  MoveRightIcon,
-  ArrowRightFromLine,
-  ArrowRightFromLineIcon,
   ArrowRightIcon,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
-import { FC } from "react";
 import { getStatusConfig } from "./lib/utils";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { BASE_PATHS } from "@/constants/paths";
 
 interface Props {
@@ -24,13 +20,10 @@ interface Props {
   onViewDetails?: (order: Order) => void;
 }
 
-const OrderDataItem: FC<Props> = ({ order }) => {
-  // Props
-  const navigate = useNavigate();
-
-  // Methods
+function OrderDataItem({ order }: Props) {
+  const router = useRouter();
   const handleViewDetail = () => {
-    navigate(
+    router.push(
       BASE_PATHS.app.profile.order.detail.path.replace(":id", order._id || "")
     );
   };
