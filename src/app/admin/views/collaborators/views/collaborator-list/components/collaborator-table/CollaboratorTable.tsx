@@ -1,6 +1,8 @@
+"use client";
+
 // Core
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { UseQueryResult } from "@tanstack/react-query";
 
 // App
@@ -14,7 +16,7 @@ import { CollaboratorRequest } from "@/api/types/collaborator";
 
 const CollaboratorTable = () => {
   // Hooks
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // States
   const [pagination, setPagination] = useState<{
@@ -36,12 +38,12 @@ const CollaboratorTable = () => {
     {
       query: {
         select: (data) => ({
-          requests: data.data.requests,
-          pagination: data.data.pagination,
+          requests: data.requests ?? [],
+          pagination: data.pagination,
         }),
       },
     },
-  ) as UseQueryResult<{requests: CollaboratorRequest[], pagination: any}>;
+  ) as UseQueryResult<{requests: CollaboratorRequest[], pagination: { total: number; page: number; limit: number } | undefined}>;
 
   // Methods
   const handlePaginationChange = (newPagination: {
@@ -61,7 +63,7 @@ const CollaboratorTable = () => {
   // Columns
   const columns = useColumns({
     onView: (collaborator) => {
-      navigate(`/admin/collaborators/detail/${collaborator._id}`);
+      router.push(`/admin/collaborators/detail/${collaborator._id}`);
     },
     onApprove: (collaborator) => {
       // TODO: Implement approve logic with mutation

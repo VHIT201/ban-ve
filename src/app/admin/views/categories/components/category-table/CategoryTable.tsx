@@ -1,3 +1,5 @@
+"use client";
+
 // App
 import { Category } from "@/api/models";
 
@@ -24,7 +26,7 @@ import {
 } from "@/components/shared/data-table/shared";
 import { CategoryFormValues } from "../category-dialog/lib/types";
 import { extractErrorMessage } from "@/utils/error";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { ROUTE_PATHS } from "@/constants/paths";
 import { useUploadMedia } from "@/hooks";
 import baseConfig from "@/configs/base";
@@ -39,7 +41,7 @@ const CategoryTable: FC<Props> = (props) => {
   const { id, mode = "all" } = props;
 
   // States
-  const navigate = useNavigate();
+  const router = useRouter();
   const [editSelectRow, setEditSelectRow] = useState<Category | null>(null);
   const [deleteSelectRow, setDeleteSelectRow] = useState<Category | null>(null);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 50 });
@@ -135,13 +137,11 @@ const CategoryTable: FC<Props> = (props) => {
     if (!category._id) return;
 
     if (mode === "children") {
-      navigate(`/admin/${ROUTE_PATHS.admin.categories.path}/${category._id}`, {
-        state: { withChildren: true },
-      });
+      router.push(`/admin/${ROUTE_PATHS.admin.categories.path}/${category._id}?withChildren=true`);
       return;
     }
 
-    navigate(`/admin/${ROUTE_PATHS.admin.categories.path}/${category._id}`);
+    router.push(`/admin/${ROUTE_PATHS.admin.categories.path}/${category._id}`);
   };
 
   const handleEditCategory = async (values: CategoryFormValues) => {
@@ -162,8 +162,8 @@ const CategoryTable: FC<Props> = (props) => {
           name: values.name,
           description: values.description,
           parentId: id,
-          imageUrl: imageRes?.path
-            ? `${baseConfig.mediaDomain}${imageRes.path}`
+          imageUrl: imageRes?.url
+            ? `${baseConfig.mediaDomain}${imageRes.url}`
             : undefined,
         },
       });
@@ -219,10 +219,7 @@ const CategoryTable: FC<Props> = (props) => {
     <Fragment>
       <QueryBoundary query={activeQuery}>
         {(activeData) => {
-          const displayData =
-            mode === "with-children"
-              ? activeQuery?.data?.children || []
-              : activeQuery.data || [];
+          const displayData = activeData || [];
 
           return (
             <DataTable

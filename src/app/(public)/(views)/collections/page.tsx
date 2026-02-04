@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { ContentResponse } from "@/api/types/content";
 import { Category } from "@/api/models/category";

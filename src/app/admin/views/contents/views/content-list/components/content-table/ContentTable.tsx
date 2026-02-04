@@ -1,3 +1,5 @@
+"use client";
+
 // App
 import DataTable from "@/components/shared/data-table/DataTable";
 import { GetApiContentAll200Pagination } from "@/api/models";
@@ -15,7 +17,7 @@ import { QueryBoundary } from "@/components/shared";
 import { toast } from "sonner";
 import { ContentResponse } from "@/api/types/content";
 import { UseQueryResult } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { DataTableDeleteDialog } from "@/components/shared/data-table/shared";
 import { PaginationState, Updater } from "@tanstack/react-table";
 
@@ -34,7 +36,7 @@ const ContentTable = () => {
   // =====================
   // Hooks
   // =====================
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // =====================
   // Queries
@@ -98,7 +100,7 @@ const ContentTable = () => {
   };
 
   const handleEdit = (content: ContentResponse) => {
-    navigate(`/admin/contents/edit/${content._id}`);
+    router.push(`/admin/contents/edit/${content._id}`);
   };
 
   const handleDeleteDialogOpen = (row: ContentResponse) => {
@@ -128,7 +130,7 @@ const ContentTable = () => {
   const handleApprove = (content: ContentResponse) => {
     if (!content._id) return;
     if (confirm(`Bạn có chắc chắn muốn duyệt nội dung "${content.title}"?`)) {
-      approveContentMutation.mutate({ id: content._id });
+      approveContentMutation.mutate({ id: content._id, data: { status: "approved" } });
     }
   };
 

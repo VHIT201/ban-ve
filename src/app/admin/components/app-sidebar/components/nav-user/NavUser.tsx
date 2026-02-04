@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronsUpDown, LogOut } from "lucide-react";
 import useDialogState from "@/hooks/use-dialog-state";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -16,7 +18,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { useAuthStore, useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
 import { BASE_PATHS } from "@/constants/paths";

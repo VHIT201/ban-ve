@@ -1,5 +1,7 @@
+"use client";
+
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useRouter, useParams } from "next/navigation";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { ArrowLeft, Loader2 } from "lucide-react";
@@ -70,8 +72,9 @@ const InfoRow = ({
 );
 
 export default function PaymentDetailPage() {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+  const params = useParams<{ id: string }>();
+  const id = params.id;
+  const router = useRouter();
 
   const {
     data,
@@ -79,7 +82,7 @@ export default function PaymentDetailPage() {
     isError,
     error,
     refetch,
-  } = useGetApiPaymentsPaymentId(id as string, {
+  } = useGetApiPaymentsPaymentId(id as string, undefined, {
     query: { enabled: !!id, retry: 1 },
   });
 
@@ -118,7 +121,7 @@ export default function PaymentDetailPage() {
     <div className="container mx-auto p-4 space-y-6">
 
       <div className="flex items-center gap-4">
-        <Button variant="outline" size="icon" onClick={() => navigate(-1)}>
+        <Button variant="outline" size="icon" onClick={() => router.back()}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <h1 className="text-2xl font-bold">Chi tiết giao dịch</h1>

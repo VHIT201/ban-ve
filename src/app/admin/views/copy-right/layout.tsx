@@ -1,8 +1,11 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
+import { ReactNode } from "react";
 
-const CopyRight = () => {
-  return <Outlet />;
+interface CopyRightLayoutProps {
+  children: ReactNode;
+}
+
+const CopyRightLayout = ({ children }: CopyRightLayoutProps) => {
+  return <>{children}</>;
 };
 
-export default CopyRight;
+export default CopyRightLayout;

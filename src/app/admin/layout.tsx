@@ -1,11 +1,14 @@
-import { Fragment } from "react";
+import { ReactNode } from "react";
 import { cn } from "@/utils/ui";
 import { AppHeader, AppMainContent, AppSidebar } from "./components";
 import { LayoutProvider } from "@/contexts";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { Outlet } from "react-router-dom";
 
-const Admin = () => {
+interface AdminLayoutProps {
+  children: ReactNode;
+}
+
+const AdminLayout = ({ children }: AdminLayoutProps) => {
   return (
     <LayoutProvider>
       <SidebarProvider defaultOpen={true}>
@@ -23,7 +26,7 @@ const Admin = () => {
 
           {/* ===== Content ===== */}
           <AppMainContent>
-            <Outlet />
+            {children}
           </AppMainContent>
         </SidebarInset>
       </SidebarProvider>
@@ -31,4 +34,4 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default AdminLayout;
