@@ -26,7 +26,7 @@ import { getRoleLabel, getRoleVariant } from "@/utils/role";
 import { toast } from "sonner";
 
 const personalFormSchema = z.object({
-  username: z
+  fullname: z
     .string()
     .min(3, "Tên đăng nhập phải có ít nhất 3 ký tự")
     .max(50, "Tên đăng nhập không được vượt quá 50 ký tự")
@@ -45,7 +45,17 @@ interface Props {
 
 const PersonalFormView: FC<Props> = ({ onSubmit }) => {
   // Queries
-  const { data: userData, isLoading } = useGetApiAuthMe();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const { data: userData, isLoading } = useGetApiAuthMe({
+    query: {
+      enabled: mounted,
+    },
+  });
   const user = userData?.data;
 
   const [saving, setSaving] = useState(false);
@@ -53,7 +63,7 @@ const PersonalFormView: FC<Props> = ({ onSubmit }) => {
   const form = useForm<PersonalFormData>({
     resolver: zodResolver(personalFormSchema),
     defaultValues: {
-      username: "",
+      fullname: "",
       email: "",
     },
   });
@@ -61,7 +71,7 @@ const PersonalFormView: FC<Props> = ({ onSubmit }) => {
   useEffect(() => {
     if (user) {
       form.reset({
-        username: user.username || "",
+        fullname: user.fullname || "",
         email: user.email || "",
       });
     }
@@ -88,7 +98,7 @@ const PersonalFormView: FC<Props> = ({ onSubmit }) => {
     });
   };
 
-  if (isLoading) {
+  if (!mounted || isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin" />
@@ -145,7 +155,7 @@ const PersonalFormView: FC<Props> = ({ onSubmit }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField
                   control={form.control}
-                  name="username"
+                  name="fullname"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Tên đăng nhập</FormLabel>

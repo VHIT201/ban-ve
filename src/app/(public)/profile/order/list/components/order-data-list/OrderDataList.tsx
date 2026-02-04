@@ -1,24 +1,23 @@
 "use client";
 
 import { useGetApiOrders } from "@/api/endpoints/orders";
-import { Order, GetApiOrders200 } from "@/api/models";
+import { Order } from "@/api/models";
 import { QueryBoundary } from "@/components/shared";
-import { UseQueryResult } from "@tanstack/react-query";
-import { OrderDataItem } from "./components";
-import { SearchX } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import OrderDataItem from "./components/order-data-item";
+import { UseQueryResult } from "@tanstack/react-query";
+import { SearchX } from "lucide-react";
 
 const OrderDataList = () => {
-  // Queries
-  const getOrderListQuery = useGetApiOrders(undefined, {
+  const ordersQuery = useGetApiOrders(undefined, {
     query: {
-      select: (data: GetApiOrders200) => data.data?.orders ?? [],
+      select: (res: any) => res.data?.orders ?? [],
     },
   }) as UseQueryResult<Order[]>;
 
   return (
     <div className="space-y-6">
-      <QueryBoundary query={getOrderListQuery}>
+      <QueryBoundary query={ordersQuery}>
         {(orders) => {
           if (!orders || orders.length === 0) {
             return (
@@ -46,9 +45,7 @@ const OrderDataList = () => {
                 <h2 className="text-lg font-semibold text-gray-900">
                   Danh sách đơn hàng
                 </h2>
-                <div className="text-sm text-gray-500">
-                  {orders.length} đơn hàng
-                </div>
+                <div className="text-sm text-gray-500">{orders.length} đơn hàng</div>
               </div>
 
               <div className="grid grid-cols-1 gap-4">

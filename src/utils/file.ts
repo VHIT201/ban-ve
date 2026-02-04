@@ -44,6 +44,8 @@ export const getFileTypeLabel = (type: string): string => {
       return "PDF File";
     case FileType.WORD:
       return "Word Document";
+    case FileType.DOCX:
+      return "Word Document";
     case FileType.EXCEL:
       return "Excel Spreadsheet";
     case FileType.RAR:

@@ -30,6 +30,8 @@ export interface Content {
   file_id?: ContentFileId;
   /** Danh sách URL hình ảnh đính kèm */
   images?: string[];
+  /** Loại vi phạm (nếu bị đánh dấu vi phạm bản quyền) */
+  violationType?: string;
   createdBy?: User;
   approvedBy?: User;
   approvedAt?: string;

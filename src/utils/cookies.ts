@@ -41,3 +41,12 @@ export function removeCookie(name: string): void {
 
   document.cookie = `${name}=; path=/; max-age=0`
 }
+
+/**
+ * Clear all authentication cookies
+ * Removes accessToken and refreshToken cookies
+ */
+export function clearAuthCookies(): void {
+  removeCookie("accessToken");
+  removeCookie("refreshToken");
+}

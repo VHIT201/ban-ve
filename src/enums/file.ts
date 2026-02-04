@@ -4,6 +4,7 @@ export enum FileType {
   JPG = "JPG",
   IMAGE = "IMAGE",
   WORD = "WORD",
+  DOCX = "DOCX",
   EXCEL = "EXCEL",
   RAR = "RAR",
   ZIP = "ZIP",

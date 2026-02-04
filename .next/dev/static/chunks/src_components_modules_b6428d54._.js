@@ -294,7 +294,7 @@ const useContentTableColumnsDefs = (props)=>{
                     cell: {
                         "useContentTableColumnsDefs.useMemo": ({ row })=>{
                             const createdBy = row.original.createdBy;
-                            const initials = createdBy?.username?.[0]?.toUpperCase() || "?";
+                            const initials = createdBy?.fullname?.[0]?.toUpperCase() || "?";
                             return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "flex items-center gap-2 min-w-[140px]",
                                 children: [
@@ -318,7 +318,7 @@ const useContentTableColumnsDefs = (props)=>{
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "text-sm font-medium text-gray-900 truncate",
-                                                children: createdBy?.username || "Không rõ"
+                                                children: createdBy?.fullname || "Không rõ"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/modules/content/content-table/lib/hooks.tsx",
                                                 lineNumber: 211,
@@ -3249,17 +3249,15 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
         };
     };
     // Queries
-    const getCategoryTreeQuery = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$api$2f$endpoints$2f$categories$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useGetApiCategoriesAllTree"])({
-        query: {
-            select: {
-                "ContentEditorForm.useGetApiCategoriesAllTree[getCategoryTreeQuery]": (data)=>data.data.tree
-            }["ContentEditorForm.useGetApiCategoriesAllTree[getCategoryTreeQuery]"]
-        }
-    });
+    const getCategoryTreeQuery = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$api$2f$endpoints$2f$categories$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useGetApiCategoriesAllTree"])();
     const treeData = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useMemo"])({
         "ContentEditorForm.useMemo[treeData]": ()=>{
             if (!getCategoryTreeQuery.data) return [];
-            return getCategoryTreeQuery.data.map(transformCategoryToTreeItem);
+            // API response structure: {status, results, pagination, data: {tree: [...]}}
+            const apiResponse = getCategoryTreeQuery.data;
+            const treeArray = apiResponse?.data?.tree;
+            if (!Array.isArray(treeArray)) return [];
+            return treeArray.map(transformCategoryToTreeItem);
         }
     }["ContentEditorForm.useMemo[treeData]"], [
         getCategoryTreeQuery.data
@@ -3336,18 +3334,18 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                                 className: "w-5 h-5 text-blue-600"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                lineNumber: 352,
+                                                lineNumber: 353,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             "Điều Khoản Miễn Trừ Trách Nhiệm và Xác Nhận Đăng Bài"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                        lineNumber: 351,
+                                        lineNumber: 352,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogDescription"], {
-                                        className: "text-left pt-4 space-y-4",
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "text-left pt-4 space-y-4 text-muted-foreground text-sm",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "space-y-4 text-gray-700",
@@ -3359,7 +3357,7 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                                             children: "THÔNG BÁO QUAN TRỌNG"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                            lineNumber: 358,
+                                                            lineNumber: 359,
                                                             columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3367,18 +3365,18 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                                             children: "Trước khi đăng tải nội dung, vui lòng đọc kỹ các điều khoản sau:"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                            lineNumber: 361,
+                                                            lineNumber: 362,
                                                             columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                    lineNumber: 357,
+                                                    lineNumber: 358,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                lineNumber: 356,
+                                                lineNumber: 357,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3389,7 +3387,7 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                                         children: "1. Miễn Trừ Trách Nhiệm"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                        lineNumber: 369,
+                                                        lineNumber: 370,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -3399,33 +3397,33 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                                                 children: "Nền tảng không chịu trách nhiệm về nội dung do người dùng đăng tải."
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                                lineNumber: 373,
+                                                                lineNumber: 374,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                                                 children: "Bạn hoàn toàn chịu trách nhiệm về bản quyền và tính hợp pháp của nội dung."
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                                lineNumber: 377,
+                                                                lineNumber: 378,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                                                 children: "Chúng tôi có quyền gỡ bỏ bất kỳ nội dung nào vi phạm điều khoản dịch vụ."
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                                lineNumber: 381,
+                                                                lineNumber: 382,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                        lineNumber: 372,
+                                                        lineNumber: 373,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                lineNumber: 368,
+                                                lineNumber: 369,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3436,7 +3434,7 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                                         children: "2. Thông Tin Bài Đăng"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                        lineNumber: 389,
+                                                        lineNumber: 390,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3449,7 +3447,7 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                                                         children: "Tiêu đề:"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                                        lineNumber: 392,
+                                                                        lineNumber: 393,
                                                                         columnNumber: 23
                                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                                     " ",
@@ -3457,7 +3455,7 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                                lineNumber: 391,
+                                                                lineNumber: 392,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3467,7 +3465,7 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                                                         children: "Giá:"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                                        lineNumber: 401,
+                                                                        lineNumber: 402,
                                                                         columnNumber: 23
                                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                                     " ",
@@ -3478,19 +3476,19 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                                lineNumber: 400,
+                                                                lineNumber: 401,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                        lineNumber: 390,
+                                                        lineNumber: 391,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                lineNumber: 388,
+                                                lineNumber: 389,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3501,7 +3499,7 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                                         children: "3. Cam Kết Của Người Đăng"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                        lineNumber: 413,
+                                                        lineNumber: 414,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3509,7 +3507,7 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                                         children: 'Bằng việc nhấn "Xác nhận đăng bài", bạn cam kết:'
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                        lineNumber: 416,
+                                                        lineNumber: 417,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -3519,45 +3517,45 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                                                 children: "Tôi là chủ sở hữu hoặc có đầy đủ quyền đối với nội dung đăng tải"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                                lineNumber: 420,
+                                                                lineNumber: 421,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                                                 children: "Nội dung không vi phạm bản quyền hoặc quyền sở hữu trí tuệ"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                                lineNumber: 424,
+                                                                lineNumber: 425,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                                                 children: "Tôi đã đọc và đồng ý với tất cả điều khoản sử dụng"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                                lineNumber: 427,
+                                                                lineNumber: 428,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                        lineNumber: 419,
+                                                        lineNumber: 420,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                lineNumber: 412,
+                                                lineNumber: 413,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                        lineNumber: 355,
+                                        lineNumber: 356,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                lineNumber: 350,
+                                lineNumber: 351,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$dialog$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["DialogFooter"], {
@@ -3571,7 +3569,7 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                         children: "Hủy bỏ"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                        lineNumber: 433,
+                                        lineNumber: 434,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -3585,7 +3583,7 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                                     className: "w-4 h-4 mr-2 animate-spin"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                    lineNumber: 449,
+                                                    lineNumber: 450,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 "Đang xử lý..."
@@ -3596,7 +3594,7 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                                     className: "w-4 h-4 mr-2"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                                    lineNumber: 454,
+                                                    lineNumber: 455,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 "Xác nhận đăng bài"
@@ -3604,24 +3602,24 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                         }, void 0, true)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                        lineNumber: 441,
+                                        lineNumber: 442,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                lineNumber: 432,
+                                lineNumber: 433,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                        lineNumber: 349,
+                        lineNumber: 350,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 }, void 0, false, {
                     fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                    lineNumber: 348,
+                    lineNumber: 349,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Alert"], {
@@ -3631,20 +3629,20 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                             className: "h-4 w-4"
                         }, void 0, false, {
                             fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                            lineNumber: 466,
+                            lineNumber: 467,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$alert$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AlertDescription"], {
                             children: error
                         }, void 0, false, {
                             fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                            lineNumber: 467,
+                            lineNumber: 468,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                    lineNumber: 465,
+                    lineNumber: 466,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0)),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
@@ -3661,13 +3659,13 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                             children: "*"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                            lineNumber: 478,
+                                            lineNumber: 479,
                                             columnNumber: 25
                                         }, void 0)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                    lineNumber: 477,
+                                    lineNumber: 478,
                                     columnNumber: 15
                                 }, void 0),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -3677,35 +3675,35 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                         disabled: isLoading
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                        lineNumber: 481,
+                                        lineNumber: 482,
                                         columnNumber: 17
                                     }, void 0)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                    lineNumber: 480,
+                                    lineNumber: 481,
                                     columnNumber: 15
                                 }, void 0),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormDescription"], {
                                     children: "Tiêu đề ngắn gọn, mô tả chính xác nội dung bản vẽ (3-200 ký tự)"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                    lineNumber: 487,
+                                    lineNumber: 488,
                                     columnNumber: 15
                                 }, void 0),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                     fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                    lineNumber: 490,
+                                    lineNumber: 491,
                                     columnNumber: 15
                                 }, void 0)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                            lineNumber: 476,
+                            lineNumber: 477,
                             columnNumber: 13
                         }, void 0)
                 }, void 0, false, {
                     fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                    lineNumber: 472,
+                    lineNumber: 473,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
@@ -3722,13 +3720,13 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                             children: "*"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                            lineNumber: 502,
+                                            lineNumber: 503,
                                             columnNumber: 32
                                         }, void 0)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                    lineNumber: 501,
+                                    lineNumber: 502,
                                     columnNumber: 15
                                 }, void 0),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormControl"], {
@@ -3739,35 +3737,35 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                         disabled: isLoading
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                        lineNumber: 505,
+                                        lineNumber: 506,
                                         columnNumber: 17
                                     }, void 0)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                    lineNumber: 504,
+                                    lineNumber: 505,
                                     columnNumber: 15
                                 }, void 0),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormDescription"], {
                                     children: "Mô tả chi tiết giúp người dùng hiểu rõ hơn về nội dung (10-1000 ký tự)"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                    lineNumber: 512,
+                                    lineNumber: 513,
                                     columnNumber: 15
                                 }, void 0),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormMessage"], {}, void 0, false, {
                                     fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                    lineNumber: 516,
+                                    lineNumber: 517,
                                     columnNumber: 15
                                 }, void 0)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                            lineNumber: 500,
+                            lineNumber: 501,
                             columnNumber: 13
                         }, void 0)
                 }, void 0, false, {
                     fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                    lineNumber: 496,
+                    lineNumber: 497,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
@@ -3784,13 +3782,13 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                             children: "*"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                            lineNumber: 528,
+                                            lineNumber: 529,
                                             columnNumber: 26
                                         }, void 0)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                    lineNumber: 527,
+                                    lineNumber: 528,
                                     columnNumber: 15
                                 }, void 0),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$shared$2f$tree$2d$select$2f$TreeSelect$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__TreeSelect$3e$__["TreeSelect"], {
@@ -3800,7 +3798,6 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                         field.value
                                     ],
                                     onChange: (selected)=>{
-                                        console.log("Selected category ID:", selected);
                                         field.onChange(selected[0] || "");
                                     },
                                     placeholder: "Chọn danh mục",
@@ -3809,7 +3806,7 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                     className: "max-w-[300px]"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                                    lineNumber: 531,
+                                    lineNumber: 532,
                                     columnNumber: 15
                                 }, void 0),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormDescription"], {
@@ -3827,12 +3824,12 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                            lineNumber: 526,
+                            lineNumber: 527,
                             columnNumber: 13
                         }, void 0)
                 }, void 0, false, {
                     fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-                    lineNumber: 522,
+                    lineNumber: 523,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$form$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FormField"], {
@@ -4079,13 +4076,13 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
                                                     columnNumber: 21
                                                 }, void 0),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$shared$2f$uploader$2f$Uploader$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Uploader$3e$__["Uploader"].Exists, {
-                                                    data: defaultFile ? [
+                                                    data: defaultValues?.content_file ? [
                                                         {
-                                                            id: defaultFile?.id || "",
-                                                            name: defaultFile?.name || "",
-                                                            size: defaultFile?.size || 0,
-                                                            path: defaultFile?.path || "",
-                                                            type: defaultFile?.type || ""
+                                                            id: defaultValues.content_file._id,
+                                                            name: defaultValues.content_file.name,
+                                                            size: defaultValues.content_file.size,
+                                                            path: defaultValues.content_file._id,
+                                                            type: defaultValues.content_file.type
                                                         }
                                                     ] : []
                                                 }, void 0, false, {
@@ -4199,12 +4196,12 @@ const ContentEditorForm = ({ mode = "create", defaultValues, defaultFile, defaul
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-            lineNumber: 346,
+            lineNumber: 347,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0))
     }, void 0, false, {
         fileName: "[project]/src/components/modules/content/content-editor-form/ContentEditorForm.tsx",
-        lineNumber: 345,
+        lineNumber: 346,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };

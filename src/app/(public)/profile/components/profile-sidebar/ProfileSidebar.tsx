@@ -32,25 +32,28 @@ const ProfileSidebar = () => {
   // Methods
   const handleChangeAvatar = async (file: File) => {
     try {
-      // Convert file to base64 string
-      const reader = new FileReader();
-      const base64Promise = new Promise<string>((resolve) => {
-        reader.onloadend = () => resolve(reader.result as string);
-      });
-      reader.readAsDataURL(file);
-      const base64Avatar = await base64Promise;
+      
+      // const reader = new FileReader();
+      // const base64Promise = new Promise<string>((resolve) => {
+      //   reader.onloadend = () => resolve(reader.result as string);
+      // });
+      // reader.readAsDataURL(file);
+      // const base64Avatar = await base64Promise;
 
-      // Gửi avatar dạng base64 string lên API update-profile
-      await updateUserProfileMutation.mutateAsync({
+      // API update-profile đang dùng multipart/form-data (FormData) và model khai báo avatar là Blob.
+      // Vì vậy gửi trực tiếp File/Blob là đúng chuẩn, không cần convert sang base64 (base64 nặng hơn và dễ vượt giới hạn payload).
+      const result = await updateUserProfileMutation.mutateAsync({
         data: {
-          avatar: base64Avatar,
-          username: profileStore.fullName,
+          // avatar: base64Avatar,
+          avatar: file,
+          fullname: profileStore.fullName,
           email: profileStore.email,
         },
       });
 
-      // Tạo URL tạm thời để hiển thị avatar mới
-      const avatarUrl = URL.createObjectURL(file);
+      const avatarUrl = result?.data?.avatar
+        ? result.data.avatar
+        : URL.createObjectURL(file);
       profileStore.setStore({
         avatar: avatarUrl,
         fullName: profileStore.fullName,

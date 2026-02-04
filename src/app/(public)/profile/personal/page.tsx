@@ -25,14 +25,15 @@ const Personal = () => {
       await updateUserProfileMutation.mutateAsync({
         data: {
           avatar: profileStore.avatar,
-          username: data.username,
+          fullname: data.fullname,
           email: data.email,
         },
       });
 
       profileStore.setStore({
         avatar: profileStore.avatar,
-        fullName: data.username,
+        fullName: data.fullname,
+        username: data.fullname,
         email: data.email,
       });
     } catch (error) {

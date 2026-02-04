@@ -1,4 +1,6 @@
-import {  useEffect, useState } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -58,7 +60,7 @@ function PersonalFormView({ onSubmit }: Props) {
   useEffect(() => {
     if (user) {
       form.reset({
-        username: user.username || "",
+        username: user.fullname || "",
         email: user.email || "",
       });
     }

@@ -5,34 +5,26 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import {
-  Package,
-  Download,
-  ArrowRightIcon,
-} from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
-import { FC } from "react";
-import { getStatusConfig } from "./lib/utils";
 import { useRouter } from "next/navigation";
 import { BASE_PATHS } from "@/constants/paths";
+import { Package, Download, ArrowRightIcon } from "lucide-react";
+import { getStatusConfig } from "./lib/utils";
 
 interface Props {
   order: Order;
-  onViewDetails?: (order: Order) => void;
 }
 
-const OrderDataItem: FC<Props> = ({ order }) => {
+const OrderDataItem = ({ order }: Props) => {
   const router = useRouter();
 
-  // Methods
   const handleViewDetail = () => {
     router.push(
       BASE_PATHS.app.profile.order.detail.path.replace(":id", order._id || "")
     );
   };
 
-  // Memos
   const statusConfig = getStatusConfig(order.status);
   const StatusIcon = statusConfig.icon;
 
@@ -40,10 +32,9 @@ const OrderDataItem: FC<Props> = ({ order }) => {
     <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200">
       <CardContent className="p-5">
         <div className="space-y-4">
-          {/* Header */}
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-3 flex-1 min-w-0">
-              <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
                 <Package className="w-5 h-5 text-gray-600" />
               </div>
               <div className="flex-1 min-w-0">
@@ -65,7 +56,7 @@ const OrderDataItem: FC<Props> = ({ order }) => {
                 </p>
               </div>
             </div>
-            {/* Actions */}
+
             <div className="flex gap-2 pt-2 justify-end">
               {order.status === OrderStatus.completed && (
                 <Button variant="outline" size="sm" className="h-9">
@@ -87,7 +78,6 @@ const OrderDataItem: FC<Props> = ({ order }) => {
 
           <Separator />
 
-          {/* Order Details */}
           <div className="space-y-2.5">
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-600">Số sản phẩm</span>

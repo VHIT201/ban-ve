@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 export type PostApiAuthRegisterBody = {
-  username: string;
+  fullname: string;
   email: string;
   password: string;
 };

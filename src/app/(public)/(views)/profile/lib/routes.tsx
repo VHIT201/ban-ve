@@ -64,7 +64,7 @@ const profileRoutes: RouteObject = {
       path: `${profile.collaborator.path}/content-edit/:id`,
       lazy: async () => {
         const { default: CollaboratorContentEdit } = await import(
-          "../views/collaborator-content-edit/page"
+          "../views/collaborator-content-edit/[id]/page"
         );
         return {
           element: <CollaboratorContentEdit />,

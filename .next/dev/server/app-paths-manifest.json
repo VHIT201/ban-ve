@@ -1,9 +1,7 @@
 {
   "/(public)/(views)/(home)/page": "app/(public)/(views)/(home)/page.js",
-  "/(public)/(views)/detail/[id]/page": "app/(public)/(views)/detail/[id]/page.js",
-  "/(public)/profile/collaborator/page": "app/(public)/profile/collaborator/page.js",
+  "/(public)/profile/order/detail/[id]/page": "app/(public)/profile/order/detail/[id]/page.js",
   "/(public)/profile/order/list/page": "app/(public)/profile/order/list/page.js",
   "/(public)/profile/order/page": "app/(public)/profile/order/page.js",
-  "/(public)/profile/personal/page": "app/(public)/profile/personal/page.js",
   "/_not-found/page": "app/_not-found/page.js"
 }

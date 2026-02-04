@@ -18,6 +18,7 @@ import { HEADER_USER_PROFILE_MENU } from "./lib/constant";
 import { UserRole } from "@/enums/roles";
 import { BASE_PATHS } from "@/constants/paths";
 import baseConfig from "@/configs/base";
+import { removeCookie } from "@/utils/cookies";
 
 // Types
 interface UserData {
@@ -122,8 +123,15 @@ const HeaderUserProfile = () => {
   };
 
   const handleLogout = () => {
+    // Clear Zustand stores
     resetStore();
     authStore.resetStore();
+    
+    // Clear cookies
+    removeCookie("accessToken");
+    removeCookie("refreshToken");
+    
+    // Redirect to login
     window.location.href = BASE_PATHS.auth.login.path;
   };
 

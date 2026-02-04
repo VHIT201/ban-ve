@@ -63,7 +63,10 @@ const CollaboratorTable = () => {
   // Columns
   const columns = useColumns({
     onView: (collaborator) => {
-      router.push(`/admin/collaborators/detail/${collaborator._id}`);
+      router.push(`/admin/collaborators/${collaborator._id}`);
+    },
+    onEdit: (collaborator) => {
+      router.push(`/admin/collaborators/${collaborator._id}/edit`);
     },
     onApprove: (collaborator) => {
       // TODO: Implement approve logic with mutation

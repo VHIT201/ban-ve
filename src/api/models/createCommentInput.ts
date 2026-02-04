@@ -5,8 +5,8 @@ export interface CreateCommentInput {
   contentId: string;
   /** Nội dung bình luận */
   content: string;
-  /** Tên người dùng (bắt buộc nếu là khách) */
+  /** Tên người dùng (bắt buộc nếu không đăng nhập) */
   guestName?: string;
-  /** Email người dùng (bắt buộc nếu là khách) */
+  /** Email người dùng (bắt buộc nếu không đăng nhập) */
   email?: string;
 }
