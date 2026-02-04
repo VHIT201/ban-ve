@@ -59,9 +59,11 @@ export const useColumns = (props: useCollaboratorTableColumnsDefsProps) => {
         header: "Người đăng ký",
         cell: ({ row }) => {
           const user = row.original.user;
+          const displayName = user?.fullname || user?.username || user?.email || "-";
+          
           return (
             <div className="min-w-[160px]">
-              <div className="font-medium">{user?.username || "-"}</div>
+              <div className="font-medium">{displayName}</div>
               {user?.email && (
                 <div className="text-xs text-muted-foreground">
                   {user.email}
@@ -122,7 +124,8 @@ export const useColumns = (props: useCollaboratorTableColumnsDefsProps) => {
             );
           }
 
-          return <span className="text-sm">{approvedBy?.username || "-"}</span>;
+          const displayName = approvedBy?.fullname || approvedBy?.username || "-";
+          return <span className="text-sm">{displayName}</span>;
         },
       },
       {

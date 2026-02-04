@@ -205,7 +205,7 @@ export const CategoryDetail = () => {
 
   const handleViewDetails = (category: Category) => {
     if (category?._id) {
-      router.push(`/admin/categories/detail/${category._id}`);
+      router.push(`/admin/categories/${category._id}`);
     }
   };
 
