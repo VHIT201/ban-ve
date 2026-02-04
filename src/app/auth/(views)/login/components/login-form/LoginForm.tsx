@@ -22,15 +22,22 @@ import { usePostApiAuthLogin } from "@/api/endpoints/auth";
 import { toast } from "sonner";
 import queryClient from "@/configs/query-client";
 import { useShallow } from "zustand/shallow";
-import { useAuthStore } from "@/stores";
+import { useAuthStore, useProfileStore } from "@/stores";
 import { Response } from "@/api/types/base";
 import { PostApiAuthLogin200Data } from "@/api/models";
 import { extractErrorMessage } from "@/utils/error";
 import Link from "next/link";
+import { setCookie } from "@/utils/cookies";
 
 const LoginForm: FC<Props> = () => {
   // Stores
   const authStore = useAuthStore(
+    useShallow(({ setStore }) => ({
+      setStore,
+    })),
+  );
+
+  const profileStore = useProfileStore(
     useShallow(({ setStore }) => ({
       setStore,
     })),
@@ -63,7 +70,27 @@ const LoginForm: FC<Props> = () => {
         loginResponse as unknown as Response<PostApiAuthLogin200Data>
       ).data;
 
+      // Set cookies for middleware authentication
+      if (loginData.accessToken) {
+        setCookie("accessToken", loginData.accessToken, 60 * 60 * 24 * 7); // 7 days
+      }
+      if (loginData.refreshToken) {
+        setCookie("refreshToken", loginData.refreshToken, 60 * 60 * 24 * 30); // 30 days
+      }
+
       authStore.setStore({ isSignedIn: true, ...loginData });
+
+      // Set profile store with user info
+      if (loginData.user) {
+        profileStore.setStore({
+          id: loginData.user._id,
+          username: loginData.user.username,
+          email: loginData.user.email,
+          fullName: loginData.user.username,
+          avatar: "", 
+          role: loginData.user.role,
+        });
+      }
 
       toast.success("Đăng nhập thành công");
       window.location.href = BASE_PATHS.app.path;
