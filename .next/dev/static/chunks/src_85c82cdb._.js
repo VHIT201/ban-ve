@@ -20,7 +20,11 @@ if (!envConfigParser.success) {
     console.error(envConfigParser.error.flatten().fieldErrors);
     throw new Error("Invalid .env variable values");
 }
-const envConfig = envConfigParser.data;
+// Create alias for backward compatibility
+const envConfig = {
+    ...envConfigParser.data,
+    VITE_STORE_SECRET_KEY: envConfigParser.data.NEXT_PUBLIC_STORE_SECRET_KEY
+};
 const __TURBOPACK__default__export__ = envConfig;
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);

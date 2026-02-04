@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { FC } from "react";
 import { Props } from "./lib/types";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { BASE_PATHS } from "@/constants/paths";
 
 const PaymentStatusDialog: FC<Props> = (props) => {
@@ -28,7 +28,7 @@ const PaymentStatusDialog: FC<Props> = (props) => {
   } = props;
 
   // Hooks
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // Methods
   const handleOpenChange = (open: boolean) => {
@@ -137,7 +137,7 @@ const PaymentStatusDialog: FC<Props> = (props) => {
               <Button
                 variant={"link"}
                 onClick={() =>
-                  navigate(
+                  router.push(
                     BASE_PATHS.app.profile.order.detail.path.replace(
                       ":id",
                       order._id || ""

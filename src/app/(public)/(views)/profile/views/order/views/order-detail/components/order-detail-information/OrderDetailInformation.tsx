@@ -14,13 +14,12 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { FC } from "react";
 
 interface Props {
   order: Order;
 }
 
-const OrderDetailInformation: FC<Props> = ({ order }) => {
+function OrderDetailInformation({ order }: Props) {
   const getStatusConfig = (status?: OrderStatus) => {
     switch (status) {
       case OrderStatus.completed:

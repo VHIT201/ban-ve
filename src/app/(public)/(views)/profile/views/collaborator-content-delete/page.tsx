@@ -10,12 +10,12 @@ import { BASE_PATHS } from "@/constants/paths";
 import { useRequiredPathParams } from "@/hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeftIcon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export default function DeleteContentPage() {
   const { id } = useRequiredPathParams(["id"]);
-  const navigate = useNavigate();
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   const deleteMutation = useDeleteApiContentId({
@@ -23,7 +23,7 @@ export default function DeleteContentPage() {
       onSuccess: () => {
         toast.success("Xóa nội dung thành công");
         queryClient.invalidateQueries({ queryKey: ["content"] });
-        navigate(BASE_PATHS.app.profile.collaborator.path);
+        router.push(BASE_PATHS.app.profile.collaborator.path);
       },
       onError: (error: any) => {
         console.error("Failed to delete content:", error);
@@ -54,7 +54,7 @@ export default function DeleteContentPage() {
       <CardFooter className="flex justify-between">
         <Button
           variant="outline"
-          onClick={() => navigate(-1)}
+          onClick={() => router.back()}
           disabled={deleteMutation.isPending}
         >
           <ArrowLeftIcon className="mr-2 h-4 w-4" />

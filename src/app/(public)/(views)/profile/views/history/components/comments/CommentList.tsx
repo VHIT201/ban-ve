@@ -5,7 +5,7 @@ import { CommentItem } from "./CommentItem";
 import { useGetApiCommentsMe } from "@/api/endpoints/comments";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuthStore, useProfileStore } from "@/stores";
 
@@ -31,17 +31,17 @@ interface CommentListProps {
 }
 
 export const CommentList: React.FC<CommentListProps> = ({ contentId }) => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { isSignedIn } = useAuthStore();
   const { id: userId, ...profile } = useProfileStore();
 
   // Redirect to login if not authenticated
   useEffect(() => {
     if (!isSignedIn) {
-      navigate('/auth/login');
+      router.push('/auth/login');
       return;
     }
-  }, [isSignedIn, navigate]);
+  }, [isSignedIn, router]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 5; // Số bình luận mỗi trang

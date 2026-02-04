@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import { ContentResponse } from "@/api/types/content";
 import { Category } from "@/api/models/category";
 import { ChevronRight, ChevronDown, ChevronUp, Filter, X } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "next/navigation";
+
 import {
   CategoriesSection,
   CollectionFilters,
@@ -42,7 +43,7 @@ const mockCategories: Category[] = [
 
 const CategoryPage = () => {
   // Hooks
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams();
 
   // States
   const [filteredProducts, setFilteredProducts] = useState<FilterFormValues>(

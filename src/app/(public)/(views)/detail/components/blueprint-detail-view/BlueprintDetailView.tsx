@@ -26,7 +26,7 @@ import { FC, Fragment, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Props } from "./lib/types";
 import { useCartStore } from "@/stores/use-cart-store";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,7 +48,6 @@ import { useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
 import EmailDialog from "@/components/shared/email-dialog";
 import { extractErrorMessage } from "@/utils/error";
-import { navigate } from "next/dist/client/components/segment-cache/navigation";
 import { Separator } from "@/components/ui/separator";
 import { useCountDown } from "@/hooks";
 import { BlueprintDownload } from "./components";
@@ -64,7 +63,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
 
   // Hooks
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // States
   const [openEmailDialog, setOpenEmailDialog] = useState(false);

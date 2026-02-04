@@ -1,3 +1,5 @@
+"use client";
+
 import { useGetApiOrdersOrderId } from "@/api/endpoints/orders";
 import { Order } from "@/api/models";
 import { ResponseData } from "@/api/types/base";
@@ -7,14 +9,11 @@ import { UseQueryResult } from "@tanstack/react-query";
 import { OrderDetailInformation, OrderDetailSoldList } from "./components";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
-const OrderDetail = () => {
-  // Hooks
-  const navigate = useNavigate();
+function OrderDetail() {
+  const router = useRouter();
   const { id: orderId } = useRequiredPathParams(["id"]);
-
-  // Queries
   const getOrderDetailQuery = useGetApiOrdersOrderId(orderId) as UseQueryResult<any>;
 
   return (
@@ -24,7 +23,7 @@ const OrderDetail = () => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate(-1)}
+          onClick={() => router.back()}
           className="h-9 w-9"
         >
           <ArrowLeft className="w-5 h-5" />

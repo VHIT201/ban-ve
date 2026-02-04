@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,7 +36,7 @@ import {
   Check,
 } from "lucide-react";
 import { useCartStore } from "@/stores/use-cart-store";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { generateImageRandom } from "@/utils/image";
 import { useAuthStore, useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
@@ -172,7 +174,7 @@ const PaymentPage = () => {
 
   // Hooks
   const cart = useCart({ sync: false });
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [openPaymentStatus, setOpenPaymentStatus] = useState<boolean>(false);
@@ -211,9 +213,9 @@ const PaymentPage = () => {
 
   useEffect(() => {
     if (cart.items.length === 0) {
-      navigate("/collections");
+      router.push("/collections");
     }
-  }, [cart.items.length, navigate]);
+  }, [cart.items.length, router]);
 
   const handleApplyDiscount = () => {
     console.log("Apply discount code:", form.getValues("discountCode"));
@@ -243,7 +245,7 @@ const PaymentPage = () => {
       cart.clearCart();
 
       toast.success("Thanh toán thành công. Cảm ơn bạn đã mua hàng.");
-      navigate("/");
+      router.push("/");
     } catch (error) {
       console.error("Payment error:", error);
       toast.error("Có lỗi xảy ra khi xử lý thanh toán. Vui lòng thử lại.");
@@ -290,7 +292,7 @@ const PaymentPage = () => {
                   size="lg"
                   variant="outline"
                   className="w-full h-12 font-medium"
-                  onClick={() => navigate("/")}
+                  onClick={() => router.push("/")}
                 >
                   Quay về trang chủ
                 </Button>
@@ -298,7 +300,7 @@ const PaymentPage = () => {
                   size="lg"
                   className="w-full bg-linear-to-r from-primary/70 to-primary/80 hover:from-primary/70 hover:to-primary/80 text-white shadow-lg shadow-primary/30 h-12 font-semibold"
                   onClick={() => {
-                    navigate(BASE_PATHS.auth.login.path);
+                    router.push(BASE_PATHS.auth.login.path);
                   }}
                 >
                   <Lock className="w-4 h-4 mr-2" />
