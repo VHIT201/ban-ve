@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,10 +10,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Grid3x3, List } from "lucide-react";
-import { useDeleteApiFileId, useGetApiFile } from "@/api/endpoints/files";
+import { Search, Grid3x3, List, ChevronLeft, ChevronRight } from "lucide-react";
+import { useDeleteApiFileId } from "@/api/endpoints/files";
 import { DeleteDialog, QueryBoundary } from "@/components/shared";
-import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { FileResponse } from "@/api/types/file";
 import { ResponseData } from "@/api/types/base";
 import {
@@ -21,6 +23,8 @@ import {
 } from "./components";
 import { toast } from "sonner";
 import ResourceItem from "./components/resource-item/ResourceItem";
+import { MAIN_AXIOS_INSTANCE } from "@/api/mutator/custom-instance";
+import { PaginationState } from "@tanstack/react-table";
 
 const Resources = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -28,20 +32,37 @@ const Resources = () => {
   const [deleteItem, setDeleteItem] = useState<FileResponse | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("name");
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 12,
+  });
 
   // API Query
   const queryClient = useQueryClient();
 
-  const getFileListQuery = useGetApiFile({
-    query: {
-      select: (data) => (data as unknown as ResponseData<FileResponse[]>).data,
+  // Custom query với pagination params
+  const getFileListQuery = useQuery({
+    queryKey: ["/api/file", pagination.pageIndex + 1, pagination.pageSize],
+    queryFn: async () => {
+      const response = await MAIN_AXIOS_INSTANCE.get<ResponseData<{ 
+        files: FileResponse[];
+        pagination: { total: number; page: number; limit: number; totalPages: number }
+      }>>("/api/file", {
+        params: {
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+        },
+      });
+      return response.data;
     },
-  }) as UseQueryResult<FileResponse[]>;
+  });
 
-  const fileList = getFileListQuery.data || [];
+  const fileList = Array.isArray(getFileListQuery.data?.data?.files) 
+    ? getFileListQuery.data.data.files 
+    : [];
 
   const filteredItems = fileList
-    .filter((item) =>
+    .filter((item) => 
       item.name.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .sort((a, b) => {
@@ -105,8 +126,8 @@ const Resources = () => {
           {/* Header */}
           <div className="border-b bg-background px-0 py-4">
             {/* Filters Bar */}
-            <div className="flex items-center gap-3">
-              <div className="relative flex-1 max-w-sm">
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="relative flex-1 max-w-sm min-w-[200px]">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-muted-foreground" />
                 <Input
                   placeholder="Tìm kiếm..."
@@ -115,6 +136,25 @@ const Resources = () => {
                   className="pl-9"
                 />
               </div>
+              
+              {/* Page Size Filter */}
+              <Select 
+                value={pagination.pageSize.toString()} 
+                onValueChange={(value) => 
+                  setPagination((prev) => ({ ...prev, pageSize: Number(value), pageIndex: 0 }))
+                }
+              >
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue placeholder="Số lượng" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="12">12 file</SelectItem>
+                  <SelectItem value="24">24 file</SelectItem>
+                  <SelectItem value="48">48 file</SelectItem>
+                  <SelectItem value="96">96 file</SelectItem>
+                </SelectContent>
+              </Select>
+
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="w-[140px]">
                   <SelectValue placeholder="Sắp xếp" />
@@ -158,8 +198,8 @@ const Resources = () => {
                         <ResourceItem
                           key={item._id}
                           item={item}
-                          onClick={setPreviewItem}
-                          onDelete={setDeleteItem}
+                          onView={(data) => setPreviewItem(data as FileResponse)}
+                          onDelete={(data) => setDeleteItem(data as FileResponse)}
                         />
                       ))}
                     </div>
@@ -169,8 +209,8 @@ const Resources = () => {
                         <ResourceItemCompact
                           key={item._id}
                           item={item}
-                          onClick={setPreviewItem}
-                          onDelete={setDeleteItem}
+                          onView={(data) => setPreviewItem(data as FileResponse)}
+                          onDelete={(data) => setDeleteItem(data as FileResponse)}
                         />
                       ))}
                     </div>
@@ -191,6 +231,57 @@ const Resources = () => {
               )}
             </QueryBoundary>
           </div>
+
+          {/* Pagination */}
+          <div className="border-t py-4 px-0">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-muted-foreground">
+                Hiển thị {pagination.pageIndex * pagination.pageSize + 1} -{" "}
+                {Math.min(
+                  (pagination.pageIndex + 1) * pagination.pageSize,
+                  getFileListQuery.data?.data?.pagination?.total || 0
+                )}{" "}
+                trong tổng số {getFileListQuery.data?.data?.pagination?.total || 0} file
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setPagination((prev) => ({
+                      ...prev,
+                      pageIndex: Math.max(0, prev.pageIndex - 1),
+                    }))
+                  }
+                  disabled={pagination.pageIndex === 0}
+                >
+                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  Trước
+                </Button>
+                <span className="text-sm">
+                  Trang {pagination.pageIndex + 1} /{" "}
+                  {getFileListQuery.data?.data?.pagination?.totalPages || 1}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setPagination((prev) => ({
+                      ...prev,
+                      pageIndex: prev.pageIndex + 1,
+                    }))
+                  }
+                  disabled={
+                    (pagination.pageIndex + 1) >= 
+                    (getFileListQuery.data?.data?.pagination?.totalPages || 0)
+                  }
+                >
+                  Sau
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -198,7 +289,7 @@ const Resources = () => {
         open={!!deleteItem}
         onOpenChange={(open) => !open && setDeleteItem(null)}
         onConfirm={handleDeleteFile}
-        isDeleting={deleteFileMutation.isPending}
+        deleting={deleteFileMutation.isPending}
         title="Xóa file"
         description={`Bạn có chắc chắn muốn xóa file "${deleteItem?.name}"? Hành động này không thể hoàn tác.`}
       />

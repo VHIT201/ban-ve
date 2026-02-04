@@ -1,3 +1,5 @@
+"use client";
+
 import { ReactNode } from "react";
 import { cn } from "@/utils/ui";
 import { AppHeader, AppMainContent, AppSidebar } from "./components";
