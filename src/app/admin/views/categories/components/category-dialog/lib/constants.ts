@@ -24,13 +24,11 @@ export const CATEGORY_SCHEMA = z.object({
       { message: "Chỉ chấp nhận file JPEG, PNG hoặc WebP" },
     )
     .optional()
-    .nullable()
-    .default(null),
+    .nullable(),
+  imageUrl: z.string().optional(),
 });
 
-export const DEFAULT_CATEGORY_FORM_VALUES: z.infer<typeof CATEGORY_SCHEMA> & {
-  imageUrl?: string;
-} = {
+export const DEFAULT_CATEGORY_FORM_VALUES: z.infer<typeof CATEGORY_SCHEMA> = {
   name: "",
   slug: "",
   description: "",

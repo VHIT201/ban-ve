@@ -15,6 +15,7 @@ import { useState } from "react";
 import { getFileIcon, getFileTypeLabel } from "@/utils/file";
 import { FileType } from "@/enums/file";
 import baseConfig from "@/configs/base";
+import Image from "next/image";
 
 export interface ResourceItemData {
   _id: string;
@@ -23,6 +24,10 @@ export interface ResourceItemData {
   size?: number;
   createdAt?: string;
   path?: string;
+  image1?: string;
+  image2?: string;
+  image3?: string;
+  image4?: string;
 }
 
 interface Props {
@@ -39,6 +44,7 @@ export default function ResourceItem({
   onDelete,
 }: Props) {
   const [showActions, setShowActions] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const getFullPath = (path: string) => {
     // Nếu path đã là URL đầy đủ thì trả về luôn
@@ -89,6 +95,7 @@ export default function ResourceItem({
   };
 
   const FileIcon = getFileIcon(item.type as FileType);
+  const previewImage = item.image1 || item.image2 || item.image3 || item.image4;
 
   return (
     <Card
@@ -96,8 +103,18 @@ export default function ResourceItem({
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
     >
-      <div className="size-16 bg-muted/50 rounded flex items-center justify-center shrink-0 text-xl overflow-hidden">
-        <FileIcon />
+      <div className="size-16 bg-muted/50 rounded flex items-center justify-center shrink-0 text-xl overflow-hidden relative">
+        {previewImage && !imageError ? (
+          <Image
+            src={getFullPath(previewImage)}
+            alt={item.name}
+            fill
+            className="object-cover"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <FileIcon />
+        )}
       </div>
 
       <div className="w-full">

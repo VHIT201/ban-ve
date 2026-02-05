@@ -58,7 +58,7 @@ const ContentCreate = () => {
 
       const fileData = fileUploadResponse as unknown as UploadedFile;
 
-      await createContentMutation.mutateAsync({
+      const result = await createContentMutation.mutateAsync({
         data: {
           title: values.title,
           description: values.description,
@@ -73,8 +73,12 @@ const ContentCreate = () => {
         },
       });
 
-      router.push(BASE_PATHS.admin.contents.path);
-      toast.success("Nội dung đã được tạo thành công.");
+      if (result) {
+        toast.success("Nội dung đã được tạo thành công.");
+        
+        router.push(BASE_PATHS.admin.contents.path);
+        router.refresh();
+      }
     } catch (error) {
       console.error("Failed to create content:", error);
       toast.error("Đã có lỗi xảy ra khi tạo nội dung.");

@@ -13,6 +13,9 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { getFileIcon } from "@/utils/file";
 import { FileType } from "@/enums/file";
+import Image from "next/image";
+import { useState } from "react";
+import baseConfig from "@/configs/base";
 
 export interface ResourceItemData {
   _id: string;
@@ -21,6 +24,10 @@ export interface ResourceItemData {
   size: number;
   createdAt: string;
   path?: string;
+  image1?: string;
+  image2?: string;
+  image3?: string;
+  image4?: string;
 }
 
 interface Props {
@@ -50,6 +57,15 @@ const formatDate = (dateString: string): string => {
 };
 
 const ResourceItemCompact = ({ item, onView, onDownload, onDelete }: Props) => {
+  const [imageError, setImageError] = useState(false);
+
+  const getFullPath = (path: string) => {
+    if (path.startsWith("http")) return path;
+    return path.startsWith("/")
+      ? `${baseConfig.mediaDomain}${path}`
+      : `${baseConfig.mediaDomain}/${path}`;
+  };
+
   const handleView = () => {
     if (onView) {
       onView(item);
@@ -76,6 +92,7 @@ const ResourceItemCompact = ({ item, onView, onDownload, onDelete }: Props) => {
   };
 
   const FileIcon = getFileIcon(item.type as FileType);
+  const previewImage = item.image1 || item.image2 || item.image3 || item.image4;
 
   return (
     <div
@@ -84,8 +101,18 @@ const ResourceItemCompact = ({ item, onView, onDownload, onDelete }: Props) => {
       onClick={handleDownload}
     >
       {/* Icon Container */}
-      <div className="w-12 h-12 bg-muted/50 rounded flex items-center justify-center shrink-0 text-xl overflow-hidden">
-        <FileIcon />
+      <div className="w-12 h-12 bg-muted/50 rounded flex items-center justify-center shrink-0 text-xl overflow-hidden relative">
+        {previewImage && !imageError ? (
+          <Image
+            src={getFullPath(previewImage)}
+            alt={item.name}
+            fill
+            className="object-cover"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <FileIcon />
+        )}
       </div>
 
       {/* Content Section - Title & Meta */}

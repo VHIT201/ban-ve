@@ -56,6 +56,7 @@ const ContentTable = (props: Props) => {
         toast.success("Xóa nội dung thành công");
         setDeleteSelectRow(null);
         queryData.refetch();
+        router.refresh();
       },
       onError: (error: any) => {
         toast.error(
@@ -127,7 +128,7 @@ const ContentTable = (props: Props) => {
         <DataTableDeleteDialog
           currentRow={
             deleteSelectRow
-              ? { ...deleteSelectRow, name: deleteSelectRow.title }
+              ? { ...deleteSelectRow, name: deleteSelectRow.title ?? deleteSelectRow._id }
               : null
           }
           onDelete={handleConfirmDelete}

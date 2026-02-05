@@ -11,6 +11,7 @@ import {
   getGetApiCategoriesQueryKey,
   usePostApiCategories,
 } from "@/api/endpoints/categories";
+import type { PostApiCategoriesBody } from "@/api/models";
 import { toast } from "sonner";
 import { CategoryFormValues } from "../../views/categories/components/category-dialog";
 import { useUploadMedia } from "@/hooks";
@@ -47,30 +48,57 @@ const Categories = () => {
 
   // Methods
   const handleCreateCategory = async (data: CategoryFormValues) => {
+    
     try {
-      const imageRes = await uploadFileMutation.uploadSingle(
-        data.image as unknown as File,
-        {
-          filename: data.image?.name,
-          dir: "categories",
-          private: false,
-        },
-      );
+      let imageUrl = "";
+      
+      // Only upload if image exists
+      if (data.image) {
+        const imageRes = await uploadFileMutation.uploadSingle(
+          data.image,
+          {
+            filename: data.image?.name,
+            dir: "categories",
+            private: false,
+          },
+        );
+
+
+        if (imageRes?.path) {
+          imageUrl = `${baseConfig.mediaDomain}${imageRes.path}`;
+        }
+      } else {
+        console.log("❌ No image selected");
+      }
+
+
+      const createData: PostApiCategoriesBody = {
+        name: data.name,
+        description: data.description,
+      };
+
+      // Only include parentId if exists
+      if (id) {
+        createData.parentId = id;
+      }
+
+      // Only include imageUrl if exists
+      if (imageUrl) {
+        createData.imageUrl = imageUrl;
+      }
+
 
       await createCategoryMutation.mutateAsync({
-        data: {
-          name: data.name,
-          description: data.description,
-          parentId: id,
-          imageUrl: imageRes?.url
-            ? `${baseConfig.mediaDomain}${imageRes.url}`
-            : undefined,
-        },
+        data: createData,
       });
 
       setIsDialogOpen(false);
       toast.success("Danh mục mới đã được tạo thành công.");
+      
+      // Reload page after success
+      window.location.reload();
     } catch (error) {
+      console.error("❌ Error creating category:", error);
       toast.error(extractErrorMessage(error));
     }
   };

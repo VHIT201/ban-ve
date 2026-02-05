@@ -1,7 +1,8 @@
 // Core
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
 // App
 import {
@@ -51,9 +52,32 @@ const CategoryDialog = (props: CategoryDialogProps) => {
     loading = false,
   } = props;
 
+  // Create dynamic schema based on mode
+  const schema = useMemo(() => {
+    if (mode === "edit") {
+      // For edit mode, image is optional
+      return CATEGORY_SCHEMA;
+    }
+    // For create mode, image is required
+    return CATEGORY_SCHEMA.extend({
+      image: z
+        .instanceof(File, { message: "Vui lòng chọn file ảnh hợp lệ" })
+        .refine((file) => file.size <= 5 * 1024 * 1024, {
+          message: "Kích thước ảnh không được vượt quá 5MB",
+        })
+        .refine(
+          (file) =>
+            ["image/jpg", "image/jpeg", "image/png", "image/webp"].includes(
+              file.type,
+            ),
+          { message: "Chỉ chấp nhận file JPEG, PNG hoặc WebP" },
+        ),
+    });
+  }, [mode]);
+
   // Form
   const form = useForm<CategoryFormValues>({
-    resolver: zodResolver(CATEGORY_SCHEMA),
+    resolver: zodResolver(schema),
     defaultValues: category,
   });
 
@@ -67,7 +91,13 @@ const CategoryDialog = (props: CategoryDialogProps) => {
 
   useEffect(() => {
     if (open && category && mode === "edit") {
-      form.reset(category);
+      form.reset({
+        name: category.name || "",
+        slug: category.slug || "",
+        description: category.description || "",
+        image: null,
+        imageUrl: category.imageUrl || "",
+      });
     } else if (!open) {
       form.reset(DEFAULT_CATEGORY_FORM_VALUES);
     }
@@ -170,7 +200,7 @@ const CategoryDialog = (props: CategoryDialogProps) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-primary font-semibold tracking-wider">
-                        Ảnh đại diện <span className="text-red-500">*</span>
+                        Ảnh đại diện {mode === "create" && <span className="text-red-500">*</span>}
                       </FormLabel>
                       <FormControl>
                         <div className="space-y-3">
@@ -195,7 +225,10 @@ const CategoryDialog = (props: CategoryDialogProps) => {
                         </div>
                       </FormControl>
                       <FormDescription>
-                        Chọn ảnh đại diện cho danh mục
+                        {mode === "edit" 
+                          ? "Chọn ảnh mới nếu muốn thay đổi (không bắt buộc)"
+                          : "Chọn ảnh đại diện cho danh mục"
+                        }
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

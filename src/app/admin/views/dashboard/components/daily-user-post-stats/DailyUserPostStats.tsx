@@ -1,4 +1,4 @@
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from 'recharts'
 
 import {
   Card,
@@ -6,284 +6,364 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+  CardTitle
+} from '@/components/ui/card'
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+  SelectValue
+} from '@/components/ui/select'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { CalendarIcon } from 'lucide-react'
+import { format } from 'date-fns'
+import { vi } from 'date-fns/locale'
 
-import { useEffect, useState } from "react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useEffect, useState, useMemo } from 'react'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { useGetApiAdminStats } from '@/api/endpoints/admin'
+import { cn } from '@/lib/utils'
 
-export const description = "An interactive area chart";
-
-const chartData = [
-  { date: "2024-04-01", desktop: 222, mobile: 150 },
-  { date: "2024-04-02", desktop: 97, mobile: 180 },
-  { date: "2024-04-03", desktop: 167, mobile: 120 },
-  { date: "2024-04-04", desktop: 242, mobile: 260 },
-  { date: "2024-04-05", desktop: 373, mobile: 290 },
-  { date: "2024-04-06", desktop: 301, mobile: 340 },
-  { date: "2024-04-07", desktop: 245, mobile: 180 },
-  { date: "2024-04-08", desktop: 409, mobile: 320 },
-  { date: "2024-04-09", desktop: 59, mobile: 110 },
-  { date: "2024-04-10", desktop: 261, mobile: 190 },
-  { date: "2024-04-11", desktop: 327, mobile: 350 },
-  { date: "2024-04-12", desktop: 292, mobile: 210 },
-  { date: "2024-04-13", desktop: 342, mobile: 380 },
-  { date: "2024-04-14", desktop: 137, mobile: 220 },
-  { date: "2024-04-15", desktop: 120, mobile: 170 },
-  { date: "2024-04-16", desktop: 138, mobile: 190 },
-  { date: "2024-04-17", desktop: 446, mobile: 360 },
-  { date: "2024-04-18", desktop: 364, mobile: 410 },
-  { date: "2024-04-19", desktop: 243, mobile: 180 },
-  { date: "2024-04-20", desktop: 89, mobile: 150 },
-  { date: "2024-04-21", desktop: 137, mobile: 200 },
-  { date: "2024-04-22", desktop: 224, mobile: 170 },
-  { date: "2024-04-23", desktop: 138, mobile: 230 },
-  { date: "2024-04-24", desktop: 387, mobile: 290 },
-  { date: "2024-04-25", desktop: 215, mobile: 250 },
-  { date: "2024-04-26", desktop: 75, mobile: 130 },
-  { date: "2024-04-27", desktop: 383, mobile: 420 },
-  { date: "2024-04-28", desktop: 122, mobile: 180 },
-  { date: "2024-04-29", desktop: 315, mobile: 240 },
-  { date: "2024-04-30", desktop: 454, mobile: 380 },
-  { date: "2024-05-01", desktop: 165, mobile: 220 },
-  { date: "2024-05-02", desktop: 293, mobile: 310 },
-  { date: "2024-05-03", desktop: 247, mobile: 190 },
-  { date: "2024-05-04", desktop: 385, mobile: 420 },
-  { date: "2024-05-05", desktop: 481, mobile: 390 },
-  { date: "2024-05-06", desktop: 498, mobile: 520 },
-  { date: "2024-05-07", desktop: 388, mobile: 300 },
-  { date: "2024-05-08", desktop: 149, mobile: 210 },
-  { date: "2024-05-09", desktop: 227, mobile: 180 },
-  { date: "2024-05-10", desktop: 293, mobile: 330 },
-  { date: "2024-05-11", desktop: 335, mobile: 270 },
-  { date: "2024-05-12", desktop: 197, mobile: 240 },
-  { date: "2024-05-13", desktop: 197, mobile: 160 },
-  { date: "2024-05-14", desktop: 448, mobile: 490 },
-  { date: "2024-05-15", desktop: 473, mobile: 380 },
-  { date: "2024-05-16", desktop: 338, mobile: 400 },
-  { date: "2024-05-17", desktop: 499, mobile: 420 },
-  { date: "2024-05-18", desktop: 315, mobile: 350 },
-  { date: "2024-05-19", desktop: 235, mobile: 180 },
-  { date: "2024-05-20", desktop: 177, mobile: 230 },
-  { date: "2024-05-21", desktop: 82, mobile: 140 },
-  { date: "2024-05-22", desktop: 81, mobile: 120 },
-  { date: "2024-05-23", desktop: 252, mobile: 290 },
-  { date: "2024-05-24", desktop: 294, mobile: 220 },
-  { date: "2024-05-25", desktop: 201, mobile: 250 },
-  { date: "2024-05-26", desktop: 213, mobile: 170 },
-  { date: "2024-05-27", desktop: 420, mobile: 460 },
-  { date: "2024-05-28", desktop: 233, mobile: 190 },
-  { date: "2024-05-29", desktop: 78, mobile: 130 },
-  { date: "2024-05-30", desktop: 340, mobile: 280 },
-  { date: "2024-05-31", desktop: 178, mobile: 230 },
-  { date: "2024-06-01", desktop: 178, mobile: 200 },
-  { date: "2024-06-02", desktop: 470, mobile: 410 },
-  { date: "2024-06-03", desktop: 103, mobile: 160 },
-  { date: "2024-06-04", desktop: 439, mobile: 380 },
-  { date: "2024-06-05", desktop: 88, mobile: 140 },
-  { date: "2024-06-06", desktop: 294, mobile: 250 },
-  { date: "2024-06-07", desktop: 323, mobile: 370 },
-  { date: "2024-06-08", desktop: 385, mobile: 320 },
-  { date: "2024-06-09", desktop: 438, mobile: 480 },
-  { date: "2024-06-10", desktop: 155, mobile: 200 },
-  { date: "2024-06-11", desktop: 92, mobile: 150 },
-  { date: "2024-06-12", desktop: 492, mobile: 420 },
-  { date: "2024-06-13", desktop: 81, mobile: 130 },
-  { date: "2024-06-14", desktop: 426, mobile: 380 },
-  { date: "2024-06-15", desktop: 307, mobile: 350 },
-  { date: "2024-06-16", desktop: 371, mobile: 310 },
-  { date: "2024-06-17", desktop: 475, mobile: 520 },
-  { date: "2024-06-18", desktop: 107, mobile: 170 },
-  { date: "2024-06-19", desktop: 341, mobile: 290 },
-  { date: "2024-06-20", desktop: 408, mobile: 450 },
-  { date: "2024-06-21", desktop: 169, mobile: 210 },
-  { date: "2024-06-22", desktop: 317, mobile: 270 },
-  { date: "2024-06-23", desktop: 480, mobile: 530 },
-  { date: "2024-06-24", desktop: 132, mobile: 180 },
-  { date: "2024-06-25", desktop: 141, mobile: 190 },
-  { date: "2024-06-26", desktop: 434, mobile: 380 },
-  { date: "2024-06-27", desktop: 448, mobile: 490 },
-  { date: "2024-06-28", desktop: 149, mobile: 200 },
-  { date: "2024-06-29", desktop: 103, mobile: 160 },
-  { date: "2024-06-30", desktop: 446, mobile: 400 },
-];
+export const description = 'An interactive bar chart showing statistics'
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  users: {
+    label: 'Người dùng',
+    color: '#2563eb'
   },
-  desktop: {
-    label: "Desktop",
-    color: "var(--primary)",
+  contents: {
+    label: 'Nội dung',
+    color: '#059669'
   },
-  mobile: {
-    label: "Mobile",
-    color: "var(--primary)",
+  collaborators: {
+    label: 'Cộng tác viên',
+    color: '#dc2626'
   },
-} satisfies ChartConfig;
+  comments: {
+    label: 'Bình luận',
+    color: '#7c3aed'
+  }
+} satisfies ChartConfig
+
+type TimeRange = '7d' | '30d' | '90d' | 'custom'
 
 const DailyUserPostStats = () => {
-  const isMobile = useIsMobile();
-  const [timeRange, setTimeRange] = useState("90d");
+  const isMobile = useIsMobile()
+  const [timeRange, setTimeRange] = useState<TimeRange>('90d')
+  const [customStartDate, setCustomStartDate] = useState<Date>()
+  const [customEndDate, setCustomEndDate] = useState<Date>()
+
+  // Calculate date range based on selected time range
+  const dateParams = useMemo(() => {
+    if (timeRange === 'custom' && customStartDate && customEndDate) {
+      return {
+        startDate: format(customStartDate, 'yyyy-MM-dd'),
+        endDate: format(customEndDate, 'yyyy-MM-dd')
+      }
+    }
+
+    const endDate = new Date()
+    const startDate = new Date()
+
+    switch (timeRange) {
+      case '7d':
+        startDate.setDate(endDate.getDate() - 7)
+        break
+      case '30d':
+        startDate.setDate(endDate.getDate() - 30)
+        break
+      case '90d':
+        startDate.setDate(endDate.getDate() - 90)
+        break
+    }
+
+    return {
+      startDate: startDate.toISOString().split('T')[0],
+      endDate: endDate.toISOString().split('T')[0]
+    }
+  }, [timeRange, customStartDate, customEndDate])
+
+  // Fetch data for current period
+  const { data: currentData, isLoading } = useGetApiAdminStats(dateParams)
+
+  // Fetch data for previous period to calculate comparison
+  const previousDateParams = useMemo(() => {
+    const currentStart = new Date(dateParams.startDate!)
+    const currentEnd = new Date(dateParams.endDate!)
+    const daysInRange = Math.ceil(
+      (currentEnd.getTime() - currentStart.getTime()) / (1000 * 60 * 60 * 24)
+    )
+
+    const previousEnd = new Date(currentStart)
+    previousEnd.setDate(previousEnd.getDate() - 1)
+
+    const previousStart = new Date(previousEnd)
+    previousStart.setDate(previousStart.getDate() - daysInRange)
+
+    return {
+      startDate: previousStart.toISOString().split('T')[0],
+      endDate: previousEnd.toISOString().split('T')[0]
+    }
+  }, [dateParams])
+
+  const { data: previousData } = useGetApiAdminStats(previousDateParams)
+
+  // Create chart data
+  const chartData = useMemo(() => {
+    if (!currentData?.data || !previousData?.data) return []
+
+    return [
+      {
+        period: 'Kỳ trước',
+        users: previousData.data.users?.total ?? 0,
+        contents: previousData.data.contents?.total ?? 0,
+        collaborators: previousData.data.collaborators?.total ?? 0,
+        comments: previousData.data.comments?.total ?? 0
+      },
+      {
+        period: 'Kỳ hiện tại',
+        users: currentData.data.users?.total ?? 0,
+        contents: currentData.data.contents?.total ?? 0,
+        collaborators: currentData.data.collaborators?.total ?? 0,
+        comments: currentData.data.comments?.total ?? 0
+      }
+    ]
+  }, [currentData, previousData])
 
   useEffect(() => {
     if (isMobile) {
-      setTimeRange("7d");
+      setTimeRange('7d')
     }
-  }, [isMobile]);
+  }, [isMobile])
 
-  const filteredData = chartData.filter((item) => {
-    const date = new Date(item.date);
-    const referenceDate = new Date("2024-06-30");
-    let daysToSubtract = 90;
-    if (timeRange === "30d") {
-      daysToSubtract = 30;
-    } else if (timeRange === "7d") {
-      daysToSubtract = 7;
+  const timeRangeLabel = useMemo(() => {
+    if (timeRange === 'custom' && customStartDate && customEndDate) {
+      return `${format(customStartDate, 'dd/MM/yyyy', { locale: vi })} - ${format(customEndDate, 'dd/MM/yyyy', { locale: vi })}`
     }
-    const startDate = new Date(referenceDate);
-    startDate.setDate(startDate.getDate() - daysToSubtract);
-    return date >= startDate;
-  });
+
+    switch (timeRange) {
+      case '7d':
+        return '7 ngày trước'
+      case '30d':
+        return '30 ngày trước'
+      case '90d':
+        return '3 tháng trước'
+      default:
+        return 'Tùy chỉnh'
+    }
+  }, [timeRange, customStartDate, customEndDate])
 
   return (
-    <Card className="@container/card h-[500px]">
+    <Card className='@container/card'>
       <CardHeader>
         <CardTitle>Thống kê hằng ngày</CardTitle>
         <CardDescription>
-          <span className="hidden @[540px]/card:block">
-            Thống kê 3 tháng trước
-          </span>
-          <span className="@[540px]/card:hidden">3 tháng trước</span>
+          <span className='hidden @[540px]/card:block'>Thống kê {timeRangeLabel}</span>
+          <span className='@[540px]/card:hidden'>{timeRangeLabel}</span>
         </CardDescription>
         <CardAction>
-          <ToggleGroup
-            type="single"
-            value={timeRange}
-            onValueChange={setTimeRange}
-            variant="outline"
-            className="hidden *:data-[slot=toggle-group-item]:!px-4 @[767px]/card:flex"
-          >
-            <ToggleGroupItem value="90d">3 tháng trước</ToggleGroupItem>
-            <ToggleGroupItem value="30d">30 ngày trước</ToggleGroupItem>
-            <ToggleGroupItem value="7d">7 ngày trước</ToggleGroupItem>
-          </ToggleGroup>
-          <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger
-              className="flex w-40 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden"
-              size="sm"
-              aria-label="Select a value"
+          <div className='flex flex-col gap-3 @[767px]/card:flex-row @[767px]/card:items-center'>
+            <ToggleGroup
+              type='single'
+              value={timeRange}
+              onValueChange={(value) => value && setTimeRange(value as TimeRange)}
+              variant='outline'
+              className='hidden *:data-[slot=toggle-group-item]:px-4! @[767px]/card:flex'
             >
-              <SelectValue placeholder="3 tháng trước" />
-            </SelectTrigger>
-            <SelectContent className="rounded-xl">
-              <SelectItem value="90d" className="rounded-lg">
-                3 tháng trước
-              </SelectItem>
-              <SelectItem value="30d" className="rounded-lg">
-                30 ngày trước
-              </SelectItem>
-              <SelectItem value="7d" className="rounded-lg">
-                7 ngày trước
-              </SelectItem>
-            </SelectContent>
-          </Select>
+              <ToggleGroupItem value='90d'>3 tháng</ToggleGroupItem>
+              <ToggleGroupItem value='30d'>30 ngày</ToggleGroupItem>
+              <ToggleGroupItem value='7d'>7 ngày</ToggleGroupItem>
+              <ToggleGroupItem value='custom'>Tùy chỉnh</ToggleGroupItem>
+            </ToggleGroup>
+            <Select
+              value={timeRange}
+              onValueChange={(value) => setTimeRange(value as TimeRange)}
+            >
+              <SelectTrigger
+                className='flex w-40 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden'
+                size='sm'
+                aria-label='Select a value'
+              >
+                <SelectValue placeholder='3 tháng trước' />
+              </SelectTrigger>
+              <SelectContent className='rounded-xl'>
+                <SelectItem value='90d' className='rounded-lg'>
+                  3 tháng trước
+                </SelectItem>
+                <SelectItem value='30d' className='rounded-lg'>
+                  30 ngày trước
+                </SelectItem>
+                <SelectItem value='7d' className='rounded-lg'>
+                  7 ngày trước
+                </SelectItem>
+                <SelectItem value='custom' className='rounded-lg'>
+                  Tùy chỉnh
+                </SelectItem>
+              </SelectContent>
+            </Select>
+
+            {timeRange === 'custom' && (
+              <div className='flex flex-wrap gap-2'>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant='outline'
+                      size='sm'
+                      className={cn(
+                        'justify-start text-left font-normal',
+                        !customStartDate && 'text-muted-foreground'
+                      )}
+                    >
+                      <CalendarIcon className='mr-2 h-4 w-4' />
+                      {customStartDate ? format(customStartDate, 'dd/MM/yyyy') : 'Ngày bắt đầu'}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-auto p-0' align='start'>
+                    <Calendar
+                      mode='single'
+                      selected={customStartDate}
+                      onSelect={setCustomStartDate}
+                      disabled={(date) =>
+                        date > new Date() || (customEndDate ? date > customEndDate : false)
+                      }
+                      initialFocus
+                      locale={vi}
+                    />
+                  </PopoverContent>
+                </Popover>
+
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant='outline'
+                      size='sm'
+                      className={cn(
+                        'justify-start text-left font-normal',
+                        !customEndDate && 'text-muted-foreground'
+                      )}
+                    >
+                      <CalendarIcon className='mr-2 h-4 w-4' />
+                      {customEndDate ? format(customEndDate, 'dd/MM/yyyy') : 'Ngày kết thúc'}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='w-auto p-0' align='start'>
+                    <Calendar
+                      mode='single'
+                      selected={customEndDate}
+                      onSelect={setCustomEndDate}
+                      disabled={(date) =>
+                        date > new Date() || (customStartDate ? date < customStartDate : false)
+                      }
+                      initialFocus
+                      locale={vi}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+            )}
+          </div>
         </CardAction>
       </CardHeader>
-      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[350px] w-full"
-        >
-          <AreaChart data={filteredData}>
-            <defs>
-              <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-desktop)"
-                  stopOpacity={1.0}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-desktop)"
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-              <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-mobile)"
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-mobile)"
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-            </defs>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              minTickGap={32}
-              tickFormatter={(value) => {
-                const date = new Date(value);
-                return date.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                });
-              }}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={
-                <ChartTooltipContent
-                  labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    });
-                  }}
-                  indicator="dot"
-                />
-              }
-            />
-            <Area
-              dataKey="mobile"
-              type="natural"
-              fill="url(#fillMobile)"
-              stroke="var(--color-mobile)"
-              stackId="a"
-            />
-            <Area
-              dataKey="desktop"
-              type="natural"
-              fill="url(#fillDesktop)"
-              stroke="var(--color-desktop)"
-              stackId="a"
-            />
-          </AreaChart>
-        </ChartContainer>
+      <CardContent className='space-y-4 px-2 pt-4 sm:px-6 sm:pt-6'>
+        {/* Legend at top */}
+        <div className='flex flex-wrap items-center justify-center gap-4'>
+          {Object.entries(chartConfig).map(([key, config]) => (
+            <div key={key} className='flex items-center gap-2'>
+              <div
+                className='h-3 w-3 rounded-sm'
+                style={{ backgroundColor: config.color }}
+              />
+              <span className='text-sm font-medium text-black'>
+                {config.label}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {isLoading ? (
+          <div className='flex h-[350px] w-full items-center justify-center'>
+            <div className='h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent' />
+          </div>
+        ) : chartData.length === 0 ? (
+          <div className='flex h-[350px] w-full items-center justify-center'>
+            <p className='text-sm text-gray-500'>Không có dữ liệu</p>
+          </div>
+        ) : (
+          <ChartContainer config={chartConfig} className='aspect-auto h-[350px] w-full'>
+            <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <defs>
+                <linearGradient id='colorUsers' x1='0' y1='0' x2='0' y2='1'>
+                  <stop offset='0%' stopColor='#2563eb' stopOpacity={0.9} />
+                  <stop offset='100%' stopColor='#2563eb' stopOpacity={0.6} />
+                </linearGradient>
+                <linearGradient id='colorContents' x1='0' y1='0' x2='0' y2='1'>
+                  <stop offset='0%' stopColor='#059669' stopOpacity={0.9} />
+                  <stop offset='100%' stopColor='#059669' stopOpacity={0.6} />
+                </linearGradient>
+                <linearGradient id='colorCollaborators' x1='0' y1='0' x2='0' y2='1'>
+                  <stop offset='0%' stopColor='#dc2626' stopOpacity={0.9} />
+                  <stop offset='100%' stopColor='#dc2626' stopOpacity={0.6} />
+                </linearGradient>
+                <linearGradient id='colorComments' x1='0' y1='0' x2='0' y2='1'>
+                  <stop offset='0%' stopColor='#7c3aed' stopOpacity={0.9} />
+                  <stop offset='100%' stopColor='#7c3aed' stopOpacity={0.6} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray='3 3' vertical={false} stroke='#e5e7eb' />
+              <XAxis
+                dataKey='period'
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                className='text-sm font-medium'
+              />
+              <YAxis tickLine={false} axisLine={false} tickMargin={8} className='text-sm' />
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    labelFormatter={(value) => value}
+                    formatter={(value, name) => [
+                      `${Number(value).toLocaleString('vi-VN')}`,
+                      chartConfig[name as keyof typeof chartConfig]?.label
+                    ]}
+                  />
+                }
+              />
+              <Bar
+                dataKey='users'
+                fill='url(#colorUsers)'
+                radius={[8, 8, 0, 0]}
+                maxBarSize={60}
+              />
+              <Bar
+                dataKey='contents'
+                fill='url(#colorContents)'
+                radius={[8, 8, 0, 0]}
+                maxBarSize={60}
+              />
+              <Bar
+                dataKey='collaborators'
+                fill='url(#colorCollaborators)'
+                radius={[8, 8, 0, 0]}
+                maxBarSize={60}
+              />
+              <Bar
+                dataKey='comments'
+                fill='url(#colorComments)'
+                radius={[8, 8, 0, 0]}
+                maxBarSize={60}
+              />
+            </BarChart>
+          </ChartContainer>
+        )}
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default DailyUserPostStats;
+export default DailyUserPostStats

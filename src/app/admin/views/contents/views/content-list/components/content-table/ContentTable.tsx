@@ -74,6 +74,8 @@ const ContentTable = () => {
       onSuccess: () => {
         toast.success("Xóa bài viết thành công.");
         setDeleteSelectRow(null);
+        getContentListQuery.refetch();
+        router.refresh();
       },
       onError: () => {
         toast.error("Đã có lỗi xảy ra khi xóa bài viết.");
@@ -120,6 +122,7 @@ const ContentTable = () => {
       onSuccess: () => {
         toast.success("Duyệt nội dung thành công");
         getContentListQuery.refetch();
+        router.refresh();
       },
       onError: () => {
         toast.error("Có lỗi xảy ra khi duyệt nội dung");

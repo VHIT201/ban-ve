@@ -1,3 +1,4 @@
+'user client';
 import { usePostApiContentUpload } from "@/api/endpoints/content";
 import { usePostApiFileUpload } from "@/api/endpoints/files";
 import { MutationData } from "@/api/types/base";

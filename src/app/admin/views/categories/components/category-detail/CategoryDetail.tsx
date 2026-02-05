@@ -1,15 +1,15 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { PlusIcon, Trash2, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import type { AxiosError } from "axios";
 
-import { EditCategoryDialog } from "./components/EditCategoryDialog";
+import CategoryDialog from "../category-dialog";
+import { CategoryFormValues } from "../category-dialog/lib/types";
+import { useUploadMedia } from "@/hooks";
+import baseConfig from "@/configs/base";
 
 import {
   Card,
@@ -21,23 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DataTable } from "@/components/shared";
 import { DataTableBulkActions } from "@/components/shared/data-table/shared";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogClose,
-} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -54,38 +38,25 @@ import {
   usePostApiCategories,
   useDeleteApiCategoriesId,
   useGetApiCategories,
+  usePutApiCategoriesId,
 } from "@/api/endpoints/categories";
 import { useCategoryTableColumnsDefs } from "../category-table/lib/hooks";
 import { Category } from "@/api/models";
-import { CategoryDetailProps } from "./types";
+import type { 
+  GetApiCategoriesIdChildren200,
+  GetApiCategories200 
+} from "@/api/models";
 
 const DEFAULT_PAGINATION = {
   pageIndex: 0,
   pageSize: 10,
 };
 
-const extractSubcategories = (res: any): Category[] => {
+const extractSubcategories = (res: GetApiCategoriesIdChildren200 | Category[] | undefined): Category[] => {
   if (!res) return [];
   if (Array.isArray(res)) return res;
-  return res?.data?.children ?? res?.children ?? [];
+  return res?.data?.children ?? [];
 };
-
-const generateSlug = (value?: string) =>
-  value
-    ?.toLowerCase()
-    .trim()
-    .replace(/\s+/g, "-")
-    .replace(/[^\w-]/g, "") ?? "";
-
-const categoryFormSchema = z.object({
-  name: z.string().min(1, "Tên danh mục là bắt buộc"),
-  slug: z.string().min(1, "Slug là bắt buộc"),
-  isActive: z.boolean().default(true),
-  description: z.string().optional(),
-  displayOrder: z.number().default(0),
-});
-
-type CategoryFormValues = z.infer<typeof categoryFormSchema>;
 
 export const CategoryDetail = () => {
   const params = useParams<{ id: string }>();
@@ -96,61 +67,51 @@ export const CategoryDetail = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
   const [deleteConfirmationText, setDeleteConfirmationText] = useState("");
-  const [categoryToEdit, setCategoryToEdit] =
-    useState<CategoryDetailProps | null>(null);
+  const [categoryToEdit, setCategoryToEdit] = useState<Category | null>(null);
 
-  const form = useForm<CategoryFormValues>({
-    resolver: zodResolver(categoryFormSchema),
-    defaultValues: {
-      name: "",
-      slug: "",
-      isActive: true,
-      description: "",
-      displayOrder: 0,
-    },
-  });
+  // Upload hook
+  const uploadFileMutation = useUploadMedia();
 
-  useEffect(() => {
-    const sub = form.watch((value, { name }) => {
-      if (name === "name") {
-        form.setValue("slug", generateSlug(value.name));
-      }
-    });
-    return () => sub.unsubscribe();
-  }, [form]);
-
-  const { data: currentCategory } = useGetApiCategories({
-    query: {
-      enabled: !!id,
-      queryKey: ["category", id],
-      select: (data: Category | Category[]) => {
-        const category = Array.isArray(data) ? data[0] : data;
-        return category
-          ? {
-              id: category._id,
-              name: category.name || "",
-              slug: category.slug || "",
-              description: category.description,
-              parentId: category.parentId,
-              createdAt: category.createdAt,
-              updatedAt: category.updatedAt,
-            }
-          : null;
+  const { data: currentCategory } = useGetApiCategories(
+    {},
+    {
+      query: {
+        enabled: !!id,
+        queryKey: ["category", id],
+        select: (data: GetApiCategories200) => {
+          const categories = data?.data?.categories || [];
+          const category = categories[0];
+          return category
+            ? {
+                id: category._id,
+                name: category.name || "",
+                slug: category.slug || "",
+                description: category.description,
+                parentId: category.parentId,
+                createdAt: category.createdAt,
+                updatedAt: category.updatedAt,
+              }
+            : null;
+        },
       },
-    },
-  });
+    }
+  );
 
   const {
     data: response,
     isLoading,
     isError,
     refetch,
-  } = useGetApiCategoriesIdChildren(id ?? "", {
-    query: {
-      enabled: !!id,
-      queryKey: ["subcategories", id],
-    },
-  });
+  } = useGetApiCategoriesIdChildren(
+    id ?? "",
+    {},
+    {
+      query: {
+        enabled: !!id,
+        queryKey: ["subcategories", id],
+      },
+    }
+  );
 
   const subcategories = useMemo(
     () => extractSubcategories(response),
@@ -162,9 +123,13 @@ export const CategoryDetail = () => {
       mutation: {
         onSuccess: () => {
           toast.success("Tạo danh mục con thành công");
-          form.reset();
           setIsCreateDialogOpen(false);
           refetch();
+          
+          // Reload page after success
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
         },
         onError: (err: AxiosError<{ message?: string }>) => {
           toast.error(err.response?.data?.message ?? "Tạo danh mục thất bại");
@@ -179,6 +144,11 @@ export const CategoryDetail = () => {
         setCategoryToDelete(null);
         setDeleteConfirmationText("");
         refetch();
+        
+        // Reload page after success
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       },
       onError: (error: Error) => {
         toast.error(error.message || "Có lỗi xảy ra khi xóa");
@@ -186,9 +156,60 @@ export const CategoryDetail = () => {
     },
   });
 
-  const handleCreateSubmit = (data: CategoryFormValues) => {
+  const updateCategoryMutation = usePutApiCategoriesId({
+    mutation: {
+      onSuccess: () => {
+        toast.success("Cập nhật danh mục thành công");
+        setCategoryToEdit(null);
+        refetch();
+        
+        // Reload page after success
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+      },
+      onError: (error: Error) => {
+        toast.error(error.message || "Có lỗi xảy ra khi cập nhật");
+      },
+    },
+  });
+
+  const handleCreateSubmit = async (data: CategoryFormValues) => {
     if (!id) return;
-    createCategory({ data: { ...data, parentId: id } });
+
+    try {
+      // Upload image if exists
+      let imageUrl = "";
+      if (data.image) {
+        const imageRes = await uploadFileMutation.uploadSingle(
+          data.image as File,
+          {
+            filename: data.image.name,
+            dir: "categories",
+            private: false,
+          }
+        );
+
+
+        if (imageRes?.path) {
+          imageUrl = `${baseConfig.mediaDomain}${imageRes.path}`;
+        }
+      } else {
+        console.log("❌ No image selected");
+      }
+      // Create category with parentId and imageUrl
+      createCategory({
+        data: {
+          name: data.name,
+          description: data.description,
+          parentId: id,
+          ...(imageUrl && { imageUrl }), // Only include imageUrl if it exists
+        },
+      });
+    } catch (error) {
+      console.error("❌ Error creating category:", error);
+      toast.error("Có lỗi xảy ra khi upload ảnh");
+    }
   };
 
   const handleDeleteCategory = async () => {
@@ -203,6 +224,51 @@ export const CategoryDetail = () => {
     });
   };
 
+  const handleEditSubmit = async (data: CategoryFormValues) => {
+    if (!categoryToEdit?._id) return;
+
+    try {
+      // Keep existing imageUrl or get from form data
+      let imageUrl = data.imageUrl || categoryToEdit.imageUrl || "";
+      
+      // Upload new image if selected
+      if (data.image) {
+        const imageRes = await uploadFileMutation.uploadSingle(
+          data.image as File,
+          {
+            filename: data.image.name,
+            dir: "categories",
+            private: false,
+          }
+        );
+
+        if (imageRes?.path) {
+          imageUrl = `${baseConfig.mediaDomain}${imageRes.path}`;
+        }
+      }
+
+      // Prepare update data
+      const updateData: import("@/api/models").PutApiCategoriesIdBody = {
+        name: data.name,
+        description: data.description,
+      };
+
+      // Only include imageUrl if it exists
+      if (imageUrl) {
+        updateData.imageUrl = imageUrl;
+      }
+
+      // Update category
+      await updateCategoryMutation.mutateAsync({
+        id: categoryToEdit._id,
+        data: updateData,
+      });
+    } catch (error) {
+      console.error("❌ Error updating category:", error);
+      toast.error("Có lỗi xảy ra khi upload ảnh");
+    }
+  };
+
   const handleViewDetails = (category: Category) => {
     if (category?._id) {
       router.push(`/admin/categories/${category._id}`);
@@ -212,7 +278,7 @@ export const CategoryDetail = () => {
   const columns = useCategoryTableColumnsDefs({
     onViewDetails: handleViewDetails,
     onDelete: (category) => setCategoryToDelete(category),
-    onEdit: (category) => setCategoryToEdit(category as CategoryDetailProps),
+    onEdit: (category) => setCategoryToEdit(category),
   });
 
   const bulkActionList = useMemo(
@@ -256,78 +322,22 @@ export const CategoryDetail = () => {
           </h1>
         </div>
 
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button disabled={!id}>
-              <PlusIcon className="mr-2 h-4 w-4" />
-              Thêm danh mục con
-            </Button>
-          </DialogTrigger>
-
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Thêm danh mục con</DialogTitle>
-            </DialogHeader>
-
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(handleCreateSubmit)}
-                className="space-y-4"
-              >
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Tên danh mục</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="slug"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Slug</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Mô tả</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <div className="flex justify-end gap-2 pt-4">
-                  <DialogClose asChild>
-                    <Button variant="outline">Hủy</Button>
-                  </DialogClose>
-                  <Button type="submit" disabled={isCreating}>
-                    {isCreating ? "Đang tạo..." : "Tạo mới"}
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          </DialogContent>
-        </Dialog>
+        <Button 
+          onClick={() => setIsCreateDialogOpen(true)}
+          disabled={!id}
+        >
+          <PlusIcon className="mr-2 h-4 w-4" />
+          Thêm danh mục con
+        </Button>
       </div>
+
+      <CategoryDialog
+        open={isCreateDialogOpen}
+        onOpenChange={setIsCreateDialogOpen}
+        mode="create"
+        onSubmit={handleCreateSubmit}
+        loading={isCreating}
+      />
 
       <Card>
         <CardHeader>
@@ -360,11 +370,13 @@ export const CategoryDetail = () => {
         </CardContent>
       </Card>
 
-      <EditCategoryDialog
-        category={categoryToEdit}
+      <CategoryDialog
         open={!!categoryToEdit}
-        onOpenChange={(open) => !open && setCategoryToEdit(null)}
-        onSuccess={refetch}
+        onOpenChange={(open: boolean) => !open && setCategoryToEdit(null)}
+        mode="edit"
+        category={categoryToEdit as any}
+        onSubmit={handleEditSubmit}
+        loading={updateCategoryMutation.isPending}
       />
 
       <AlertDialog
