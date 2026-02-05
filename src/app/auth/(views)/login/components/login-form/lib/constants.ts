@@ -6,6 +6,6 @@ export const LOGIN_FORM_SCHEMA = z.object({
 });
 
 export const LOGIN_FORM_DEFAULT_VALUES: z.infer<typeof LOGIN_FORM_SCHEMA> = {
-  email: "email@vidu.com",
-  password: "password",
+  email: "",
+  password: "",
 };

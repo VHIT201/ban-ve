@@ -521,7 +521,7 @@ const PaymentPage = () => {
                           <img
                             src={
                               item.product.images && item.product.images.length > 0
-                                ? `${baseConfig.backendDomain}${item.product.images[0]}`
+                                ? `${baseConfig.mediaDomain}${item.product.images[0]}`
                                 : generateImageRandom()
                             }
                             alt={item.product.title}

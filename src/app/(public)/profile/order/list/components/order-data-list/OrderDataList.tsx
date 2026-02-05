@@ -1,24 +1,46 @@
 "use client";
 
+import { useState } from "react";
 import { useGetApiOrders } from "@/api/endpoints/orders";
 import { Order } from "@/api/models";
 import { QueryBoundary } from "@/components/shared";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationEllipsis,
+} from "@/components/ui/pagination";
 import OrderDataItem from "./components/order-data-item";
 import { UseQueryResult } from "@tanstack/react-query";
 import { SearchX } from "lucide-react";
 
 const OrderDataList = () => {
-  const ordersQuery = useGetApiOrders(undefined, {
-    query: {
-      select: (res: any) => res.data?.orders ?? [],
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 3;
+
+  const ordersQuery = useGetApiOrders(
+    {
+      page: currentPage,
+      limit: pageSize,
     },
-  }) as UseQueryResult<Order[]>;
+    {
+      query: {
+        select: (res: any) => ({
+          orders: res.data?.orders ?? [],
+          pagination: res.data?.pagination ?? { total: 0, page: 1, limit: pageSize },
+        }),
+      },
+    }
+  ) as UseQueryResult<{ orders: Order[]; pagination: any }>;
 
   return (
     <div className="space-y-6">
       <QueryBoundary query={ordersQuery}>
-        {(orders) => {
+        {({ orders, pagination }) => {
           if (!orders || orders.length === 0) {
             return (
               <Card className="border border-gray-200 shadow-sm">
@@ -39,13 +61,120 @@ const OrderDataList = () => {
             );
           }
 
+          const totalPages = Math.ceil(pagination.total / pagination.limit);
+          
+          const handlePageChange = (page: number) => {
+            setCurrentPage(page);
+          };
+
+          const generatePaginationItems = () => {
+            const items = [];
+            const maxVisiblePages = 5;
+            
+            if (totalPages <= maxVisiblePages) {
+              for (let i = 1; i <= totalPages; i++) {
+                items.push(
+                  <PaginationItem key={i}>
+                    <PaginationLink
+                      href="#"
+                      isActive={currentPage === i}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handlePageChange(i);
+                      }}
+                    >
+                      {i}
+                    </PaginationLink>
+                  </PaginationItem>
+                );
+              }
+            } else {
+              // Show first page
+              items.push(
+                <PaginationItem key={1}>
+                  <PaginationLink
+                    href="#"
+                    isActive={currentPage === 1}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handlePageChange(1);
+                    }}
+                  >
+                    1
+                  </PaginationLink>
+                </PaginationItem>
+              );
+
+              // Show ellipsis if needed
+              if (currentPage > 3) {
+                items.push(
+                  <PaginationItem key="ellipsis-start">
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                );
+              }
+
+              // Show pages around current page
+              const startPage = Math.max(2, currentPage - 1);
+              const endPage = Math.min(totalPages - 1, currentPage + 1);
+              
+              for (let i = startPage; i <= endPage; i++) {
+                items.push(
+                  <PaginationItem key={i}>
+                    <PaginationLink
+                      href="#"
+                      isActive={currentPage === i}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handlePageChange(i);
+                      }}
+                    >
+                      {i}
+                    </PaginationLink>
+                  </PaginationItem>
+                );
+              }
+
+              // Show ellipsis if needed
+              if (currentPage < totalPages - 2) {
+                items.push(
+                  <PaginationItem key="ellipsis-end">
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                );
+              }
+
+              // Show last page
+              if (totalPages > 1) {
+                items.push(
+                  <PaginationItem key={totalPages}>
+                    <PaginationLink
+                      href="#"
+                      isActive={currentPage === totalPages}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handlePageChange(totalPages);
+                      }}
+                    >
+                      {totalPages}
+                    </PaginationLink>
+                  </PaginationItem>
+                );
+              }
+            }
+
+            return items;
+          };
+
           return (
             <div className="space-y-4">
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-lg font-semibold text-gray-900">
                   Danh sách đơn hàng
                 </h2>
-                <div className="text-sm text-gray-500">{orders.length} đơn hàng</div>
+                <div className="text-sm text-gray-500">
+                  {orders.length} / {pagination.total} đơn hàng
+                </div>
               </div>
 
               <div className="grid grid-cols-1 gap-4">
@@ -53,6 +182,43 @@ const OrderDataList = () => {
                   <OrderDataItem key={order._id} order={order} />
                 ))}
               </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex justify-center mt-6">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            if (currentPage > 1) {
+                              handlePageChange(currentPage - 1);
+                            }
+                          }}
+                          className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                        />
+                      </PaginationItem>
+                      
+                      {generatePaginationItems()}
+
+                      <PaginationItem>
+                        <PaginationNext
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            if (currentPage < totalPages) {
+                              handlePageChange(currentPage + 1);
+                            }
+                          }}
+                          className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              )}
             </div>
           );
         }}
