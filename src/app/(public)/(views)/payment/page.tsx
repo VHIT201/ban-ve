@@ -52,6 +52,7 @@ import { useCreateQrPayment } from "@/hooks/modules/payments";
 import { PaymentStatusDialog } from "@/components/modules/payment";
 import { PaymentStatus } from "@/enums/payment";
 import { useCart } from "@/hooks/use-cart";
+import baseConfig from "@/configs/base";
 
 // Zod validation schemas
 const momoSchema = z.object({
@@ -260,6 +261,28 @@ const PaymentPage = () => {
   const discount = 0;
   const total = subtotal + shipping + tax - discount;
 
+  useEffect(() => {
+    if (cart.items.length === 0) {
+      return;
+    }
+
+    if (!profileStore.email) {
+      toast.error("Vui lòng cập nhật email trong hồ sơ cá nhân để thanh toán.");
+      return;
+    }
+
+    if (paymentMethod === "qr_code") {
+      createQRPaymentMutation.createPaymentQR(profileStore.email);
+    }
+  }, [paymentMethod, cart.items.length, profileStore.email]);
+
+  useEffect(() => {
+    if (createQRPaymentMutation.streamingStatus === PaymentStatus.COMPLETED) {
+      cart.clearCart();
+      setOpenPaymentStatus(true);
+    }
+  }, [createQRPaymentMutation.streamingStatus]);
+
   if (!authStore.isSignedIn) {
     return (
       <div className="bg-linear-to-br from-gray-50 via-blue-50 to-gray-50 flex items-center justify-center p-4">
@@ -313,28 +336,6 @@ const PaymentPage = () => {
       </div>
     );
   }
-
-  useEffect(() => {
-    if (cart.items.length === 0) {
-      return;
-    }
-
-    if (!profileStore.email) {
-      toast.error("Vui lòng cập nhật email trong hồ sơ cá nhân để thanh toán.");
-      return;
-    }
-
-    if (paymentMethod === "qr_code") {
-      createQRPaymentMutation.createPaymentQR(profileStore.email);
-    }
-  }, [paymentMethod, cart.items.length]);
-
-  useEffect(() => {
-    if (createQRPaymentMutation.streamingStatus === PaymentStatus.COMPLETED) {
-      cart.clearCart();
-      setOpenPaymentStatus(true);
-    }
-  }, [createQRPaymentMutation.streamingStatus]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -518,7 +519,11 @@ const PaymentPage = () => {
                       <div className="relative shrink-0">
                         <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden border">
                           <img
-                            src={generateImageRandom()}
+                            src={
+                              item.product.images && item.product.images.length > 0
+                                ? `${baseConfig.backendDomain}${item.product.images[0]}`
+                                : generateImageRandom()
+                            }
                             alt={item.product.title}
                             className="w-full h-full object-cover"
                           />
@@ -531,9 +536,9 @@ const PaymentPage = () => {
                         <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-1">
                           {item.product.title}
                         </h3>
-                        <p className="text-xs text-gray-500 mb-2">
+                        {/* <p className="text-xs text-gray-500 mb-2">
                           {item.product.category?.name || "No category"}
-                        </p>
+                        </p> */}
                         <p className="text-sm font-semibold text-gray-900">
                           {new Intl.NumberFormat("vi-VN", {
                             style: "currency",

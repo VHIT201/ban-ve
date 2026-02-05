@@ -5,8 +5,4 @@ import type { GetApiCollaboratorsRequests200Pagination } from './getApiCollabora
 export type GetApiCollaboratorsRequests200 = {
   requests?: CollaboratorResponse[];
   pagination?: GetApiCollaboratorsRequests200Pagination;
-  data?: {
-    requests?: CollaboratorResponse[];
-    pagination?: GetApiCollaboratorsRequests200Pagination;
-  };
 };

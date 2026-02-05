@@ -488,39 +488,59 @@ function useSSEStream({ url, enable = true, onEvent }) {
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$1$2e$1_$40$babel$2b$core$40$7$2e$2_27d3faa9b1a9d8cd0e1872aee1c051b9$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "useSSEStream.useEffect": ()=>{
             const authStore = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$stores$2f$use$2d$auth$2d$store$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__useAuthStore$3e$__["useAuthStore"].getState();
-            if (!url || !enable || !authStore.accessToken) return;
+            if (!url || !enable || !authStore.accessToken) {
+                return undefined;
+            }
             const controller = new AbortController();
             abortRef.current = controller;
             ({
                 "useSSEStream.useEffect": async ()=>{
-                    const res = await fetch(url, {
-                        headers: {
-                            Authorization: `Bearer ${authStore.accessToken}`,
-                            Accept: "text/event-stream"
-                        },
-                        signal: controller.signal
-                    });
-                    if (!res.body) return;
-                    const reader = res.body.getReader();
-                    const decoder = new TextDecoder();
-                    let buffer = "";
-                    while(true){
-                        const { done, value } = await reader.read();
-                        if (done) break;
-                        buffer += decoder.decode(value, {
-                            stream: true
+                    try {
+                        const res = await fetch(url, {
+                            headers: {
+                                Authorization: `Bearer ${authStore.accessToken}`,
+                                Accept: "text/event-stream"
+                            },
+                            signal: controller.signal
                         });
-                        const lines = buffer.split("\n");
-                        buffer = lines.pop() || "";
-                        let eventName = "message";
-                        for (const line of lines){
-                            if (line.startsWith("event:")) {
-                                eventName = line.replace("event:", "").trim();
+                        if (!res.body) return;
+                        const reader = res.body.getReader();
+                        const decoder = new TextDecoder();
+                        let buffer = "";
+                        try {
+                            while(true){
+                                const { done, value } = await reader.read();
+                                if (done) break;
+                                buffer += decoder.decode(value, {
+                                    stream: true
+                                });
+                                const lines = buffer.split("\n");
+                                buffer = lines.pop() || "";
+                                let eventName = "message";
+                                for (const line of lines){
+                                    if (line.startsWith("event:")) {
+                                        eventName = line.replace("event:", "").trim();
+                                    }
+                                    if (line.startsWith("data:")) {
+                                        const json = line.replace("data:", "").trim();
+                                        try {
+                                            onEvent(eventName, JSON.parse(json));
+                                        } catch (parseError) {
+                                            console.error("Failed to parse SSE data:", json, parseError);
+                                        }
+                                    }
+                                }
                             }
-                            if (line.startsWith("data:")) {
-                                const json = line.replace("data:", "").trim();
-                                onEvent(eventName, JSON.parse(json));
+                        } catch (readError) {
+                            if (readError.name !== 'AbortError') {
+                                console.error("Error reading SSE stream:", readError);
                             }
+                        } finally{
+                            reader.releaseLock();
+                        }
+                    } catch (fetchError) {
+                        if (fetchError.name !== 'AbortError') {
+                            console.error("Error fetching SSE stream:", fetchError);
                         }
                     }
                 }
@@ -528,13 +548,16 @@ function useSSEStream({ url, enable = true, onEvent }) {
             return ({
                 "useSSEStream.useEffect": ()=>{
                     console.log("CLOSE CONNECTING");
-                    controller.abort();
+                    if (controller && !controller.signal.aborted) {
+                        controller.abort();
+                    }
                 }
             })["useSSEStream.useEffect"];
         }
     }["useSSEStream.useEffect"], [
         url,
-        enable
+        enable,
+        onEvent
     ]);
 }
 _s(useSSEStream, "39rk7Ugg2UQFa/gQqUmcTz2QC7I=");

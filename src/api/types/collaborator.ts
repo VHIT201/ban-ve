@@ -31,6 +31,15 @@ export interface CollaboratorMe {
   email: string;
   role: string;
   isActive: boolean;
+  bankAccount?: string;
+  bankName?: string;
+  earnings?: {
+    totalAmount?: number;
+    totalCommission?: number;
+    totalAdminAmount?: number;
+    totalOrders?: number;
+    byStatus?: { [key: string]: any };
+  };
   createdAt: string; // hoặc Date nếu bạn parse ra dạng Date
   updatedAt: string; // hoặc Date
 }

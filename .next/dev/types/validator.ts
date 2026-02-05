@@ -189,6 +189,15 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
   type __Unused = __Check
 }
 
+// Validate ../../../src/app/(public)/profile/collaborator/content-create/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/profile/collaborator/content-create">> = Specific
+  const handler = {} as typeof import("../../../src/app/(public)/profile/collaborator/content-create/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../../src/app/(public)/profile/collaborator/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/profile/collaborator">> = Specific
@@ -247,6 +256,15 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
 {
   type __IsExpected<Specific extends AppPageConfig<"/profile/personal">> = Specific
   const handler = {} as typeof import("../../../src/app/(public)/profile/personal/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../../src/app/admin/categories/[id]/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/admin/categories/[id]">> = Specific
+  const handler = {} as typeof import("../../../src/app/admin/categories/[id]/page.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check
