@@ -78,9 +78,16 @@ const CommentItem: FC<Props> = (props) => {
           .join("") + "..."
       : comment?.content;
 
-  const isMyComment = comment.email === profileStore.email;
+  const isMyComment = comment.userId?.email === profileStore.email || comment.email === profileStore.email;
 
-  // Get user initials for avatar fallback
+  // Get user display name and initials
+  const getDisplayName = () => {
+    if (comment.userId?.fullname) {
+      return comment.userId.fullname;
+    }
+    return comment.guestName ?? "Unknown";
+  };
+
   const getUserInitials = (name: string) => {
     const words = name.trim().split(" ");
     if (words.length >= 2) {
@@ -88,6 +95,16 @@ const CommentItem: FC<Props> = (props) => {
     }
     return name.substring(0, 2).toUpperCase();
   };
+
+  const displayName = getDisplayName();
+
+  // Debug: Log the comment structure to understand the data
+  console.log('Comment data:', {
+    comment,
+    userId: comment.userId,
+    guestName: comment.guestName,
+    displayName
+  });
 
   // Template
   return (
@@ -103,10 +120,10 @@ const CommentItem: FC<Props> = (props) => {
         {/* Avatar */}
         <Avatar className="w-10 h-10 border-2 border-white shadow-sm shrink-0">
           <AvatarImage
-            src={`https://api.dicebear.com/7.x/initials/svg?seed=${comment.guestName}`}
+            src={`https://api.dicebear.com/7.x/initials/svg?seed=${displayName}`}
           />
           <AvatarFallback className="bg-linear-to-br from-blue-500 to-purple-600 text-white text-sm font-semibold">
-            {getUserInitials(comment.guestName ?? "U")}
+            {getUserInitials(displayName)}
           </AvatarFallback>
         </Avatar>
 
@@ -117,7 +134,7 @@ const CommentItem: FC<Props> = (props) => {
               <div className="flex items-start justify-between gap-2">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-sm font-semibold text-gray-900">
-                    {comment.guestName ?? "Unknown"}
+                    {displayName}
                   </span>
                   {isMyComment && (
                     <Badge

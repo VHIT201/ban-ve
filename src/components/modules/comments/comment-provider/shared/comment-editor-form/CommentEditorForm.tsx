@@ -41,9 +41,9 @@ const CommentCreationForm: FC<Props> = (props) => {
 
   // Stores
   const profileStore = useProfileStore(
-    useShallow(({ email, username }) => ({
+    useShallow(({ email, fullName }) => ({
       email,
-      username,
+      fullName,
     }))
   );
 
@@ -87,7 +87,7 @@ const CommentCreationForm: FC<Props> = (props) => {
           data: {
             content: commentContent,
             email: profileStore.email,
-            guestName: profileStore.username,
+            guestName: profileStore.fullName,
           },
         });
 
@@ -176,6 +176,16 @@ const CommentCreationForm: FC<Props> = (props) => {
       ? "Chỉnh sửa bình luận..."
       : "Viết bình luận của bạn...";
 
+  // Helper function to get user initials
+  const getUserInitials = (name?: string) => {
+    if (!name) return "U";
+    const words = name.trim().split(" ");
+    if (words.length >= 2) {
+      return `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  };
+
   const isSubmitting =
     createCommentMutation.isPending || editCommentMutation.isPending;
   return (
@@ -253,9 +263,11 @@ const CommentCreationForm: FC<Props> = (props) => {
         <div className="flex gap-3 p-4">
           {mode === "create" && (
             <Avatar className="w-10 h-10 border-2 border-gray-100">
-              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarImage 
+                src={profileStore.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${profileStore.fullName || profileStore.email}`} 
+              />
               <AvatarFallback className="bg-linear-to-br from-blue-500 to-purple-600 text-white font-semibold">
-                U
+                {getUserInitials(profileStore.fullName)}
               </AvatarFallback>
             </Avatar>
           )}

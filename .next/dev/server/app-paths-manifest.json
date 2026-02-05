@@ -1,5 +1,6 @@
 {
   "/(public)/(views)/(home)/page": "app/(public)/(views)/(home)/page.js",
+  "/(public)/(views)/detail/[id]/page": "app/(public)/(views)/detail/[id]/page.js",
   "/(public)/(views)/profile/collaborator/content-edit/[id]/page": "app/(public)/(views)/profile/collaborator/content-edit/[id]/page.js",
   "/(public)/profile/collaborator/content-create/page": "app/(public)/profile/collaborator/content-create/page.js",
   "/(public)/profile/collaborator/page": "app/(public)/profile/collaborator/page.js",
