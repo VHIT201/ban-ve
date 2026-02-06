@@ -54,13 +54,13 @@ const RegisterVerifyForm: FC<Props> = (props) => {
   // Mutations
   const verifyOTPMutation = usePostApiAuthVerifyRegistration({
     mutation: {
-      retry: 1,
+      retry: 0,
     },
   });
 
   const reSendOTPMutation = usePostApiAuthResendOtp({
     mutation: {
-      retry: 1,
+      retry: 0,
     },
   });
 
@@ -74,9 +74,13 @@ const RegisterVerifyForm: FC<Props> = (props) => {
       });
 
       setCountdown(30);
-      toast.success(" Đã gửi lại mã OTP thành công. Vui lòng kiểm tra hộp thư đến hoặc thư mục spam.");
+      toast.success(
+        " Đã gửi lại mã OTP thành công. Vui lòng kiểm tra hộp thư đến hoặc thư mục spam.",
+      );
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Không thể gửi lại mã OTP. Vui lòng thử lại sau.';
+      const errorMessage =
+        error.response?.data?.message ||
+        "Không thể gửi lại mã OTP. Vui lòng thử lại sau.";
       toast.error(` ${errorMessage}`);
     }
   };
@@ -94,20 +98,21 @@ const RegisterVerifyForm: FC<Props> = (props) => {
       toast.info(" Bạn có thể đăng nhập ngay bây giờ.", {
         duration: 5000,
       });
-      
+
       // Chuyển hướng sau khi hiển thị thông báo
       setTimeout(() => {
         router.push(BASE_PATHS.auth.login.path);
       }, 1500);
-      
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Mã xác thực không chính xác hoặc đã hết hạn.';
-      
+      const errorMessage =
+        error.response?.data?.message ||
+        "Mã xác thực không chính xác hoặc đã hết hạn.";
+
       if (error.response?.status === 400) {
         if (error.response?.data?.errors?.otp) {
-          form.setError('otp', {
-            type: 'manual',
-            message: error.response.data.errors.otp[0]
+          form.setError("otp", {
+            type: "manual",
+            message: error.response.data.errors.otp[0],
           });
         }
         toast.error(`${errorMessage}`);

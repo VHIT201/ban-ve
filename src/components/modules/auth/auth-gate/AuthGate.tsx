@@ -6,7 +6,7 @@ import { useShallow } from "zustand/shallow";
 
 // App
 import { User } from "@/api/models";
-import { Response, ResponseData } from "@/api/types/base";
+import { ResponseData } from "@/api/types/base";
 import { useGetApiAuthMe } from "@/api/endpoints/auth";
 import { useAuthStore, useProfileStore } from "@/stores";
 
@@ -36,7 +36,6 @@ const AuthGate: FC<Props> = (props) => {
     if (getProfileUserQuery.isSuccess) {
       profileStore.setStore({
         fullName: getProfileUserQuery.data.fullname,
-        username: getProfileUserQuery.data.fullname,
         email: getProfileUserQuery.data.email,
         role: getProfileUserQuery.data.role,
         avatar: getProfileUserQuery.data.avatar,
@@ -48,7 +47,11 @@ const AuthGate: FC<Props> = (props) => {
           : null,
       });
     }
-  }, [getProfileUserQuery.isSuccess, getProfileUserQuery.data, profileStore.setStore]);
+  }, [
+    getProfileUserQuery.isSuccess,
+    getProfileUserQuery.data,
+    profileStore.setStore,
+  ]);
 
   return <Fragment>{props.children}</Fragment>;
 };

@@ -39,8 +39,9 @@ export interface ContentResponse {
   status?: string;
   createdBy?: {
     _id: string;
-    username: string;
     email?: string;
+    fullname?: string;
+    avatar?: string;
   };
   createdAt?: string;
   updatedAt?: string;
@@ -71,8 +72,9 @@ export interface ContentProduct {
   status?: string;
   createdBy?: {
     _id: string;
-    username: string;
     email?: string;
+    fullname?: string;
+    avatar?: string;
   };
   createdAt?: string;
   updatedAt?: string;
@@ -103,8 +105,9 @@ export interface ContentResponseDetail {
   status: string;
   createdBy: {
     _id: string;
-    username: string;
     email: string;
+    fullname?: string;
+    avatar?: string;
   };
   createdAt: string;
   updatedAt: string;

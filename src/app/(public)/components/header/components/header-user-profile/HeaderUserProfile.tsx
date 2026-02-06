@@ -126,11 +126,11 @@ const HeaderUserProfile = () => {
     // Clear Zustand stores
     resetStore();
     authStore.resetStore();
-    
+
     // Clear cookies
     removeCookie("accessToken");
     removeCookie("refreshToken");
-    
+
     // Redirect to login
     window.location.href = BASE_PATHS.auth.login.path;
   };
@@ -144,7 +144,9 @@ const HeaderUserProfile = () => {
       .substring(0, 2);
   };
 
-  const userAvatar = `${baseConfig.mediaDomain}/${userData.avatar}`;
+  const userAvatar = userData.avatar?.startsWith("blob:")
+    ? userData.avatar
+    : `${baseConfig.mediaDomain}/${userData.avatar}`;
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>

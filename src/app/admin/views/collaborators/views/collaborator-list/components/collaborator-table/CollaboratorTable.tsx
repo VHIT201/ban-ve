@@ -23,6 +23,7 @@ const CollaboratorTable = () => {
     pageIndex: number;
     pageSize: number;
   }>({ pageIndex: 0, pageSize: 10 });
+  }>({ pageIndex: 0, pageSize: 10 });
 
   const [statusFilter, setStatusFilter] = useState<
     "pending" | "approved" | "rejected" | undefined
@@ -70,16 +71,35 @@ const CollaboratorTable = () => {
     },
     onApprove: (collaborator) => {
       // TODO: Implement approve logic with mutation
+      // Ví dụ:
+      // approveMutation.mutate(collaborator._id, {
+      //   onSuccess: () => {
+      //     getCollaboratorsQuery.refetch();
+      //   }
+      // });
       console.log("Approve collaborator:", collaborator._id);
     },
     onReject: (collaborator) => {
       // TODO: Implement reject logic with mutation
+      // Ví dụ:
+      // rejectMutation.mutate(collaborator._id, {
+      //   onSuccess: () => { 
+      //     getCollaboratorsQuery.refetch();
+      //   }
+      // });
       console.log("Reject collaborator:", collaborator._id);
     },
     onDelete: (collaborator) => {
       // TODO: Implement delete logic with mutation
+      // Ví dụ:
+      // deleteMutation.mutate(collaborator._id, {
+      //   onSuccess: () => {
+      //     getCollaboratorsQuery.refetch();
+      //   }
+      // });
       console.log("Delete collaborator:", collaborator._id);
     },
+    refetch: getCollaboratorsQuery.refetch,
   });
 
   return (

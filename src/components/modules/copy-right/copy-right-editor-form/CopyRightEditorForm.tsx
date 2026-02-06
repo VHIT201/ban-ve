@@ -51,7 +51,7 @@ import { EnvelopeIcon } from "@phosphor-icons/react";
 
 // Schema validation
 const copyrightReportFormSchema = z.object({
-  email: z.string().email("Email không hợp lệ"),
+  email: z.string().email("Email không hợp lệ"),  
   violationType: z.nativeEnum(CopyrightReportViolationType, {
     required_error: "Vui lòng chọn loại vi phạm",
     invalid_type_error: "Loại vi phạm không hợp lệ",
@@ -355,8 +355,22 @@ const CopyRightEditorForm = ({
                             className="pl-10 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 font-mono text-sm"
                             {...field}
                             disabled={loading || isViewMode}
-                            maxLength={24}
+                            maxLength={50}
                           />
+                                   <div className="absolute bottom-3 right-3 flex items-center gap-2">
+                            <Badge
+                              variant={
+                                (field.value?.length || 0) < 0
+                                  ? "destructive"
+                                  : (field.value?.length || 0) > 50
+                                    ? "destructive"
+                                    : "outline"
+                              }
+                              className="text-xs"
+                            >
+                              {field.value?.length || 0}/50
+                            </Badge>
+                          </div>
                         </div>
                       </FormControl>
                       <FormMessage />
@@ -493,21 +507,22 @@ const CopyRightEditorForm = ({
                             className="min-h-[140px] resize-none border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 text-sm leading-relaxed"
                             {...field}
                             disabled={loading || isViewMode}
+                            maxLength={2000}
                           />
                           <div className="absolute bottom-3 right-3 flex items-center gap-2">
                             <Badge
                               variant={
-                                field.value.length < 20
+                                (field.value?.length || 0) < 20
                                   ? "destructive"
-                                  : field.value.length > 2000
+                                  : (field.value?.length || 0) > 2000
                                     ? "destructive"
-                                    : field.value.length > 1500
+                                    : (field.value?.length || 0) > 1500
                                       ? "secondary"
                                       : "outline"
                               }
                               className="text-xs"
                             >
-                              {field.value.length}/2000
+                              {field.value?.length || 0}/2000
                             </Badge>
                           </div>
                         </div>
@@ -619,7 +634,7 @@ const CopyRightEditorForm = ({
                                           href={url}
                                           target="_blank"
                                           rel="noopener noreferrer"
-                                          className="text-sm text-blue-600 hover:text-blue-700 hover:underline truncate block transition-colors"
+                                          className="text-sm text-blue-600 hover:text-blue-700 hover:underline break-words block transition-colors"
                                         >
                                           {url}
                                         </a>

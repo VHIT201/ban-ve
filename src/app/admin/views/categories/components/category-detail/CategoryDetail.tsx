@@ -11,12 +11,7 @@ import { CategoryFormValues } from "../category-dialog/lib/types";
 import { useUploadMedia } from "@/hooks";
 import baseConfig from "@/configs/base";
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DataTable } from "@/components/shared";
@@ -42,9 +37,9 @@ import {
 } from "@/api/endpoints/categories";
 import { useCategoryTableColumnsDefs } from "../category-table/lib/hooks";
 import { Category } from "@/api/models";
-import type { 
+import type {
   GetApiCategoriesIdChildren200,
-  GetApiCategories200 
+  GetApiCategories200,
 } from "@/api/models";
 
 const DEFAULT_PAGINATION = {
@@ -52,7 +47,9 @@ const DEFAULT_PAGINATION = {
   pageSize: 10,
 };
 
-const extractSubcategories = (res: GetApiCategoriesIdChildren200 | Category[] | undefined): Category[] => {
+const extractSubcategories = (
+  res: GetApiCategoriesIdChildren200 | Category[] | undefined,
+): Category[] => {
   if (!res) return [];
   if (Array.isArray(res)) return res;
   return res?.data?.children ?? [];
@@ -65,7 +62,9 @@ export const CategoryDetail = () => {
 
   const [pagination, setPagination] = useState(DEFAULT_PAGINATION);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
+    null,
+  );
   const [deleteConfirmationText, setDeleteConfirmationText] = useState("");
   const [categoryToEdit, setCategoryToEdit] = useState<Category | null>(null);
 
@@ -94,7 +93,7 @@ export const CategoryDetail = () => {
             : null;
         },
       },
-    }
+    },
   );
 
   const {
@@ -110,12 +109,12 @@ export const CategoryDetail = () => {
         enabled: !!id,
         queryKey: ["subcategories", id],
       },
-    }
+    },
   );
 
   const subcategories = useMemo(
     () => extractSubcategories(response),
-    [response]
+    [response],
   );
 
   const { mutate: createCategory, isPending: isCreating } =
@@ -125,7 +124,7 @@ export const CategoryDetail = () => {
           toast.success("Tạo danh mục con thành công");
           setIsCreateDialogOpen(false);
           refetch();
-          
+
           // Reload page after success
           setTimeout(() => {
             window.location.reload();
@@ -144,7 +143,7 @@ export const CategoryDetail = () => {
         setCategoryToDelete(null);
         setDeleteConfirmationText("");
         refetch();
-        
+
         // Reload page after success
         setTimeout(() => {
           window.location.reload();
@@ -162,7 +161,7 @@ export const CategoryDetail = () => {
         toast.success("Cập nhật danh mục thành công");
         setCategoryToEdit(null);
         refetch();
-        
+
         // Reload page after success
         setTimeout(() => {
           window.location.reload();
@@ -187,9 +186,8 @@ export const CategoryDetail = () => {
             filename: data.image.name,
             dir: "categories",
             private: false,
-          }
+          },
         );
-
 
         if (imageRes?.path) {
           imageUrl = `${baseConfig.mediaDomain}${imageRes.path}`;
@@ -213,10 +211,7 @@ export const CategoryDetail = () => {
   };
 
   const handleDeleteCategory = async () => {
-    if (
-      !categoryToDelete ||
-      deleteConfirmationText !== categoryToDelete.name
-    )
+    if (!categoryToDelete || deleteConfirmationText !== categoryToDelete.name)
       return;
 
     await deleteCategoryMutation.mutateAsync({
@@ -230,7 +225,7 @@ export const CategoryDetail = () => {
     try {
       // Keep existing imageUrl or get from form data
       let imageUrl = data.imageUrl || categoryToEdit.imageUrl || "";
-      
+
       // Upload new image if selected
       if (data.image) {
         const imageRes = await uploadFileMutation.uploadSingle(
@@ -239,7 +234,7 @@ export const CategoryDetail = () => {
             filename: data.image.name,
             dir: "categories",
             private: false,
-          }
+          },
         );
 
         if (imageRes?.path) {
@@ -291,7 +286,7 @@ export const CategoryDetail = () => {
         onAction: () => {},
       },
     ],
-    []
+    [],
   );
 
   if (isLoading) {
@@ -322,10 +317,7 @@ export const CategoryDetail = () => {
           </h1>
         </div>
 
-        <Button 
-          onClick={() => setIsCreateDialogOpen(true)}
-          disabled={!id}
-        >
+        <Button onClick={() => setIsCreateDialogOpen(true)} disabled={!id}>
           <PlusIcon className="mr-2 h-4 w-4" />
           Thêm danh mục con
         </Button>
@@ -341,9 +333,7 @@ export const CategoryDetail = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>
-            Danh sách danh mục con ({subcategories.length})
-          </CardTitle>
+          <CardTitle>Danh sách danh mục con ({subcategories.length})</CardTitle>
         </CardHeader>
         <CardContent>
           <DataTable
@@ -414,7 +404,8 @@ export const CategoryDetail = () => {
           <div className="mx-6 mt-4 rounded-md bg-destructive px-4 py-3 text-sm font-medium text-destructive-foreground">
             ⚠️ Cảnh báo
             <div className="font-normal">
-              Hành động này sẽ xóa vĩnh viễn danh mục và toàn bộ dữ liệu liên quan.
+              Hành động này sẽ xóa vĩnh viễn danh mục và toàn bộ dữ liệu liên
+              quan.
             </div>
           </div>
 

@@ -154,7 +154,11 @@ export const useColumns = (props: useCopyrightReportTableColumnsDefsProps) => {
         header: "Người báo cáo",
         cell: ({ row }) => {
           const reporter = row.original.reporterId;
-          const displayName = reporter?.fullname || reporter?.username || reporter?.email || "Không rõ";
+          const displayName =
+            reporter?.fullname ||
+            reporter?.username ||
+            reporter?.email ||
+            "Không rõ";
           const initials = displayName[0]?.toUpperCase() || "?";
 
           return (
@@ -168,11 +172,11 @@ export const useColumns = (props: useCopyrightReportTableColumnsDefsProps) => {
                 <div className="text-sm font-medium text-gray-900 truncate">
                   {displayName}
                 </div>
-                {reporter?.email && (
+                {/* {email && (
                   <div className="text-xs text-gray-500 truncate">
-                    {reporter.email}
+                    {email}
                   </div>
-                )}
+                )} */}
               </div>
             </div>
           );
@@ -324,7 +328,11 @@ export const useColumns = (props: useCopyrightReportTableColumnsDefsProps) => {
             return <span className="text-sm text-gray-400">N/A</span>;
           }
 
-          const displayName = resolvedBy.fullname || resolvedBy.username || resolvedBy.email || "N/A";
+          const displayName =
+            resolvedBy.fullname ||
+            resolvedBy.username ||
+            resolvedBy.email ||
+            "N/A";
           const initials = displayName[0]?.toUpperCase() || "?";
 
           return (
@@ -449,6 +457,6 @@ export const useColumns = (props: useCopyrightReportTableColumnsDefsProps) => {
         },
       },
     ],
-    [onView, onResolve, onReject, onDelete, onViewEvidence]
+    [onView, onResolve, onReject, onDelete, onViewEvidence],
   );
 };

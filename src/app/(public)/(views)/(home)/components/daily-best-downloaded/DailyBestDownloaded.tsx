@@ -7,22 +7,13 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Button } from "@/components/ui/button";
-import Image from "@/components/ui/image";
 import {
   BlueprintCard,
   BlueprintCardSkeleton,
 } from "@/components/modules/content";
-import {
-  useGetApiContent,
-  useGetApiContentStatisticsDownloadRanking,
-} from "@/api/endpoints/content";
-import { ContentResponse } from "@/api/types/content";
-import {
-  GetApiContent200Pagination,
-  GetApiContentStatisticsDownloadRanking200DataItem,
-  GetApiContentStatisticsDownloadRanking200DataItemContentInfo,
-} from "@/api/models";
+import { useGetApiContent } from "@/api/endpoints/content";
+import { ContentProduct, ContentResponse } from "@/api/types/content";
+import { GetApiContentStatisticsDownloadRanking200DataItem } from "@/api/models";
 import { UseQueryResult } from "@tanstack/react-query";
 import { QueryBoundary } from "@/components/shared";
 
@@ -35,18 +26,15 @@ const DailyBestDownloaded = () => {
 
   // Queries
   // Queries
-  const getBluerintListQuery = useGetApiContentStatisticsDownloadRanking(
+  const getBluerintListQuery = useGetApiContent(
     {
       limit: 10,
+      sort: "newest",
     },
     {
       query: {
         select: (data) =>
-          (
-            data as unknown as ResponseData<
-              GetApiContentStatisticsDownloadRanking200DataItem[]
-            >
-          ).data,
+          (data as unknown as ResponseData<ContentProduct[]>).data,
       },
     },
   ) as UseQueryResult<GetApiContentStatisticsDownloadRanking200DataItem[]>;
@@ -55,6 +43,8 @@ const DailyBestDownloaded = () => {
   const handleViewDetail = (blueprint: ContentResponse) => {
     router.push(`/detail/${blueprint._id}`);
   };
+
+  console.log("getBluerintListQuery", getBluerintListQuery.data);
 
   return (
     <section className="py-12 px-4 max-w-[1500px] mx-auto">
@@ -96,11 +86,7 @@ const DailyBestDownloaded = () => {
                       className="pl-10 md:basis-1/2 lg:basis-1/4"
                     >
                       <BlueprintCard
-                        product={{
-                          _id: product.contentId!,
-                          ...(product.contentInfo as GetApiContentStatisticsDownloadRanking200DataItemContentInfo),
-                          downloadCount: product.downloadCount,
-                        }}
+                        product={product}
                         onViewDetail={handleViewDetail}
                       />
                     </CarouselItem>

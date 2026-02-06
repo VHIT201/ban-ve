@@ -14,16 +14,21 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Props, RegisterFormValues } from "./lib/types";
-import { User, MailIcon, LockIcon, Loader2Icon, EyeIcon, EyeOffIcon } from "lucide-react";
-import { FC, useState, useEffect } from "react";
 import {
-  DEFAULT_REGISTER_FORM_VALUES,
-  REGISTER_FORM_SCHEMA,
-} from "./lib/constants";
+  User,
+  MailIcon,
+  LockIcon,
+  Loader2Icon,
+  EyeIcon,
+  EyeOffIcon,
+} from "lucide-react";
+import { FC, useState, useEffect } from "react";
+import { REGISTER_FORM_SCHEMA } from "./lib/constants";
 import Link from "next/link";
 import { BASE_PATHS } from "@/constants/paths";
 import { usePostApiAuthRegister } from "@/api/endpoints/auth";
@@ -40,7 +45,12 @@ const RegisterForm: FC<Props> = (props) => {
   // Hooks
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(REGISTER_FORM_SCHEMA),
-    defaultValues: DEFAULT_REGISTER_FORM_VALUES,
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 
   // Mutations
@@ -63,8 +73,10 @@ const RegisterForm: FC<Props> = (props) => {
       onSubmit(values);
       toast.success("Đăng ký thành công! Vui lòng kiểm tra email để xác thực.");
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Đã có lỗi xảy ra khi đăng ký. Vui lòng thử lại sau.';
-      
+      const errorMessage =
+        error.response?.data?.message ||
+        "Đã có lỗi xảy ra khi đăng ký. Vui lòng thử lại sau.";
+
       if (error.response?.status === 400 && error.response?.data?.errors) {
         // Handle validation errors
         const { errors } = error.response.data;
@@ -72,8 +84,8 @@ const RegisterForm: FC<Props> = (props) => {
           const message = errors[field]?.[0];
           if (message) {
             form.setError(field as any, {
-              type: 'manual',
-              message: message
+              type: "manual",
+              message: message,
             });
           }
         });
@@ -144,13 +156,18 @@ const RegisterForm: FC<Props> = (props) => {
                     placeholder="Nhập mật khẩu"
                     className="pl-10 pr-10 h-10"
                     {...field}
+                    maxLength={30}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    {showPassword ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
+                    {showPassword ? (
+                      <EyeOffIcon className="h-4 w-4" />
+                    ) : (
+                      <EyeIcon className="h-4 w-4" />
+                    )}
                   </button>
                 </div>
               </FormControl>
@@ -173,13 +190,18 @@ const RegisterForm: FC<Props> = (props) => {
                     placeholder="Nhập lại mật khẩu"
                     className="pl-10 pr-10 h-10"
                     {...field}
+                    maxLength={30}
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    {showConfirmPassword ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
+                    {showConfirmPassword ? (
+                      <EyeOffIcon className="h-4 w-4" />
+                    ) : (
+                      <EyeIcon className="h-4 w-4" />
+                    )}
                   </button>
                 </div>
               </FormControl>

@@ -89,7 +89,7 @@ const BlueprintCard: FC<Props> = (props) => {
     }
     return undefined;
   }, [product.images]);
-  
+
   const statusName =
     product.status === ContentStatus.APPROVED
       ? {

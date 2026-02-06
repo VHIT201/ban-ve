@@ -15,6 +15,7 @@ import {
   useGetApiCollaboratorsRequests,
   usePutApiCollaboratorsRequestsRequestIdApprove,
   usePutApiCollaboratorsRequestsRequestIdReject,
+  getGetApiCollaboratorsRequestsQueryKey,
 } from "@/api/endpoints/collaborators";
 
 import { Button } from "@/components/ui/button";
@@ -50,11 +51,9 @@ const CollaboratorDetail = () => {
     {
       query: {
         select: (data) =>
-          (data.requests ?? []).find(
-            (request) => request._id === id
-          ),
+          (data.requests ?? []).find((request) => request._id === id),
       },
-    }
+    },
   ) as UseQueryResult<CollaboratorResponse | undefined>;
 
   // Mutations
@@ -64,10 +63,14 @@ const CollaboratorDetail = () => {
         toast.success("Đã phê duyệt yêu cầu thành công");
         setApproveDialogOpen(false);
         getRequestQuery.refetch();
+        // Invalidate collaborators list to update table in list page
+        queryClient.invalidateQueries({
+          queryKey: getGetApiCollaboratorsRequestsQueryKey(),
+        });
       },
       onError: (error: any) => {
         toast.error(
-          extractErrorMessage(error) || "Không thể phê duyệt yêu cầu"
+          extractErrorMessage(error) || "Không thể phê duyệt yêu cầu",
         );
       },
     },
@@ -80,6 +83,10 @@ const CollaboratorDetail = () => {
         setRejectDialogOpen(false);
         setRejectionReason("");
         getRequestQuery.refetch();
+        // Invalidate collaborators list to update table in list page
+        queryClient.invalidateQueries({
+          queryKey: getGetApiCollaboratorsRequestsQueryKey(),
+        });
       },
       onError: (error) => {
         toast.error(extractErrorMessage(error) || "Không thể từ chối yêu cầu");
@@ -140,7 +147,7 @@ const CollaboratorDetail = () => {
               </div>
             );
           }
-          
+
           const isPending = request.status === "pending";
 
           return (
@@ -260,14 +267,18 @@ const CollaboratorDetail = () => {
                     <div>
                       <div className="text-muted-foreground">Ngày tạo</div>
                       <div className="mt-1">
-                        {request.createdAt ? new Date(request.createdAt).toLocaleString("vi-VN") : "N/A"}
+                        {request.createdAt
+                          ? new Date(request.createdAt).toLocaleString("vi-VN")
+                          : "N/A"}
                       </div>
                     </div>
                     <Separator />
                     <div>
                       <div className="text-muted-foreground">Cập nhật</div>
                       <div className="mt-1">
-                        {request.updatedAt ? new Date(request.updatedAt).toLocaleString("vi-VN") : "N/A"}
+                        {request.updatedAt
+                          ? new Date(request.updatedAt).toLocaleString("vi-VN")
+                          : "N/A"}
                       </div>
                     </div>
                   </CardContent>

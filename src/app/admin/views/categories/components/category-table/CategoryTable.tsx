@@ -2,7 +2,7 @@
 
 // App
 import { Category } from "@/api/models";
-import type { 
+import type {
   GetApiCategories200,
   GetApiCategoriesIdChildren200,
   GetApiCategoriesIdWithChildren200,
@@ -23,7 +23,7 @@ import {
   usePutApiCategoriesId,
 } from "@/api/endpoints/categories";
 import { UseQueryResult } from "@tanstack/react-query";
-import { FC, Fragment, useMemo, useState } from "react";
+import { FC, Fragment, useEffect, useMemo, useState } from "react";
 import CategoryDialog from "../category-dialog";
 import { toast } from "sonner";
 import {
@@ -63,7 +63,7 @@ const CategoryTable: FC<Props> = (props) => {
           return result;
         },
       },
-    }
+    },
   ) as UseQueryResult<Category[]>;
 
   const getCategoryChildrenList = useGetApiCategoriesIdChildren(
@@ -77,7 +77,7 @@ const CategoryTable: FC<Props> = (props) => {
           return result;
         },
       },
-    }
+    },
   ) as UseQueryResult<Category[]>;
 
   const getCategoryWithChildrenList = useGetApiCategoriesIdWithChildren(
@@ -91,7 +91,7 @@ const CategoryTable: FC<Props> = (props) => {
           return result;
         },
       },
-    }
+    },
   ) as UseQueryResult<Category[]>;
 
   // Mutations
@@ -142,6 +142,19 @@ const CategoryTable: FC<Props> = (props) => {
     getCategoryWithChildrenList,
   ]);
 
+  useEffect(() => {
+    if (mode !== "all") return;
+
+    const total = (getCategoryList.data as any)?.pagination?.total ?? 0;
+    const maxPageIndex = Math.max(
+      0,
+      Math.ceil(total / pagination.pageSize) - 1,
+    );
+    if (pagination.pageIndex > maxPageIndex) {
+      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+    }
+  }, [getCategoryList.data, mode, pagination.pageIndex, pagination.pageSize]);
+
   // Methods
   const handleColumnEdit = (category: Category) => {
     setEditSelectRow(category);
@@ -151,7 +164,9 @@ const CategoryTable: FC<Props> = (props) => {
     if (!category._id) return;
 
     if (mode === "children") {
-      router.push(`/admin/${ROUTE_PATHS.admin.categories.path}/${category._id}?withChildren=true`);
+      router.push(
+        `/admin/${ROUTE_PATHS.admin.categories.path}/${category._id}?withChildren=true`,
+      );
       return;
     }
 
@@ -160,20 +175,17 @@ const CategoryTable: FC<Props> = (props) => {
 
   const handleEditCategory = async (values: CategoryFormValues) => {
     if (!editSelectRow) return;
-    
+
     try {
       let imageUrl = editSelectRow.imageUrl || values.imageUrl || "";
 
       // Only upload if new image is selected
       if (values.image) {
-        const imageRes = await uploadFileMutation.uploadSingle(
-          values.image,
-          {
-            filename: values.image?.name,
-            dir: "categories",
-            private: false,
-          },
-        );
+        const imageRes = await uploadFileMutation.uploadSingle(values.image, {
+          filename: values.image?.name,
+          dir: "categories",
+          private: false,
+        });
 
         if (imageRes?.path) {
           imageUrl = `${baseConfig.mediaDomain}${imageRes.path}`;
@@ -200,7 +212,7 @@ const CategoryTable: FC<Props> = (props) => {
 
       setEditSelectRow(null);
       toast.success("Cập nhật danh mục thành công.");
-      
+
       // Reload page after success
       window.location.reload();
     } catch (error) {
@@ -222,7 +234,7 @@ const CategoryTable: FC<Props> = (props) => {
 
       setDeleteSelectRow(null);
       toast.success("Xóa danh mục thành công.");
-      
+
       // Reload page after success
       window.location.reload();
     } catch (error) {
