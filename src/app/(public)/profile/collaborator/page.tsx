@@ -72,7 +72,9 @@ function CollaboratorForm() {
       { data },
       {
         onSuccess: (response) => {
-          const message = (response as { message?: string })?.message || "Đã gửi đơn đăng ký thành công!";
+          const message =
+            (response as { message?: string })?.message ||
+            "Đã gửi đơn đăng ký thành công!";
           toast.success(message);
           form.reset();
         },
@@ -205,7 +207,7 @@ function CollaboratorStatus({ data, loading }: CollaboratorStatusProps) {
         totalAdmin: 0,
       };
     }
-    
+
     return {
       totalRevenue: data.earnings?.totalAmount || 0,
       totalCommission: data.earnings?.totalCommission || 0,

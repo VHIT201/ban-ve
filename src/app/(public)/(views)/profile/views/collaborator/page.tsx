@@ -351,14 +351,6 @@ const Collaborator = () => {
   const getCollaboratorMeQuery =
     useGetApiCollaboratorsMe() as UseQueryResult<CollaboratorMe>;
 
-  console.log("getCollaboratorMeQuery status:", getCollaboratorMeQuery.status);
-  console.log("getCollaboratorMeQuery data:", getCollaboratorMeQuery.data);
-  console.log(
-    "getCollaboratorMeQuery isLoading:",
-    getCollaboratorMeQuery.isLoading,
-  );
-  console.log("getCollaboratorMeQuery error:", getCollaboratorMeQuery.error);
-
   const collaboratorMe = useMemo(() => {
     return getCollaboratorMeQuery.data;
   }, [getCollaboratorMeQuery.data]);
