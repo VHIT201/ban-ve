@@ -9,3 +9,4 @@ export { default as TreeView } from "./tree-view";
 export { default as UploadAvatarDialog } from "./upload-avatar-dialog";
 export { default as TreeSelect } from "./tree-select";
 export { ImageProtection } from "./image-protection";
+export { default as RatingStar } from "./rating-star";

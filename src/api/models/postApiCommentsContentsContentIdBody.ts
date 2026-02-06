@@ -3,8 +3,10 @@
 export type PostApiCommentsContentsContentIdBody = {
   /** Nội dung bình luận */
   content: string;
-  /** Tên người dùng (bắt buộc nếu là khách) */
-  guestName?: string;
-  /** Email (bắt buộc nếu là khách) */
-  email?: string;
+  /**
+   * Số sao đánh giá (1-5)
+   * @minimum 1
+   * @maximum 5
+   */
+  stars?: number;
 };

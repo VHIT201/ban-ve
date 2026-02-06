@@ -1,22 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Star, ThumbsUp, ShieldCheck, TrendingUp, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Star, ThumbsUp, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import {
-  usePostApiRatings,
-  usePutApiRatings,
-  useGetApiRatingsStatsContentId,
-} from "@/api/endpoints/ratings";
-import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { useAuthStore } from "@/stores";
-import { useShallow } from "zustand/shallow";
+
 import { useParams } from "next/navigation";
 import {
   Dialog,
@@ -32,27 +23,15 @@ interface ReviewSidebarProps {
   ratingDistribution?: { stars: number; count: number; percentage: number }[];
   verifiedPercentage?: number;
   onRatingFilterChange?: (rating: number | null) => void;
+  ratingStats?: any;
 }
 
 const BlueprintDetailFeedbackFilter = ({
-  onRatingFilterChange,
+  ratingStats,
 }: ReviewSidebarProps & {
   onRatingFilterChange?: (rating: number | null) => void;
 }) => {
   const params = useParams<{ id: string }>();
-  const { id: contentId } = params;
-
-  const {
-    data: ratingStats,
-    isLoading,
-    error,
-  } = useGetApiRatingsStatsContentId(contentId || "", {
-    query: {
-      enabled: !!contentId,
-      refetchOnWindowFocus: false,
-      queryKey: ["ratings", "stats", contentId],
-    },
-  });
 
   // Calculate derived values from the API response
   const ratingData: any = (ratingStats as any)?.data;
@@ -64,94 +43,9 @@ const BlueprintDetailFeedbackFilter = ({
       totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0;
     return { stars, count, percentage };
   });
-
-  const [selectedRating, setSelectedRating] = useState<number | null>(null);
-  const [userRating, setUserRating] = useState<number | null>(null);
+  const [userRating] = useState<number | null>(null);
   const [guestEmail, setGuestEmail] = useState("");
   const [showEmailDialog, setShowEmailDialog] = useState(false);
-  const [pendingRating, setPendingRating] = useState<number | null>(null);
-  const queryClient = useQueryClient();
-
-  const { isSignedIn } = useAuthStore(
-    useShallow((state) => ({
-      isSignedIn: state.isSignedIn,
-    })),
-  );
-
-  const { mutate: submitRating, isPending: isSubmitting } = usePostApiRatings({
-    mutation: {
-      onSuccess: () => {
-        toast.success("Cảm ơn bạn đã đánh giá!");
-        // Invalidate both the ratings list and the stats query
-        queryClient.invalidateQueries({
-          queryKey: ["ratings"],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["ratings", "stats", contentId],
-        });
-      },
-      onError: (error) => {
-        console.error("Lỗi khi gửi đánh giá:", error);
-        toast.error("Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại sau.");
-      },
-    },
-  });
-
-  const handleRatingClick = (rating: number) => {
-    const newRating = selectedRating === rating ? null : rating;
-    setSelectedRating(newRating);
-    onRatingFilterChange?.(newRating);
-  };
-
-  const handleUserRating = (rating: number) => {
-    setPendingRating(rating);
-
-    if (isSignedIn) {
-      submitRatingNow(rating);
-    } else {
-      setShowEmailDialog(true);
-    }
-  };
-
-  const submitRatingNow = (rating: number, email?: string) => {
-    const contentId = window.location.pathname.split("/").pop() || "";
-
-    submitRating({
-      data: {
-        contentId,
-        stars: rating,
-        email: email,
-      },
-    });
-    setUserRating(rating);
-  };
-
-  const handleEmailSubmit = () => {
-    if (!guestEmail) {
-      toast.error("Vui lòng nhập email của bạn");
-      return;
-    }
-    if (pendingRating) {
-      submitRatingNow(pendingRating, guestEmail);
-      setShowEmailDialog(false);
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <Card className="p-6 flex items-center justify-center min-h-[200px]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </Card>
-    );
-  }
-
-  if (error) {
-    return (
-      <Card className="p-6 text-center text-destructive">
-        Đã có lỗi xảy ra khi tải thông tin đánh giá. Vui lòng thử lại sau.
-      </Card>
-    );
-  }
 
   return (
     <div className="flex flex-col gap-6 w-full">
@@ -176,13 +70,10 @@ const BlueprintDetailFeedbackFilter = ({
               <Button
                 variant="outline"
                 onClick={() => setShowEmailDialog(false)}
-                disabled={isSubmitting}
               >
                 Hủy
               </Button>
-              <Button onClick={handleEmailSubmit} disabled={isSubmitting}>
-                {isSubmitting ? "Đang gửi..." : "Gửi đánh giá"}
-              </Button>
+              <Button>Gửi đánh giá</Button>
             </div>
           </div>
         </DialogContent>
@@ -205,9 +96,7 @@ const BlueprintDetailFeedbackFilter = ({
               {[1, 2, 3, 4, 5].map((rating) => (
                 <button
                   key={rating}
-                  onClick={() => handleUserRating(rating)}
-                  disabled={isSubmitting}
-                  className="cursor-pointer p-1 rounded-full hover:bg-primary/20 backdrop-blur-md disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="cursor-pointer p-1 rounded-full hover:bg-primary/20 backdrop-blur-md"
                   aria-label={`${rating} star${rating > 1 ? "s" : ""}`}
                 >
                   <Star

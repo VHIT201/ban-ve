@@ -14,7 +14,7 @@ const BlueprintDetailFeedback: FC<Props> = (props) => {
 
   // Stores
   const authStore = useAuthStore(
-    useShallow(({ isSignedIn }) => ({ isSignedIn }))
+    useShallow(({ isSignedIn }) => ({ isSignedIn })),
   );
 
   return (

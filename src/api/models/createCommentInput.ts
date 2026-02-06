@@ -5,8 +5,10 @@ export interface CreateCommentInput {
   contentId: string;
   /** Nội dung bình luận */
   content: string;
-  /** Tên người dùng (bắt buộc nếu không đăng nhập) */
-  guestName?: string;
-  /** Email người dùng (bắt buộc nếu không đăng nhập) */
-  email?: string;
+  /**
+   * Số sao đánh giá (1-5)
+   * @minimum 1
+   * @maximum 5
+   */
+  stars?: number;
 }

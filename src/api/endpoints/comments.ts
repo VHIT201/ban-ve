@@ -43,7 +43,9 @@ import type { ErrorType , BodyType } from '../mutator/custom-instance';
 
 
 /**
- * Cho phép người dùng đăng nhập hoặc khách để lại bình luận
+ * Cho phép người dùng đã đăng nhập và đã mua nội dung này thành công để lại bình luận và đánh giá.
+Nếu người dùng chưa mua nội dung, API sẽ trả về lỗi 403.
+
  * @summary Tạo bình luận mới
  */
 export const postApiCommentsContentsContentId = (

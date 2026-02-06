@@ -642,7 +642,7 @@ export const usePostApiContentUpload = <TError = ErrorType<void>,
       return useMutation(mutationOptions, queryClient);
     }
     /**
- * Lấy thông tin chi tiết của một nội dung
+ * Lấy thông tin chi tiết của một nội dung. Nếu đăng nhập, sẽ trả về thêm orderId nếu đã mua thành công.
  * @summary Lấy chi tiết nội dung
  */
 export const getApiContentId = (

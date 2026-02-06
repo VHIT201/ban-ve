@@ -6,7 +6,7 @@
 export type ContentFileId = {
   _id?: string;
   name?: string;
-  path?: string;
+  url?: string;
   type?: string;
   size?: number;
 };

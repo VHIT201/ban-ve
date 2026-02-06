@@ -1,12 +1,5 @@
 import { Textarea } from "@/components/ui/textarea";
-import {
-  SendHorizontalIcon,
-  Smile,
-  ImageIcon,
-  X,
-  Loader2,
-  Trash2,
-} from "lucide-react";
+import { SendHorizontalIcon, X, Loader2, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,6 +28,7 @@ import { toast } from "sonner";
 import { useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
 import baseConfig from "@/configs/base";
+import { RatingStar } from "@/components/shared";
 
 const CommentCreationForm: FC<Props> = (props) => {
   // Props
@@ -56,8 +50,6 @@ const CommentCreationForm: FC<Props> = (props) => {
     })),
   );
 
-  console.log("Profile Store:", profileStore);
-
   // Hooks
   const { contentId, createComment, updateComment } =
     useCommentSectionContext();
@@ -69,11 +61,14 @@ const CommentCreationForm: FC<Props> = (props) => {
   const [commentContent, setCommentContent] = useState<string>(
     defaultValues?.content ?? "",
   );
+  const [ratingValue, setRatingValue] = useState<number>(0);
   const [commentMediaList, setCommentMediaList] = useState<File[]>([]);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   // Mutations
   const createCommentMutation = usePostApiCommentsContentsContentId();
+
   const editCommentMutation = usePutApiCommentsId();
+
   const deleteCommentMutation = useDeleteApiCommentsId();
   // Methods
   const handleSubmit = async () => {
@@ -97,8 +92,7 @@ const CommentCreationForm: FC<Props> = (props) => {
           contentId,
           data: {
             content: commentContent,
-            email: profileStore.email,
-            guestName: profileStore.fullName,
+            stars: ratingValue,
           },
         });
 
@@ -108,8 +102,6 @@ const CommentCreationForm: FC<Props> = (props) => {
         createComment?.({
           newCommentItem: commentData,
         });
-
-        toast.success("Bình luận của bạn đã được gửi thành công");
       } else if (mode === "edit") {
         if (!editableCommentId) {
           toast.warning("Không tìm thấy bình luận để chỉnh sửa.");
@@ -129,12 +121,20 @@ const CommentCreationForm: FC<Props> = (props) => {
         updateComment?.({ updatedCommentItem: commentData });
       }
 
-      toast.success("Bình luận của bạn đã chỉnh sửa thành công");
+      const successMessage =
+        mode === "edit"
+          ? "Bình luận của bạn đã chỉnh sửa thành công"
+          : mode === "reply"
+            ? "Đã phản hồi bình luận thành công"
+            : "Bình luận của bạn đã được gửi thành công";
+
+      toast.success(successMessage);
 
       // Success - clear form
       if (mode === "create" || mode === "reply") {
         setCommentMediaList([]);
         setCommentContent("");
+        setRatingValue(0);
       }
       onClose?.();
     } catch {
@@ -165,10 +165,10 @@ const CommentCreationForm: FC<Props> = (props) => {
     }
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    setCommentMediaList((prev) => [...prev, ...files]);
-  };
+  // const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const files = Array.from(e.target.files || []);
+  //   setCommentMediaList((prev) => [...prev, ...files]);
+  // };
 
   const handleRemoveImage = (index: number) => {
     setCommentMediaList((prev) => prev.filter((_, i) => i !== index));
@@ -199,6 +199,7 @@ const CommentCreationForm: FC<Props> = (props) => {
 
   const isSubmitting =
     createCommentMutation.isPending || editCommentMutation.isPending;
+
   return (
     <div className={cn("w-full", className)}>
       {/* Delete Confirmation Dialog */}
@@ -334,6 +335,16 @@ const CommentCreationForm: FC<Props> = (props) => {
                 ))}
               </div>
             )}
+
+            <div className="pt-2 pb-0 flex items-center gap-4">
+              <RatingStar
+                value={ratingValue}
+                onChange={setRatingValue}
+                className={{
+                  icon: "size-6",
+                }}
+              />
+            </div>
           </div>
         </div>
 

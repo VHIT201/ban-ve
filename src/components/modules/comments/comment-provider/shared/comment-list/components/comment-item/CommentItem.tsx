@@ -23,6 +23,7 @@ import { formatRelativeTimeWithFallback } from "@/utils/date";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import baseConfig from "@/configs/base";
+import { RatingStar } from "@/components/shared";
 
 const MAX_CONTENT_LENGTH = 100;
 
@@ -41,8 +42,8 @@ const CommentItem: FC<Props> = (props) => {
   // States
   const [isEdit, setIsEdit] = useState(false);
   const [isReply, setIsReply] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(0);
+  // const [isLiked, setIsLiked] = useState(false);
+  // const [likeCount, setLikeCount] = useState(0);
   const [isDisplayContentSeeMore, setIsDisplayContentSeeMore] =
     useState<ContentStatus>(() => {
       return (comment?.content?.split("")?.length ?? 0) > MAX_CONTENT_LENGTH
@@ -51,14 +52,14 @@ const CommentItem: FC<Props> = (props) => {
     });
 
   // Methods
-  const handleToggleReply = () => {
-    setIsReply((prev) => !prev);
-  };
+  // const handleToggleReply = () => {
+  //   setIsReply((prev) => !prev);
+  // };
 
-  const handleToggleLike = () => {
-    setIsLiked((prev) => !prev);
-    setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
-  };
+  // const handleToggleLike = () => {
+  //   setIsLiked((prev) => !prev);
+  //   setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
+  // };
 
   const handleToggleExpandContent = () => {
     setIsDisplayContentSeeMore((prevStatus) =>
@@ -96,8 +97,8 @@ const CommentItem: FC<Props> = (props) => {
     return name.substring(0, 2).toUpperCase();
   };
 
-  const avatarUrl = comment.userId?.avatar
-    ? `${baseConfig.mediaDomain}/${comment.userId.avatar}`
+  const avatarUrl = comment.avatar
+    ? `${baseConfig.mediaDomain}/${comment.avatar}`
     : undefined;
   const displayName = getDisplayName();
 
@@ -207,7 +208,13 @@ const CommentItem: FC<Props> = (props) => {
 
               {/* Comment Actions */}
               <div className="flex items-center gap-1 pt-1">
-                <Button
+                <RatingStar
+                  view
+                  value={comment.stars}
+                  className={{ icon: "size-4" }}
+                />
+
+                {/* <Button
                   size="sm"
                   variant="ghost"
                   onClick={handleToggleLike}
@@ -236,7 +243,7 @@ const CommentItem: FC<Props> = (props) => {
                 >
                   <MessageCircle className="w-4 h-4" />
                   <span>Phản hồi</span>
-                </Button>
+                </Button> */}
               </div>
             </>
           ) : (

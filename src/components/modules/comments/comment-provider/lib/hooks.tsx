@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-query";
 import { getApiCommentsContentsContentId } from "@/api/endpoints/comments";
 import { Comment, GetApiCommentsContentsContentId200 } from "@/api/models";
+import { FilterData, ResponseData } from "@/api/types/base";
 
 // Hook useExamContext
 export const useCommentSectionContext = () => {
@@ -31,7 +32,7 @@ export const useCommentList = (postId: string) => {
   const getCommentInfiniteQuery = useInfiniteQuery<
     GetApiCommentsContentsContentId200,
     Error,
-    InfiniteData<Comment[], number>,
+    InfiniteData<ResponseData<FilterData<Comment[]>>, number>,
     typeof queryKey,
     number
   >({
@@ -43,7 +44,6 @@ export const useCommentList = (postId: string) => {
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
-      console.log(lastPage, allPages);
       if (
         (lastPage.pagination?.totalPages ?? 0) *
           (lastPage.pagination?.limit ?? 0) >=
@@ -92,27 +92,21 @@ export const useCommentList = (postId: string) => {
     }) => {
       updateCache((oldComments) => {
         if (parentCommentId) {
-          return oldComments
-            .flatMap(
-              (page) =>
-                (page as unknown as GetApiCommentsContentsContentId200).data ??
-                [],
-            )
-            .map((comment) => {
-              if (comment._id === parentCommentId) {
-                return {
-                  ...comment,
-                };
-              }
-              return comment;
-            });
+          return oldComments.map((comment) => {
+            if (comment._id === parentCommentId) {
+              return {
+                ...comment,
+                // TODO: Add reply to comment.replies if needed
+              };
+            }
+            return comment;
+          });
         }
+
         return [
           newCommentItem,
           ...oldComments.flatMap(
-            (page) =>
-              (page as unknown as GetApiCommentsContentsContentId200).data ??
-              [],
+            (comment) => (comment as ResponseData<Comment>).data,
           ),
         ];
       });
@@ -131,31 +125,22 @@ export const useCommentList = (postId: string) => {
       parentCommentId?: string;
     }) => {
       updateCache((oldComments) => {
+        console.log("Updating comment in cache:", updatedCommentItem);
+
         if (parentCommentId) {
-          return oldComments
-            .flatMap(
-              (page) =>
-                (page as unknown as GetApiCommentsContentsContentId200).data ??
-                [],
-            )
-            .map((comment) => {
-              if (comment._id === parentCommentId) {
-                return {
-                  ...comment,
-                };
-              }
-              return comment;
-            });
+          return oldComments.map((comment) => {
+            if (comment._id === parentCommentId) {
+              return {
+                ...comment,
+                // TODO: Update nested reply if needed
+              };
+            }
+            return comment;
+          });
         }
 
-        return oldComments.flatMap((page) =>
-          (
-            (page as unknown as GetApiCommentsContentsContentId200).data ?? []
-          ).map((comment) =>
-            comment._id === updatedCommentItem._id
-              ? updatedCommentItem
-              : comment,
-          ),
+        return oldComments.map((comment) =>
+          comment._id === updatedCommentItem._id ? updatedCommentItem : comment,
         );
       });
     },
@@ -174,28 +159,18 @@ export const useCommentList = (postId: string) => {
     }) => {
       updateCache((oldComments) => {
         if (parentCommentId) {
-          return oldComments
-            .flatMap(
-              (page) =>
-                (page as unknown as GetApiCommentsContentsContentId200).data ??
-                [],
-            )
-            .filter((comment) => comment._id !== commentId)
-            .map((comment) => {
-              if (comment._id === parentCommentId) {
-                return {
-                  ...comment,
-                };
-              }
-              return comment;
-            });
+          return oldComments.map((comment) => {
+            if (comment._id === parentCommentId) {
+              return {
+                ...comment,
+                // TODO: Remove reply from comment.replies if needed
+              };
+            }
+            return comment;
+          });
         }
 
-        return oldComments.flatMap((page) =>
-          (
-            (page as unknown as GetApiCommentsContentsContentId200).data ?? []
-          ).filter((comment) => comment._id !== commentId),
-        );
+        return oldComments.filter((comment) => comment._id !== commentId);
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

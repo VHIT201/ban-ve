@@ -9,7 +9,11 @@ const ExcelFileIcon: FC<Props> = (props) => {
   const isMobile = useIsMobile();
 
   return (
-    <img src={isMobile ? excel48SVG : excel96SVG} alt="File Icon" {...props} />
+    <img
+      src={isMobile ? excel48SVG?.src : excel96SVG?.src}
+      alt="File Icon"
+      {...props}
+    />
   );
 };
 
