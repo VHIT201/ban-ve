@@ -78,7 +78,6 @@ const LoginForm: FC<Props> = () => {
         loginResponse as unknown as Response<PostApiAuthLogin200Data>
       ).data;
 
-      // Set cookies for middleware authentication
       if (loginData.accessToken) {
         setCookie("accessToken", loginData.accessToken, 60 * 60 * 24 * 7); // 7 days
       }
@@ -88,7 +87,6 @@ const LoginForm: FC<Props> = () => {
 
       authStore.setStore({ isSignedIn: true, ...loginData });
 
-      // Set profile store with user info
       if (loginData.user) {
         profileStore.setStore({
           id: loginData.user._id,

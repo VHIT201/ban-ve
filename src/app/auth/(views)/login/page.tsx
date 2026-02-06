@@ -1,6 +1,4 @@
-import Link from "next/link";
 import { LoginForm } from "./components";
-import { DraftingCompassIcon } from "lucide-react";
 
 const Login = () => {
   return (

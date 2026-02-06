@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
-import { Fragment, ReactNode } from "react";
+import { Fragment, ReactNode, Suspense } from "react";
 
 // Styles
 import "@/index.css";
@@ -106,7 +106,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <Providers>
             <AuthGate>
               <div className="min-h-screen bg-background">
-                <main>{children}</main>
+                <Suspense fallback={null}>
+                  <main>{children}</main>
+                </Suspense>
               </div>
             </AuthGate>
           </Providers>

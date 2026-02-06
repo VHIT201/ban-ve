@@ -1,3 +1,5 @@
+"use client";
+
 // Core
 import { LoaderCircle } from "lucide-react";
 import { Fragment } from "react/jsx-runtime";
