@@ -1,7 +1,9 @@
+"use client";
+
 // Core
 import { useState, useMemo } from "react";
 import { SearchIcon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 // App
 import { Input } from "@/components/ui/input";
@@ -20,7 +22,7 @@ import {
 
 const RankingTable = () => {
   // Hooks
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // States
   const [searchTerm, setSearchTerm] = useState("");
@@ -201,7 +203,13 @@ const RankingTable = () => {
           state={{ pagination }}
           onPaginationChange={setPagination}
           enableRowSelection
-        />
+        >
+          <DataTable.Content>
+            <DataTable.Header />
+            <DataTable.Body />
+          </DataTable.Content>
+          <DataTable.Pagination />
+        </DataTable>
       </CardContent>
     </Card>
   );

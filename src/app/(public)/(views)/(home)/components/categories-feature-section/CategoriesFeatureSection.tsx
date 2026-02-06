@@ -15,7 +15,7 @@ import { useGetApiCategories } from "@/api/endpoints/categories";
 
 const CategoriesFeatureSection = () => {
   // Hooks
-  const { data: categoriesResponse, isLoading, error } = useGetApiCategories();
+  const { data: categoriesResponse, isLoading, error } = useGetApiCategories({sort:'oldest'});
 
   // Extract categories array from response
   const categories = categoriesResponse?.data?.categories;

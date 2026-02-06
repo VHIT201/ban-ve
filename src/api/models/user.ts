@@ -4,8 +4,8 @@ import type { UserRole } from './userRole';
 export interface User {
   /** ID của người dùng */
   _id?: string;
-  /** Tên đăng nhập */
-  username?: string;
+  /** Tên người dùng */
+  fullname?: string;
   /** Email người dùng */
   email?: string;
   /** Vai trò người dùng */

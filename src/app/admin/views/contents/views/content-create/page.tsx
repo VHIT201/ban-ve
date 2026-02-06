@@ -1,3 +1,5 @@
+"use client";
+
 import { toast } from "sonner";
 import { ContentEditorForm } from "@/components/modules/content";
 import {
@@ -7,15 +9,15 @@ import {
 } from "@/api/endpoints/content";
 import { ContentFormValues } from "@/components/modules/content/content-editor-form/ContentEditorForm";
 import { UploadedFile } from "@/api/types/file";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { BASE_PATHS } from "@/constants/paths";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
 import { useUploadMedia } from "@/hooks";
 
 const ContentDetail = () => {
   // Hooks
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // Mutations
   const uploadMediaMutation = useUploadMedia();
@@ -38,15 +40,16 @@ const ContentDetail = () => {
         return;
       }
 
-      if (!values.files || values.files.length === 0) {
+      if (!values.files || values.files.length === 0 || !values.files[0]) {
         toast.error("Vui lòng chọn file để tải lên.");
         return;
       }
 
+      const fileToUpload = values.files[0];
       const fileUploadResponse = await uploadMediaMutation.uploadSingle(
-        values.files[0],
+        fileToUpload,
         {
-          filename: values.files[0].name,
+          filename: fileToUpload.name,
           dir: "contents",
           private: false,
           compress: false,
@@ -70,7 +73,7 @@ const ContentDetail = () => {
         },
       });
 
-      navigate(BASE_PATHS.admin.contents.path);
+      router.push(BASE_PATHS.admin.contents.path);
       toast.success("Nội dung đã được duyệt thành công.");
     } catch (error) {
       console.error("Failed to approve content:", error);
@@ -83,7 +86,7 @@ const ContentDetail = () => {
       {/* Content Header */}
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div className="flex items-center gap-4">
-          <Link to={BASE_PATHS.admin.contents.path}>
+          <Link href={BASE_PATHS.admin.contents.path}>
             <ArrowLeftIcon className="size-5 text-gray-500 hover:text-gray-700" />
           </Link>
           <div>

@@ -76,8 +76,7 @@ interface SearchResult {
   file_type?: string;
 }
 
-const HeaderContentSearch = () => {
-  // Hooks
+function HeaderContentSearch() {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -302,7 +301,6 @@ const HeaderContentSearch = () => {
     ],
   );
 
-  // Effects
   useEffect(() => {
     if (debouncedQuery.trim().length > 0) {
       setIsOpen(true);

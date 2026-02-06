@@ -1,6 +1,8 @@
+"use client";
+
 // Core
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 // App
@@ -121,7 +123,7 @@ const formatDateTime = (dateString?: string): string => {
 };
 
 const CopyRightDetail = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { id } = useRequiredPathParams(["id"]);
 
   // State
@@ -181,7 +183,7 @@ const CopyRightDetail = () => {
   };
 
   const handleBack = () => {
-    navigate(-1);
+    router.back();
   };
 
   return (

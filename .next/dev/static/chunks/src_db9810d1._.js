@@ -84,6 +84,8 @@ const getFileTypeLabel = (type)=>{
             return "PDF File";
         case __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$enums$2f$file$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FileType"].WORD:
             return "Word Document";
+        case __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$enums$2f$file$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FileType"].DOCX:
+            return "Word Document";
         case __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$enums$2f$file$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FileType"].EXCEL:
             return "Excel Spreadsheet";
         case __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$enums$2f$file$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FileType"].RAR:
@@ -156,6 +158,7 @@ var FileType = /*#__PURE__*/ function(FileType) {
     FileType["JPG"] = "JPG";
     FileType["IMAGE"] = "IMAGE";
     FileType["WORD"] = "WORD";
+    FileType["DOCX"] = "DOCX";
     FileType["EXCEL"] = "EXCEL";
     FileType["RAR"] = "RAR";
     FileType["ZIP"] = "ZIP";

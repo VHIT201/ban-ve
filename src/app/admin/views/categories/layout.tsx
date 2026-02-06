@@ -1,7 +1,11 @@
-import { Outlet } from "react-router-dom";
+import { ReactNode } from "react";
 
-const Categories = () => {
-  return <Outlet />;
+interface CategoriesLayoutProps {
+  children: ReactNode;
+}
+
+const CategoriesLayout = ({ children }: CategoriesLayoutProps) => {
+  return <>{children}</>;
 };
 
-export default Categories;
+export default CategoriesLayout;

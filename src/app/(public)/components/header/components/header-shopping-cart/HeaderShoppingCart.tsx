@@ -1,3 +1,5 @@
+"use client";
+
 import {
   ShoppingCartIcon,
   ShoppingBagIcon,
@@ -17,6 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+
 import { useCart } from "@/hooks/use-cart";
 import { cn } from "@/utils/ui";
 import { Skeleton } from "@/components/ui/skeleton";

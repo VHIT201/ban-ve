@@ -1,3 +1,5 @@
+"use client";
+
 import {
   getGetApiContentQueryKey,
   useGetApiContent,
@@ -28,11 +30,11 @@ import { FC, useState } from "react";
 import { Props } from "./lib/types";
 import { Package, SearchX, Filter as FilterIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 const CollectionList: FC<Props> = (props) => {
   // Hooks
-  const navigate = useNavigate();
+  const router = useRouter();
 
   console.log("CollectionList render", props.filter);
 
@@ -44,7 +46,7 @@ const CollectionList: FC<Props> = (props) => {
   const itemsPerPage = 100; // Số sản phẩm mỗi trang
 
   const handleViewDetail = (product: ContentResponse) => {
-    navigate(`/detail/${product._id}`);
+    router.push(`/detail/${product._id}`);
   };
 
   const handleAddToCart = (product: ContentResponse) => {

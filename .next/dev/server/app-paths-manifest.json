@@ -1,5 +1,7 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/auth/(views)/login/page": "app/auth/(views)/login/page.js",
-  "/auth/(views)/register/page": "app/auth/(views)/register/page.js"
+  "/(public)/(views)/(home)/page": "app/(public)/(views)/(home)/page.js",
+  "/(public)/profile/order/detail/[id]/page": "app/(public)/profile/order/detail/[id]/page.js",
+  "/(public)/profile/order/list/page": "app/(public)/profile/order/list/page.js",
+  "/(public)/profile/order/page": "app/(public)/profile/order/page.js",
+  "/_not-found/page": "app/_not-found/page.js"
 }

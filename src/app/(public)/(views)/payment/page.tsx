@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,7 +36,7 @@ import {
   Check,
 } from "lucide-react";
 import { useCartStore } from "@/stores/use-cart-store";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { generateImageRandom } from "@/utils/image";
 import { useAuthStore, useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
@@ -50,6 +52,7 @@ import { useCreateQrPayment } from "@/hooks/modules/payments";
 import { PaymentStatusDialog } from "@/components/modules/payment";
 import { PaymentStatus } from "@/enums/payment";
 import { useCart } from "@/hooks/use-cart";
+import baseConfig from "@/configs/base";
 
 // Zod validation schemas
 const momoSchema = z.object({
@@ -172,7 +175,7 @@ const PaymentPage = () => {
 
   // Hooks
   const cart = useCart({ sync: false });
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [openPaymentStatus, setOpenPaymentStatus] = useState<boolean>(false);
@@ -211,9 +214,9 @@ const PaymentPage = () => {
 
   useEffect(() => {
     if (cart.items.length === 0) {
-      navigate("/collections");
+      router.push("/collections");
     }
-  }, [cart.items.length, navigate]);
+  }, [cart.items.length, router]);
 
   const handleApplyDiscount = () => {
     console.log("Apply discount code:", form.getValues("discountCode"));
@@ -243,7 +246,7 @@ const PaymentPage = () => {
       cart.clearCart();
 
       toast.success("Thanh toán thành công. Cảm ơn bạn đã mua hàng.");
-      navigate("/");
+      router.push("/");
     } catch (error) {
       console.error("Payment error:", error);
       toast.error("Có lỗi xảy ra khi xử lý thanh toán. Vui lòng thử lại.");
@@ -257,6 +260,28 @@ const PaymentPage = () => {
   const tax = 0;
   const discount = 0;
   const total = subtotal + shipping + tax - discount;
+
+  useEffect(() => {
+    if (cart.items.length === 0) {
+      return;
+    }
+
+    if (!profileStore.email) {
+      toast.error("Vui lòng cập nhật email trong hồ sơ cá nhân để thanh toán.");
+      return;
+    }
+
+    if (paymentMethod === "qr_code") {
+      createQRPaymentMutation.createPaymentQR(profileStore.email);
+    }
+  }, [paymentMethod, cart.items.length, profileStore.email]);
+
+  useEffect(() => {
+    if (createQRPaymentMutation.streamingStatus === PaymentStatus.COMPLETED) {
+      cart.clearCart();
+      setOpenPaymentStatus(true);
+    }
+  }, [createQRPaymentMutation.streamingStatus]);
 
   if (!authStore.isSignedIn) {
     return (
@@ -290,7 +315,7 @@ const PaymentPage = () => {
                   size="lg"
                   variant="outline"
                   className="w-full h-12 font-medium"
-                  onClick={() => navigate("/")}
+                  onClick={() => router.push("/")}
                 >
                   Quay về trang chủ
                 </Button>
@@ -298,7 +323,7 @@ const PaymentPage = () => {
                   size="lg"
                   className="w-full bg-linear-to-r from-primary/70 to-primary/80 hover:from-primary/70 hover:to-primary/80 text-white shadow-lg shadow-primary/30 h-12 font-semibold"
                   onClick={() => {
-                    navigate(BASE_PATHS.auth.login.path);
+                    router.push(BASE_PATHS.auth.login.path);
                   }}
                 >
                   <Lock className="w-4 h-4 mr-2" />
@@ -311,28 +336,6 @@ const PaymentPage = () => {
       </div>
     );
   }
-
-  useEffect(() => {
-    if (cart.items.length === 0) {
-      return;
-    }
-
-    if (!profileStore.email) {
-      toast.error("Vui lòng cập nhật email trong hồ sơ cá nhân để thanh toán.");
-      return;
-    }
-
-    if (paymentMethod === "qr_code") {
-      createQRPaymentMutation.createPaymentQR(profileStore.email);
-    }
-  }, [paymentMethod, cart.items.length]);
-
-  useEffect(() => {
-    if (createQRPaymentMutation.streamingStatus === PaymentStatus.COMPLETED) {
-      cart.clearCart();
-      setOpenPaymentStatus(true);
-    }
-  }, [createQRPaymentMutation.streamingStatus]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -516,7 +519,11 @@ const PaymentPage = () => {
                       <div className="relative shrink-0">
                         <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden border">
                           <img
-                            src={generateImageRandom()}
+                            src={
+                              item.product.images && item.product.images.length > 0
+                                ? `${baseConfig.mediaDomain}${item.product.images[0]}`
+                                : generateImageRandom()
+                            }
                             alt={item.product.title}
                             className="w-full h-full object-cover"
                           />
@@ -529,9 +536,9 @@ const PaymentPage = () => {
                         <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-1">
                           {item.product.title}
                         </h3>
-                        <p className="text-xs text-gray-500 mb-2">
+                        {/* <p className="text-xs text-gray-500 mb-2">
                           {item.product.category?.name || "No category"}
-                        </p>
+                        </p> */}
                         <p className="text-sm font-semibold text-gray-900">
                           {new Intl.NumberFormat("vi-VN", {
                             style: "currency",

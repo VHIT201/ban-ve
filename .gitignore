@@ -12,7 +12,10 @@ dist
 dist-ssr
 *-dist
 *.local
-
+.next
+build
+dist
+dist-ssr
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -32,3 +35,5 @@ pids
 .devcontainer/
 
 .spark-workbench-id
+
+.next

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
 import Link from "next/link";
 
-const Footer = () => {
+function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -112,6 +112,6 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
+}
 
 export default Footer;

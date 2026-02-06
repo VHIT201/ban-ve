@@ -1,7 +1,7 @@
-import { Outlet } from "react-router-dom";
+
 import { ProfileSidebar } from "./components";
 
-const Profile = () => {
+const Profile = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header Section with bg-primary */}
@@ -26,7 +26,7 @@ const Profile = () => {
 
           {/* Content Area */}
           <div className="lg:col-span-3">
-            <Outlet />
+            {children}
           </div>
         </div>
       </div>

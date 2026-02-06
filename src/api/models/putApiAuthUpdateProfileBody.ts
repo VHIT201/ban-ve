@@ -1,10 +1,10 @@
 // @ts-nocheck
 
 export type PutApiAuthUpdateProfileBody = {
-  /** Tên người dùng */
-  username?: string;
+  /** Họ và tên người dùng */
+  fullname?: string;
   /** Email */
   email?: string;
-  /** URL avatar hoặc base64 string */
-  avatar?: string;
+  /** File ảnh đại diện tải lên từ máy */
+  avatar?: Blob;
 };

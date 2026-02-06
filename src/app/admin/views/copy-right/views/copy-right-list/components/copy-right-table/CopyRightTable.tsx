@@ -1,3 +1,5 @@
+"use client";
+
 import { useGetApiReports } from "@/api/endpoints/copyright";
 import { GetApiReports200 } from "@/api/models";
 import { DataTable, QueryBoundary } from "@/components/shared";
@@ -5,14 +7,14 @@ import { UseQueryResult } from "@tanstack/react-query";
 import { Fragment } from "react/jsx-runtime";
 import { useColumns } from "./lib/hooks";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import {
   CopyRightRejectDialog,
   CopyRightResolveDialog,
 } from "@/components/modules/copy-right";
 const CopyRightTable = () => {
   // Hooks
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // States
   const [reportId, setReportId] = useState<string | null>(null);
@@ -24,7 +26,10 @@ const CopyRightTable = () => {
   }>({ pageIndex: 0, pageSize: 10 });
 
   const getCopyRightListQuery = useGetApiReports(
-    {},
+    {
+      page: pagination.pageIndex + 1,
+      limit: pagination.pageSize,
+    },
   ) as UseQueryResult<GetApiReports200>;
 
   // Methods
@@ -38,7 +43,7 @@ const CopyRightTable = () => {
   // Columns
   const columns = useColumns({
     onView: (report) => {
-      navigate(`detail/${report._id}`);
+      router.push(`detail/${report._id}`);
     },
     onResolve: (report) => {
       setReportId(report._id!);

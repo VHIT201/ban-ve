@@ -1,7 +1,7 @@
 "use client";
 
 // Core
-import { FC, Fragment } from "react";
+import { FC, Fragment, useEffect } from "react";
 import { useShallow } from "zustand/shallow";
 
 // App
@@ -31,20 +31,24 @@ const AuthGate: FC<Props> = (props) => {
     },
   });
 
-  if (getProfileUserQuery.isSuccess) {
-    profileStore.setStore({
-      username: getProfileUserQuery.data.username,
-      email: getProfileUserQuery.data.email,
-      role: getProfileUserQuery.data.role,
-      avatar: getProfileUserQuery.data.avatar,
-      createdAt: getProfileUserQuery.data.createdAt
-        ? new Date(getProfileUserQuery.data.createdAt)
-        : null,
-      updatedAt: getProfileUserQuery.data.updatedAt
-        ? new Date(getProfileUserQuery.data.updatedAt)
-        : null,
-    });
-  }
+  // Update profile store when query succeeds
+  useEffect(() => {
+    if (getProfileUserQuery.isSuccess) {
+      profileStore.setStore({
+        fullName: getProfileUserQuery.data.fullname,
+        username: getProfileUserQuery.data.fullname,
+        email: getProfileUserQuery.data.email,
+        role: getProfileUserQuery.data.role,
+        avatar: getProfileUserQuery.data.avatar,
+        createdAt: getProfileUserQuery.data.createdAt
+          ? new Date(getProfileUserQuery.data.createdAt)
+          : null,
+        updatedAt: getProfileUserQuery.data.updatedAt
+          ? new Date(getProfileUserQuery.data.updatedAt)
+          : null,
+      });
+    }
+  }, [getProfileUserQuery.isSuccess, getProfileUserQuery.data, profileStore.setStore]);
 
   return <Fragment>{props.children}</Fragment>;
 };

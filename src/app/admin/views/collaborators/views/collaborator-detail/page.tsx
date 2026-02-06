@@ -1,6 +1,8 @@
+"use client";
+
 // Core
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useRouter } from "next/navigation";
 import { UseQueryResult } from "@tanstack/react-query";
 import { ArrowLeft, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -28,14 +30,14 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { CollaboratorRequest } from "@/api/types/collaborator";
-import { Response } from "@/api/types/base";
+import { CollaboratorResponse } from "@/api/models";
 import { extractErrorMessage } from "@/utils/error";
 
 const CollaboratorDetail = () => {
   // Hooks
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+  const params = useParams<{ id: string }>();
+  const id = params.id;
+  const router = useRouter();
 
   // States
   const [approveDialogOpen, setApproveDialogOpen] = useState(false);
@@ -48,12 +50,12 @@ const CollaboratorDetail = () => {
     {
       query: {
         select: (data) =>
-          data.data.requests.find(
-            (request: CollaboratorRequest) => request._id === id
-          )!,
+          (data.requests ?? []).find(
+            (request) => request._id === id
+          ),
       },
     }
-  ) as UseQueryResult<CollaboratorRequest>;
+  ) as UseQueryResult<CollaboratorResponse | undefined>;
 
   // Mutations
   const approveMutation = usePutApiCollaboratorsRequestsRequestIdApprove({
@@ -111,7 +113,7 @@ const CollaboratorDetail = () => {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => navigate("/admin/collaborators")}
+            onClick={() => router.push("/admin/collaborators")}
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
@@ -131,6 +133,14 @@ const CollaboratorDetail = () => {
       {/* Content */}
       <QueryBoundary query={getRequestQuery}>
         {(request) => {
+          if (!request) {
+            return (
+              <div className="text-center py-8 text-muted-foreground">
+                Không tìm thấy yêu cầu
+              </div>
+            );
+          }
+          
           const isPending = request.status === "pending";
 
           return (
@@ -250,14 +260,14 @@ const CollaboratorDetail = () => {
                     <div>
                       <div className="text-muted-foreground">Ngày tạo</div>
                       <div className="mt-1">
-                        {new Date(request.createdAt).toLocaleString("vi-VN")}
+                        {request.createdAt ? new Date(request.createdAt).toLocaleString("vi-VN") : "N/A"}
                       </div>
                     </div>
                     <Separator />
                     <div>
                       <div className="text-muted-foreground">Cập nhật</div>
                       <div className="mt-1">
-                        {new Date(request.updatedAt).toLocaleString("vi-VN")}
+                        {request.updatedAt ? new Date(request.updatedAt).toLocaleString("vi-VN") : "N/A"}
                       </div>
                     </div>
                   </CardContent>

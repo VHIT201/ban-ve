@@ -1,8 +1,11 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
+import { ReactNode } from "react";
 
-const Collaborator = () => {
-  return <Outlet />;
+interface CollaboratorLayoutProps {
+  children: ReactNode;
+}
+
+const CollaboratorLayout = ({ children }: CollaboratorLayoutProps) => {
+  return <>{children}</>;
 };
 
-export default Collaborator;
+export default CollaboratorLayout;

@@ -1,3 +1,5 @@
+"use client";
+
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Collapsible,
@@ -33,7 +35,7 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "next/navigation";
 import { FilterFormValues, Props } from "./lib/types";
 import { DEFAULT_FILTER_VALUES, FILTER_SCHEMA } from "./lib/constants";
 import { Input } from "@/components/ui/input";
@@ -42,7 +44,7 @@ import { TreeNode } from "@/components/shared/tree-select/TreeSelect";
 
 const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
   // Hooks
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams();
   const [selected, setSelected] = useState<string[]>([]);
 
   // States
@@ -78,7 +80,29 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
   // Queries
   const getCategoryTreeQuery = useGetApiCategoriesAllTree({
     query: {
-      select: (data) => (data as unknown as ResponseData<any>).data.tree,
+      select: (data) => {
+        try {
+          const response = data as unknown as ResponseData<any>;
+          console.log('API Response:', response);
+          
+          // Try different possible structures
+          if (response?.data?.tree && Array.isArray(response.data.tree)) {
+            return response.data.tree;
+          }
+          if (response?.data && Array.isArray(response.data)) {
+            return response.data;
+          }
+          if (Array.isArray(response)) {
+            return response;
+          }
+          
+          console.log('Unexpected data structure:', response);
+          return [];
+        } catch (error) {
+          console.error('Error processing category tree data:', error);
+          return [];
+        }
+      },
     },
   });
 
@@ -95,9 +119,23 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
 
   // Memoize tree data
   const treeData = useMemo(() => {
-    if (!getCategoryTreeQuery.data) return [];
+    // Handle loading or error states
+    if (getCategoryTreeQuery.isLoading || getCategoryTreeQuery.isError) {
+      console.log('Category tree query is loading or in error state');
+      return [];
+    }
+    
+    if (!getCategoryTreeQuery.data) {
+      console.log('Category tree data is null/undefined');
+      return [];
+    }
+    if (!Array.isArray(getCategoryTreeQuery.data)) {
+      console.log('Category tree data is not an array:', getCategoryTreeQuery.data);
+      return [];
+    }
+    console.log('Category tree data is valid array with', getCategoryTreeQuery.data.length, 'items');
     return getCategoryTreeQuery.data.map(transformCategoryToTreeItem);
-  }, [getCategoryTreeQuery.data, selectedCategories]);
+  }, [getCategoryTreeQuery.data, getCategoryTreeQuery.isLoading, getCategoryTreeQuery.isError, selectedCategories]);
 
   const handlePriceRangeChange = (value: number[]) => {
     form.setValue("priceRange", [value[0], value[1]] as [number, number], {
@@ -139,6 +177,7 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
   }, []);
 
   const mapApiNodeToTreeNode = (node: any[]): TreeNode[] => {
+    if (!Array.isArray(node)) return [];
     return node.map((item: any) => ({
       id: item.id,
       label: item.name,

@@ -1,3 +1,4 @@
+'user client';
 import { usePostApiContentUpload } from "@/api/endpoints/content";
 import { usePostApiFileUpload } from "@/api/endpoints/files";
 import { MutationData } from "@/api/types/base";
@@ -7,14 +8,15 @@ import { ContentFormValues } from "@/components/modules/content/content-editor-f
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { BASE_PATHS } from "@/constants/paths";
 import { ArrowLeftIcon } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
 const ContentDetail = () => {
   // Hooks
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // Mutations
   const createContentMutation = usePostApiContentUpload({
@@ -23,7 +25,7 @@ const ContentDetail = () => {
         // Invalidate the content list query to refresh the data
         queryClient.invalidateQueries({ queryKey: ["/api/content"] });
         // Navigate back to the content list
-        navigate(BASE_PATHS.app.profile.collaborator.path);
+        router.push(BASE_PATHS.app.profile.collaborator.path);
       },
     },
   });
@@ -61,7 +63,7 @@ const ContentDetail = () => {
       {/* Content Header */}
       <CardHeader className="flex flex-wrap items-end justify-between gap-2">
         <div className="flex items-center gap-4">
-          <Link to={BASE_PATHS.app.profile.collaborator.path}>
+          <Link href={BASE_PATHS.app.profile.collaborator.path}>
             <ArrowLeftIcon className="size-5 text-gray-500 hover:text-gray-700" />
           </Link>
           <div>

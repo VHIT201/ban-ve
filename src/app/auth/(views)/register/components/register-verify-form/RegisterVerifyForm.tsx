@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Form,
   FormControl,
@@ -31,7 +33,7 @@ import {
   usePostApiAuthResendOtp,
   usePostApiAuthVerifyRegistration,
 } from "@/api/endpoints/auth";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { BASE_PATHS } from "@/constants/paths";
 
@@ -40,7 +42,7 @@ const RegisterVerifyForm: FC<Props> = (props) => {
   const { email: registeredEmail, onCancel } = props;
 
   // Hooks
-  const navigate = useNavigate();
+  const router = useRouter();
   const form = useForm<RegisterVerifyFormValues>({
     resolver: zodResolver(REGISTER_VERIFY_FORM_SCHEMA),
     defaultValues: REGISTER_VERIFY_FORM_DEFAULT_VALUES,
@@ -72,10 +74,10 @@ const RegisterVerifyForm: FC<Props> = (props) => {
       });
 
       setCountdown(30);
-      toast.success("✅ Đã gửi lại mã OTP thành công. Vui lòng kiểm tra hộp thư đến hoặc thư mục spam.");
+      toast.success(" Đã gửi lại mã OTP thành công. Vui lòng kiểm tra hộp thư đến hoặc thư mục spam.");
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || 'Không thể gửi lại mã OTP. Vui lòng thử lại sau.';
-      toast.error(`❌ ${errorMessage}`);
+      toast.error(` ${errorMessage}`);
     }
   };
 
@@ -88,14 +90,14 @@ const RegisterVerifyForm: FC<Props> = (props) => {
         },
       });
 
-      toast.success("✅ Xác thực tài khoản thành công!");
-      toast.info("🔒 Bạn có thể đăng nhập ngay bây giờ.", {
+      toast.success(" Xác thực tài khoản thành công!");
+      toast.info(" Bạn có thể đăng nhập ngay bây giờ.", {
         duration: 5000,
       });
       
       // Chuyển hướng sau khi hiển thị thông báo
       setTimeout(() => {
-        navigate(BASE_PATHS.auth.login.path);
+        router.push(BASE_PATHS.auth.login.path);
       }, 1500);
       
     } catch (error: any) {
@@ -108,13 +110,13 @@ const RegisterVerifyForm: FC<Props> = (props) => {
             message: error.response.data.errors.otp[0]
           });
         }
-        toast.error(`❌ ${errorMessage}`);
+        toast.error(`${errorMessage}`);
       } else if (error.response?.status === 404) {
-        toast.error("❌ Email chưa được đăng ký hoặc đã bị xóa.");
+        toast.error("Email chưa được đăng ký hoặc đã bị xóa.");
       } else if (error.response?.status === 422) {
-        toast.error("❌ Mã OTP không hợp lệ hoặc đã hết hạn. Vui lòng thử lại.");
+        toast.error("Mã OTP không hợp lệ hoặc đã hết hạn. Vui lòng thử lại.");
       } else {
-        toast.error("❌ Có lỗi xảy ra khi xác thực. Vui lòng thử lại sau.");
+        toast.error("Có lỗi xảy ra khi xác thực. Vui lòng thử lại sau.");
       }
     }
   };

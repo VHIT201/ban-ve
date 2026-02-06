@@ -34,7 +34,7 @@ interface UseUploadMediaReturn {
 
   // Methods
   uploadSingle: (
-    file: File,
+    file: File | null,
     options?: UploadOptions
   ) => Promise<ApiFile | null>;
   uploadMultiple: (
@@ -120,9 +120,14 @@ const useUploadMedia = (): UseUploadMediaReturn => {
    */
   const uploadSingle = useCallback(
     async (
-      file: File,
+      file: File | null,
       options: UploadOptions = {}
     ): Promise<ApiFile | null> => {
+      if (!file) {
+        // No file provided, nothing to upload
+        return null;
+      }
+
       const fileName = file.name;
 
       try {

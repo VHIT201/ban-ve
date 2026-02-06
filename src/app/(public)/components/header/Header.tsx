@@ -139,7 +139,8 @@ const Header = () => {
               </div>
               <div className="hidden sm:block">
                 <h1 className="text-md font-bold tracking-tight text-foreground group-hover:text-primary transition-colors duration-200">
-                  Marketplace Blueprint
+                  Marketplace Data – Dataory
+
                 </h1>
                 <p className="text-xs text-muted-foreground/80 font-medium">
                   Premium Blueprints

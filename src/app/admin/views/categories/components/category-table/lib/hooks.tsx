@@ -130,7 +130,7 @@ export const useCategoryTableColumnsDefs = (
               rowName={category.name}
               extraActions={
                 <Fragment>
-                  <DropdownMenuItem
+                  {/* <DropdownMenuItem
                     onSelect={() =>
                       navigator.clipboard.writeText(category._id || "")
                     }
@@ -143,7 +143,7 @@ export const useCategoryTableColumnsDefs = (
                     }
                   >
                     Sao chép Slug
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                   <DropdownMenuItem
                     onSelect={() => onEdit?.(category)}
                     className="flex items-center gap-2"

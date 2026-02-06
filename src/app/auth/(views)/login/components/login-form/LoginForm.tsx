@@ -13,24 +13,31 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LOGIN_FORM_DEFAULT_VALUES, LOGIN_FORM_SCHEMA } from "./lib/constants";
 import { LoginFormValues } from "./lib/types";
-import { Loader2Icon, LockIcon, MailIcon } from "lucide-react";
+import { Loader2Icon, LockIcon, MailIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Props } from "./lib/types";
 import { BASE_PATHS } from "@/constants/paths";
 import { usePostApiAuthLogin } from "@/api/endpoints/auth";
 import { toast } from "sonner";
 import queryClient from "@/configs/query-client";
 import { useShallow } from "zustand/shallow";
-import { useAuthStore } from "@/stores";
+import { useAuthStore, useProfileStore } from "@/stores";
 import { Response } from "@/api/types/base";
 import { PostApiAuthLogin200Data } from "@/api/models";
 import { extractErrorMessage } from "@/utils/error";
 import Link from "next/link";
+import { setCookie } from "@/utils/cookies";
 
 const LoginForm: FC<Props> = () => {
   // Stores
   const authStore = useAuthStore(
+    useShallow(({ setStore }) => ({
+      setStore,
+    })),
+  );
+
+  const profileStore = useProfileStore(
     useShallow(({ setStore }) => ({
       setStore,
     })),
@@ -48,6 +55,9 @@ const LoginForm: FC<Props> = () => {
       retry: 0,
     },
   });
+    // State
+  const [showPassword, setShowPassword] = useState(false);
+
 
   const handleSubmit = async (values: LoginFormValues) => {
     try {
@@ -63,7 +73,27 @@ const LoginForm: FC<Props> = () => {
         loginResponse as unknown as Response<PostApiAuthLogin200Data>
       ).data;
 
+      // Set cookies for middleware authentication
+      if (loginData.accessToken) {
+        setCookie("accessToken", loginData.accessToken, 60 * 60 * 24 * 7); // 7 days
+      }
+      if (loginData.refreshToken) {
+        setCookie("refreshToken", loginData.refreshToken, 60 * 60 * 24 * 30); // 30 days
+      }
+
       authStore.setStore({ isSignedIn: true, ...loginData });
+
+      // Set profile store with user info
+      if (loginData.user) {
+        profileStore.setStore({
+          id: loginData.user._id,
+          username: loginData.user.username,
+          email: loginData.user.email,
+          fullName: loginData.user.username,
+          avatar: "", 
+          role: loginData.user.role,
+        });
+      }
 
       toast.success("Đăng nhập thành công");
       window.location.href = BASE_PATHS.app.path;
@@ -118,17 +148,24 @@ const LoginForm: FC<Props> = () => {
                   <Link href={BASE_PATHS.auth.forgot.path}>Quên mật khẩu?</Link>
                 </Button>
               </div>
-              <FormControl>
-                <div className="relative">
-                  <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="password"
-                    placeholder="Nhập mật khẩu"
-                    className="pl-10 h-10"
-                    {...field}
-                  />
-                </div>
-              </FormControl>
+             <FormControl>
+  <div className="relative">
+    <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+    <Input
+      type={showPassword ? "text" : "password"}
+      placeholder="Nhập mật khẩu"
+      className="pl-10 pr-10 h-10"
+      {...field}
+    />
+    <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+    >
+      {showPassword ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
+    </button>
+  </div>
+</FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -137,7 +174,7 @@ const LoginForm: FC<Props> = () => {
         <Button
           type="submit"
           disabled={form.formState.isSubmitting}
-          className="w-full mt-4 h-10"
+          className="w-full mt-4 h-10 bg-[#4338CA] hover:bg-[#4F46E5] text-white"
         >
           {form.formState.isSubmitting ? (
             <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
@@ -146,7 +183,7 @@ const LoginForm: FC<Props> = () => {
           )}
         </Button>
 
-        <div className="text-center text-sm">
+        <div className="text-center text-sm ">
           Chưa có tài khoản?{" "}
           <Button asChild variant="link" disabled={form.formState.isSubmitting}>
             <Link href={BASE_PATHS.auth.register.path}>Đăng ký ngay</Link>

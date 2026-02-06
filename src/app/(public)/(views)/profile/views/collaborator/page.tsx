@@ -1,3 +1,5 @@
+"use client";
+
 import {
   useGetApiCollaboratorsMe,
   usePostApiCollaboratorsApply,
@@ -204,11 +206,11 @@ function CollaboratorStatus({
   console.log("Collaborator Status Data:", data?.earnings);
 
   const revenueData = useMemo(() => {
-    const earnings = data?.earnings?.byStatus?.timeout || null;
+    const earnings = data?.earnings || null;
     return {
       totalRevenue: earnings?.totalAmount || 0,
       totalCommission: earnings?.totalCommission || 0,
-      totalOrders: earnings?.count || 0,
+      totalOrders: earnings?.totalOrders || 0,
       totalAdmin: earnings?.totalAdminAmount || 0,
     };
   }, [data]);
@@ -342,11 +344,14 @@ function CollaboratorStatus({
 }
 
 const Collaborator = () => {
-  const getCollaboratorMeQuery = useGetApiCollaboratorsMe({
-    query: {
-      select: (data) => (data as unknown as ResponseData<CollaboratorMe>).data,
-    },
-  }) as UseQueryResult<CollaboratorMe>;
+  console.log("Collaborator component mounted");
+  
+  const getCollaboratorMeQuery = useGetApiCollaboratorsMe() as UseQueryResult<CollaboratorMe>;
+  
+  console.log("getCollaboratorMeQuery status:", getCollaboratorMeQuery.status);
+  console.log("getCollaboratorMeQuery data:", getCollaboratorMeQuery.data);
+  console.log("getCollaboratorMeQuery isLoading:", getCollaboratorMeQuery.isLoading);
+  console.log("getCollaboratorMeQuery error:", getCollaboratorMeQuery.error);
 
   const collaboratorMe = useMemo(() => {
     return getCollaboratorMeQuery.data;

@@ -1,6 +1,7 @@
 export interface UserInfo {
   _id: string;
-  username: string;
+  username?: string;
+  fullname?: string;
   email: string;
   role: "user" | "admin" | string;
   createdAt: string;
@@ -9,7 +10,7 @@ export interface UserInfo {
 
 export interface CollaboratorRequest {
   _id: string;
-  user: UserInfo;
+  user: UserInfo | null;
   status: "pending" | "approved" | "rejected" | string;
   bankAccount: string;
   bankName: string;
@@ -30,6 +31,15 @@ export interface CollaboratorMe {
   email: string;
   role: string;
   isActive: boolean;
+  bankAccount?: string;
+  bankName?: string;
+  earnings?: {
+    totalAmount?: number;
+    totalCommission?: number;
+    totalAdminAmount?: number;
+    totalOrders?: number;
+    byStatus?: { [key: string]: any };
+  };
   createdAt: string; // hoặc Date nếu bạn parse ra dạng Date
   updatedAt: string; // hoặc Date
 }

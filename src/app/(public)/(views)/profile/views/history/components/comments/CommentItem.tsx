@@ -1,3 +1,5 @@
+"use client";
+
 // In CommentItem.tsx
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
@@ -6,15 +8,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { Comment } from "@/api/models/comment";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 interface CommentItemProps {
   comment: Comment & {
     userId?: {
       _id: string;
-      username: string;
+      fullname?: string;
       email?: string;
-      avatar?: string;
     };
     contentDetails?: {
       _id: string;
@@ -28,12 +29,10 @@ export const CommentItem = ({ comment }: CommentItemProps) => {
   // Lấy tên hiển thị của người bình luận
   const authorName = comment.isGuest
     ? comment.guestName || 'Khách'
-    : comment.userId?.username || 'Người dùng';
+    : comment.userId?.fullname || 'Người dùng';
 
   // Tạo avatar từ tên nếu không có avatar
-  const avatarUrl = !comment.isGuest && comment.userId?.avatar
-    ? comment.userId.avatar
-    : `https://ui-avatars.com/api/?name=${encodeURIComponent(authorName)}&background=random`;
+  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(authorName)}&background=random`;
 
   // Định dạng ngày tháng
   const formattedDate = comment.createdAt 
@@ -88,7 +87,7 @@ export const CommentItem = ({ comment }: CommentItemProps) => {
                   {comment.contentDetails.title}
                 </p>
                 <Link 
-                  to={`/contents/${comment.contentDetails._id}${comment.contentDetails.slug ? `-${comment.contentDetails.slug}` : ''}`}
+                  href={`/contents/${comment.contentDetails._id}${comment.contentDetails.slug ? `-${comment.contentDetails.slug}` : ''}`}
                   className="inline-flex items-center text-xs text-blue-500 hover:underline mt-1"
                   target="_blank"
                 >
