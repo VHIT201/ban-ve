@@ -303,6 +303,11 @@ const ContentEditorForm = ({
       if (values.files && values.files.length > 0) {
         const file = values.files[0];
 
+        if (!file) {
+          setUploadError("File không hợp lệ. Vui lòng thử lại.");
+          return;
+        }
+
         // Upload file with compression
         const uploadedFile = await uploadSingle(file, {
           compress: true,

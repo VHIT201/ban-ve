@@ -63,8 +63,6 @@ const LoginForm: FC<Props> = () => {
       retry: 0,
     },
   });
-  // State
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (values: LoginFormValues) => {
     try {
@@ -94,9 +92,8 @@ const LoginForm: FC<Props> = () => {
       if (loginData.user) {
         profileStore.setStore({
           id: loginData.user._id,
-          username: loginData.user.username,
           email: loginData.user.email,
-          fullName: loginData.user.username,
+          fullName: loginData.user.fullname,
           avatar: "",
           role: loginData.user.role,
         });

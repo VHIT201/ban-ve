@@ -22,7 +22,7 @@ export interface ContentResponse {
   file?: {
     _id: string;
     name: string;
-    url: string;
+    path: string;
     type: string;
     size: number;
   };
@@ -64,7 +64,7 @@ export interface ContentProduct {
   file_id?: {
     _id: string;
     name: string;
-    url: string;
+    path: string;
     type: string;
     size: number;
   };

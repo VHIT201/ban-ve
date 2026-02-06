@@ -1,15 +1,10 @@
 // Core
-import { RouteObject, Navigate, redirect } from "react-router-dom";
+import { RouteObject, Navigate, redirect, Outlet } from "react-router-dom";
 
 // App
 import { BASE_PATHS, ROUTE_PATHS } from "@/constants/paths";
-import contentRoutes from "../views/contents/lib/routes";
-import copyRightRoutes from "../views/copy-right/lib/routes";
-import collaboratorRoutes from "../views/collaborators/lib/routes";
-import paymentRoutes from "../views/payment/lib/routes";
 
 import { useAuthStore } from "@/stores";
-import categoryRoutes from "../views/categories/lib/routes";
 // Admin route paths
 const { admin } = ROUTE_PATHS;
 
@@ -27,7 +22,11 @@ const adminRoutes: RouteObject = {
   lazy: async () => {
     const { default: Admin } = await import("../layout");
     return {
-      element: <Admin />,
+      element: (
+        <Admin>
+          <Outlet />
+        </Admin>
+      ),
     };
   },
   children: [
@@ -49,7 +48,11 @@ const adminRoutes: RouteObject = {
             const { default: Categories } =
               await import("../views/categories/layout");
             return {
-              element: <Categories />,
+              element: (
+                <Categories>
+                  <Outlet />
+                </Categories>
+              ),
             };
           },
         },
@@ -74,11 +77,6 @@ const adminRoutes: RouteObject = {
         };
       },
     },
-    categoryRoutes,
-    paymentRoutes,
-    contentRoutes,
-    copyRightRoutes,
-    collaboratorRoutes,
 
     {
       path: "social",

@@ -5,6 +5,8 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { XIcon } from "lucide-react";
 
+// Add progress property to FileWithPreview type if it doesn't exist
+
 const UploaderMediaListView = () => {
   // Hooks
   const { fileList, handleDeleteFile } = useUploaderContext();
@@ -16,7 +18,7 @@ const UploaderMediaListView = () => {
           key={`${file.name}-${index}`}
           className={cn(
             "grid aspect-4/3 w-full gap-1 overflow-hidden rounded-md",
-            file.status === "error" && "border-red-200 bg-red-50"
+            file.status === "error" && "border-red-200 bg-red-50",
           )}
         >
           <div className="group flex items-center overflow-hidden transition-opacity duration-300">
@@ -30,8 +32,11 @@ const UploaderMediaListView = () => {
                   className="h-full w-full object-cover"
                 />
                 {file.status === FileStatus.PENDING &&
-                  file.progress !== undefined && (
-                    <Progress value={file.progress} className="mt-1 h-1" />
+                  file.uploadProgress !== undefined && (
+                    <Progress
+                      value={file.uploadProgress}
+                      className="mt-1 h-1"
+                    />
                   )}
                 <Button
                   variant="ghost"

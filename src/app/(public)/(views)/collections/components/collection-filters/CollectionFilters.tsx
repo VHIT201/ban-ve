@@ -78,33 +78,36 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
   const selectedViews = form.watch("views");
 
   // Queries
-  const getCategoryTreeQuery = useGetApiCategoriesAllTree({
-    query: {
-      select: (data) => {
-        try {
-          const response = data as unknown as ResponseData<any>;
-          console.log('API Response:', response);
-          
-          // Try different possible structures
-          if (response?.data?.tree && Array.isArray(response.data.tree)) {
-            return response.data.tree;
+  const getCategoryTreeQuery = useGetApiCategoriesAllTree(
+    {},
+    {
+      query: {
+        select: (data) => {
+          try {
+            const response = data as unknown as ResponseData<any>;
+            console.log("API Response:", response);
+
+            // Try different possible structures
+            if (response?.data?.tree && Array.isArray(response.data.tree)) {
+              return response.data.tree;
+            }
+            if (response?.data && Array.isArray(response.data)) {
+              return response.data;
+            }
+            if (Array.isArray(response)) {
+              return response;
+            }
+
+            console.log("Unexpected data structure:", response);
+            return [];
+          } catch (error) {
+            console.error("Error processing category tree data:", error);
+            return [];
           }
-          if (response?.data && Array.isArray(response.data)) {
-            return response.data;
-          }
-          if (Array.isArray(response)) {
-            return response;
-          }
-          
-          console.log('Unexpected data structure:', response);
-          return [];
-        } catch (error) {
-          console.error('Error processing category tree data:', error);
-          return [];
-        }
+        },
       },
     },
-  });
+  );
 
   const transformCategoryToTreeItem = (category: any): TreeViewItem => {
     return {
@@ -121,28 +124,40 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
   const treeData = useMemo(() => {
     // Handle loading or error states
     if (getCategoryTreeQuery.isLoading || getCategoryTreeQuery.isError) {
-      console.log('Category tree query is loading or in error state');
+      console.log("Category tree query is loading or in error state");
       return [];
     }
-    
+
     if (!getCategoryTreeQuery.data) {
-      console.log('Category tree data is null/undefined');
+      console.log("Category tree data is null/undefined");
       return [];
     }
     if (!Array.isArray(getCategoryTreeQuery.data)) {
-      console.log('Category tree data is not an array:', getCategoryTreeQuery.data);
+      console.log(
+        "Category tree data is not an array:",
+        getCategoryTreeQuery.data,
+      );
       return [];
     }
-    console.log('Category tree data is valid array with', getCategoryTreeQuery.data.length, 'items');
+    console.log(
+      "Category tree data is valid array with",
+      getCategoryTreeQuery.data.length,
+      "items",
+    );
     return getCategoryTreeQuery.data.map(transformCategoryToTreeItem);
-  }, [getCategoryTreeQuery.data, getCategoryTreeQuery.isLoading, getCategoryTreeQuery.isError, selectedCategories]);
+  }, [
+    getCategoryTreeQuery.data,
+    getCategoryTreeQuery.isLoading,
+    getCategoryTreeQuery.isError,
+    selectedCategories,
+  ]);
 
   const handlePriceRangeChange = (value: number[]) => {
-    form.setValue("priceRange", [value[0], value[1]] as [number, number], {
+    form.setValue("priceRange", [value?.[0], value?.[1]] as [number, number], {
       shouldValidate: true,
     });
-    form.setValue("minPrice", value[0], { shouldValidate: true });
-    form.setValue("maxPrice", value[1], { shouldValidate: true });
+    form.setValue("minPrice", value?.[0] ?? 0, { shouldValidate: true });
+    form.setValue("maxPrice", value?.[1] ?? 0, { shouldValidate: true });
   };
 
   const handleMinPriceChange = (value: number) => {

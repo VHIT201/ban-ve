@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import axios, { AxiosInstance } from "axios";
-import { env } from "@/configs/env";
+import env from "@/configs/env";
 
 /**
  * Create server-side API client with authentication
@@ -10,7 +10,7 @@ export async function createServerApiClient(): Promise<AxiosInstance> {
   const accessToken = cookieStore.get("accessToken")?.value;
 
   return axios.create({
-    baseURL: env.apiBaseUrl,
+    baseURL: "",
     headers: {
       "Content-Type": "application/json",
       ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
@@ -24,7 +24,7 @@ export async function createServerApiClient(): Promise<AxiosInstance> {
  */
 export function createPublicApiClient(): AxiosInstance {
   return axios.create({
-    baseURL: env.apiBaseUrl,
+    baseURL: "",
     headers: {
       "Content-Type": "application/json",
     },

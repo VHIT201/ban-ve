@@ -39,9 +39,7 @@ const ReportDialog: FC<Props> = (props) => {
         </DialogHeader>
         <ScrollArea className="overflow-y-auto px-5 py-2">
           <CopyRightEditorForm
-            defaultValues={{
-              contentId: contentId,
-            }}
+            defaultValues={{}}
             loading={createCopyRightReportMutation.isPending}
             onSubmit={handleCreateReport}
           />

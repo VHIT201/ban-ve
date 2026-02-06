@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useState } from "react";
 import { usePostApiFileUpload } from "@/api/endpoints/files";
 import type {
@@ -35,16 +37,16 @@ interface UseUploadMediaReturn {
   // Methods
   uploadSingle: (
     file: File | null,
-    options?: UploadOptions
+    options?: UploadOptions,
   ) => Promise<ApiFile | null>;
   uploadMultiple: (
     files: File[],
-    options?: UploadOptions
+    options?: UploadOptions,
   ) => Promise<ApiFile[]>;
   uploadWithImages: (
     mainFile: File,
     images: File[],
-    options?: UploadOptions
+    options?: UploadOptions,
   ) => Promise<ApiFile | null>;
 
   // Helpers
@@ -96,7 +98,7 @@ const useUploadMedia = (): UseUploadMediaReturn => {
         },
       }));
     },
-    []
+    [],
   );
 
   const resetProgress = useCallback(() => {
@@ -121,7 +123,7 @@ const useUploadMedia = (): UseUploadMediaReturn => {
   const uploadSingle = useCallback(
     async (
       file: File | null,
-      options: UploadOptions = {}
+      options: UploadOptions = {},
     ): Promise<ApiFile | null> => {
       if (!file) {
         // No file provided, nothing to upload
@@ -163,7 +165,7 @@ const useUploadMedia = (): UseUploadMediaReturn => {
         return null;
       }
     },
-    [uploadMutation, updateProgress]
+    [uploadMutation, updateProgress],
   );
 
   /**
@@ -182,7 +184,7 @@ const useUploadMedia = (): UseUploadMediaReturn => {
 
       return results;
     },
-    [uploadSingle]
+    [uploadSingle],
   );
 
   /**
@@ -192,7 +194,7 @@ const useUploadMedia = (): UseUploadMediaReturn => {
     async (
       mainFile: File,
       images: File[],
-      options: UploadOptions = {}
+      options: UploadOptions = {},
     ): Promise<ApiFile | null> => {
       const fileName = mainFile.name;
 
@@ -246,7 +248,7 @@ const useUploadMedia = (): UseUploadMediaReturn => {
         return null;
       }
     },
-    [uploadMutation, updateProgress]
+    [uploadMutation, updateProgress],
   );
 
   // ============================================

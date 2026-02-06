@@ -82,8 +82,6 @@ const CategoryItem = ({
   showDescription = true,
   className,
 }: CategoryItemProps) => {
-  const IconComponent = getCategoryIcon(category.name, category.slug);
-
   const handleClick = () => {
     onClick?.(category);
   };
@@ -94,7 +92,7 @@ const CategoryItem = ({
         "relative overflow-hidden bg-white border border-gray-200/60",
         "h-full group cursor-pointer transition-all duration-300",
         "hover:border-gray-300 hover:shadow-lg hover:-translate-y-1",
-        className
+        className,
       )}
       onClick={handleClick}
     >

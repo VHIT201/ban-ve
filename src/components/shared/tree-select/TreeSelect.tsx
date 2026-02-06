@@ -256,10 +256,12 @@ const TreeSelect: React.FC<TreeSelectProps> = ({
       onChange(Array.from(next));
     } else {
       const id = ids[0];
-      if (selected.has(id)) {
-        onChange([]);
-      } else {
-        onChange([id]);
+      if (id) {
+        if (selected.has(id)) {
+          onChange([]);
+        } else {
+          onChange([id]);
+        }
       }
     }
   };

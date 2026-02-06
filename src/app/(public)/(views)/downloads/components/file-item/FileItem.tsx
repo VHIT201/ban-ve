@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   useGetApiFileId,
   useGetApiFileIdDownload,
@@ -71,7 +71,7 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
   const handleDownloadFile = async () => {
     try {
       let res;
-      
+
       if (isFreeFile) {
         res = await downloadFreeFile.refetch();
       } else {
@@ -210,7 +210,11 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
                   className="gap-2"
                   disabled={isError || isDownloading}
                   onClick={handleDownloadFile}
-                  loading={(isFreeFile ? downloadFreeFile.isFetching : downloadPaidFile.isFetching) || isDownloading}
+                  loading={
+                    (isFreeFile
+                      ? downloadFreeFile.isFetching
+                      : downloadPaidFile.isFetching) || isDownloading
+                  }
                 >
                   <motion.div
                     animate={{ y: [0, 3, 0] }}

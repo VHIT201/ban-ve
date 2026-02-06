@@ -55,10 +55,11 @@ const BlueprintDetailFeedbackFilter = ({
   });
 
   // Calculate derived values from the API response
-  const averageRating = ratingStats?.data?.averageStars || 0;
-  const totalReviews = ratingStats?.data?.totalRatings || 0;
+  const ratingData: any = (ratingStats as any)?.data;
+  const averageRating = ratingData?.averageStars || 0;
+  const totalReviews = ratingData?.totalRatings || 0;
   const ratingDistribution = [5, 4, 3, 2, 1].map((stars) => {
-    const count = ratingStats?.data?.starsCount?.[stars] || 0;
+    const count = ratingData?.starsCount?.[stars] || 0;
     const percentage =
       totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0;
     return { stars, count, percentage };

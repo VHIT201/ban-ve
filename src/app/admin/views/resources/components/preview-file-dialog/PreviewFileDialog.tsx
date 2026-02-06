@@ -1,4 +1,3 @@
-import { ResourceItemData } from "../../types/types";
 import { AlertDialogHeader } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,6 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Download } from "lucide-react";
+import { ResourceItemData } from "../resource-item/ResourceItem";
 
 const formatFileSize = (bytes: number): string => {
   if (bytes < 1024) return `${bytes} B`;
@@ -21,7 +21,11 @@ const getFileIcon = (type: string) => {
   if (type?.toLowerCase().includes("excel")) return "📊";
   if (type?.toLowerCase().includes("word")) return "📝";
   if (type?.toLowerCase().includes("powerpoint")) return "📊";
-  if (type?.toLowerCase().includes("zip") || type?.toLowerCase().includes("rar")) return "🗜️";
+  if (
+    type?.toLowerCase().includes("zip") ||
+    type?.toLowerCase().includes("rar")
+  )
+    return "🗜️";
   return "📁";
 };
 interface Props {
@@ -36,7 +40,7 @@ const PreviewFileDialog = ({ previewItem, onClose }: Props) => {
         <AlertDialogHeader>
           <DialogTitle>{previewItem?.name}</DialogTitle>
           <DialogDescription>
-            {previewItem && formatFileSize(previewItem.size)} •{" "}
+            {previewItem && formatFileSize(previewItem.size ?? 0)} •{" "}
             {previewItem?.type}
           </DialogDescription>
         </AlertDialogHeader>

@@ -1,3 +1,5 @@
+"use client";
+
 import { useAuthStore } from "@/stores";
 import { useEffect, useRef } from "react";
 
@@ -69,14 +71,14 @@ export default function useSSEStream<T>({
             }
           }
         } catch (readError) {
-          if (readError.name !== 'AbortError') {
+          if (readError instanceof Error && readError.name !== "AbortError") {
             console.error("Error reading SSE stream:", readError);
           }
         } finally {
           reader.releaseLock();
         }
       } catch (fetchError) {
-        if (fetchError.name !== 'AbortError') {
+        if (fetchError instanceof Error && fetchError.name !== "AbortError") {
           console.error("Error fetching SSE stream:", fetchError);
         }
       }

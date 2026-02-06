@@ -98,7 +98,29 @@ const DailyBestDownloaded = () => {
                           product={{
                             _id: product.contentId!,
                             ...(product.contentInfo as Content),
+                            images: product.contentInfo?.images || [],
                             purchaseCount: product.purchaseCount,
+                            file_id:
+                              product.contentInfo?.file_id &&
+                              product.contentInfo.file_id._id
+                                ? (product.contentInfo.file_id as {
+                                    _id: string;
+                                    name: string;
+                                    path: string;
+                                    type: string;
+                                    size: number;
+                                  })
+                                : undefined,
+                            // normalize createdBy so _id is a string (or undefined)
+                            createdBy: product.contentInfo?.createdBy
+                              ? {
+                                  _id: product.contentInfo.createdBy._id ?? "",
+                                  email: product.contentInfo.createdBy.email,
+                                  fullname:
+                                    product.contentInfo.createdBy.fullname,
+                                  avatar: "",
+                                }
+                              : undefined,
                           }}
                           onViewDetail={handleViewDetail}
                         />

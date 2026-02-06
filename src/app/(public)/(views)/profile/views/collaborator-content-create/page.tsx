@@ -1,4 +1,4 @@
-"user client";
+"use client";
 
 import { usePostApiContentUpload } from "@/api/endpoints/content";
 import { ContentEditorForm } from "@/components/modules/content";

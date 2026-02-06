@@ -2,7 +2,10 @@
 
 // Internal
 import { Button } from "@/components/ui/button";
-import { CategoryDialog, CategoryTable } from "../../views/categories/components";
+import {
+  CategoryDialog,
+  CategoryTable,
+} from "../../views/categories/components";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import {
@@ -48,29 +51,23 @@ const Categories = () => {
 
   // Methods
   const handleCreateCategory = async (data: CategoryFormValues) => {
-    
     try {
       let imageUrl = "";
-      
+
       // Only upload if image exists
       if (data.image) {
-        const imageRes = await uploadFileMutation.uploadSingle(
-          data.image,
-          {
-            filename: data.image?.name,
-            dir: "categories",
-            private: false,
-          },
-        );
+        const imageRes = await uploadFileMutation.uploadSingle(data.image, {
+          filename: data.image?.name,
+          dir: "categories",
+          private: false,
+        });
 
-
-        if (imageRes?.path) {
-          imageUrl = `${baseConfig.mediaDomain}${imageRes.path}`;
+        if (imageRes?.url) {
+          imageUrl = `${baseConfig.mediaDomain}${imageRes.url}`;
         }
       } else {
         console.log("❌ No image selected");
       }
-
 
       const createData: PostApiCategoriesBody = {
         name: data.name,
@@ -87,14 +84,13 @@ const Categories = () => {
         createData.imageUrl = imageUrl;
       }
 
-
       await createCategoryMutation.mutateAsync({
         data: createData,
       });
 
       setIsDialogOpen(false);
       toast.success("Danh mục mới đã được tạo thành công.");
-      
+
       // Reload page after success
       window.location.reload();
     } catch (error) {

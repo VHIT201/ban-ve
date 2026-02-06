@@ -13,7 +13,7 @@ import {
 // Internal
 
 export const useUserRankingTableColumnsDefs = (
-  props: useUserRankingTableColumnsDefsProps
+  props: useUserRankingTableColumnsDefsProps,
 ) => {
   const { onEdit, onDelete } = props;
 
@@ -37,7 +37,7 @@ export const useUserRankingTableColumnsDefs = (
         },
       },
       {
-        accessorKey: "fullName",
+        accessorKey: "fullname",
         header: "Người dùng",
         cell: ({ row }) => {
           const user = row.original;
@@ -45,10 +45,10 @@ export const useUserRankingTableColumnsDefs = (
             <div className="flex items-center gap-3">
               <img
                 src={
-                  user.avatarUrl ||
+                  user.avatar ||
                   "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"
                 }
-                alt={user.fullName}
+                alt={user.fullname}
                 className="h-10 w-10 rounded-full object-cover"
                 onError={(e) => {
                   e.currentTarget.onerror = null;
@@ -57,7 +57,7 @@ export const useUserRankingTableColumnsDefs = (
                 }}
               />
               <div>
-                <div className="font-medium text-gray-900">{user.fullName}</div>
+                <div className="font-medium text-gray-900">{user.fullname}</div>
                 <div className="text-sm text-gray-500">{user.email}</div>
               </div>
             </div>
@@ -94,6 +94,6 @@ export const useUserRankingTableColumnsDefs = (
         },
       },
     ],
-    [onDelete, onEdit]
+    [onDelete, onEdit],
   );
 };

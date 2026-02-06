@@ -11,7 +11,6 @@ import { useGetApiCollaboratorsRequests } from "@/api/endpoints/collaborators";
 
 // Internal
 import { useColumns } from "./lib/hooks";
-import { Response } from "@/api/types/base";
 import { CollaboratorRequest } from "@/api/types/collaborator";
 
 const CollaboratorTable = () => {
@@ -22,7 +21,6 @@ const CollaboratorTable = () => {
   const [pagination, setPagination] = useState<{
     pageIndex: number;
     pageSize: number;
-  }>({ pageIndex: 0, pageSize: 10 });
   }>({ pageIndex: 0, pageSize: 10 });
 
   const [statusFilter, setStatusFilter] = useState<
@@ -44,7 +42,10 @@ const CollaboratorTable = () => {
         }),
       },
     },
-  ) as UseQueryResult<{requests: CollaboratorRequest[], pagination: { total: number; page: number; limit: number } | undefined}>;
+  ) as UseQueryResult<{
+    requests: CollaboratorRequest[];
+    pagination: { total: number; page: number; limit: number } | undefined;
+  }>;
 
   // Methods
   const handlePaginationChange = (newPagination: {
@@ -83,7 +84,7 @@ const CollaboratorTable = () => {
       // TODO: Implement reject logic with mutation
       // Ví dụ:
       // rejectMutation.mutate(collaborator._id, {
-      //   onSuccess: () => { 
+      //   onSuccess: () => {
       //     getCollaboratorsQuery.refetch();
       //   }
       // });
@@ -99,7 +100,6 @@ const CollaboratorTable = () => {
       // });
       console.log("Delete collaborator:", collaborator._id);
     },
-    refetch: getCollaboratorsQuery.refetch,
   });
 
   return (

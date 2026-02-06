@@ -17,13 +17,16 @@ const CategoriesSection = () => {
   const router = useRouter();
 
   // Queries
-  const getCategoryListQuery = useGetApiCategories({
-    query: {
-      select: (data) =>
-        (data as unknown as ResponseData<{ categories: Category[] }>).data
-          .categories,
+  const getCategoryListQuery = useGetApiCategories(
+    {},
+    {
+      query: {
+        select: (data) =>
+          (data as unknown as ResponseData<{ categories: Category[] }>).data
+            .categories,
+      },
     },
-  }) as UseQueryResult<Category[]>;
+  ) as UseQueryResult<Category[]>;
 
   // Methods
   const handleCategoryClick = (category: Category) => {

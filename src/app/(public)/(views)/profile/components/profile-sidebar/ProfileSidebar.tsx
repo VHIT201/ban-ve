@@ -40,7 +40,6 @@ export default function ProfileSidebar() {
       // Gửi thẳng file (Blob) lên API update-profile
       await updateUserProfileMutation.mutateAsync({
         data: {
-          avatar: file, // Gửi file dạng Blob
           fullname: profileStore.fullName,
           email: profileStore.email,
         },

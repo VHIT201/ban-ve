@@ -38,7 +38,7 @@ export type ProfileStore = States & Actions;
 // Constants
 export const INITIAL_STATES: States = {
   id: null,
-  fullname: undefined,
+  fullName: undefined,
   email: undefined,
   avatar: "",
   role: null,
@@ -52,10 +52,10 @@ const profileStore: StateCreator<ProfileStore> = (set) => ({
   ...INITIAL_STATES,
 
   // Actions
-  setStore: ({ id, fullname, email, avatar, role, createdAt, updatedAt }) =>
+  setStore: ({ id, fullName, email, avatar, role, createdAt, updatedAt }) =>
     set((state) => ({
       id: isUndefined(id) ? state.id : id,
-      fullname: isUndefined(fullname) ? state.fullname : fullname,
+      fullName: isUndefined(fullName) ? state.fullName : fullName,
       email: isUndefined(email) ? state.email : email,
       avatar: isUndefined(avatar) ? state.avatar : avatar,
       role: isUndefined(role) ? state.role : role,

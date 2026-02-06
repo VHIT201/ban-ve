@@ -21,8 +21,10 @@ export default function SocialPage() {
 
   const handleInputChange = (index: number, value: string) => {
     const newLinks = [...socialLinks];
-    newLinks[index].url = value;
-    setSocialLinks(newLinks);
+    if (newLinks[index]) {
+      newLinks[index].url = value;
+      setSocialLinks(newLinks);
+    }
   };
 
   const handleSave = () => {

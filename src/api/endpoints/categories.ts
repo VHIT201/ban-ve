@@ -1197,7 +1197,8 @@ export const usePutApiCategoriesId = <TError = ErrorType<void>,
       return useMutation(mutationOptions, queryClient);
     }
     /**
- * @summary Xóa một danh mục (cũng xóa tất cả danh mục con)
+ * Xóa các danh mục theo danh sách ID cách nhau bởi dấu phẩy. Các bài viết liên quan sẽ được đưa về trạng thái không có danh mục (null).
+ * @summary Xóa một hoặc nhiều danh mục (cũng xóa tất cả danh mục con)
  */
 export const deleteApiCategoriesId = (
     id: string,
@@ -1242,7 +1243,7 @@ const {mutation: mutationOptions} = options ?
     export type DeleteApiCategoriesIdMutationError = ErrorType<void>
 
     /**
- * @summary Xóa một danh mục (cũng xóa tất cả danh mục con)
+ * @summary Xóa một hoặc nhiều danh mục (cũng xóa tất cả danh mục con)
  */
 export const useDeleteApiCategoriesId = <TError = ErrorType<void>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiCategoriesId>>, TError,{id: string}, TContext>, }

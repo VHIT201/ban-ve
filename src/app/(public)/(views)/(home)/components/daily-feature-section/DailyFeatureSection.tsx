@@ -4,7 +4,7 @@ import {
   BlueprintCard,
   BlueprintCardSkeleton,
 } from "@/components/modules/content";
-import { ContentResponse } from "@/api/types/content";
+import { ContentResponse, ContentProduct } from "@/api/types/content";
 import { useGetApiContentInfinite } from "@/api/endpoints/content";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -16,7 +16,7 @@ const DailyFeatureSection = () => {
   const router = useRouter();
 
   // States
-  const [pagination, setPagination] = useState({
+  const [pagination] = useState({
     page: 0,
     limit: 0,
   });
@@ -74,7 +74,24 @@ const DailyFeatureSection = () => {
               blueprint && (
                 <BlueprintCard
                   key={blueprint._id}
-                  product={blueprint}
+                  product={
+                    {
+                      ...blueprint,
+                      _id: blueprint._id!,
+                      images: blueprint.images || [],
+                      title: blueprint.title || "Untitled",
+                      price: blueprint.price || 0,
+                      file_id: blueprint.file_id
+                        ? {
+                            _id: blueprint.file_id._id ?? "",
+                            name: blueprint.file_id.name ?? "",
+                            path: blueprint.file_id.path ?? "",
+                            type: blueprint.file_id.type ?? "",
+                            size: blueprint.file_id.size ?? 0,
+                          }
+                        : undefined,
+                    } as ContentProduct
+                  }
                   onViewDetail={handleViewDetail}
                   onAddToCart={handleAddToCart}
                 />

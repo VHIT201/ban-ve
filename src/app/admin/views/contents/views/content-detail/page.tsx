@@ -6,9 +6,7 @@ import {
   getGetApiContentQueryKey,
   useGetApiContentId,
   usePutApiContentId,
-  usePutApiContentIdApprove,
 } from "@/api/endpoints/content";
-import { ContentInput } from "@/api/models";
 import { ContentResponse } from "@/api/types/content";
 import { ContentEditorForm } from "@/components/modules/content";
 import { ContentFormValues } from "@/components/modules/content/content-editor-form/ContentEditorForm";
@@ -19,11 +17,12 @@ import { extractErrorMessage } from "@/utils/error";
 import { UseQueryResult } from "@tanstack/react-query";
 import { ArrowLeftIcon } from "lucide-react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { toast } from "sonner";
 
 const ContentDetail = () => {
   // Hooks
-  const { id: contentId } = useRequiredPathParams(["id"]);
+  const { id: contentId } = useParams() as { id: string };
 
   // Queries
   const getContentDetailQuery = useGetApiContentId(

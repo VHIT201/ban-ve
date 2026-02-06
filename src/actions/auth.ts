@@ -66,7 +66,11 @@ export async function loginAction(
     // Set HTTP-only cookies
     const cookieStore = await cookies();
 
-    cookieStore.set("accessToken", authData.data.accessToken, {
+    if (!authData.data.token) {
+      throw new Error("Invalid authentication response");
+    }
+
+    cookieStore.set("accessToken", authData.data.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -74,7 +78,7 @@ export async function loginAction(
       path: "/",
     });
 
-    cookieStore.set("refreshToken", authData.data.refreshToken, {
+    cookieStore.set("refreshToken", authData.data.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -119,7 +123,7 @@ export async function registerAction(
   try {
     // Call API
     const response = await postApiAuthRegister({
-      username: validatedFields.data.username,
+      fullname: validatedFields.data.username,
       email: validatedFields.data.email,
       password: validatedFields.data.password,
     });
@@ -129,7 +133,11 @@ export async function registerAction(
     // Set HTTP-only cookies
     const cookieStore = await cookies();
 
-    cookieStore.set("accessToken", authData.data.accessToken, {
+    if (!authData.data.token) {
+      throw new Error("Invalid authentication response");
+    }
+
+    cookieStore.set("accessToken", authData.data.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -137,7 +145,7 @@ export async function registerAction(
       path: "/",
     });
 
-    cookieStore.set("refreshToken", authData.data.refreshToken, {
+    cookieStore.set("refreshToken", authData.data.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -202,8 +210,12 @@ export async function refreshTokenAction(): Promise<boolean> {
     const data = await response.json();
     const authData = data.data as AuthResponse;
 
+    if (!authData.token) {
+      return false;
+    }
+
     // Update access token
-    cookieStore.set("accessToken", authData.accessToken, {
+    cookieStore.set("accessToken", authData.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

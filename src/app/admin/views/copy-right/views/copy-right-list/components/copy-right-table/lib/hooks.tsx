@@ -156,13 +156,14 @@ export const useColumns = (props: useCopyrightReportTableColumnsDefsProps) => {
           const reporter = row.original.reporterId;
           const displayName =
             reporter?.fullname ||
-            reporter?.username ||
+            reporter?.fullname ||
             reporter?.email ||
             "Không rõ";
           const initials = displayName[0]?.toUpperCase() || "?";
 
           return (
             <div className="flex items-center gap-2 min-w-[160px]">
+              s
               <Avatar className="w-8 h-8">
                 <AvatarFallback className=" text-white text-xs">
                   {initials}
@@ -328,11 +329,7 @@ export const useColumns = (props: useCopyrightReportTableColumnsDefsProps) => {
             return <span className="text-sm text-gray-400">N/A</span>;
           }
 
-          const displayName =
-            resolvedBy.fullname ||
-            resolvedBy.username ||
-            resolvedBy.email ||
-            "N/A";
+          const displayName = resolvedBy.fullname || resolvedBy.email || "N/A";
           const initials = displayName[0]?.toUpperCase() || "?";
 
           return (

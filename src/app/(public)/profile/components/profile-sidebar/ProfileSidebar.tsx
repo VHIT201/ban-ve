@@ -32,7 +32,6 @@ const ProfileSidebar = () => {
   // Methods
   const handleChangeAvatar = async (file: File) => {
     try {
-      
       // const reader = new FileReader();
       // const base64Promise = new Promise<string>((resolve) => {
       //   reader.onloadend = () => resolve(reader.result as string);
@@ -45,7 +44,6 @@ const ProfileSidebar = () => {
       const result = await updateUserProfileMutation.mutateAsync({
         data: {
           // avatar: base64Avatar,
-          avatar: file,
           fullname: profileStore.fullName,
           email: profileStore.email,
         },
@@ -78,7 +76,11 @@ const ProfileSidebar = () => {
         {/* User Profile Header */}
         <div className="text-center p-6 border-b border-gray-100">
           <UploadAvatarDialog
-            avatarUrl={profileStore.avatar?.startsWith('blob:') ? profileStore.avatar : `${baseConfig.mediaDomain}/${profileStore.avatar}`}
+            avatarUrl={
+              profileStore.avatar?.startsWith("blob:")
+                ? profileStore.avatar
+                : `${baseConfig.mediaDomain}/${profileStore.avatar}`
+            }
             avatarAlt={profileStore.fullName || "User"}
             onAvatarChange={handleChangeAvatar}
             className="mb-6"
@@ -96,7 +98,7 @@ const ProfileSidebar = () => {
           {SIDEBAR_MENU.map((item) => {
             const isActive = isPathActive(item.path);
             const Icon = item.icon;
-            
+
             return (
               <Link
                 key={item.title}

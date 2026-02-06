@@ -25,17 +25,7 @@ import {
 } from "@/components/ui/form";
 import { Badge } from "@/components/ui/badge";
 
-import {
-  Lock,
-  CreditCard,
-  ShieldCheck,
-  X,
-  Smartphone,
-  Building2,
-  QrCode,
-  Check,
-} from "lucide-react";
-import { useCartStore } from "@/stores/use-cart-store";
+import { Lock, ShieldCheck, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { generateImageRandom } from "@/utils/image";
 import { useAuthStore, useProfileStore } from "@/stores";
@@ -53,6 +43,7 @@ import { PaymentStatusDialog } from "@/components/modules/payment";
 import { PaymentStatus } from "@/enums/payment";
 import { useCart } from "@/hooks/use-cart";
 import baseConfig from "@/configs/base";
+import Image from "@/components/ui/image";
 
 // Zod validation schemas
 const momoSchema = z.object({
@@ -290,8 +281,8 @@ const PaymentPage = () => {
           <CardContent className="p-0">
             {/* Image Section */}
             <div className="relative flex justify-center items-center bg-linear-to-br from-primary/10 to-gray-200 h-64">
-              <img
-                src={paymentWallet}
+              <Image
+                src={paymentWallet.src}
                 alt="Payment required"
                 className="w-64 h-64 object-contain drop-shadow-2xl relative z-10 animate-in fade-in-0 zoom-in-95 duration-500"
               />
@@ -520,7 +511,8 @@ const PaymentPage = () => {
                         <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden border">
                           <img
                             src={
-                              item.product.images && item.product.images.length > 0
+                              item.product.images &&
+                              item.product.images.length > 0
                                 ? `${baseConfig.mediaDomain}${item.product.images[0]}`
                                 : generateImageRandom()
                             }

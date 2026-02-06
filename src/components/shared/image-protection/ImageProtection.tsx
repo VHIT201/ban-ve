@@ -1,3 +1,5 @@
+"use client";
+
 import { FC, ReactNode, useEffect } from "react";
 import "@/styles/image-protection.css";
 
@@ -9,11 +11,13 @@ interface ImageProtectionProps {
 const ImageProtection: FC<ImageProtectionProps> = ({ children, className }) => {
   useEffect(() => {
     let notificationShown = false;
-    
+
     const showWarning = () => {
       if (!notificationShown) {
         notificationShown = true;
-        alert("⚠️ Nội dung được bảo vệ bản quyền. Vui lòng không sao chép hoặc chụp màn hình!");
+        alert(
+          "⚠️ Nội dung được bảo vệ bản quyền. Vui lòng không sao chép hoặc chụp màn hình!",
+        );
         setTimeout(() => {
           notificationShown = false;
         }, 3000);

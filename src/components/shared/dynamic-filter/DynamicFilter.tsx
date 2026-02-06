@@ -235,7 +235,11 @@ const DynamicFilter = <T extends z.ZodTypeAny>(props: Props<T>) => {
         */}
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 lg:gap-6">
           {Object.entries(getSchemaShape(schema)).map(([name, fieldSchema]) => {
-            const config = fieldConfig[name] ?? {};
+            const config = fieldConfig[name];
+
+            if (!config) {
+              return null;
+            }
 
             return (
               <FormField

@@ -9,11 +9,7 @@
     "noUncheckedSideEffectImports": true,
     /* Language and Environment */
     "target": "ES2020",
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
     "useDefineForClassFields": true,
     /* Modules */
@@ -40,9 +36,7 @@
     /* Path Mapping */
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     },
     "allowJs": true
   },
@@ -53,7 +47,5 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules", "src/api"]
 }

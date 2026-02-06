@@ -35,8 +35,8 @@ const HeaderProfileDropdown = () => {
   );
 
   const profileStore = useProfileStore(
-    useShallow(({ username, email, avatar, resetStore }) => ({
-      username,
+    useShallow(({ fullName, email, avatar, resetStore }) => ({
+      fullName,
       email,
       avatar,
       resetStore,
@@ -47,11 +47,11 @@ const HeaderProfileDropdown = () => {
     // Clear Zustand stores
     authStore.resetStore();
     profileStore.resetStore();
-    
+
     // Clear cookies
     removeCookie("accessToken");
     removeCookie("refreshToken");
-    
+
     // Redirect to login
     window.location.href = BASE_PATHS.auth.login.path;
   };
@@ -67,7 +67,7 @@ const HeaderProfileDropdown = () => {
                 alt="@shadcn"
               />
               <AvatarFallback className="bg-linear-to-br from-primary/20 to-primary/10 text-primary font-semibold text-sm rounded-lg">
-                {handleGetUsername(profileStore?.username ?? "Unknown")}
+                {handleGetUsername(profileStore?.fullName ?? "Unknown")}
               </AvatarFallback>
             </Avatar>
           </Button>
@@ -76,7 +76,7 @@ const HeaderProfileDropdown = () => {
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col gap-1.5">
               <p className="text-sm leading-none font-medium">
-                {profileStore.username}
+                {profileStore.fullName}
               </p>
               <p className="text-muted-foreground text-xs leading-none">
                 {profileStore.email}

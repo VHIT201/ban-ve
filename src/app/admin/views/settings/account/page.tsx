@@ -1,13 +1,15 @@
+"use client";
+
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   User,
   Mail,
@@ -15,36 +17,36 @@ import {
   Check,
   Loader2,
   Image as ImageIcon,
-} from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
-import { cn } from '@/lib/utils';
+} from "lucide-react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 import {
   useGetApiAuthMe,
   usePutApiAuthUpdateProfile,
-} from '@/api/endpoints/auth';
-import { toast } from 'sonner';
+} from "@/api/endpoints/auth";
+import { toast } from "sonner";
 
 /* ---------------------------------- */
 /* Schema */
 /* ---------------------------------- */
 
 const profileFormSchema = z.object({
-  name: z.string().min(2, 'Tên phải có ít nhất 2 ký tự'),
-  email: z.string().email('Email không hợp lệ'),
+  name: z.string().min(2, "Tên phải có ít nhất 2 ký tự"),
+  email: z.string().email("Email không hợp lệ"),
 });
 
 const passwordFormSchema = z
   .object({
-    currentPassword: z.string().min(6, 'Mật khẩu phải có ít nhất 6 ký tự'),
-    newPassword: z.string().min(6, 'Mật khẩu phải có ít nhất 6 ký tự'),
+    currentPassword: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+    newPassword: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: 'Mật khẩu xác nhận không khớp',
-    path: ['confirmPassword'],
+    message: "Mật khẩu xác nhận không khớp",
+    path: ["confirmPassword"],
   });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
@@ -80,40 +82,38 @@ export default function AccountSettings() {
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      name: '',
-      email: '',
+      name: "",
+      email: "",
     },
   });
 
   useEffect(() => {
     if (userData?.data) {
       profileForm.reset({
-        name: userData.data.username ?? '',
-        email: userData.data.email ?? '',
+        name: userData.data.fullname ?? "",
+        email: userData.data.email ?? "",
       });
     }
   }, [userData, profileForm]);
 
-  const {
-    mutate: updateProfile,
-    isPending: isUpdatingProfile,
-  } = usePutApiAuthUpdateProfile({
-    mutation: {
-      onSuccess: () => {
-        toast.success('Cập nhật thông tin thành công');
-        profileSaved.markSaved();
-        refetch();
+  const { mutate: updateProfile, isPending: isUpdatingProfile } =
+    usePutApiAuthUpdateProfile({
+      mutation: {
+        onSuccess: () => {
+          toast.success("Cập nhật thông tin thành công");
+          profileSaved.markSaved();
+          refetch();
+        },
+        onError: () => {
+          toast.error("Có lỗi xảy ra khi cập nhật thông tin");
+        },
       },
-      onError: () => {
-        toast.error('Có lỗi xảy ra khi cập nhật thông tin');
-      },
-    },
-  });
+    });
 
   const handleProfileSubmit = (values: ProfileFormValues) => {
     updateProfile({
       data: {
-        username: values.name,
+        fullname: values.name,
         email: values.email,
       },
     });
@@ -129,10 +129,10 @@ export default function AccountSettings() {
     try {
       await new Promise((r) => setTimeout(r, 1000)); // mock API
       passwordForm.reset();
-      toast.success('Đổi mật khẩu thành công');
+      toast.success("Đổi mật khẩu thành công");
       passwordSaved.markSaved();
     } catch {
-      toast.error('Có lỗi xảy ra khi đổi mật khẩu');
+      toast.error("Có lỗi xảy ra khi đổi mật khẩu");
     }
   };
 
@@ -163,9 +163,7 @@ export default function AccountSettings() {
             <div className="flex flex-col items-center space-y-4">
               <Avatar className="h-24 w-24 border">
                 <AvatarImage src="/placeholder-user.jpg" />
-                <AvatarFallback>
-                  {user?.username?.charAt(0)}
-                </AvatarFallback>
+                <AvatarFallback>{user?.fullname?.charAt(0)}</AvatarFallback>
               </Avatar>
 
               <Button variant="outline" size="sm" type="button">
@@ -179,7 +177,7 @@ export default function AccountSettings() {
                 label="Họ và tên"
                 icon={User}
                 error={profileForm.formState.errors.name?.message}
-                {...profileForm.register('name')}
+                {...profileForm.register("name")}
               />
 
               <InputField
@@ -187,14 +185,14 @@ export default function AccountSettings() {
                 icon={Mail}
                 type="email"
                 error={profileForm.formState.errors.email?.message}
-                {...profileForm.register('email')}
+                {...profileForm.register("email")}
               />
             </div>
 
             <Button
               type="submit"
               disabled={isUpdatingProfile || profileSaved.saved}
-              className={cn(profileSaved.saved && 'bg-green-500')}
+              className={cn(profileSaved.saved && "bg-green-500")}
             >
               {isUpdatingProfile ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -202,10 +200,10 @@ export default function AccountSettings() {
                 <Check className="w-4 h-4 mr-2" />
               ) : null}
               {isUpdatingProfile
-                ? 'Đang lưu...'
+                ? "Đang lưu..."
                 : profileSaved.saved
-                ? 'Đã lưu'
-                : 'Lưu thay đổi'}
+                  ? "Đã lưu"
+                  : "Lưu thay đổi"}
             </Button>
           </form>
         </CardContent>
@@ -227,10 +225,8 @@ export default function AccountSettings() {
               label="Mật khẩu hiện tại"
               icon={Lock}
               type="password"
-              error={
-                passwordForm.formState.errors.currentPassword?.message
-              }
-              {...passwordForm.register('currentPassword')}
+              error={passwordForm.formState.errors.currentPassword?.message}
+              {...passwordForm.register("currentPassword")}
             />
 
             <div className="grid md:grid-cols-2 gap-6">
@@ -239,24 +235,22 @@ export default function AccountSettings() {
                 icon={Lock}
                 type="password"
                 error={passwordForm.formState.errors.newPassword?.message}
-                {...passwordForm.register('newPassword')}
+                {...passwordForm.register("newPassword")}
               />
 
               <InputField
                 label="Xác nhận mật khẩu"
                 icon={Lock}
                 type="password"
-                error={
-                  passwordForm.formState.errors.confirmPassword?.message
-                }
-                {...passwordForm.register('confirmPassword')}
+                error={passwordForm.formState.errors.confirmPassword?.message}
+                {...passwordForm.register("confirmPassword")}
               />
             </div>
 
             <Button
               type="submit"
               disabled={passwordSaved.saved}
-              className={cn(passwordSaved.saved && 'bg-green-500')}
+              className={cn(passwordSaved.saved && "bg-green-500")}
             >
               {passwordSaved.saved ? (
                 <>
@@ -264,7 +258,7 @@ export default function AccountSettings() {
                   Đã cập nhật
                 </>
               ) : (
-                'Đổi mật khẩu'
+                "Đổi mật khẩu"
               )}
             </Button>
           </form>
@@ -274,23 +268,14 @@ export default function AccountSettings() {
   );
 }
 
-
-function InputField({
-  label,
-  icon: Icon,
-  error,
-  ...props
-}: any) {
+function InputField({ label, icon: Icon, error, ...props }: any) {
   return (
     <div className="space-y-2">
       <label className="text-sm font-medium flex items-center">
         <Icon className="w-4 h-4 mr-2 text-muted-foreground" />
         {label}
       </label>
-      <Input
-        {...props}
-        className={cn(error && 'border-destructive')}
-      />
+      <Input {...props} className={cn(error && "border-destructive")} />
       {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );

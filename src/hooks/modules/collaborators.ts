@@ -12,14 +12,14 @@ import type {
   UseQueryResult,
   UseMutationOptions,
 } from "@tanstack/react-query";
+
 import type {
   GetApiCollaboratorsRequests200,
   GetApiCollaboratorsRequestsParams,
-  GetApiCollaboratorsStats200,
-} from "../models";
+} from "../../api/models";
+import type { CollaboratorRequest } from "../../api/types/collaborator";
 
-import { mainInstance } from "../mutator/custom-instance";
-import { CollaboratorRequest } from "../types/collaborator";
+import { mainInstance } from "../../api/mutator/custom-instance";
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
@@ -29,23 +29,23 @@ type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
  */
 export const getApiCollaboratorsRequests = (
   params?: GetApiCollaboratorsRequestsParams,
-  options?: SecondParameter<typeof mainInstance>
+  options?: SecondParameter<typeof mainInstance>,
 ) => {
   return mainInstance<GetApiCollaboratorsRequests200>(
     { url: `/api/collaborators/requests`, method: "GET", params },
-    options
+    options,
   );
 };
 
 export const getGetApiCollaboratorsRequestsQueryKey = (
-  params?: GetApiCollaboratorsRequestsParams
+  params?: GetApiCollaboratorsRequestsParams,
 ) => {
   return [`/api/collaborators/requests`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetApiCollaboratorsRequestsQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiCollaboratorsRequests>>,
-  TError = unknown
+  TError = unknown,
 >(
   params?: GetApiCollaboratorsRequestsParams,
   options?: {
@@ -57,7 +57,7 @@ export const getGetApiCollaboratorsRequestsQueryOptions = <
       >
     >;
     request?: SecondParameter<typeof mainInstance>;
-  }
+  },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -83,7 +83,7 @@ export type GetApiCollaboratorsRequestsQueryError = unknown;
 
 export const useGetApiCollaboratorsRequests = <
   TData = Awaited<ReturnType<typeof getApiCollaboratorsRequests>>,
-  TError = unknown
+  TError = unknown,
 >(
   params?: GetApiCollaboratorsRequestsParams,
   options?: {
@@ -95,11 +95,11 @@ export const useGetApiCollaboratorsRequests = <
       >
     >;
     request?: SecondParameter<typeof mainInstance>;
-  }
+  },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetApiCollaboratorsRequestsQueryOptions(
     params,
-    options
+    options,
   );
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
@@ -116,11 +116,11 @@ export const useGetApiCollaboratorsRequests = <
  * @summary Xem thống kê cộng tác viên (Admin)
  */
 export const getApiCollaboratorsStats = (
-  options?: SecondParameter<typeof mainInstance>
+  options?: SecondParameter<typeof mainInstance>,
 ) => {
-  return mainInstance<GetApiCollaboratorsStats200>(
+  return mainInstance<GetApiCollaboratorsRequests200>(
     { url: `/api/collaborators/stats`, method: "GET" },
-    options
+    options,
   );
 };
 
@@ -130,7 +130,7 @@ export const getGetApiCollaboratorsStatsQueryKey = () => {
 
 export const getGetApiCollaboratorsStatsQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiCollaboratorsStats>>,
-  TError = unknown
+  TError = unknown,
 >(options?: {
   query?: Partial<
     UseQueryOptions<
@@ -164,7 +164,7 @@ export type GetApiCollaboratorsStatsQueryError = unknown;
 
 export const useGetApiCollaboratorsStats = <
   TData = Awaited<ReturnType<typeof getApiCollaboratorsStats>>,
-  TError = unknown
+  TError = unknown,
 >(options?: {
   query?: Partial<
     UseQueryOptions<
@@ -192,23 +192,23 @@ export const useGetApiCollaboratorsStats = <
  */
 export const getApiCollaboratorsRequestsRequestId = (
   requestId: string,
-  options?: SecondParameter<typeof mainInstance>
+  options?: SecondParameter<typeof mainInstance>,
 ) => {
   return mainInstance<CollaboratorRequest>(
     { url: `/api/collaborators/requests/${requestId}`, method: "GET" },
-    options
+    options,
   );
 };
 
 export const getGetApiCollaboratorsRequestsRequestIdQueryKey = (
-  requestId: string
+  requestId: string,
 ) => {
   return [`/api/collaborators/requests/${requestId}`] as const;
 };
 
 export const getGetApiCollaboratorsRequestsRequestIdQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiCollaboratorsRequestsRequestId>>,
-  TError = unknown
+  TError = unknown,
 >(
   requestId: string,
   options?: {
@@ -220,7 +220,7 @@ export const getGetApiCollaboratorsRequestsRequestIdQueryOptions = <
       >
     >;
     request?: SecondParameter<typeof mainInstance>;
-  }
+  },
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
@@ -255,7 +255,7 @@ export type GetApiCollaboratorsRequestsRequestIdQueryError = unknown;
 
 export const useGetApiCollaboratorsRequestsRequestId = <
   TData = Awaited<ReturnType<typeof getApiCollaboratorsRequestsRequestId>>,
-  TError = unknown
+  TError = unknown,
 >(
   requestId: string,
   options?: {
@@ -267,11 +267,11 @@ export const useGetApiCollaboratorsRequestsRequestId = <
       >
     >;
     request?: SecondParameter<typeof mainInstance>;
-  }
+  },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
   const queryOptions = getGetApiCollaboratorsRequestsRequestIdQueryOptions(
     requestId,
-    options
+    options,
   );
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
@@ -289,17 +289,17 @@ export const useGetApiCollaboratorsRequestsRequestId = <
  */
 export const putApiCollaboratorsRequestsRequestIdApprove = (
   requestId: string,
-  options?: SecondParameter<typeof mainInstance>
+  options?: SecondParameter<typeof mainInstance>,
 ) => {
   return mainInstance<CollaboratorRequest>(
     { url: `/api/collaborators/requests/${requestId}/approve`, method: "PUT" },
-    options
+    options,
   );
 };
 
 export const usePutApiCollaboratorsRequestsRequestIdApprove = <
   TError = unknown,
-  TContext = unknown
+  TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof putApiCollaboratorsRequestsRequestIdApprove>>,
@@ -316,7 +316,7 @@ export const usePutApiCollaboratorsRequestsRequestIdApprove = <
 
     return putApiCollaboratorsRequestsRequestIdApprove(
       requestId,
-      requestOptions
+      requestOptions,
     );
   };
 
@@ -335,7 +335,7 @@ export const usePutApiCollaboratorsRequestsRequestIdApprove = <
 export const putApiCollaboratorsRequestsRequestIdReject = (
   requestId: string,
   body: { rejectionReason?: string },
-  options?: SecondParameter<typeof mainInstance>
+  options?: SecondParameter<typeof mainInstance>,
 ) => {
   return mainInstance<CollaboratorRequest>(
     {
@@ -344,13 +344,13 @@ export const putApiCollaboratorsRequestsRequestIdReject = (
       headers: { "Content-Type": "application/json" },
       data: body,
     },
-    options
+    options,
   );
 };
 
 export const usePutApiCollaboratorsRequestsRequestIdReject = <
   TError = unknown,
-  TContext = unknown
+  TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof putApiCollaboratorsRequestsRequestIdReject>>,
@@ -371,7 +371,7 @@ export const usePutApiCollaboratorsRequestsRequestIdReject = <
     return putApiCollaboratorsRequestsRequestIdReject(
       requestId,
       data,
-      requestOptions
+      requestOptions,
     );
   };
 

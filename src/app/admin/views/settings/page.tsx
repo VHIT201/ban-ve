@@ -46,24 +46,6 @@ function ProfilePage() {
     error: fetchError,
   } = useGetApiAuthMe({
     query: {
-      onSuccess: (response: any) => {
-        const user = response?.data;
-        console.log("User data:", user);
-
-        if (user && (user.username || user.email)) {
-          setProfile({
-            username: user.username || "",
-            email: user.email || "",
-          });
-        } else {
-          console.warn("No user data found in response");
-          toast.warning("Không tìm thấy thông tin người dùng");
-        }
-      },
-      onError: (error: Error) => {
-        console.error("Lỗi khi tải thông tin người dùng:", error);
-        toast.error("Không thể tải thông tin người dùng");
-      },
       refetchOnWindowFocus: false,
     },
   });
@@ -72,12 +54,27 @@ function ProfilePage() {
   useEffect(() => {
     if (userData?.data) {
       const user = userData.data;
-      setProfile({
-        username: user.username || "",
-        email: user.email || "",
-      });
+      console.log("User data:", user);
+
+      if (user && (user.fullname || user.email)) {
+        setProfile({
+          username: user.fullname || "",
+          email: user.email || "",
+        });
+      } else {
+        console.warn("No user data found in response");
+        toast.warning("Không tìm thấy thông tin người dùng");
+      }
     }
   }, [userData]);
+
+  // Handle fetch errors
+  useEffect(() => {
+    if (fetchError) {
+      console.error("Lỗi khi tải thông tin người dùng:", fetchError);
+      toast.error("Không thể tải thông tin người dùng");
+    }
+  }, [fetchError]);
 
   // Update profile mutation
   const { mutate: updateProfile, isPending: isUpdating } =
@@ -111,7 +108,7 @@ function ProfilePage() {
     try {
       await updateProfile({
         data: {
-          username: profile.username,
+          fullname: profile.username,
           email: profile.email,
         },
       });
@@ -128,7 +125,7 @@ function ProfilePage() {
       const user =
         (userData as any)?.data?.user || (userData as any)?.data || userData;
       setProfile({
-        username: user.username || "",
+        username: user.fullname || "",
         email: user.email || "",
       });
     }

@@ -95,7 +95,7 @@ export const useCart = ({
         _id: item.contentId?._id,
         title: item.contentId?.title || "",
         description: item.contentId?.description || "",
-        price: item.contentId?.price || 0,
+        price: 0,
         images: item.contentId?.images || [],
       } as ContentResponse,
       quantity: item.quantity || 0,
@@ -217,10 +217,10 @@ export const useCart = ({
             data: {
               contentId: item.product._id,
             },
-          })
-        )
+          }),
+        ),
       );
-      await queryClient.invalidateQueries({ queryKey: ['/api/cart'] });
+      await queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
     } else {
       cartStore.clearCart();
     }

@@ -99,11 +99,11 @@ interface CollaboratorRequestFormProps {
   onCancel?: () => void;
   requestStatus?: "pending" | "approved" | "rejected";
   userInfo?: {
-    username?: string;
+    fullName?: string;
     email?: string;
   };
   approvedBy?: {
-    username?: string;
+    fullName?: string;
     email?: string;
   };
   approvedAt?: string;
@@ -221,7 +221,7 @@ const CollaboratorRequestForm = ({
                     <p className="text-sm text-muted-foreground">
                       Phê duyệt bởi
                     </p>
-                    <p className="font-medium">{approvedBy.username}</p>
+                    <p className="font-medium">{approvedBy.fullName}</p>
                     <p className="text-xs text-muted-foreground">
                       {new Date(approvedAt).toLocaleDateString("vi-VN", {
                         year: "numeric",
@@ -248,7 +248,7 @@ const CollaboratorRequestForm = ({
                 </div>
                 <div className="flex-1">
                   <p className="text-sm text-muted-foreground">Người đăng ký</p>
-                  <p className="font-semibold">{userInfo.username}</p>
+                  <p className="font-semibold">{userInfo.fullName}</p>
                   <p className="text-sm text-muted-foreground">
                     {userInfo.email}
                   </p>
@@ -267,23 +267,23 @@ const CollaboratorRequestForm = ({
               <FormLabel>
                 Số tài khoản ngân hàng <span className="text-red-500">*</span>
               </FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-                    <Input
-                      placeholder="Nhập số tài khoản (6-20 chữ số)..."
-                      className="pl-10 font-mono"
-                      {...field}
-                      disabled={isDisabled}
-                      maxLength={20}
-                      onChange={(e) => {
-                        // Only allow numbers
-                        const value = e.target.value.replace(/\D/g, "");
-                        field.onChange(value);
-                      }}
-                    />
-                  </div>
-                </FormControl>
+              <FormControl>
+                <div className="relative">
+                  <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+                  <Input
+                    placeholder="Nhập số tài khoản (6-20 chữ số)..."
+                    className="pl-10 font-mono"
+                    {...field}
+                    disabled={isDisabled}
+                    maxLength={20}
+                    onChange={(e) => {
+                      // Only allow numbers
+                      const value = e.target.value.replace(/\D/g, "");
+                      field.onChange(value);
+                    }}
+                  />
+                </div>
+              </FormControl>
               <FormDescription>
                 Số tài khoản ngân hàng để nhận hoa hồng (6-20 chữ số)
               </FormDescription>
@@ -386,7 +386,7 @@ const CollaboratorRequestForm = ({
                           </span>
                           <span className="font-semibold text-green-600">
                             {((commissionRate / 100) * 1000000).toLocaleString(
-                              "vi-VN"
+                              "vi-VN",
                             )}
                             ₫
                           </span>
@@ -397,7 +397,7 @@ const CollaboratorRequestForm = ({
                           </span>
                           <span className="font-semibold text-green-600">
                             {((commissionRate / 100) * 5000000).toLocaleString(
-                              "vi-VN"
+                              "vi-VN",
                             )}
                             ₫
                           </span>

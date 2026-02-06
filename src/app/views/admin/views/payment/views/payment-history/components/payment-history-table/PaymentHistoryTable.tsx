@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 // App
 import { DataTable, QueryBoundary } from "@/components/shared";
 import { useGetApiPaymentsAll } from "@/api/endpoints/payments";
-  
+
 // Internal
 import { useColumns } from "./lib/hooks";
 import { PaymentTableRow } from "./lib/types";
@@ -30,12 +30,20 @@ const PaymentHistoryTable = () => {
           const response = data as any;
           return {
             data: response?.data || [],
-            pagination: response?.pagination || { total: 0 }
+            pagination: response?.pagination || { total: 0 },
           };
         },
       },
-    }
-  ) as UseQueryResult<{ data: PaymentTableRow[]; pagination: { total: number; page: number; limit: number; totalPages: number } }>;
+    },
+  ) as UseQueryResult<{
+    data: PaymentTableRow[];
+    pagination: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
+  }>;
 
   // Hooks
   const navigate = useNavigate();

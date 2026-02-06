@@ -1,6 +1,14 @@
+"use client";
+
 // Core
 import { UseQueryResult } from "@tanstack/react-query";
-import { TrendingUp, Users, Package, DollarSign, ShoppingCart } from "lucide-react";
+import {
+  TrendingUp,
+  Users,
+  Package,
+  DollarSign,
+  ShoppingCart,
+} from "lucide-react";
 
 // App
 import { QueryBoundary } from "@/components/shared";
@@ -57,10 +65,8 @@ const StatCardSkeleton = () => {
 
 const CollaboratorStats = () => {
   // Earnings Query
-  const getEarningsQuery = useGetApiCollaboratorsEarnings() as UseQueryResult<
-    ApiResponse
-  >;
-  
+  const getEarningsQuery =
+    useGetApiCollaboratorsEarnings() as UseQueryResult<ApiResponse>;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -120,7 +126,6 @@ const CollaboratorStats = () => {
           );
         }}
       </QueryBoundary>
-
 
       {/* Top Collaborators Table */}
       <QueryBoundary query={getEarningsQuery}>

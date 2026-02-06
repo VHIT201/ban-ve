@@ -51,7 +51,7 @@ import { EnvelopeIcon } from "@phosphor-icons/react";
 
 // Schema validation
 const copyrightReportFormSchema = z.object({
-  email: z.string().email("Email không hợp lệ"),  
+  email: z.string().email("Email không hợp lệ"),
   violationType: z.nativeEnum(CopyrightReportViolationType, {
     required_error: "Vui lòng chọn loại vi phạm",
     invalid_type_error: "Loại vi phạm không hợp lệ",
@@ -128,8 +128,6 @@ const CopyRightEditorForm = ({
   const form = useForm<CopyrightReportFormValues>({
     resolver: zodResolver(copyrightReportFormSchema),
     defaultValues: {
-      contentId: defaultValues?.contentId || "",
-      reportedContentId: defaultValues?.reportedContentId || "",
       violationType:
         defaultValues?.violationType || CopyrightReportViolationType.copyright,
       description: defaultValues?.description || "",
@@ -250,94 +248,6 @@ const CopyRightEditorForm = ({
                   </h3>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Content ID */}
-                  {/* <FormField
-                    control={form.control}
-                    name="contentId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium text-gray-700">
-                          ID nội dung vi phạm
-                          <span className="text-red-500 ml-1">*</span>
-                        </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <FileText className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                            <Input
-                              placeholder="Nhập ID nội dung (24 ký tự)"
-                              className="pl-10 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 font-mono text-sm"
-                              {...field}
-                              disabled={loading || isViewMode}
-                              maxLength={24}
-                            />
-                            {field.value && (
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                className="absolute right-2 top-1/2 -translate-y-1/2 h-7 px-2"
-                                onClick={() =>
-                                  navigator.clipboard.writeText(field.value)
-                                }
-                              >
-                                <Copy className="h-3 w-3" />
-                              </Button>
-                            )}
-                          </div>
-                        </FormControl>
-                        <FormDescription className="text-xs text-gray-500">
-                          ID của nội dung bị báo cáo vi phạm
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  /> */}
-
-                  {/* Reported Content ID (Optional) */}
-                  {/* <FormField
-                    control={form.control}
-                    name="reportedContentId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium text-gray-700">
-                          ID nội dung gốc
-                          <span className="text-gray-400 ml-1">(Tùy chọn)</span>
-                        </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                            <Input
-                              placeholder="Nhập ID nội dung gốc"
-                              className="pl-10 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 font-mono text-sm"
-                              {...field}
-                              disabled={loading || isViewMode}
-                              maxLength={24}
-                            />
-                            {field.value && (
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                className="absolute right-2 top-1/2 -translate-y-1/2 h-7 px-2"
-                                onClick={() =>
-                                  navigator.clipboard.writeText(field.value)
-                                }
-                              >
-                                <Copy className="h-3 w-3" />
-                              </Button>
-                            )}
-                          </div>
-                        </FormControl>
-                        <FormDescription className="text-xs text-gray-500">
-                          ID của nội dung gốc bị sao chép (nếu có)
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  /> */}
-                </div>
-
                 {/* Contact Email */}
                 <FormField
                   control={form.control}
@@ -357,7 +267,7 @@ const CopyRightEditorForm = ({
                             disabled={loading || isViewMode}
                             maxLength={50}
                           />
-                                   <div className="absolute bottom-3 right-3 flex items-center gap-2">
+                          <div className="absolute bottom-3 right-3 flex items-center gap-2">
                             <Badge
                               variant={
                                 (field.value?.length || 0) < 0

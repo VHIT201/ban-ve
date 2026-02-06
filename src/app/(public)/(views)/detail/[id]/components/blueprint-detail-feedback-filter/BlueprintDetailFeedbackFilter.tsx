@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Star, ThumbsUp, ShieldCheck, TrendingUp, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Star, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Avatar } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import {
   usePostApiRatings,
@@ -53,7 +51,19 @@ const BlueprintDetailFeedbackFilter = ({
       refetchOnWindowFocus: false,
       queryKey: ["ratings", "stats", contentId],
     },
-  });
+  }) as {
+    data?:
+      | {
+          data?: {
+            averageStars?: number;
+            totalRatings?: number;
+            starsCount?: Record<number, number>;
+          };
+        }
+      | undefined;
+    isLoading: boolean;
+    error?: any;
+  };
 
   // Calculate derived values from the API response
   const averageRating = ratingStats?.data?.averageStars || 0;
@@ -80,8 +90,8 @@ const BlueprintDetailFeedbackFilter = ({
 
   const { mutate: submitRating, isPending: isSubmitting } = usePostApiRatings({
     mutation: {
-      onSuccess: (data) => {
-        toast.success(data?.message || "Cảm ơn bạn đã đánh giá!");
+      onSuccess: () => {
+        toast.success("Cảm ơn bạn đã đánh giá!");
         // Invalidate both the ratings list and the stats query
         queryClient.invalidateQueries({
           queryKey: ["ratings"],

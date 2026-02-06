@@ -94,14 +94,14 @@ const AddFileDialog = () => {
     setIsDragging(false);
 
     const files = e.dataTransfer.files;
-    if (files.length > 0) {
+    if (files.length > 0 && files[0]) {
       handleFileSelect(files[0]);
     }
   }, []);
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (files && files.length > 0) {
+    if (files && files.length > 0 && files[0]) {
       handleFileSelect(files[0]);
     }
   };
@@ -161,7 +161,7 @@ const AddFileDialog = () => {
               isDragging
                 ? "border-primary bg-primary/5"
                 : "border-border hover:border-primary/50",
-              selectedFile && "bg-muted/50"
+              selectedFile && "bg-muted/50",
             )}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}

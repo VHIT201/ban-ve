@@ -81,12 +81,19 @@ interface DownloadItemProps {
   download: DownloadItem;
 }
 
-function DownloadItemComponent({ download, onDownloadSuccess }: DownloadItemProps & { onDownloadSuccess: () => void }) {
-  const downloadQuery = useGetApiFileIdDownload(download.fileId, {
-    query: {
-      enabled: false,
+function DownloadItemComponent({
+  download,
+  onDownloadSuccess,
+}: DownloadItemProps & { onDownloadSuccess: () => void }) {
+  const downloadQuery = useGetApiFileIdDownload(
+    download.fileId,
+    {},
+    {
+      query: {
+        enabled: false,
+      },
     },
-  });
+  );
 
   const handleDownload = async () => {
     const isSignedIn = useAuthStore.getState().isSignedIn;
@@ -100,12 +107,6 @@ function DownloadItemComponent({ download, onDownloadSuccess }: DownloadItemProp
       const res = await downloadQuery.refetch();
 
       if (res.isError) {
-        console.error(res.error);
-        if (res.error?.status === 404) {
-          toast.error("Không tìm thấy đơn hàng.");
-          return;
-        }
-
         throw res.error;
       }
 
@@ -159,7 +160,7 @@ function DownloadItemComponent({ download, onDownloadSuccess }: DownloadItemProp
                       </h3>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="max-w-xs break-words">{fileName}</p>
+                      <p className="max-w-xs wrap-break-word">{fileName}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>

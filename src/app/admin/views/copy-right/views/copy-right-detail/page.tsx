@@ -365,22 +365,24 @@ const CopyRightDetail = () => {
                       <CardTitle className="text-base">Người báo cáo</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      {report.reporterId || report.reporterEmail ? (
+                      {report.reporterId ? (
                         <div className="space-y-3">
                           <div className="flex items-center gap-3">
                             <Avatar className="w-12 h-12">
                               <AvatarFallback className="bg-linear-to-br from-blue-500 to-cyan-600 text-white">
-                                {report.reporterId?.username?.[0]?.toUpperCase() ||
-                                  report.reporterEmail?.[0]?.toUpperCase() ||
+                                {report.reporterId?.fullname?.[0]?.toUpperCase() ||
+                                  report.reporterId?.email?.[0]?.toUpperCase() ||
                                   "?"}
                               </AvatarFallback>
                             </Avatar>
                             <div className="flex-1 min-w-0">
                               <p className="font-semibold truncate">
-                                {report.reporterEmail || report.reporterId?.email || "Không rõ"}
+                                {report.reporterId?.fullname ||
+                                  report.reporterId?.email ||
+                                  "Không rõ"}
                               </p>
                               <p className="text-sm text-muted-foreground truncate">
-                                {report.reporterEmail || report.reporterId?.email || "Không có email"}
+                                {report.reporterId?.email || "Không có email"}
                               </p>
                             </div>
                           </div>
@@ -388,7 +390,9 @@ const CopyRightDetail = () => {
                           <div className="space-y-2 text-sm">
                             {report.reporterId?._id && (
                               <div className="flex justify-between">
-                                <span className="text-muted-foreground">ID:</span>
+                                <span className="text-muted-foreground">
+                                  ID:
+                                </span>
                                 <span className="font-mono text-xs">
                                   {report.reporterId._id.substring(0, 12)}...
                                 </span>
@@ -482,13 +486,13 @@ const CopyRightDetail = () => {
                           <div className="flex items-center gap-3">
                             <Avatar className="w-12 h-12">
                               <AvatarFallback className="bg-linear-to-br from-green-500 to-emerald-600 text-white">
-                                {report.resolvedBy.username?.[0]?.toUpperCase() ||
+                                {report.resolvedBy.fullname?.[0]?.toUpperCase() ||
                                   "?"}
                               </AvatarFallback>
                             </Avatar>
                             <div className="flex-1 min-w-0">
                               <p className="font-semibold truncate">
-                                {report.resolvedBy.username || "Không rõ"}
+                                {report.resolvedBy.fullname || "Không rõ"}
                               </p>
                               <p className="text-sm text-muted-foreground truncate">
                                 {report.resolvedBy.email || "Không có email"}

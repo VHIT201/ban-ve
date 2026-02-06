@@ -189,8 +189,8 @@ export const CategoryDetail = () => {
           },
         );
 
-        if (imageRes?.path) {
-          imageUrl = `${baseConfig.mediaDomain}${imageRes.path}`;
+        if (imageRes?.url) {
+          imageUrl = `${baseConfig.mediaDomain}${imageRes.url}`;
         }
       } else {
         console.log("❌ No image selected");
@@ -237,8 +237,8 @@ export const CategoryDetail = () => {
           },
         );
 
-        if (imageRes?.path) {
-          imageUrl = `${baseConfig.mediaDomain}${imageRes.path}`;
+        if (imageRes?.url) {
+          imageUrl = `${baseConfig.mediaDomain}${imageRes.url}`;
         }
       }
 

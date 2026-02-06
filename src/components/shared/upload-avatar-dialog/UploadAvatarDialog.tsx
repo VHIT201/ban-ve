@@ -36,8 +36,8 @@ const UploadAvatarDialog: FC<Props> = ({
 
   // Hàm xử lý khi file được chọn
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    if (acceptedFiles && acceptedFiles.length > 0) {
-      const file = acceptedFiles[0];
+    if (acceptedFiles.length > 0) {
+      const file = acceptedFiles[0]!;
       setSelectedFile(file);
 
       // Tạo preview URL

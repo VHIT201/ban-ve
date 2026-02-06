@@ -51,7 +51,7 @@ export const useCartStore = create<CartStore>()(
       totalPrice: () => {
         return get().items.reduce(
           (total, item) => total + (item.product?.price || 0) * item.quantity,
-          0
+          0,
         );
       },
 
@@ -68,7 +68,7 @@ export const useCartStore = create<CartStore>()(
       addItem: (product: ContentResponse, quantity = 1) => {
         set((state) => {
           const existingItemIndex = state.items.findIndex(
-            (item) => item.product._id === product._id
+            (item) => item.product._id === product._id,
           );
 
           if (existingItemIndex > -1) {
@@ -76,7 +76,12 @@ export const useCartStore = create<CartStore>()(
             const updatedItems = [...state.items];
             updatedItems[existingItemIndex] = {
               ...updatedItems[existingItemIndex],
-              quantity: updatedItems[existingItemIndex].quantity + quantity,
+              product: updatedItems[existingItemIndex]?.product || product,
+              quantity:
+                (updatedItems[existingItemIndex]?.quantity ?? 0) + quantity,
+              addedAt:
+                updatedItems[existingItemIndex]?.addedAt ??
+                new Date().toISOString(),
             };
             return { items: updatedItems };
           } else {
@@ -113,7 +118,7 @@ export const useCartStore = create<CartStore>()(
 
         set((state) => {
           const updatedItems = state.items.map((item) =>
-            item.product._id === productId ? { ...item, quantity } : item
+            item.product._id === productId ? { ...item, quantity } : item,
           );
           return { items: updatedItems };
         });
@@ -124,7 +129,7 @@ export const useCartStore = create<CartStore>()(
           const updatedItems = state.items.map((item) =>
             item.product._id === productId
               ? { ...item, quantity: item.quantity + 1 }
-              : item
+              : item,
           );
           return { items: updatedItems };
         });
@@ -133,14 +138,14 @@ export const useCartStore = create<CartStore>()(
       decrementQuantity: (productId: string) => {
         set((state) => {
           const item = state.items.find(
-            (item) => item.product._id === productId
+            (item) => item.product._id === productId,
           );
           if (!item) return state;
 
           if (item.quantity <= 1) {
             return {
               items: state.items.filter(
-                (item) => item.product._id !== productId
+                (item) => item.product._id !== productId,
               ),
             };
           }
@@ -148,7 +153,7 @@ export const useCartStore = create<CartStore>()(
           const updatedItems = state.items.map((item) =>
             item.product._id === productId
               ? { ...item, quantity: item.quantity - 1 }
-              : item
+              : item,
           );
           return { items: updatedItems };
         });
@@ -177,6 +182,6 @@ export const useCartStore = create<CartStore>()(
       partialize: (state) => ({
         items: state.items,
       }),
-    }
-  )
+    },
+  ),
 );

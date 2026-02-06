@@ -17,7 +17,7 @@ export const useCommentSectionContext = () => {
 
   if (!context) {
     throw new Error(
-      "useCommentSectionContext must be used within a CommentSectionProvider"
+      "useCommentSectionContext must be used within a CommentSectionProvider",
     );
   }
 
@@ -64,24 +64,21 @@ export const useCommentList = (postId: string) => {
         const allComments = oldData.pages.flatMap((page) => page);
         const updatedComments = updater(allComments);
 
-        const newPages = [];
+        const newPages: Comment[][] = [];
         let remaining = [...updatedComments];
 
         while (remaining.length > 0) {
           const pageData = remaining.slice(0, COMMENT_PAGE_SIZE);
           remaining = remaining.slice(COMMENT_PAGE_SIZE);
 
-          newPages.push({
-            ...oldData.pages[0],
-            data: pageData,
-          });
+          newPages.push(pageData as Comment[]);
         }
 
         return {
           ...oldData,
           pages: newPages,
         };
-      }
+      },
     );
   };
 
@@ -99,7 +96,7 @@ export const useCommentList = (postId: string) => {
             .flatMap(
               (page) =>
                 (page as unknown as GetApiCommentsContentsContentId200).data ??
-                []
+                [],
             )
             .map((comment) => {
               if (comment._id === parentCommentId) {
@@ -114,13 +111,14 @@ export const useCommentList = (postId: string) => {
           newCommentItem,
           ...oldComments.flatMap(
             (page) =>
-              (page as unknown as GetApiCommentsContentsContentId200).data ?? []
+              (page as unknown as GetApiCommentsContentsContentId200).data ??
+              [],
           ),
         ];
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   );
 
   // Cập nhật comment
@@ -138,7 +136,7 @@ export const useCommentList = (postId: string) => {
             .flatMap(
               (page) =>
                 (page as unknown as GetApiCommentsContentsContentId200).data ??
-                []
+                [],
             )
             .map((comment) => {
               if (comment._id === parentCommentId) {
@@ -156,13 +154,13 @@ export const useCommentList = (postId: string) => {
           ).map((comment) =>
             comment._id === updatedCommentItem._id
               ? updatedCommentItem
-              : comment
-          )
+              : comment,
+          ),
         );
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   );
 
   // Xóa comment
@@ -180,7 +178,7 @@ export const useCommentList = (postId: string) => {
             .flatMap(
               (page) =>
                 (page as unknown as GetApiCommentsContentsContentId200).data ??
-                []
+                [],
             )
             .filter((comment) => comment._id !== commentId)
             .map((comment) => {
@@ -196,18 +194,18 @@ export const useCommentList = (postId: string) => {
         return oldComments.flatMap((page) =>
           (
             (page as unknown as GetApiCommentsContentsContentId200).data ?? []
-          ).filter((comment) => comment._id !== commentId)
+          ).filter((comment) => comment._id !== commentId),
         );
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   );
 
   const commentList =
     getCommentInfiniteQuery.data?.pages.flatMap(
       (page) =>
-        (page as unknown as GetApiCommentsContentsContentId200).data ?? []
+        (page as unknown as GetApiCommentsContentsContentId200).data ?? [],
     ) || [];
 
   return {

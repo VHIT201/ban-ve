@@ -22,7 +22,9 @@ import {
   ResourceItemCompact,
 } from "./components";
 import { toast } from "sonner";
-import ResourceItem from "./components/resource-item/ResourceItem";
+import ResourceItem, {
+  ResourceItemData,
+} from "./components/resource-item/ResourceItem";
 import { MAIN_AXIOS_INSTANCE } from "@/api/mutator/custom-instance";
 import { PaginationState } from "@tanstack/react-table";
 
@@ -91,20 +93,28 @@ const Resources = () => {
 
   // Handle page change
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    setPagination((prev) => ({
+      ...prev,
+      pageIndex: page - 1,
+    }));
   };
 
   // Handle items per page change
   const handleItemsPerPageChange = (newLimit: number) => {
-    setItemsPerPage(newLimit);
-    setCurrentPage(1); // Reset to first page when changing items per page
+    setPagination((prev) => ({
+      ...prev,
+      pageSize: newLimit,
+      pageIndex: 0,
+    }));
   };
 
   // Generate pagination array
   const generatePaginationItems = () => {
     if (!pagination) return [];
 
-    const { page = 1, totalPages = 1 } = pagination;
+    const { pageIndex = 0 } = pagination;
+    const totalPages = getFileListQuery.data?.data?.pagination?.totalPages || 1;
+    const page = pageIndex + 1;
     const items = [];
 
     // Always show first page
@@ -224,7 +234,7 @@ const Resources = () => {
                 </SelectContent>
               </Select>
               <Select
-                value={itemsPerPage.toString()}
+                value={pagination.pageSize.toString()}
                 onValueChange={(value) =>
                   handleItemsPerPageChange(Number(value))
                 }
@@ -285,7 +295,11 @@ const Resources = () => {
                       {filteredItems.map((item: ResourceItemData) => (
                         <ResourceItemCompact
                           key={item._id}
-                          item={item}
+                          item={{
+                            ...item,
+                            size: item.size || 0,
+                            createdAt: item.createdAt || "",
+                          }}
                           onView={(data) =>
                             setPreviewItem(data as FileResponse)
                           }
@@ -359,7 +373,7 @@ const Resources = () => {
                   }
                 >
                   Sau
-                  <ChevronRight className="h-4 w-4 ml-1" />
+                  <ChevronRight className="size-4 ml-1" />
                 </Button>
               </div>
             </div>
@@ -371,7 +385,6 @@ const Resources = () => {
         open={!!deleteItem}
         onOpenChange={(open) => !open && setDeleteItem(null)}
         onConfirm={handleDeleteFile}
-        deleting={deleteFileMutation.isPending}
         deleting={deleteFileMutation.isPending}
         title="Xóa file"
         description={`Bạn có chắc chắn muốn xóa file "${deleteItem?.name}"? Hành động này không thể hoàn tác.`}

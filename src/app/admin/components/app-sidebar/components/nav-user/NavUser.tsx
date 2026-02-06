@@ -39,8 +39,8 @@ const NavUser = () => {
   const [open, setOpen] = useDialogState();
 
   const profileStore = useProfileStore(
-    useShallow(({ username, email, avatar, resetStore }) => ({
-      username,
+    useShallow(({ fullName, email, avatar, resetStore }) => ({
+      fullName,
       email,
       avatar,
       resetStore,
@@ -55,11 +55,11 @@ const NavUser = () => {
     // Clear Zustand stores
     authStore.resetStore();
     profileStore.resetStore();
-    
+
     // Clear cookies
     removeCookie("accessToken");
     removeCookie("refreshToken");
-    
+
     // Redirect to login
     window.location.href = BASE_PATHS.auth.login.path;
   };
@@ -77,15 +77,15 @@ const NavUser = () => {
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
                     src={`${baseConfig.mediaDomain}/${profileStore.avatar}`}
-                    alt={profileStore.username}
+                    alt={profileStore.fullName}
                   />
                   <AvatarFallback className="rounded-md bg-linear-to-br from-primary/20 to-primary/10 text-primary font-semibold text-sm">
-                    {handleGetUsername(profileStore.username || "User")}
+                    {handleGetUsername(profileStore.fullName || "User")}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-start text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {profileStore.username}
+                    {profileStore.fullName}
                   </span>
                   <span className="truncate text-xs">{profileStore.email}</span>
                 </div>
@@ -101,7 +101,7 @@ const NavUser = () => {
                 <div className="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                   <div className="grid flex-1 text-start text-sm leading-tight">
                     <span className="truncate font-semibold">
-                      {profileStore.username}
+                      {profileStore.fullName}
                     </span>
                     <span className="truncate text-xs">
                       {profileStore.email}

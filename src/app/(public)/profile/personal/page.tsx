@@ -33,13 +33,10 @@ const Personal = () => {
       profileStore.setStore({
         avatar: profileStore.avatar,
         fullName: data.fullname,
-        username: data.fullname,
         email: data.email,
       });
     } catch (error) {
-      toast.error(
-        extractErrorMessage(error) || "Cập nhật thông tin thất bại",
-      );
+      toast.error(extractErrorMessage(error) || "Cập nhật thông tin thất bại");
     }
   };
 

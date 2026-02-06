@@ -97,8 +97,14 @@ const BlueprintDetailView: FC<Props> = (props) => {
     mutation: {
       onSuccess: async () => {
         // Cập nhật store cục bộ sau khi gọi API thành công
-        addItem(content, 1);
-        setJustAdded(true);
+        if (!content._id) {
+          console.error("Missing content._id, cannot add to cart");
+          toast.error("Không thể thêm vào giỏ hàng: thiếu ID sản phẩm");
+        } else {
+          // content has required _id, cast to ContentResponse for the store API
+          addItem(content as unknown as ContentResponse, 1);
+          setJustAdded(true);
+        }
 
         // Làm mới dữ liệu giỏ hàng
         await queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
@@ -126,7 +132,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
       // Gọi API để thêm vào giỏ hàng
       await addToCart({
         data: {
-          contentId: content._id,
+          contentId: content._id!,
           quantity: 1,
         },
       });
@@ -295,7 +301,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
               </div>
               <div className="font-medium text-white">
                 {typeof content.category_id === "object"
-                  ? content.category_id.name
+                  ? content.category_id
                   : "N/A"}
               </div>
             </div>

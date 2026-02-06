@@ -3,7 +3,7 @@
 // Core
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { UseQueryResult } from "@tanstack/react-query";
+import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -39,6 +39,7 @@ const CollaboratorDetail = () => {
   const params = useParams<{ id: string }>();
   const id = params.id;
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   // States
   const [approveDialogOpen, setApproveDialogOpen] = useState(false);
@@ -165,13 +166,13 @@ const CollaboratorDetail = () => {
                         request.status as "pending" | "approved" | "rejected"
                       }
                       userInfo={{
-                        username: request.user?.username,
+                        fullName: request.user?.fullname,
                         email: request.user?.email,
                       }}
                       approvedBy={
                         request.approvedBy
                           ? {
-                              username: request.approvedBy.username,
+                              fullName: request.approvedBy.fullname,
                               email: request.approvedBy.email,
                             }
                           : undefined

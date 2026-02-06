@@ -6,7 +6,7 @@ interface GenerateMetadataParams {
   keywords?: string[];
   image?: string;
   url?: string;
-  type?: "website" | "article" | "product";
+  type?: "website" | "article";
   publishedTime?: string;
   authors?: string[];
 }

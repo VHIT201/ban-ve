@@ -20,7 +20,7 @@ export function BasicUploadExample() {
   const handleUpload = async () => {
     if (files.length === 0) return;
 
-    const result = await uploadSingle(files[0], {
+    const result = await uploadSingle(files?.[0] ?? null, {
       compress: true,
       private: false,
     });
@@ -121,7 +121,7 @@ export function UploadWithPreviewsExample() {
   const { uploadWithImages, isUploading, uploadProgress } = useUploadMedia();
 
   const handleUpload = async () => {
-    if (mainFile.length === 0) return;
+    if (mainFile.length === 0 || !mainFile[0]) return;
 
     const result = await uploadWithImages(mainFile[0], previewImages, {
       compress: true,
@@ -196,7 +196,7 @@ export function AdvancedUploadExample() {
   }) => {
     if (files.length === 0) return;
 
-    const result = await uploadSingle(files[0], {
+    const result = await uploadSingle(files?.[0] ?? null, {
       filename: `custom-name-${Date.now()}`,
       dir: "premium-content",
       compress: true,
@@ -275,7 +275,7 @@ export function CompleteFormExample() {
       return;
     }
 
-    const result = await uploadSingle(files[0], {
+    const result = await uploadSingle(files?.[0] ?? null, {
       filename: formData.title,
       private: formData.private,
       requirePayment: formData.requirePayment,
@@ -291,7 +291,7 @@ export function CompleteFormExample() {
         private: false,
         requirePayment: false,
       });
-      clearProgress(files[0].name);
+      clearProgress(files?.[0]?.name ?? "");
 
       alert("Upload successful!");
     }

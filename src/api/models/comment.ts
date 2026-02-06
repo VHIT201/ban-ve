@@ -9,7 +9,8 @@ export interface Comment {
   email?: string;
   content?: string;
   isGuest?: boolean;
+  /** URL ảnh đại diện (User avatar hoặc Gravatar cho khách) */
+  avatar?: string;
   createdAt?: string;
   updatedAt?: string;
-  avatar?: string;
 }

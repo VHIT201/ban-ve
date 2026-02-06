@@ -57,7 +57,7 @@ const ContentTable = () => {
             pagination?: GetApiContentAll200Pagination;
           },
       },
-    }
+    },
   ) as UseQueryResult<{
     data: ContentResponse[];
     pagination?: GetApiContentAll200Pagination;
@@ -116,7 +116,6 @@ const ContentTable = () => {
     });
   };
 
-
   const approveContentMutation = usePutApiContentIdApprove({
     mutation: {
       onSuccess: () => {
@@ -133,7 +132,10 @@ const ContentTable = () => {
   const handleApprove = (content: ContentResponse) => {
     if (!content._id) return;
     if (confirm(`Bạn có chắc chắn muốn duyệt nội dung "${content.title}"?`)) {
-      approveContentMutation.mutate({ id: content._id, data: { status: "approved" } });
+      approveContentMutation.mutate({
+        id: content._id,
+        data: { status: "approved" },
+      });
     }
   };
 
@@ -143,8 +145,8 @@ const ContentTable = () => {
 
   const handleView = (content: ContentResponse) => {
     // Open content in a new tab or show preview
-    if (content.file?.url) {
-      window.open(content.file.url, '_blank');
+    if (content.file?.path) {
+      window.open(content.file.path, "_blank");
     }
   };
 

@@ -1,3 +1,5 @@
+"use client";
+
 import { useDeleteApiContentId } from "@/api/endpoints/content";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,7 +30,7 @@ export default function DeleteContentPage() {
       onError: (error: any) => {
         console.error("Failed to delete content:", error);
         toast.error(
-          `Lỗi khi xóa nội dung: ${error?.message || "Vui lòng thử lại sau"}`
+          `Lỗi khi xóa nội dung: ${error?.message || "Vui lòng thử lại sau"}`,
         );
       },
     },

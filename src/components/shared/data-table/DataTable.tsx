@@ -114,7 +114,10 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
         const selectedRowIds = Object.keys(newRowSelection).filter(
           (id) => newRowSelection[id],
         );
-        const selectedRows = selectedRowIds.map((id) => data[parseInt(id, 10)]);
+        const selectedRows = selectedRowIds
+          .map((id) => data[parseInt(id, 10)])
+          .filter((row): row is TData => row !== undefined);
+
         onSelectedRowsChange(selectedRows);
       }
 

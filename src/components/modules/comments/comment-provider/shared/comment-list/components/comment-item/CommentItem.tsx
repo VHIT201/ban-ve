@@ -32,7 +32,7 @@ const CommentItem: FC<Props> = (props) => {
 
   // Stores
   const profileStore = useProfileStore(
-    useShallow(({ email, username }) => ({ email, username })),
+    useShallow(({ email, fullName }) => ({ email, fullName })),
   );
 
   // Hooks
@@ -79,7 +79,7 @@ const CommentItem: FC<Props> = (props) => {
 
   const isMyComment =
     comment?.userId?.email === profileStore.email &&
-    comment?.userId?.fullname === profileStore.username;
+    comment?.userId?.fullname === profileStore.fullName;
 
   const getDisplayName = () => {
     if (comment.userId?.fullname) {

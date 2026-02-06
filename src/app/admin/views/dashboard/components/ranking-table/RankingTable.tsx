@@ -154,7 +154,7 @@ const RankingTable = () => {
         totalLikes: 200,
       },
     ],
-    []
+    [],
   );
 
   // Lọc dữ liệu dựa trên search term
@@ -164,9 +164,8 @@ const RankingTable = () => {
     const lowerSearchTerm = searchTerm.toLowerCase();
     return mockUserRankingData.filter(
       (user) =>
-        user.fullName?.toLowerCase().includes(lowerSearchTerm) ||
-        user.email?.toLowerCase().includes(lowerSearchTerm) ||
-        (user.phoneNumber && user.phoneNumber.includes(searchTerm))
+        user?.fullname?.toLowerCase().includes(lowerSearchTerm) ||
+        user?.email?.toLowerCase().includes(lowerSearchTerm),
     );
   }, [searchTerm, mockUserRankingData]);
 

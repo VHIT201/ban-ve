@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef } from "react";
 
 export interface UseWatermarkOptions {
@@ -33,7 +35,7 @@ export interface UseWatermarkOptions {
  * Custom hook để tạo watermark trên canvas element
  * @param options Cấu hình watermark
  * @returns canvasRef - Ref để attach vào canvas element
- * 
+ *
  * @example
  * ```tsx
  * const canvasRef = useWatermark({
@@ -41,7 +43,7 @@ export interface UseWatermarkOptions {
  *   rotation: -Math.PI / 6,
  *   fontSize: 22
  * });
- * 
+ *
  * return (
  *   <div className="relative">
  *     <canvas

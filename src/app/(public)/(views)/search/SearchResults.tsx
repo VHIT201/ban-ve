@@ -1,23 +1,22 @@
-'use client'
+"use client";
 
 // Core
-import { useSearchParams, useRouter } from 'next/navigation';
-import { FileIcon, SearchIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useSearchParams, useRouter } from "next/navigation";
+import { FileIcon, SearchIcon } from "lucide-react";
 
 // App
-import { useGetApiSearch } from '@/api/endpoints/search';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useEffect, useState } from 'react';
+import { useGetApiSearch } from "@/api/endpoints/search";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useEffect, useState } from "react";
 
 const SearchResults = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState('');
-  const query = searchParams.get('q') || '';
+  const [searchQuery, setSearchQuery] = useState("");
+  const query = searchParams.get("q") || "";
 
   // Update search query when URL changes
   useEffect(() => {
@@ -26,12 +25,12 @@ const SearchResults = () => {
 
   const { data, isLoading, error } = useGetApiSearch(
     { q: query },
-    { 
-      query: { 
+    {
+      query: {
         enabled: !!query,
-        refetchOnWindowFocus: false 
-      } 
-    }
+        refetchOnWindowFocus: false,
+      },
+    },
   );
 
   const handleSearch = (e: React.FormEvent) => {
@@ -99,7 +98,7 @@ const SearchResults = () => {
     <div className="container mx-auto p-4 max-w-6xl">
       <div className="mb-8">
         <h1 className="text-2xl font-bold mb-2">
-          {query ? `Kết quả tìm kiếm cho: ${query}` : 'Tìm kiếm tài liệu'}
+          {query ? `Kết quả tìm kiếm cho: ${query}` : "Tìm kiếm tài liệu"}
         </h1>
         <form onSubmit={handleSearch} className="flex gap-2">
           <Input
@@ -114,14 +113,16 @@ const SearchResults = () => {
           </Button>
         </form>
       </div>
-      
+
       {!query ? (
         <div className="text-center py-10">
           <div className="mx-auto w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
             <SearchIcon className="h-8 w-8 text-muted-foreground" />
           </div>
           <h3 className="text-lg font-medium mb-2">Nhập từ khóa để tìm kiếm</h3>
-          <p className="text-muted-foreground">Tìm kiếm tài liệu, bản vẽ, và nhiều hơn nữa...</p>
+          <p className="text-muted-foreground">
+            Tìm kiếm tài liệu, bản vẽ, và nhiều hơn nữa...
+          </p>
         </div>
       ) : results.length === 0 ? (
         <div className="text-center py-10">
@@ -129,8 +130,10 @@ const SearchResults = () => {
             <SearchIcon className="h-8 w-8 text-muted-foreground" />
           </div>
           <h3 className="text-lg font-medium mb-2">Không tìm thấy kết quả</h3>
-          <p className="text-muted-foreground mb-4">Không có kết quả nào phù hợp với từ khóa "{query}"</p>
-          <Button variant="outline" onClick={() => setSearchQuery('')}>
+          <p className="text-muted-foreground mb-4">
+            Không có kết quả nào phù hợp với từ khóa "{query}"
+          </p>
+          <Button variant="outline" onClick={() => setSearchQuery("")}>
             Xóa bộ lọc
           </Button>
         </div>
@@ -144,7 +147,9 @@ const SearchResults = () => {
                     <FileIcon className="h-6 w-6 text-muted-foreground" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-medium">{item.title || 'Không có tiêu đề'}</h3>
+                    <h3 className="font-medium">
+                      {item.title || "Không có tiêu đề"}
+                    </h3>
                     {item.description && (
                       <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                         {item.description}
@@ -167,3 +172,5 @@ const SearchResults = () => {
     </div>
   );
 };
+
+export default SearchResults;

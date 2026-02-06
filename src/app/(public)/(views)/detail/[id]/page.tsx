@@ -1,14 +1,13 @@
 "use client";
 
-import React, { Fragment, useState } from "react";
-
-import { ContentResponse } from "@/api/types/content";
-import { Lens } from "@/components/ui/lens";
 import { BlueprintDetailFeedback, BlueprintDetailView } from "./components";
 import { useGetApiContentId } from "@/api/endpoints/content";
 import { QueryBoundary } from "@/components/shared";
 import { UseQueryResult } from "@tanstack/react-query";
 import BlueprintDetailFeedbackFilter from "./components/blueprint-detail-feedback-filter";
+import { Content } from "@/api/models";
+import { ContentResponse } from "@/api/types/content";
+import { use } from "react";
 
 interface DetailPageProps {
   params: Promise<{
@@ -17,15 +16,14 @@ interface DetailPageProps {
 }
 
 const Detail = ({ params }: DetailPageProps) => {
-  // Extract id from params (unwrap Promise in Next.js 15+)
-  const { id } = React.use(params);
+  const { id } = use(params);
 
   // Queries
   const getContentDetailQuery = useGetApiContentId(id, {
     query: {
-      select: (data) => data as unknown as ContentResponse,
+      select: (data) => data as unknown as Content,
     },
-  }) as UseQueryResult<ContentResponse>;
+  }) as UseQueryResult<Content>;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -43,7 +41,11 @@ const Detail = ({ params }: DetailPageProps) => {
         <div className="container mx-auto px-4 py-12 lg:py-16 grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="col-span-2">
             <QueryBoundary query={getContentDetailQuery}>
-              {(content) => <BlueprintDetailFeedback content={content} />}
+              {(content) => (
+                <BlueprintDetailFeedback
+                  content={content as unknown as ContentResponse}
+                />
+              )}
             </QueryBoundary>
           </div>
           <BlueprintDetailFeedbackFilter />

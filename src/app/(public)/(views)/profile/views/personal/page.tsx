@@ -1,3 +1,5 @@
+"use client";
+
 import { usePutApiAuthUpdateProfile } from "@/api/endpoints/auth";
 import { PersonalFormView } from "./components";
 import { useProfileStore } from "@/stores";

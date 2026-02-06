@@ -57,7 +57,7 @@ function PersonalFormView({ onSubmit }: Props) {
   useEffect(() => {
     if (user) {
       form.reset({
-        username: user.fullname || "",
+        fullname: user.fullname || "",
         email: user.email || "",
       });
     }

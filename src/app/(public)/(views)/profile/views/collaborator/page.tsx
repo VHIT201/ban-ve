@@ -34,11 +34,10 @@ import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 import { User, CreditCard, Percent } from "lucide-react";
 import { useMemo } from "react";
-import { ResponseData } from "@/api/types/base";
 import { UseQueryResult } from "@tanstack/react-query";
 import { CollaboratorMe } from "@/api/types/collaborator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CollaboratorContents, CollaboratorRevenue } from "./components";
+import { CollaboratorContents } from "./components";
 
 const collaboratorApplySchema = z.object({
   bankAccount: z
@@ -71,13 +70,16 @@ function CollaboratorForm() {
     applyMutation.mutate(
       { data },
       {
-        onSuccess: (response) => {
-          const message = response?.message || "Đã gửi đơn đăng ký thành công!";
+        onSuccess: () => {
+          const message = "Đã gửi đơn đăng ký thành công!";
           toast.success(message);
           form.reset();
         },
         onError: (error: any) => {
-          const message = error?.response?.data?.message || error?.message || "Gửi đơn thất bại";
+          const message =
+            error?.response?.data?.message ||
+            error?.message ||
+            "Gửi đơn thất bại";
           toast.error(message);
         },
       },
@@ -207,15 +209,15 @@ function CollaboratorStatus({
 
   console.log("Collaborator Status Data:", data?.earnings);
 
-  const revenueData = useMemo(() => {
-    const earnings = data?.earnings || null;
-    return {
-      totalRevenue: earnings?.totalAmount || 0,
-      totalCommission: earnings?.totalCommission || 0,
-      totalOrders: earnings?.totalOrders || 0,
-      totalAdmin: earnings?.totalAdminAmount || 0,
-    };
-  }, [data]);
+  // const revenueData = useMemo(() => {
+  //   const earnings = data?.earnings || null;
+  //   return {
+  //     totalRevenue: earnings?.totalAmount || 0,
+  //     totalCommission: earnings?.totalCommission || 0,
+  //     totalOrders: earnings?.totalOrders || 0,
+  //     totalAdmin: earnings?.totalAdminAmount || 0,
+  //   };
+  // }, [data]);
 
   return (
     <Tabs defaultValue="info">
@@ -225,8 +227,6 @@ function CollaboratorStatus({
       </TabsList>
 
       <TabsContent value="info" className="space-y-6">
-        <CollaboratorRevenue revenueData={revenueData} loading={loading} />
-
         <Card className="border border-gray-200 shadow-sm">
           <CardHeader className="border-b border-gray-100">
             <div className="flex items-start justify-between">
@@ -347,12 +347,16 @@ function CollaboratorStatus({
 
 const Collaborator = () => {
   console.log("Collaborator component mounted");
-  
-  const getCollaboratorMeQuery = useGetApiCollaboratorsMe() as UseQueryResult<CollaboratorMe>;
-  
+
+  const getCollaboratorMeQuery =
+    useGetApiCollaboratorsMe() as UseQueryResult<CollaboratorMe>;
+
   console.log("getCollaboratorMeQuery status:", getCollaboratorMeQuery.status);
   console.log("getCollaboratorMeQuery data:", getCollaboratorMeQuery.data);
-  console.log("getCollaboratorMeQuery isLoading:", getCollaboratorMeQuery.isLoading);
+  console.log(
+    "getCollaboratorMeQuery isLoading:",
+    getCollaboratorMeQuery.isLoading,
+  );
   console.log("getCollaboratorMeQuery error:", getCollaboratorMeQuery.error);
 
   const collaboratorMe = useMemo(() => {

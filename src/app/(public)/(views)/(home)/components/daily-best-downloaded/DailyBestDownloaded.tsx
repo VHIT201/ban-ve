@@ -13,7 +13,6 @@ import {
 } from "@/components/modules/content";
 import { useGetApiContent } from "@/api/endpoints/content";
 import { ContentProduct, ContentResponse } from "@/api/types/content";
-import { GetApiContentStatisticsDownloadRanking200DataItem } from "@/api/models";
 import { UseQueryResult } from "@tanstack/react-query";
 import { QueryBoundary } from "@/components/shared";
 
@@ -37,7 +36,7 @@ const DailyBestDownloaded = () => {
           (data as unknown as ResponseData<ContentProduct[]>).data,
       },
     },
-  ) as UseQueryResult<GetApiContentStatisticsDownloadRanking200DataItem[]>;
+  ) as UseQueryResult<ContentProduct[]>;
 
   // Methods
   const handleViewDetail = (blueprint: ContentResponse) => {
@@ -77,23 +76,27 @@ const DailyBestDownloaded = () => {
               </div>
             }
           >
-            {(products) => (
-              <div className="lg:col-span-4">
-                <CarouselContent className="-ml-10">
-                  {products.map((product, index) => (
-                    <CarouselItem
-                      key={`product-${index}`}
-                      className="pl-10 md:basis-1/2 lg:basis-1/4"
-                    >
-                      <BlueprintCard
-                        product={product}
-                        onViewDetail={handleViewDetail}
-                      />
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-              </div>
-            )}
+            {(products) => {
+              console.log("DAILY BEST DOWNLOADED PRODUCTS", products);
+
+              return (
+                <div className="lg:col-span-4">
+                  <CarouselContent className="-ml-10">
+                    {products.map((product, index) => (
+                      <CarouselItem
+                        key={`product-${index}`}
+                        className="pl-10 md:basis-1/2 lg:basis-1/4"
+                      >
+                        <BlueprintCard
+                          product={product}
+                          onViewDetail={handleViewDetail}
+                        />
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                </div>
+              );
+            }}
           </QueryBoundary>
         </div>
       </Carousel>

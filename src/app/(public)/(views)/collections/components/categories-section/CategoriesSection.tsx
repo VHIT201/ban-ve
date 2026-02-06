@@ -17,13 +17,16 @@ const CategoriesSection = () => {
   const router = useRouter();
 
   // Queries
-  const getCategoryListQuery = useGetApiCategories({
-    query: {
-      select: (data) =>
-        (data as unknown as ResponseData<{ categories: Category[] }>).data
-          .categories,
+  const getCategoryListQuery = useGetApiCategories(
+    {},
+    {
+      query: {
+        select: (data) =>
+          (data as unknown as ResponseData<{ categories: Category[] }>).data
+            .categories,
+      },
     },
-  }) as UseQueryResult<Category[]>;
+  ) as UseQueryResult<Category[]>;
 
   // Methods
   const handleCategoryClick = (category: Category) => {
@@ -54,7 +57,7 @@ const CategoriesSection = () => {
                 onClick={() => handleCategoryClick(category)}
                 className={cn(
                   "group relative aspect-square bg-white flex flex-col items-center justify-center p-8 transition-all duration-500 hover:z-10",
-                  "hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] cursor-pointer overflow-hidden"
+                  "hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] cursor-pointer overflow-hidden",
                 )}
               >
                 <div className="relative w-full aspect-square mb-6 overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
