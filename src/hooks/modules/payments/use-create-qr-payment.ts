@@ -13,7 +13,7 @@ import { usePaymentStore } from "@/stores";
 import { OrderItem } from "@/types/order";
 import { extractErrorMessage } from "@/utils/error";
 import { isUndefined } from "lodash-es";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { toast } from "sonner";
 
 // Types
@@ -44,7 +44,7 @@ const useCreateQRPayment = (props: Props) => {
   );
 
   // Methods
-  const handlePaymentSSEEvent = (data: SSEPaymentMessage) => {
+  const handlePaymentSSEEvent = useCallback((data: SSEPaymentMessage) => {
     if (data.status === PaymentStatus.PENDING) {
       onConnect?.();
       setIsStreaming(true);
@@ -52,7 +52,7 @@ const useCreateQRPayment = (props: Props) => {
       setIsStreaming(false);
     }
     setStreamingStatus(data.status);
-  };
+  }, [onConnect]);
 
   // Mutations
   const createOrderMutation = usePostApiOrders();
@@ -128,17 +128,19 @@ const useCreateQRPayment = (props: Props) => {
   };
 
   // Stream SSE Payment
+  const handleSSEEvent = useCallback((event: string, data: SSEPaymentMessage) => {
+    if (event === "payment_status") {
+      handlePaymentSSEEvent(data);
+    }
+  }, [handlePaymentSSEEvent]);
+
   useSSEStream({
     enable:
       Boolean(paymentQR?.paymentId) &&
       Boolean(paymentQR?.sseClientId) &&
       Boolean(orderPayment?.orderCode),
     url: `${baseConfig.backendDomain}api/sse/connect?sseClientId=${paymentQR?.sseClientId}&paymentId=${paymentQR?.paymentId}&orderCode=${orderPayment?.orderCode}`,
-    onEvent: (event, data: SSEPaymentMessage) => {
-      if (event === "payment_status") {
-        handlePaymentSSEEvent(data);
-      }
-    },
+    onEvent: handleSSEEvent,
   });
 
   const isIdle = useMemo(

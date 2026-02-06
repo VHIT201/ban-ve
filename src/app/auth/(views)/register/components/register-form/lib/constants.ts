@@ -6,7 +6,8 @@ export const REGISTER_FORM_SCHEMA = z
       .string()
       .min(2, "Họ tên phải có ít nhất 2 ký tự")
       .max(30, "Họ tên không được vượt quá 50 ký tự")
-      .regex(/^[\p{L}\s]+$/u, "Họ tên không được chứa số hoặc ký tự đặc biệt"),
+      .regex(/^[\p{L}\s]+$/u, "Họ tên không được chứa số hoặc ký tự đặc biệt")
+      .refine((val) => val === val.trim(), "Họ tên không được có khoảng trắng ở đầu hoặc cuối"),
 
     email: z.string().email("Email không hợp lệ"),
     password: z
@@ -33,8 +34,8 @@ export const REGISTER_FORM_SCHEMA = z
 export const DEFAULT_REGISTER_FORM_VALUES: z.infer<
   typeof REGISTER_FORM_SCHEMA
 > = {
-  name: "Nguyen Van A",
-  email: "nguyenvana@example.com",
-  password: "password",
-  confirmPassword: "password",
+  name: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
 };

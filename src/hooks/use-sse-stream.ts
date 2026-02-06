@@ -19,52 +19,74 @@ export default function useSSEStream<T>({
   useEffect(() => {
     const authStore = useAuthStore.getState();
 
-    if (!url || !enable || !authStore.accessToken) return;
+    if (!url || !enable || !authStore.accessToken) {
+      return undefined;
+    }
 
     const controller = new AbortController();
     abortRef.current = controller;
 
     (async () => {
-      const res = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${authStore.accessToken}`,
-          Accept: "text/event-stream",
-        },
-        signal: controller.signal,
-      });
+      try {
+        const res = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${authStore.accessToken}`,
+            Accept: "text/event-stream",
+          },
+          signal: controller.signal,
+        });
 
-      if (!res.body) return;
+        if (!res.body) return;
 
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
 
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() || "";
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() || "";
 
-        let eventName = "message";
+            let eventName = "message";
 
-        for (const line of lines) {
-          if (line.startsWith("event:")) {
-            eventName = line.replace("event:", "").trim();
+            for (const line of lines) {
+              if (line.startsWith("event:")) {
+                eventName = line.replace("event:", "").trim();
+              }
+
+              if (line.startsWith("data:")) {
+                const json = line.replace("data:", "").trim();
+                try {
+                  onEvent(eventName, JSON.parse(json));
+                } catch (parseError) {
+                  console.error("Failed to parse SSE data:", json, parseError);
+                }
+              }
+            }
           }
-
-          if (line.startsWith("data:")) {
-            const json = line.replace("data:", "").trim();
-            onEvent(eventName, JSON.parse(json));
+        } catch (readError) {
+          if (readError.name !== 'AbortError') {
+            console.error("Error reading SSE stream:", readError);
           }
+        } finally {
+          reader.releaseLock();
+        }
+      } catch (fetchError) {
+        if (fetchError.name !== 'AbortError') {
+          console.error("Error fetching SSE stream:", fetchError);
         }
       }
     })();
 
     return () => {
       console.log("CLOSE CONNECTING");
-      controller.abort();
+      if (controller && !controller.signal.aborted) {
+        controller.abort();
+      }
     };
-  }, [url, enable]);
+  }, [url, enable, onEvent]);
 }

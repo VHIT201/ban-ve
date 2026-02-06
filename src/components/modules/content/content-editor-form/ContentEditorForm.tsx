@@ -294,6 +294,10 @@ const ContentEditorForm = ({
   const submitForm = async (values: ContentFormValues) => {
     try {
       setUploadError(null);
+      
+      // Debug log
+      console.log("Submitting form with values:", values);
+      console.log("Price value:", values.price);
 
       // If new file is selected, upload it first
       if (values.files && values.files.length > 0) {
@@ -318,6 +322,9 @@ const ContentEditorForm = ({
           size: uploadedFile.size || 0,
         };
       }
+
+      // Debug log before submit
+      console.log("Final values before onSubmit:", values);
 
       // Submit form with uploaded file info
       await onSubmit(values);
@@ -568,7 +575,7 @@ const ContentEditorForm = ({
                     className="pl-10"
                     {...field}
                     onChange={(e) =>
-                      field.onChange(parseFloat(e.target.value) || 0)
+                      field.onChange(Math.round(parseFloat(e.target.value) * 100) / 100 || 0)
                     }
                     disabled={isLoading}
                   />

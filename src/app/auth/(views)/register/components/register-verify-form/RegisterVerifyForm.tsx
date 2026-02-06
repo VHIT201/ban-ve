@@ -74,10 +74,10 @@ const RegisterVerifyForm: FC<Props> = (props) => {
       });
 
       setCountdown(30);
-      toast.success("✅ Đã gửi lại mã OTP thành công. Vui lòng kiểm tra hộp thư đến hoặc thư mục spam.");
+      toast.success(" Đã gửi lại mã OTP thành công. Vui lòng kiểm tra hộp thư đến hoặc thư mục spam.");
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || 'Không thể gửi lại mã OTP. Vui lòng thử lại sau.';
-      toast.error(`❌ ${errorMessage}`);
+      toast.error(` ${errorMessage}`);
     }
   };
 
@@ -90,8 +90,8 @@ const RegisterVerifyForm: FC<Props> = (props) => {
         },
       });
 
-      toast.success("✅ Xác thực tài khoản thành công!");
-      toast.info("🔒 Bạn có thể đăng nhập ngay bây giờ.", {
+      toast.success(" Xác thực tài khoản thành công!");
+      toast.info(" Bạn có thể đăng nhập ngay bây giờ.", {
         duration: 5000,
       });
       
@@ -110,13 +110,13 @@ const RegisterVerifyForm: FC<Props> = (props) => {
             message: error.response.data.errors.otp[0]
           });
         }
-        toast.error(`❌ ${errorMessage}`);
+        toast.error(`${errorMessage}`);
       } else if (error.response?.status === 404) {
-        toast.error("❌ Email chưa được đăng ký hoặc đã bị xóa.");
+        toast.error("Email chưa được đăng ký hoặc đã bị xóa.");
       } else if (error.response?.status === 422) {
-        toast.error("❌ Mã OTP không hợp lệ hoặc đã hết hạn. Vui lòng thử lại.");
+        toast.error("Mã OTP không hợp lệ hoặc đã hết hạn. Vui lòng thử lại.");
       } else {
-        toast.error("❌ Có lỗi xảy ra khi xác thực. Vui lòng thử lại sau.");
+        toast.error("Có lỗi xảy ra khi xác thực. Vui lòng thử lại sau.");
       }
     }
   };

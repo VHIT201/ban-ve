@@ -12,9 +12,8 @@ interface CommentItemProps {
   comment: Comment & {
     userId?: {
       _id: string;
-      username: string;
+      fullname?: string;
       email?: string;
-      avatar?: string;
     };
     contentDetails?: {
       _id: string;
@@ -28,11 +27,11 @@ export const CommentItem = ({ comment }: CommentItemProps) => {
   // Lấy tên hiển thị của người bình luận
   const authorName = comment.isGuest
     ? comment.guestName || 'Khách'
-    : comment.userId?.username || 'Người dùng';
+    : comment.userId?.fullname || 'Người dùng';
 
   // Tạo avatar từ tên nếu không có avatar
-  const avatarUrl = !comment.isGuest && comment.userId?.avatar
-    ? comment.userId.avatar
+  const avatarUrl = !comment.isGuest && comment.userId?.fullname
+    ? `https://ui-avatars.com/api/?name=${encodeURIComponent(authorName)}&background=random`
     : `https://ui-avatars.com/api/?name=${encodeURIComponent(authorName)}&background=random`;
 
   // Định dạng ngày tháng
