@@ -1,5 +1,12 @@
 import { Textarea } from "@/components/ui/textarea";
-import { SendHorizontalIcon, Smile, ImageIcon, X, Loader2, Trash2 } from "lucide-react";
+import {
+  SendHorizontalIcon,
+  Smile,
+  ImageIcon,
+  X,
+  Loader2,
+  Trash2,
+} from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,13 +27,14 @@ import { Badge } from "@/components/ui/badge";
 import {
   usePostApiCommentsContentsContentId,
   usePutApiCommentsId,
-  useDeleteApiCommentsId
+  useDeleteApiCommentsId,
 } from "@/api/endpoints/comments";
 import { MutationDataResult } from "@/api/types/base";
 import { CommentItem } from "../../lib/types";
 import { toast } from "sonner";
 import { useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
+import baseConfig from "@/configs/base";
 
 const CommentCreationForm: FC<Props> = (props) => {
   // Props
@@ -41,11 +49,14 @@ const CommentCreationForm: FC<Props> = (props) => {
 
   // Stores
   const profileStore = useProfileStore(
-    useShallow(({ email, fullName }) => ({
+    useShallow(({ email, fullName, avatar }) => ({
       email,
       fullName,
-    }))
+      avatar: avatar ? `${baseConfig.mediaDomain}/${avatar}` : undefined,
+    })),
   );
+
+  console.log("Profile Store:", profileStore);
 
   // Hooks
   const { contentId, createComment, updateComment } =
@@ -56,14 +67,14 @@ const CommentCreationForm: FC<Props> = (props) => {
 
   // States
   const [commentContent, setCommentContent] = useState<string>(
-    defaultValues?.content ?? ""
+    defaultValues?.content ?? "",
   );
   const [commentMediaList, setCommentMediaList] = useState<File[]>([]);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   // Mutations
   const createCommentMutation = usePostApiCommentsContentsContentId();
   const editCommentMutation = usePutApiCommentsId();
-  const deleteCommentMutation=useDeleteApiCommentsId();
+  const deleteCommentMutation = useDeleteApiCommentsId();
   // Methods
   const handleSubmit = async () => {
     if (commentContent.trim() === "") {
@@ -73,7 +84,7 @@ const CommentCreationForm: FC<Props> = (props) => {
 
     if (commentContent.length > MAX_COMMENT_LENGTH) {
       toast.warning(
-        `Bình luận không được vượt quá ${MAX_COMMENT_LENGTH} ký tự`
+        `Bình luận không được vượt quá ${MAX_COMMENT_LENGTH} ký tự`,
       );
       return;
     }
@@ -139,12 +150,12 @@ const CommentCreationForm: FC<Props> = (props) => {
 
   const handleDelete = async () => {
     if (!editableCommentId) return;
-    
+
     try {
       await deleteCommentMutation.mutateAsync({
-        id: editableCommentId
+        id: editableCommentId,
       });
-      
+
       toast.success("Đã xóa bình luận thành công");
       onClose?.();
     } catch (error) {
@@ -173,15 +184,15 @@ const CommentCreationForm: FC<Props> = (props) => {
     mode === "reply"
       ? "Viết phản hồi của bạn..."
       : mode === "edit"
-      ? "Chỉnh sửa bình luận..."
-      : "Viết bình luận của bạn...";
+        ? "Chỉnh sửa bình luận..."
+        : "Viết bình luận của bạn...";
 
   // Helper function to get user initials
   const getUserInitials = (name?: string) => {
     if (!name) return "U";
     const words = name.trim().split(" ");
     if (words.length >= 2) {
-      return `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase();
+      return `${words?.[0]?.[0]}${words?.[words.length - 1]?.[0]}`.toUpperCase();
     }
     return name.substring(0, 2).toUpperCase();
   };
@@ -196,7 +207,8 @@ const CommentCreationForm: FC<Props> = (props) => {
           <AlertDialogHeader>
             <AlertDialogTitle>Xác nhận xóa bình luận</AlertDialogTitle>
             <AlertDialogDescription>
-              Bạn có chắc chắn muốn xóa bình luận này? Hành động này không thể hoàn tác.
+              Bạn có chắc chắn muốn xóa bình luận này? Hành động này không thể
+              hoàn tác.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -218,7 +230,7 @@ const CommentCreationForm: FC<Props> = (props) => {
       </AlertDialog>
       <div
         className={cn(
-          "relative rounded-2xl border-2 bg-white transition-all duration-200"
+          "relative rounded-2xl border-2 bg-white transition-all duration-200",
         )}
       >
         {(mode === "edit" || mode === "reply") && (
@@ -263,8 +275,11 @@ const CommentCreationForm: FC<Props> = (props) => {
         <div className="flex gap-3 p-4">
           {mode === "create" && (
             <Avatar className="w-10 h-10 border-2 border-gray-100">
-              <AvatarImage 
-                src={profileStore.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${profileStore.fullName || profileStore.email}`} 
+              <AvatarImage
+                src={
+                  profileStore?.avatar ||
+                  `https://api.dicebear.com/7.x/initials/svg?seed=${profileStore.fullName || profileStore.email}`
+                }
               />
               <AvatarFallback className="bg-linear-to-br from-blue-500 to-purple-600 text-white font-semibold">
                 {getUserInitials(profileStore.fullName)}
@@ -287,7 +302,7 @@ const CommentCreationForm: FC<Props> = (props) => {
                   classNames?.textarea,
                   commentContent.length > MAX_COMMENT_LENGTH
                     ? "border-red-500"
-                    : ""
+                    : "",
                 )}
                 disabled={isSubmitting}
               />
@@ -346,7 +361,7 @@ const CommentCreationForm: FC<Props> = (props) => {
                 "h-9 px-4 gap-2 transition-all ml-auto",
                 hasContent
                   ? "bg-blue-600 hover:bg-blue-700 text-white shadow-md"
-                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-gray-100 text-gray-400 cursor-not-allowed",
               )}
             >
               {isSubmitting ? (

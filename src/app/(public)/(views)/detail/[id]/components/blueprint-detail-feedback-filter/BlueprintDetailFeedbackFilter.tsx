@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import {
   usePostApiRatings,
   usePutApiRatings,
-  useGetApiRatingsStatsContentId, 
+  useGetApiRatingsStatsContentId,
 } from "@/api/endpoints/ratings";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -181,7 +181,9 @@ const BlueprintDetailFeedbackFilter = ({
                 Hủy
               </Button>
               <Button onClick={handleEmailSubmit} disabled={isSubmitting}>
-                <span className="text-white">{isSubmitting ? "Đang gửi..." : "Gửi đánh giá"}</span>
+                <span className="text-white">
+                  {isSubmitting ? "Đang gửi..." : "Gửi đánh giá"}
+                </span>
               </Button>
             </div>
           </div>
@@ -266,7 +268,7 @@ const BlueprintDetailFeedbackFilter = ({
       </Card>
 
       {/* Top Helpful Reviews */}
-      <Card className="p-6 bg-card border-border">
+      {/* <Card className="p-6 bg-card border-border">
         <h3 className="text-sm font-semibold text-foreground">
           Đánh giá hữu ích
         </h3>
@@ -323,7 +325,7 @@ const BlueprintDetailFeedbackFilter = ({
             </div>
           ))}
         </div>
-      </Card>
+      </Card> */}
     </div>
   );
 };

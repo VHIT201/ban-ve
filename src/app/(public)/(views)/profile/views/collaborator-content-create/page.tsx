@@ -1,8 +1,6 @@
-'user client';
+"user client";
+
 import { usePostApiContentUpload } from "@/api/endpoints/content";
-import { usePostApiFileUpload } from "@/api/endpoints/files";
-import { MutationData } from "@/api/types/base";
-import { FileResponse } from "@/api/types/file";
 import { ContentEditorForm } from "@/components/modules/content";
 import { ContentFormValues } from "@/components/modules/content/content-editor-form/ContentEditorForm";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -22,9 +20,7 @@ const ContentDetail = () => {
   const createContentMutation = usePostApiContentUpload({
     mutation: {
       onSuccess: () => {
-        // Invalidate the content list query to refresh the data
         queryClient.invalidateQueries({ queryKey: ["/api/content"] });
-        // Navigate back to the content list
         router.push(BASE_PATHS.app.profile.collaborator.path);
       },
     },
@@ -51,7 +47,7 @@ const ContentDetail = () => {
       });
 
       toast.success(
-        "Đã gửi yêu cầu tạo bản vẽ mới thành công. Vui lòng chờ quản trị viên phê duyệt."
+        "Đã gửi yêu cầu tạo bản vẽ mới thành công. Vui lòng chờ quản trị viên phê duyệt.",
       );
     } catch (error) {
       toast.error("Đã có lỗi xảy ra khi tạo bản vẽ mới. Vui lòng thử lại sau.");

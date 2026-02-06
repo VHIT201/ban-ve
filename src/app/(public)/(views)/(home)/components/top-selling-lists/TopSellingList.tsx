@@ -20,7 +20,8 @@ import { useRouter } from "next/navigation";
 import { generateImageRandom } from "@/utils/image";
 import { cn } from "@/utils/ui";
 import { UseQueryResult } from "@tanstack/react-query";
-import { ChevronLeftIcon, ChevronRight } from "lucide-react";
+import { ChevronLeftIcon, ChevronRight, ChevronRightIcon } from "lucide-react";
+import baseConfig from "@/configs/base";
 
 interface BestSellingProduct {
   id: number;
@@ -55,11 +56,13 @@ const BestSellingData = () => {
       ?.map((item) => ({
         id: item.contentInfo?._id!,
         title: item.contentInfo?.title || "Untitled",
-        image: generateImageRandom(),
+        image: item.contentInfo?.images?.[0]
+          ? `${baseConfig.mediaDomain}/${item.contentInfo?.images?.[0]}`
+          : "",
         price: item.contentInfo?.price || 0,
-        puschaseCount: item.purchaseCount || 0,
+        purchaseCount: item.purchaseCount || 0,
       }))
-      .sort((a, b) => b.puschaseCount - a.puschaseCount) || [];
+      .sort((a, b) => b.purchaseCount - a.purchaseCount) || [];
 
   return (
     <section className="pt-8 pb-2 max-w-[1500px] mx-auto">
@@ -91,7 +94,7 @@ const BestSellingData = () => {
                   {/* Product Image */}
                   <div className="relative aspect-square max-h-[200px] overflow-hidden bg-gray-100">
                     <Image
-                      src={generateImageRandom()}
+                      src={product.image}
                       alt={product.title}
                       className="object-cover h-full w-full"
                     />
@@ -142,7 +145,7 @@ const BestSellingData = () => {
             "transition-all duration-200 w-10 h-10 md:w-12 md:h-12",
           )}
         >
-          <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+          <ChevronRightIcon className="w-5 h-5 md:w-6 md:h-6" />
         </CarouselNext>
       </Carousel>
     </section>

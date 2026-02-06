@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
   Edit3Icon,
   EllipsisIcon,
-  ReplyIcon,
   Trash2Icon,
   Heart,
   MessageCircle,
@@ -23,16 +22,18 @@ import { cn } from "@/utils/ui";
 import { formatRelativeTimeWithFallback } from "@/utils/date";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import baseConfig from "@/configs/base";
 
 const MAX_CONTENT_LENGTH = 100;
 
 const CommentItem: FC<Props> = (props) => {
   // Props
-  const { likeComment } = useCommentSectionContext();
   const { comment, isReply: isReplyDefault = false } = props;
 
   // Stores
-  const profileStore = useProfileStore(useShallow(({ email }) => ({ email })));
+  const profileStore = useProfileStore(
+    useShallow(({ email, username }) => ({ email, username })),
+  );
 
   // Hooks
   const { selectCommentIdToDelete } = useCommentSectionContext();
@@ -42,7 +43,6 @@ const CommentItem: FC<Props> = (props) => {
   const [isReply, setIsReply] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
-  // const [isSeeReplies, setIsSeeReplies] = useState(false);
   const [isDisplayContentSeeMore, setIsDisplayContentSeeMore] =
     useState<ContentStatus>(() => {
       return (comment?.content?.split("")?.length ?? 0) > MAX_CONTENT_LENGTH
@@ -58,14 +58,13 @@ const CommentItem: FC<Props> = (props) => {
   const handleToggleLike = () => {
     setIsLiked((prev) => !prev);
     setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
-    // TODO: Call API to like/unlike comment
   };
 
   const handleToggleExpandContent = () => {
     setIsDisplayContentSeeMore((prevStatus) =>
       prevStatus === ContentStatus.COLLAPSE
         ? ContentStatus.EXPAND
-        : ContentStatus.COLLAPSE
+        : ContentStatus.COLLAPSE,
     );
   };
 
@@ -78,9 +77,10 @@ const CommentItem: FC<Props> = (props) => {
           .join("") + "..."
       : comment?.content;
 
-  const isMyComment = comment.userId?.email === profileStore.email || comment.email === profileStore.email;
+  const isMyComment =
+    comment?.userId?.email === profileStore.email &&
+    comment?.userId?.fullname === profileStore.username;
 
-  // Get user display name and initials
   const getDisplayName = () => {
     if (comment.userId?.fullname) {
       return comment.userId.fullname;
@@ -91,20 +91,15 @@ const CommentItem: FC<Props> = (props) => {
   const getUserInitials = (name: string) => {
     const words = name.trim().split(" ");
     if (words.length >= 2) {
-      return `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase();
+      return `${words?.[0]?.[0]}${words?.[words.length - 1]?.[0]}`.toUpperCase();
     }
     return name.substring(0, 2).toUpperCase();
   };
 
+  const avatarUrl = comment.userId?.avatar
+    ? `${baseConfig.mediaDomain}/${comment.userId.avatar}`
+    : undefined;
   const displayName = getDisplayName();
-
-  // Debug: Log the comment structure to understand the data
-  console.log('Comment data:', {
-    comment,
-    userId: comment.userId,
-    guestName: comment.guestName,
-    displayName
-  });
 
   // Template
   return (
@@ -113,16 +108,14 @@ const CommentItem: FC<Props> = (props) => {
         "group transition-all duration-200",
         isReplyDefault
           ? "mt-3 w-full pl-12"
-          : "hover:bg-gray-50/50 rounded-xl p-3 -mx-3"
+          : "hover:bg-gray-50/50 rounded-xl p-3 -mx-3",
       )}
     >
       <div className="flex gap-3">
         {/* Avatar */}
         <Avatar className="w-10 h-10 border-2 border-white shadow-sm shrink-0">
-          <AvatarImage
-            src={`https://api.dicebear.com/7.x/initials/svg?seed=${displayName}`}
-          />
-          <AvatarFallback className="bg-linear-to-br from-blue-500 to-purple-600 text-white text-sm font-semibold">
+          <AvatarImage src={avatarUrl} />
+          <AvatarFallback className="text-white text-sm font-semibold">
             {getUserInitials(displayName)}
           </AvatarFallback>
         </Avatar>
@@ -147,7 +140,7 @@ const CommentItem: FC<Props> = (props) => {
                   <span className="text-xs text-gray-400">
                     {formatRelativeTimeWithFallback(
                       comment?.createdAt ?? new Date(),
-                      7
+                      7,
                     )}
                   </span>
                 </div>
@@ -193,7 +186,7 @@ const CommentItem: FC<Props> = (props) => {
               <div className="space-y-2">
                 <p
                   className={cn(
-                    "text-sm text-gray-700 leading-relaxed whitespace-pre-wrap wrap-break-word"
+                    "text-sm text-gray-700 leading-relaxed whitespace-pre-wrap wrap-break-word",
                   )}
                 >
                   {contentCollapsed}
@@ -222,13 +215,13 @@ const CommentItem: FC<Props> = (props) => {
                     "h-8 gap-1.5 px-3 text-xs font-medium transition-all",
                     isLiked
                       ? "text-red-600 hover:text-red-700 hover:bg-red-50"
-                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-100",
                   )}
                 >
                   <Heart
                     className={cn(
                       "w-4 h-4 transition-all",
-                      isLiked && "fill-current"
+                      isLiked && "fill-current",
                     )}
                   />
                   {likeCount > 0 && <span>{likeCount}</span>}
@@ -264,39 +257,6 @@ const CommentItem: FC<Props> = (props) => {
               />
             </div>
           )}
-
-          {/* Comments Children */}
-          {/* {comment.children.length > 0 && (
-            <div className="mt-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsSeeReplies((prev) => !prev)}
-                className="text-muted-foreground h-8 px-2"
-              >
-                {isSeeReplies ? (
-                  <ChevronUpIcon className="mr-1 h-4 w-4" />
-                ) : (
-                  <ChevronDownIcon className="mr-1 h-4 w-4" />
-                )}
-                {comment.children.length} phản hồi
-              </Button>
-
-              {isSeeReplies && (
-                <div className="mt-2">
-                  {comment.children.map((reply) => (
-                    <CommentItem
-                      isReply={true}
-                      key={reply.commentId}
-                      postId={postId}
-                      comment={reply}
-                      parentId={comment.commentId}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          )} */}
         </div>
       </div>
     </div>

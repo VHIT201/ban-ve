@@ -172,7 +172,6 @@ const BannerSection = () => {
                     {/* Right Column - Illustration */}
                     <div className="relative h-full">
                       <Image
-                        noWrapper
                         alt="banner"
                         src="https://images.pexels.com/photos/18435276/pexels-photo-18435276.jpeg"
                         className="object-cover shadow-2xl max-h-[250px] w-full transition-transform duration-300"

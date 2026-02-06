@@ -12,10 +12,16 @@ import {
 
 import { BASE_PATHS } from "@/constants/paths";
 import { useGetApiCategories } from "@/api/endpoints/categories";
+import { useRouter } from "next/navigation";
 
 const CategoriesFeatureSection = () => {
   // Hooks
-  const { data: categoriesResponse, isLoading, error } = useGetApiCategories({sort:'oldest'});
+  const router = useRouter();
+  const {
+    data: categoriesResponse,
+    isLoading,
+    error,
+  } = useGetApiCategories({ sort: "oldest" });
 
   // Extract categories array from response
   const categories = categoriesResponse?.data?.categories;
@@ -79,12 +85,19 @@ const CategoriesFeatureSection = () => {
         }}
       >
         <CarouselContent className="-ml-2 md:-ml-4">
-          {categories.map((category, index) => (
+          {categories.map((category) => (
             <CarouselItem
               key={category._id}
               className="pl-2 md:pl-4 basis-1/2 md:basis-1/3 lg:basis-1/5"
             >
-              <Card className="cursor-pointer flex relative flex-col bg-white shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 p-0 rounded-none">
+              <Card
+                onClick={() =>
+                  router.push(
+                    `${BASE_PATHS.app.collections.path}?category=${category._id}`,
+                  )
+                }
+                className="cursor-pointer flex relative flex-col bg-white shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 p-0 rounded-none"
+              >
                 <CardContent className="flex flex-col flex-1 p-2">
                   {/* Category Image */}
                   {category.imageUrl && (

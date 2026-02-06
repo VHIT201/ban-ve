@@ -11,4 +11,5 @@ export interface Comment {
   isGuest?: boolean;
   createdAt?: string;
   updatedAt?: string;
+  avatar?: string;
 }

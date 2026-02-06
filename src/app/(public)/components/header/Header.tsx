@@ -75,7 +75,6 @@ const Header = () => {
             >
               <div className="relative">
                 <div className="relative size-10 rounded-none rotate-6 bg-linear-to-br from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/20 group-hover:shadow-xl group-hover:shadow-primary/30 transition-all duration-300">
-                  \n{" "}
                   <DraftingCompassIcon
                     strokeWidth={2}
                     className="size-6 absolute left-1/2 top-1/2 -translate-1/2 -rotate-6"
@@ -140,7 +139,6 @@ const Header = () => {
               <div className="hidden sm:block">
                 <h1 className="text-md font-bold tracking-tight text-foreground group-hover:text-primary transition-colors duration-200">
                   Marketplace Data – Dataory
-
                 </h1>
                 <p className="text-xs text-muted-foreground/80 font-medium">
                   Premium Blueprints

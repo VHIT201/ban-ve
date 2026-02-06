@@ -10,8 +10,6 @@ import "@/styles/theme.css";
 // App
 import { Providers } from "./providers";
 import { AuthGate } from "@/components/modules/auth";
-import { ScrollToTop } from "./components";
-import { Footer, Header } from "@/app/(public)/components";
 
 // Metadata configuration
 export const metadata: Metadata = {

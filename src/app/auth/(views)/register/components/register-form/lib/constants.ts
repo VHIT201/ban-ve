@@ -5,9 +5,12 @@ export const REGISTER_FORM_SCHEMA = z
     name: z
       .string()
       .min(2, "Họ tên phải có ít nhất 2 ký tự")
-      .max(30, "Họ tên không được vượt quá 50 ký tự")
+      .max(20, "Họ tên không được vượt quá 20 ký tự")
       .regex(/^[\p{L}\s]+$/u, "Họ tên không được chứa số hoặc ký tự đặc biệt")
-      .refine((val) => val === val.trim(), "Họ tên không được có khoảng trắng ở đầu hoặc cuối"),
+      .refine(
+        (val) => val === val.trim(),
+        "Họ tên không được có khoảng trắng ở đầu hoặc cuối",
+      ),
 
     email: z.string().email("Email không hợp lệ"),
     password: z

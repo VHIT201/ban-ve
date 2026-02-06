@@ -21,8 +21,8 @@ import { ResponseData } from "@/api/types/base";
 import { useGetApiContentStatisticsPurchaseRanking } from "@/api/endpoints/content";
 
 import {
+  Content,
   GetApiContentStatisticsPurchaseRanking200DataItem,
-  GetApiContentStatisticsPurchaseRanking200DataItemContentInfo,
 } from "@/api/models";
 
 import { useRouter } from "next/navigation";
@@ -84,27 +84,30 @@ const DailyBestDownloaded = () => {
               </div>
             }
           >
-            {(products) => (
-              <div className="lg:col-span-4">
-                <CarouselContent className="-ml-10">
-                  {products?.map((product) => (
-                    <CarouselItem
-                      key={product?.contentId}
-                      className="pl-10 md:basis-1/2 lg:basis-1/4"
-                    >
-                      <BlueprintCard
-                        product={{
-                          _id: product.contentId!,
-                          ...(product.contentInfo as GetApiContentStatisticsPurchaseRanking200DataItemContentInfo),
-                          purchaseCount: product.purchaseCount,
-                        }}
-                        onViewDetail={handleViewDetail}
-                      />
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-              </div>
-            )}
+            {(products) => {
+              console.log("PRODUCTS", products);
+              return (
+                <div className="lg:col-span-4">
+                  <CarouselContent className="-ml-10">
+                    {products?.map((product) => (
+                      <CarouselItem
+                        key={product?.contentId}
+                        className="pl-10 md:basis-1/2 lg:basis-1/4"
+                      >
+                        <BlueprintCard
+                          product={{
+                            _id: product.contentId!,
+                            ...(product.contentInfo as Content),
+                            purchaseCount: product.purchaseCount,
+                          }}
+                          onViewDetail={handleViewDetail}
+                        />
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                </div>
+              );
+            }}
           </QueryBoundary>
         </div>
       </Carousel>
