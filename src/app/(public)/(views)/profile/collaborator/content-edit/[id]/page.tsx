@@ -85,10 +85,10 @@ const handleUpdateContent = async (contentId: string, formData: ContentFormValue
             <ContentEditorForm
               mode="edit"
               defaultValues={{
-                title: contentDetail.title,
-                description: contentDetail.description,
+                title: contentDetail.title || "",
+                description: contentDetail.description || "",
                 category_id: contentDetail.category_id?._id || "",
-                price: contentDetail.price,
+                price: contentDetail.price || 0,
                 content_file: contentDetail.file_id ? {
                   _id: contentDetail.file_id._id,
                   name: contentDetail.file_id.name,

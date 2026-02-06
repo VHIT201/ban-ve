@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useRef, useCallback } from "react";
 import { ForgotPasswordForm } from "./components/forgot-form";
 import ResetPasswordForm from "./components/reset-password/ResetPasswordForm";

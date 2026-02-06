@@ -156,7 +156,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
 
   return (
     <Fragment>
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-12">
         {/* Left Column - Image Gallery */}
         <div className="lg:col-span-3 space-y-4">
           {/* Main Image */}
@@ -170,7 +170,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
               <img
                 src={imageList[selectedImage]}
                 alt={content.title}
-                className="w-full h-[400px] lg:h-[550px] object-contain"
+                className="w-full h-[300px] sm:h-[400px] lg:h-[550px] object-contain"
               />
             </Lens>
           </div>
@@ -216,10 +216,10 @@ const BlueprintDetailView: FC<Props> = (props) => {
         </div>
 
         {/* Right Column - Product Info */}
-        <div className="lg:col-span-2 space-y-6 bg-white/5 p-6 rounded-xl shadow-lg h-fit">
+        <div className="lg:col-span-2 space-y-6 bg-white/5 p-4 sm:p-6 rounded-xl shadow-lg h-fit">
           {/* Header with Actions */}
-          <div className="flex items-start justify-between gap-3 ">
-            <h1 className="text-2xl lg:text-3xl font-bold text-white leading-tight flex-1">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white leading-tight flex-1">
               {content.title}
             </h1>
             <DropdownMenu>
@@ -253,7 +253,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
           </div>
           {/* Price & Rating */}
           <div className="space-y-3 pb-6 border-b border-white/10">
-            <div className="text-3xl lg:text-4xl font-bold text-white">
+            <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
               {content.price
                 ? new Intl.NumberFormat("vi-VN", {
                     style: "currency",
@@ -262,11 +262,11 @@ const BlueprintDetailView: FC<Props> = (props) => {
                 : "Miễn phí"}
             </div>
           </div>
-          <h6 className="text-white/50 text-md leading-relaxed">
+          <h6 className="text-white/50 text-sm sm:text-md leading-relaxed">
             {content.description || "Không có mô tả cho sản phẩm này."}
           </h6>
           {/* Quick Info */}
-          <div className="grid grid-cols-2 gap-4 py-6 border-b border-white/10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-6 border-b border-white/10">
             <div className="space-y-1.5">
               <div className="text-xs text-white/50 uppercase tracking-wide">
                 Loại file
@@ -303,10 +303,10 @@ const BlueprintDetailView: FC<Props> = (props) => {
           // ...
           {/* Action Buttons */}
           <div className="space-y-3 pt-4">
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 size="lg"
-                className="flex-1 h-12 bg-white text-gray-900 hover:bg-white/90 font-semibold hover:text-gray-900"
+                className="w-full sm:flex-1 h-12 bg-white text-gray-900 hover:bg-white/90 font-semibold hover:text-gray-900"
                 onClick={handleAddToCart}
                 disabled={isAdding}
                 variant="default"
@@ -331,7 +331,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
               <Button
                 size="lg"
                 variant="destructive"
-                className="flex-1 h-12 font-semibold"
+                className="w-full sm:flex-1 h-12 font-semibold"
                 onClick={handleBuyNow}
                 disabled={isFree}
               >

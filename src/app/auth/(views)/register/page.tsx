@@ -1,3 +1,5 @@
+"use client";
+
 import { Stepper } from "@/components/ui/stepper";
 
 import { User, Shield } from "lucide-react";

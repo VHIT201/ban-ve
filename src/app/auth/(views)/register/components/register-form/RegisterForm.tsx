@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Props, RegisterFormValues } from "./lib/types";
-import { User, MailIcon, LockIcon, Loader2Icon } from "lucide-react";
+import { User, MailIcon, LockIcon, Loader2Icon, EyeIcon, EyeOffIcon } from "lucide-react";
 import { FC, useState, useEffect } from "react";
 import {
   DEFAULT_REGISTER_FORM_VALUES,
@@ -32,6 +32,10 @@ import { toast } from "sonner";
 const RegisterForm: FC<Props> = (props) => {
   // Props
   const { onSubmit } = props;
+
+  // State
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Hooks
   const form = useForm<RegisterFormValues>({
@@ -51,7 +55,7 @@ const RegisterForm: FC<Props> = (props) => {
       await registerMutation.mutateAsync({
         data: {
           email: values.email,
-          username: values.name,
+          fullname: values.name,
           password: values.password,
         },
       });
@@ -136,11 +140,18 @@ const RegisterForm: FC<Props> = (props) => {
                 <div className="relative">
                   <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="Nhập mật khẩu"
-                    className="pl-10 h-10"
+                    className="pl-10 pr-10 h-10"
                     {...field}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {showPassword ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
+                  </button>
                 </div>
               </FormControl>
               <FormMessage />
@@ -158,11 +169,18 @@ const RegisterForm: FC<Props> = (props) => {
                 <div className="relative">
                   <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"}
                     placeholder="Nhập lại mật khẩu"
-                    className="pl-10 h-10"
+                    className="pl-10 pr-10 h-10"
                     {...field}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {showConfirmPassword ? <EyeOffIcon className="h-4 w-4" /> : <EyeIcon className="h-4 w-4" />}
+                  </button>
                 </div>
               </FormControl>
               <FormMessage />

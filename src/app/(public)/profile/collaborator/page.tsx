@@ -36,7 +36,7 @@ import { User, CreditCard, Percent, Loader2 } from "lucide-react";
 import { useMemo } from "react";
 import { ResponseData } from "@/api/types/base";
 import { UseQueryResult } from "@tanstack/react-query";
-import { CollaboratorRequest } from "@/api/types/collaborator";
+import { CollaboratorRequest, CollaboratorMe } from "@/api/types/collaborator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CollaboratorContents, CollaboratorRevenue } from "./components";
 
@@ -175,42 +175,44 @@ function CollaboratorForm() {
 }
 
 interface CollaboratorStatusProps {
-  data: CollaboratorRequest;
+  data: CollaboratorMe;
   loading: boolean;
 }
 
 function CollaboratorStatus({ data, loading }: CollaboratorStatusProps) {
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "approved":
-        return (
-          <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-            Đã duyệt
-          </Badge>
-        );
-      case "rejected":
-        return (
-          <Badge className="bg-red-100 text-red-700 hover:bg-red-100">
-            Đã từ chối
-          </Badge>
-        );
-      default:
-        return (
-          <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100">
-            Chờ duyệt
-          </Badge>
-        );
-    }
-  };
+  // const getStatusBadge = () => {
+  //   if (data.isApproved) {
+  //     return (
+  //       <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+  //         Đã duyệt
+  //       </Badge>
+  //     );
+  //   } else {
+  //     return (
+  //       <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100">
+  //         Chờ duyệt
+  //       </Badge>
+  //     );
+  //   }
+  // };
 
   const revenueData = useMemo(() => {
+    if (!data) {
+      return {
+        totalRevenue: 0,
+        totalCommission: 0,
+        totalOrders: 0,
+        totalAdmin: 0,
+      };
+    }
+    
     return {
-      totalRevenue: 0,
-      totalCommission: 0,
-      totalOrders: 0,
-      totalAdmin: 0,
+      totalRevenue: data.earnings?.totalAmount || 0,
+      totalCommission: data.earnings?.totalCommission || 0,
+      totalOrders: data.earnings?.totalOrders || 0,
+      totalAdmin: data.earnings?.totalAdminAmount || 0,
     };
-  }, []);
+  }, [data]);
 
   return (
     <Tabs defaultValue="info">
@@ -233,7 +235,7 @@ function CollaboratorStatus({ data, loading }: CollaboratorStatusProps) {
                   Chi tiết đơn đăng ký của bạn
                 </CardDescription>
               </div>
-              {getStatusBadge(data.status)}
+              {/* {getStatusBadge()} */}
             </div>
           </CardHeader>
           <CardContent className="pt-6">
@@ -272,59 +274,32 @@ function CollaboratorStatus({ data, loading }: CollaboratorStatusProps) {
               </div>
 
               {/* Approver */}
-              {data.approvedBy && (
-                <div className="flex items-start gap-4 p-4 bg-gray-50 border border-gray-100">
-                  <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0">
-                    <User className="w-5 h-5 text-gray-600" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-700 mb-1">
-                      Người duyệt
-                    </p>
-                    <p className="text-sm text-gray-900">
-                      {data.approvedBy.username || data.approvedBy.email}
-                    </p>
-                  </div>
-                </div>
-              )}
+              {/* Không hiển thị approver vì CollaboratorMe không có field này */}
 
               {/* Rejection Reason */}
-              {data.rejectionReason && data.status === "rejected" && (
-                <div className="p-4 bg-red-50 border border-red-200">
-                  <p className="text-sm font-semibold text-red-900 mb-1">
-                    Lý do từ chối
-                  </p>
-                  <p className="text-sm text-red-700">
-                    {data.rejectionReason}
-                  </p>
-                </div>
-              )}
+              {/* Không hiển thị rejection reason vì CollaboratorMe không có field này */}
 
               {/* Timestamps */}
               <div className="pt-4 border-t border-gray-100">
                 <div className="space-y-2 text-xs text-gray-500">
-                  {data.createdAt && (
-                    <div className="flex items-center justify-between">
-                      <span>Ngày gửi đơn</span>
-                      <span className="font-medium text-gray-700">
-                        {formatDistanceToNow(new Date(data.createdAt), {
-                          addSuffix: true,
-                          locale: vi,
-                        })}
-                      </span>
-                    </div>
-                  )}
-                  {data.approvedAt && (
-                    <div className="flex items-center justify-between">
-                      <span>Ngày duyệt</span>
-                      <span className="font-medium text-gray-700">
-                        {formatDistanceToNow(new Date(data.approvedAt), {
-                          addSuffix: true,
-                          locale: vi,
-                        })}
-                      </span>
-                    </div>
-                  )}
+                  <div className="flex items-center justify-between">
+                    <span>Ngày đăng ký</span>
+                    <span className="font-medium text-gray-700">
+                      {formatDistanceToNow(new Date(data.createdAt), {
+                        addSuffix: true,
+                        locale: vi,
+                      })}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Cập nhật lần cuối</span>
+                    <span className="font-medium text-gray-700">
+                      {formatDistanceToNow(new Date(data.updatedAt), {
+                        addSuffix: true,
+                        locale: vi,
+                      })}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -342,9 +317,9 @@ function CollaboratorStatus({ data, loading }: CollaboratorStatusProps) {
 const Collaborator = () => {
   const getCollaboratorMeQuery = useGetApiCollaboratorsMe({
     query: {
-      select: (data) => (data as unknown as ResponseData<CollaboratorRequest>).data,
+      select: (data) => (data as unknown as ResponseData<CollaboratorMe>).data,
     },
-  }) as UseQueryResult<CollaboratorRequest>;
+  }) as UseQueryResult<CollaboratorMe>;
 
   const collaboratorMe = useMemo(() => {
     return getCollaboratorMeQuery.data;
