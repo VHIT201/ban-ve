@@ -1,6 +1,9 @@
+'use client'
+
 // Core
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { FileIcon, SearchIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 // App
 import { useGetApiSearch } from '@/api/endpoints/search';
@@ -9,11 +12,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const SearchResults = () => {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const query = searchParams.get('q') || '';
 
@@ -35,7 +37,7 @@ const SearchResults = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
@@ -165,5 +167,3 @@ const SearchResults = () => {
     </div>
   );
 };
-
-export default SearchResults;

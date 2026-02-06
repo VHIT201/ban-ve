@@ -839,178 +839,218 @@ const usePostApiCategories = (options, queryClient)=>{
     const mutationOptions = getPostApiCategoriesMutationOptions(options);
     return (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$tanstack$2b$react$2d$query$40$5$2e$90$2e$6_react$40$19$2e$2$2e$0$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useMutation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useMutation"])(mutationOptions, queryClient);
 };
-const getApiCategories = (signal)=>{
+const getApiCategories = (params, signal)=>{
     return (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$api$2f$mutator$2f$custom$2d$instance$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["mainInstance"])({
         url: `/api/categories`,
         method: 'GET',
+        params,
         signal
     });
 };
-const getGetApiCategoriesInfiniteQueryKey = ()=>{
+const getGetApiCategoriesInfiniteQueryKey = (params)=>{
     return [
         'infinite',
-        `/api/categories`
+        `/api/categories`,
+        ...params ? [
+            params
+        ] : []
     ];
 };
-const getGetApiCategoriesQueryKey = ()=>{
+const getGetApiCategoriesQueryKey = (params)=>{
     return [
-        `/api/categories`
+        `/api/categories`,
+        ...params ? [
+            params
+        ] : []
     ];
 };
-const getGetApiCategoriesInfiniteQueryOptions = (options)=>{
+const getGetApiCategoriesInfiniteQueryOptions = (params, options)=>{
     const { query: queryOptions } = options ?? {};
-    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesInfiniteQueryKey();
-    const queryFn = ({ signal })=>getApiCategories(signal);
+    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesInfiniteQueryKey(params);
+    const queryFn = ({ signal, pageParam })=>getApiCategories({
+            ...params,
+            'page': pageParam || params?.['page']
+        }, signal);
     return {
         queryKey,
         queryFn,
         ...queryOptions
     };
 };
-function useGetApiCategoriesInfinite(options, queryClient) {
-    const queryOptions = getGetApiCategoriesInfiniteQueryOptions(options);
+function useGetApiCategoriesInfinite(params, options, queryClient) {
+    const queryOptions = getGetApiCategoriesInfiniteQueryOptions(params, options);
     const query = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$tanstack$2b$react$2d$query$40$5$2e$90$2e$6_react$40$19$2e$2$2e$0$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useInfiniteQuery$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useInfiniteQuery"])(queryOptions, queryClient);
     query.queryKey = queryOptions.queryKey;
     return query;
 }
-const getGetApiCategoriesQueryOptions = (options)=>{
+const getGetApiCategoriesQueryOptions = (params, options)=>{
     const { query: queryOptions } = options ?? {};
-    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesQueryKey();
-    const queryFn = ({ signal })=>getApiCategories(signal);
+    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesQueryKey(params);
+    const queryFn = ({ signal })=>getApiCategories(params, signal);
     return {
         queryKey,
         queryFn,
         ...queryOptions
     };
 };
-function useGetApiCategories(options, queryClient) {
-    const queryOptions = getGetApiCategoriesQueryOptions(options);
+function useGetApiCategories(params, options, queryClient) {
+    const queryOptions = getGetApiCategoriesQueryOptions(params, options);
     const query = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$tanstack$2b$react$2d$query$40$5$2e$90$2e$6_react$40$19$2e$2$2e$0$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useQuery"])(queryOptions, queryClient);
     query.queryKey = queryOptions.queryKey;
     return query;
 }
-const getApiCategoriesAllFlat = (signal)=>{
+const getApiCategoriesAllFlat = (params, signal)=>{
     return (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$api$2f$mutator$2f$custom$2d$instance$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["mainInstance"])({
         url: `/api/categories/all/flat`,
         method: 'GET',
+        params,
         signal
     });
 };
-const getGetApiCategoriesAllFlatInfiniteQueryKey = ()=>{
+const getGetApiCategoriesAllFlatInfiniteQueryKey = (params)=>{
     return [
         'infinite',
-        `/api/categories/all/flat`
+        `/api/categories/all/flat`,
+        ...params ? [
+            params
+        ] : []
     ];
 };
-const getGetApiCategoriesAllFlatQueryKey = ()=>{
+const getGetApiCategoriesAllFlatQueryKey = (params)=>{
     return [
-        `/api/categories/all/flat`
+        `/api/categories/all/flat`,
+        ...params ? [
+            params
+        ] : []
     ];
 };
-const getGetApiCategoriesAllFlatInfiniteQueryOptions = (options)=>{
+const getGetApiCategoriesAllFlatInfiniteQueryOptions = (params, options)=>{
     const { query: queryOptions } = options ?? {};
-    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesAllFlatInfiniteQueryKey();
-    const queryFn = ({ signal })=>getApiCategoriesAllFlat(signal);
+    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesAllFlatInfiniteQueryKey(params);
+    const queryFn = ({ signal, pageParam })=>getApiCategoriesAllFlat({
+            ...params,
+            'page': pageParam || params?.['page']
+        }, signal);
     return {
         queryKey,
         queryFn,
         ...queryOptions
     };
 };
-function useGetApiCategoriesAllFlatInfinite(options, queryClient) {
-    const queryOptions = getGetApiCategoriesAllFlatInfiniteQueryOptions(options);
+function useGetApiCategoriesAllFlatInfinite(params, options, queryClient) {
+    const queryOptions = getGetApiCategoriesAllFlatInfiniteQueryOptions(params, options);
     const query = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$tanstack$2b$react$2d$query$40$5$2e$90$2e$6_react$40$19$2e$2$2e$0$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useInfiniteQuery$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useInfiniteQuery"])(queryOptions, queryClient);
     query.queryKey = queryOptions.queryKey;
     return query;
 }
-const getGetApiCategoriesAllFlatQueryOptions = (options)=>{
+const getGetApiCategoriesAllFlatQueryOptions = (params, options)=>{
     const { query: queryOptions } = options ?? {};
-    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesAllFlatQueryKey();
-    const queryFn = ({ signal })=>getApiCategoriesAllFlat(signal);
+    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesAllFlatQueryKey(params);
+    const queryFn = ({ signal })=>getApiCategoriesAllFlat(params, signal);
     return {
         queryKey,
         queryFn,
         ...queryOptions
     };
 };
-function useGetApiCategoriesAllFlat(options, queryClient) {
-    const queryOptions = getGetApiCategoriesAllFlatQueryOptions(options);
+function useGetApiCategoriesAllFlat(params, options, queryClient) {
+    const queryOptions = getGetApiCategoriesAllFlatQueryOptions(params, options);
     const query = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$tanstack$2b$react$2d$query$40$5$2e$90$2e$6_react$40$19$2e$2$2e$0$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useQuery"])(queryOptions, queryClient);
     query.queryKey = queryOptions.queryKey;
     return query;
 }
-const getApiCategoriesAllTree = (signal)=>{
+const getApiCategoriesAllTree = (params, signal)=>{
     return (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$api$2f$mutator$2f$custom$2d$instance$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["mainInstance"])({
         url: `/api/categories/all/tree`,
         method: 'GET',
+        params,
         signal
     });
 };
-const getGetApiCategoriesAllTreeInfiniteQueryKey = ()=>{
+const getGetApiCategoriesAllTreeInfiniteQueryKey = (params)=>{
     return [
         'infinite',
-        `/api/categories/all/tree`
+        `/api/categories/all/tree`,
+        ...params ? [
+            params
+        ] : []
     ];
 };
-const getGetApiCategoriesAllTreeQueryKey = ()=>{
+const getGetApiCategoriesAllTreeQueryKey = (params)=>{
     return [
-        `/api/categories/all/tree`
+        `/api/categories/all/tree`,
+        ...params ? [
+            params
+        ] : []
     ];
 };
-const getGetApiCategoriesAllTreeInfiniteQueryOptions = (options)=>{
+const getGetApiCategoriesAllTreeInfiniteQueryOptions = (params, options)=>{
     const { query: queryOptions } = options ?? {};
-    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesAllTreeInfiniteQueryKey();
-    const queryFn = ({ signal })=>getApiCategoriesAllTree(signal);
+    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesAllTreeInfiniteQueryKey(params);
+    const queryFn = ({ signal, pageParam })=>getApiCategoriesAllTree({
+            ...params,
+            'page': pageParam || params?.['page']
+        }, signal);
     return {
         queryKey,
         queryFn,
         ...queryOptions
     };
 };
-function useGetApiCategoriesAllTreeInfinite(options, queryClient) {
-    const queryOptions = getGetApiCategoriesAllTreeInfiniteQueryOptions(options);
+function useGetApiCategoriesAllTreeInfinite(params, options, queryClient) {
+    const queryOptions = getGetApiCategoriesAllTreeInfiniteQueryOptions(params, options);
     const query = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$tanstack$2b$react$2d$query$40$5$2e$90$2e$6_react$40$19$2e$2$2e$0$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useInfiniteQuery$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useInfiniteQuery"])(queryOptions, queryClient);
     query.queryKey = queryOptions.queryKey;
     return query;
 }
-const getGetApiCategoriesAllTreeQueryOptions = (options)=>{
+const getGetApiCategoriesAllTreeQueryOptions = (params, options)=>{
     const { query: queryOptions } = options ?? {};
-    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesAllTreeQueryKey();
-    const queryFn = ({ signal })=>getApiCategoriesAllTree(signal);
+    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesAllTreeQueryKey(params);
+    const queryFn = ({ signal })=>getApiCategoriesAllTree(params, signal);
     return {
         queryKey,
         queryFn,
         ...queryOptions
     };
 };
-function useGetApiCategoriesAllTree(options, queryClient) {
-    const queryOptions = getGetApiCategoriesAllTreeQueryOptions(options);
+function useGetApiCategoriesAllTree(params, options, queryClient) {
+    const queryOptions = getGetApiCategoriesAllTreeQueryOptions(params, options);
     const query = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$tanstack$2b$react$2d$query$40$5$2e$90$2e$6_react$40$19$2e$2$2e$0$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useQuery"])(queryOptions, queryClient);
     query.queryKey = queryOptions.queryKey;
     return query;
 }
-const getApiCategoriesIdChildren = (id, signal)=>{
+const getApiCategoriesIdChildren = (id, params, signal)=>{
     return (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$api$2f$mutator$2f$custom$2d$instance$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["mainInstance"])({
         url: `/api/categories/${id}/children`,
         method: 'GET',
+        params,
         signal
     });
 };
-const getGetApiCategoriesIdChildrenInfiniteQueryKey = (id)=>{
+const getGetApiCategoriesIdChildrenInfiniteQueryKey = (id, params)=>{
     return [
         'infinite',
-        `/api/categories/${id}/children`
+        `/api/categories/${id}/children`,
+        ...params ? [
+            params
+        ] : []
     ];
 };
-const getGetApiCategoriesIdChildrenQueryKey = (id)=>{
+const getGetApiCategoriesIdChildrenQueryKey = (id, params)=>{
     return [
-        `/api/categories/${id}/children`
+        `/api/categories/${id}/children`,
+        ...params ? [
+            params
+        ] : []
     ];
 };
-const getGetApiCategoriesIdChildrenInfiniteQueryOptions = (id, options)=>{
+const getGetApiCategoriesIdChildrenInfiniteQueryOptions = (id, params, options)=>{
     const { query: queryOptions } = options ?? {};
-    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesIdChildrenInfiniteQueryKey(id);
-    const queryFn = ({ signal })=>getApiCategoriesIdChildren(id, signal);
+    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesIdChildrenInfiniteQueryKey(id, params);
+    const queryFn = ({ signal, pageParam })=>getApiCategoriesIdChildren(id, {
+            ...params,
+            'page': pageParam || params?.['page']
+        }, signal);
     return {
         queryKey,
         queryFn,
@@ -1018,16 +1058,16 @@ const getGetApiCategoriesIdChildrenInfiniteQueryOptions = (id, options)=>{
         ...queryOptions
     };
 };
-function useGetApiCategoriesIdChildrenInfinite(id, options, queryClient) {
-    const queryOptions = getGetApiCategoriesIdChildrenInfiniteQueryOptions(id, options);
+function useGetApiCategoriesIdChildrenInfinite(id, params, options, queryClient) {
+    const queryOptions = getGetApiCategoriesIdChildrenInfiniteQueryOptions(id, params, options);
     const query = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$tanstack$2b$react$2d$query$40$5$2e$90$2e$6_react$40$19$2e$2$2e$0$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useInfiniteQuery$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useInfiniteQuery"])(queryOptions, queryClient);
     query.queryKey = queryOptions.queryKey;
     return query;
 }
-const getGetApiCategoriesIdChildrenQueryOptions = (id, options)=>{
+const getGetApiCategoriesIdChildrenQueryOptions = (id, params, options)=>{
     const { query: queryOptions } = options ?? {};
-    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesIdChildrenQueryKey(id);
-    const queryFn = ({ signal })=>getApiCategoriesIdChildren(id, signal);
+    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesIdChildrenQueryKey(id, params);
+    const queryFn = ({ signal })=>getApiCategoriesIdChildren(id, params, signal);
     return {
         queryKey,
         queryFn,
@@ -1035,34 +1075,44 @@ const getGetApiCategoriesIdChildrenQueryOptions = (id, options)=>{
         ...queryOptions
     };
 };
-function useGetApiCategoriesIdChildren(id, options, queryClient) {
-    const queryOptions = getGetApiCategoriesIdChildrenQueryOptions(id, options);
+function useGetApiCategoriesIdChildren(id, params, options, queryClient) {
+    const queryOptions = getGetApiCategoriesIdChildrenQueryOptions(id, params, options);
     const query = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$tanstack$2b$react$2d$query$40$5$2e$90$2e$6_react$40$19$2e$2$2e$0$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useQuery"])(queryOptions, queryClient);
     query.queryKey = queryOptions.queryKey;
     return query;
 }
-const getApiCategoriesIdWithChildren = (id, signal)=>{
+const getApiCategoriesIdWithChildren = (id, params, signal)=>{
     return (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$api$2f$mutator$2f$custom$2d$instance$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["mainInstance"])({
         url: `/api/categories/${id}/with-children`,
         method: 'GET',
+        params,
         signal
     });
 };
-const getGetApiCategoriesIdWithChildrenInfiniteQueryKey = (id)=>{
+const getGetApiCategoriesIdWithChildrenInfiniteQueryKey = (id, params)=>{
     return [
         'infinite',
-        `/api/categories/${id}/with-children`
+        `/api/categories/${id}/with-children`,
+        ...params ? [
+            params
+        ] : []
     ];
 };
-const getGetApiCategoriesIdWithChildrenQueryKey = (id)=>{
+const getGetApiCategoriesIdWithChildrenQueryKey = (id, params)=>{
     return [
-        `/api/categories/${id}/with-children`
+        `/api/categories/${id}/with-children`,
+        ...params ? [
+            params
+        ] : []
     ];
 };
-const getGetApiCategoriesIdWithChildrenInfiniteQueryOptions = (id, options)=>{
+const getGetApiCategoriesIdWithChildrenInfiniteQueryOptions = (id, params, options)=>{
     const { query: queryOptions } = options ?? {};
-    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesIdWithChildrenInfiniteQueryKey(id);
-    const queryFn = ({ signal })=>getApiCategoriesIdWithChildren(id, signal);
+    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesIdWithChildrenInfiniteQueryKey(id, params);
+    const queryFn = ({ signal, pageParam })=>getApiCategoriesIdWithChildren(id, {
+            ...params,
+            'page': pageParam || params?.['page']
+        }, signal);
     return {
         queryKey,
         queryFn,
@@ -1070,16 +1120,16 @@ const getGetApiCategoriesIdWithChildrenInfiniteQueryOptions = (id, options)=>{
         ...queryOptions
     };
 };
-function useGetApiCategoriesIdWithChildrenInfinite(id, options, queryClient) {
-    const queryOptions = getGetApiCategoriesIdWithChildrenInfiniteQueryOptions(id, options);
+function useGetApiCategoriesIdWithChildrenInfinite(id, params, options, queryClient) {
+    const queryOptions = getGetApiCategoriesIdWithChildrenInfiniteQueryOptions(id, params, options);
     const query = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$tanstack$2b$react$2d$query$40$5$2e$90$2e$6_react$40$19$2e$2$2e$0$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useInfiniteQuery$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useInfiniteQuery"])(queryOptions, queryClient);
     query.queryKey = queryOptions.queryKey;
     return query;
 }
-const getGetApiCategoriesIdWithChildrenQueryOptions = (id, options)=>{
+const getGetApiCategoriesIdWithChildrenQueryOptions = (id, params, options)=>{
     const { query: queryOptions } = options ?? {};
-    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesIdWithChildrenQueryKey(id);
-    const queryFn = ({ signal })=>getApiCategoriesIdWithChildren(id, signal);
+    const queryKey = queryOptions?.queryKey ?? getGetApiCategoriesIdWithChildrenQueryKey(id, params);
+    const queryFn = ({ signal })=>getApiCategoriesIdWithChildren(id, params, signal);
     return {
         queryKey,
         queryFn,
@@ -1087,8 +1137,8 @@ const getGetApiCategoriesIdWithChildrenQueryOptions = (id, options)=>{
         ...queryOptions
     };
 };
-function useGetApiCategoriesIdWithChildren(id, options, queryClient) {
-    const queryOptions = getGetApiCategoriesIdWithChildrenQueryOptions(id, options);
+function useGetApiCategoriesIdWithChildren(id, params, options, queryClient) {
+    const queryOptions = getGetApiCategoriesIdWithChildrenQueryOptions(id, params, options);
     const query = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$tanstack$2b$react$2d$query$40$5$2e$90$2e$6_react$40$19$2e$2$2e$0$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useQuery"])(queryOptions, queryClient);
     query.queryKey = queryOptions.queryKey;
     return query;
@@ -1431,52 +1481,62 @@ const usePostApiFileUpload = (options, queryClient)=>{
     const mutationOptions = getPostApiFileUploadMutationOptions(options);
     return (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$tanstack$2b$react$2d$query$40$5$2e$90$2e$6_react$40$19$2e$2$2e$0$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useMutation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useMutation"])(mutationOptions, queryClient);
 };
-const getApiFile = (signal)=>{
+const getApiFile = (params, signal)=>{
     return (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$api$2f$mutator$2f$custom$2d$instance$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["mainInstance"])({
         url: `/api/file`,
         method: 'GET',
+        params,
         signal
     });
 };
-const getGetApiFileInfiniteQueryKey = ()=>{
+const getGetApiFileInfiniteQueryKey = (params)=>{
     return [
         'infinite',
-        `/api/file`
+        `/api/file`,
+        ...params ? [
+            params
+        ] : []
     ];
 };
-const getGetApiFileQueryKey = ()=>{
+const getGetApiFileQueryKey = (params)=>{
     return [
-        `/api/file`
+        `/api/file`,
+        ...params ? [
+            params
+        ] : []
     ];
 };
-const getGetApiFileInfiniteQueryOptions = (options)=>{
+const getGetApiFileInfiniteQueryOptions = (params, options)=>{
     const { query: queryOptions } = options ?? {};
-    const queryKey = queryOptions?.queryKey ?? getGetApiFileInfiniteQueryKey();
-    const queryFn = ({ signal })=>getApiFile(signal);
+    const queryKey = queryOptions?.queryKey ?? getGetApiFileInfiniteQueryKey(params);
+    const queryFn = ({ signal, pageParam })=>getApiFile({
+            ...params,
+            'page': pageParam || params?.['page']
+        }, signal);
     return {
         queryKey,
         queryFn,
         ...queryOptions
     };
 };
-function useGetApiFileInfinite(options, queryClient) {
-    const queryOptions = getGetApiFileInfiniteQueryOptions(options);
+function useGetApiFileInfinite(params, options, queryClient) {
+    const queryOptions = getGetApiFileInfiniteQueryOptions(params, options);
     const query = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$tanstack$2b$react$2d$query$40$5$2e$90$2e$6_react$40$19$2e$2$2e$0$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useInfiniteQuery$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useInfiniteQuery"])(queryOptions, queryClient);
     query.queryKey = queryOptions.queryKey;
     return query;
 }
-const getGetApiFileQueryOptions = (options)=>{
+const getGetApiFileQueryOptions = (params, options)=>{
     const { query: queryOptions } = options ?? {};
-    const queryKey = queryOptions?.queryKey ?? getGetApiFileQueryKey();
-    const queryFn = ({ signal })=>getApiFile(signal);
+    const queryKey = queryOptions?.queryKey ?? getGetApiFileQueryKey(params);
+    const queryFn = ({ signal })=>getApiFile(params, signal);
     return {
         queryKey,
         queryFn,
         ...queryOptions
     };
 };
-function useGetApiFile(options, queryClient) {
-    const queryOptions = getGetApiFileQueryOptions(options);
+function useGetApiFile(params, options, queryClient) {
+    const queryOptions = getGetApiFileQueryOptions(params, options);
     const query = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$tanstack$2b$react$2d$query$40$5$2e$90$2e$6_react$40$19$2e$2$2e$0$2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useQuery"])(queryOptions, queryClient);
     query.queryKey = queryOptions.queryKey;
     return query;
@@ -2299,6 +2359,8 @@ const getFileTypeLabel = (type)=>{
             return "PDF File";
         case __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$enums$2f$file$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FileType"].WORD:
             return "Word Document";
+        case __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$enums$2f$file$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FileType"].DOCX:
+            return "Word Document";
         case __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$enums$2f$file$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FileType"].EXCEL:
             return "Excel Spreadsheet";
         case __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$enums$2f$file$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FileType"].RAR:
@@ -2365,6 +2427,7 @@ var FileType = /*#__PURE__*/ function(FileType) {
     FileType["JPG"] = "JPG";
     FileType["IMAGE"] = "IMAGE";
     FileType["WORD"] = "WORD";
+    FileType["DOCX"] = "DOCX";
     FileType["EXCEL"] = "EXCEL";
     FileType["RAR"] = "RAR";
     FileType["ZIP"] = "ZIP";

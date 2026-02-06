@@ -1,61 +1,57 @@
+"use client";
+
 // Core
 import { useMemo } from "react";
-import {
-  isRouteErrorResponse,
-  useNavigate,
-  useRouteError,
-} from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 // App
 import { Button } from "@/components/ui/button";
 import { BASE_PATHS } from "@/constants/paths";
 import { Badge } from "@/components/ui/badge";
 
+interface RouterErrorBoundaryProps {
+  error?: Error & { digest?: string };
+  statusCode?: number;
+  reset?: () => void;
+}
+
 // Component
-const RouterErrorBoundary = () => {
+const RouterErrorBoundary = ({ error, statusCode = 500, reset }: RouterErrorBoundaryProps) => {
   // Hooks
-  const error = useRouteError();
-  const navigate = useNavigate();
-  const isRouteError = isRouteErrorResponse(error);
+  const router = useRouter();
 
   // Memos
   const routerError = useMemo(() => {
-    console.error(error);
-
-    if (isRouteError) {
-      switch (error.status) {
-        case 404:
-          return {
-            code: 404,
-            title: "Page Not Found",
-            message:
-              "Oops! The page you're looking for doesn't exist or has been moved.",
-          };
-        case 403:
-          return {
-            code: 403,
-            title: "Access Denied",
-            message: "You do not have permission to view this page.",
-          };
-        default:
-          return {
-            code: error.status,
-            title: `Error ${error.status}`,
-            message: "An unexpected error occurred.",
-          };
-      }
+    if (error) {
+      console.error(error);
     }
 
-    return {
-      code: 500,
-      title: "Internal Server Error",
-      message: "Something went wrong on our end. Please try again later.",
-    };
-  }, [isRouteError, error]);
+    switch (statusCode) {
+      case 404:
+        return {
+          code: 404,
+          title: "Page Not Found",
+          message:
+            "Oops! The page you're looking for doesn't exist or has been moved.",
+        };
+      case 403:
+        return {
+          code: 403,
+          title: "Access Denied",
+          message: "You do not have permission to view this page.",
+        };
+      default:
+        return {
+          code: statusCode,
+          title: `Error ${statusCode}`,
+          message: "An unexpected error occurred.",
+        };
+    }
+  }, [statusCode, error]);
 
   // Template
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-[#f9fafb] to-[#f0f4f8] p-4 dark:from-[#0f172a] dark:to-[#1e293b]">
+    <div className="flex min-h-screen w-full items-center justify-center bg-linear-to-br from-[#f9fafb] to-[#f0f4f8] p-4 dark:from-[#0f172a] dark:to-[#1e293b]">
       <div className="w-full max-w-4xl">
         <div className="flex flex-col items-center justify-center overflow-hidden lg:flex-row">
           <div
@@ -78,18 +74,27 @@ const RouterErrorBoundary = () => {
 
               <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
                 <Button
-                  onClick={() => navigate(-1)}
+                  onClick={() => router.back()}
                   variant="outline"
                   className="w-full sm:w-auto"
                 >
                   ← Go Back
                 </Button>
                 <Button
-                  onClick={() => navigate(BASE_PATHS.app.path)}
+                  onClick={() => router.push(BASE_PATHS.app.path)}
                   className="w-full sm:w-auto"
                 >
                   Home Page
                 </Button>
+                {reset && (
+                  <Button
+                    onClick={reset}
+                    variant="secondary"
+                    className="w-full sm:w-auto"
+                  >
+                    Try Again
+                  </Button>
+                )}
               </div>
             </div>
           </div>

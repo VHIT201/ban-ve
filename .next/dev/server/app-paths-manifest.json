@@ -1,4 +1,10 @@
 {
   "/(public)/(views)/(home)/page": "app/(public)/(views)/(home)/page.js",
+<<<<<<< HEAD
+=======
+  "/(public)/profile/order/detail/[id]/page": "app/(public)/profile/order/detail/[id]/page.js",
+  "/(public)/profile/order/list/page": "app/(public)/profile/order/list/page.js",
+  "/(public)/profile/order/page": "app/(public)/profile/order/page.js",
+>>>>>>> 24df7253359bfb8242866d95fd5a17708f95a865
   "/_not-found/page": "app/_not-found/page.js"
 }

@@ -3,8 +3,8 @@
 export interface CollaboratorStats {
   /** ID của cộng tác viên */
   _id?: string;
-  /** Tên đăng nhập */
-  username?: string;
+  /** Tên người dùng */
+  fullname?: string;
   /** Tổng số tài nguyên đã đăng */
   totalResources?: number;
   /** Tổng thu nhập */

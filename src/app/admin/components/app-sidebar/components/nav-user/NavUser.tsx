@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronsUpDown, LogOut } from "lucide-react";
 import useDialogState from "@/hooks/use-dialog-state";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -16,11 +18,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { useAuthStore, useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
 import { BASE_PATHS } from "@/constants/paths";
 import baseConfig from "@/configs/base";
+import { removeCookie } from "@/utils/cookies";
 
 const handleGetUsername = (name: string) => {
   return name
@@ -49,8 +52,15 @@ const NavUser = () => {
   );
 
   const handleLogout = () => {
+    // Clear Zustand stores
     authStore.resetStore();
     profileStore.resetStore();
+    
+    // Clear cookies
+    removeCookie("accessToken");
+    removeCookie("refreshToken");
+    
+    // Redirect to login
     window.location.href = BASE_PATHS.auth.login.path;
   };
 

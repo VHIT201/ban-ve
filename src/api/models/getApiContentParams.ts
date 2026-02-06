@@ -1,5 +1,5 @@
 // @ts-nocheck
-import type { GetApiContentStatus } from './getApiContentStatus';
+import type { GetApiContentSort } from './getApiContentSort';
 
 export type GetApiContentParams = {
 /**
@@ -16,7 +16,7 @@ limit?: number;
 /**
  * Lọc theo trạng thái
  */
-status?: GetApiContentStatus;
+status?: string;
 /**
  * Lọc theo slug danh mục hoặc categoryId (có thể truyền nhiều ID cách nhau bằng dấu phẩy)
  */
@@ -33,4 +33,8 @@ minPrice?: number;
  * Giá cao nhất
  */
 maxPrice?: number;
+/**
+ * Sắp xếp theo thời gian (mới nhất hoặc cũ nhất)
+ */
+sort?: GetApiContentSort;
 };

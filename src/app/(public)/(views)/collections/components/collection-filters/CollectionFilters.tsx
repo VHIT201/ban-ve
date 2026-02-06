@@ -1,3 +1,5 @@
+"use client";
+
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Collapsible,
@@ -33,7 +35,7 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "next/navigation";
 import { FilterFormValues, Props } from "./lib/types";
 import { DEFAULT_FILTER_VALUES, FILTER_SCHEMA } from "./lib/constants";
 import { Input } from "@/components/ui/input";
@@ -42,7 +44,7 @@ import { TreeNode } from "@/components/shared/tree-select/TreeSelect";
 
 const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
   // Hooks
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams();
   const [selected, setSelected] = useState<string[]>([]);
 
   // States

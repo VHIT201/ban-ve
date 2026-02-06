@@ -8,6 +8,8 @@
     "build": "next build",
     "start": "next start -p 5000",
     "lint": "next lint",
+    "clean": "rimraf .next build dist",
+    "clean:dev": "npm run clean && npm run dev",
     "g:api": "orval --config ./orval.config.ts",
     "w:api": "orval --config ./orval.config.ts --watch"
   },
@@ -113,6 +115,7 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
     "orval": "^7.16.0",
+    "rimraf": "^6.1.2",
     "tailwindcss": "^4.1.11",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.38.0",

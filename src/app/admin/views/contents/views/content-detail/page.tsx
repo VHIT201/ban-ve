@@ -1,3 +1,5 @@
+"use client";
+
 import {
   getGetApiContentAllQueryKey,
   getGetApiContentIdQueryKey,
@@ -16,7 +18,7 @@ import { useRequiredPathParams } from "@/hooks";
 import { extractErrorMessage } from "@/utils/error";
 import { UseQueryResult } from "@tanstack/react-query";
 import { ArrowLeftIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { toast } from "sonner";
 
 const ContentDetail = () => {
@@ -69,7 +71,7 @@ const ContentDetail = () => {
       {/* Content Header */}
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div className="flex items-center gap-4">
-          <Link to={BASE_PATHS.admin.contents.path}>
+          <Link href={BASE_PATHS.admin.contents.path}>
             <ArrowLeftIcon className="size-5 text-gray-500 hover:text-gray-700" />
           </Link>
           <div>

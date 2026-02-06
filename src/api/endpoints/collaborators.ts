@@ -32,6 +32,7 @@ import type {
   GetApiCollaboratorsMe200,
   GetApiCollaboratorsRequests200,
   GetApiCollaboratorsRequestsParams,
+  PutApiCollaboratorsCommissionCollaboratorIdBody,
   PutApiCollaboratorsRequestsRequestIdRejectBody
 } from '../models';
 
@@ -1067,3 +1068,68 @@ export function useGetApiCollaboratorsStats<TData = Awaited<ReturnType<typeof ge
 
 
 
+/**
+ * @summary Cập nhật tỷ lệ hoa hồng cho cộng tác viên (Admin)
+ */
+export const putApiCollaboratorsCommissionCollaboratorId = (
+    collaboratorId: string,
+    putApiCollaboratorsCommissionCollaboratorIdBody: BodyType<PutApiCollaboratorsCommissionCollaboratorIdBody>,
+ ) => {
+      
+      
+      return mainInstance<void>(
+      {url: `/api/collaborators/commission/${collaboratorId}`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: putApiCollaboratorsCommissionCollaboratorIdBody
+    },
+      );
+    }
+  
+
+
+export const getPutApiCollaboratorsCommissionCollaboratorIdMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCollaboratorsCommissionCollaboratorId>>, TError,{collaboratorId: string;data: BodyType<PutApiCollaboratorsCommissionCollaboratorIdBody>}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof putApiCollaboratorsCommissionCollaboratorId>>, TError,{collaboratorId: string;data: BodyType<PutApiCollaboratorsCommissionCollaboratorIdBody>}, TContext> => {
+
+const mutationKey = ['putApiCollaboratorsCommissionCollaboratorId'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiCollaboratorsCommissionCollaboratorId>>, {collaboratorId: string;data: BodyType<PutApiCollaboratorsCommissionCollaboratorIdBody>}> = (props) => {
+          const {collaboratorId,data} = props ?? {};
+
+          return  putApiCollaboratorsCommissionCollaboratorId(collaboratorId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutApiCollaboratorsCommissionCollaboratorIdMutationResult = NonNullable<Awaited<ReturnType<typeof putApiCollaboratorsCommissionCollaboratorId>>>
+    export type PutApiCollaboratorsCommissionCollaboratorIdMutationBody = BodyType<PutApiCollaboratorsCommissionCollaboratorIdBody>
+    export type PutApiCollaboratorsCommissionCollaboratorIdMutationError = ErrorType<void>
+
+    /**
+ * @summary Cập nhật tỷ lệ hoa hồng cho cộng tác viên (Admin)
+ */
+export const usePutApiCollaboratorsCommissionCollaboratorId = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCollaboratorsCommissionCollaboratorId>>, TError,{collaboratorId: string;data: BodyType<PutApiCollaboratorsCommissionCollaboratorIdBody>}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putApiCollaboratorsCommissionCollaboratorId>>,
+        TError,
+        {collaboratorId: string;data: BodyType<PutApiCollaboratorsCommissionCollaboratorIdBody>},
+        TContext
+      > => {
+
+      const mutationOptions = getPutApiCollaboratorsCommissionCollaboratorIdMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    

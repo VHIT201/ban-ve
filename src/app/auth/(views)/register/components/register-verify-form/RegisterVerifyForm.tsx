@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Form,
   FormControl,
@@ -31,7 +33,7 @@ import {
   usePostApiAuthResendOtp,
   usePostApiAuthVerifyRegistration,
 } from "@/api/endpoints/auth";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { BASE_PATHS } from "@/constants/paths";
 
@@ -40,7 +42,7 @@ const RegisterVerifyForm: FC<Props> = (props) => {
   const { email: registeredEmail, onCancel } = props;
 
   // Hooks
-  const navigate = useNavigate();
+  const router = useRouter();
   const form = useForm<RegisterVerifyFormValues>({
     resolver: zodResolver(REGISTER_VERIFY_FORM_SCHEMA),
     defaultValues: REGISTER_VERIFY_FORM_DEFAULT_VALUES,
@@ -95,7 +97,7 @@ const RegisterVerifyForm: FC<Props> = (props) => {
       
       // Chuyển hướng sau khi hiển thị thông báo
       setTimeout(() => {
-        navigate(BASE_PATHS.auth.login.path);
+        router.push(BASE_PATHS.auth.login.path);
       }, 1500);
       
     } catch (error: any) {

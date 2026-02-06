@@ -17,7 +17,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAuthStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
-import { useParams } from "react-router-dom";
+import { useParams } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -39,7 +39,8 @@ const BlueprintDetailFeedbackFilter = ({
 }: ReviewSidebarProps & {
   onRatingFilterChange?: (rating: number | null) => void;
 }) => {
-  const { id: contentId } = useParams<{ id: string }>();
+  const params = useParams<{ id: string }>();
+  const { id: contentId } = params;
 
   const {
     data: ratingStats,

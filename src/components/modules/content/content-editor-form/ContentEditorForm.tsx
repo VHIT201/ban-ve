@@ -47,7 +47,6 @@ import { useUploadMedia } from "@/hooks";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -265,15 +264,17 @@ const ContentEditorForm = ({
   };
 
   // Queries
-  const getCategoryTreeQuery = useGetApiCategoriesAllTree({
-    query: {
-      select: (data) => (data as unknown as ResponseData<any>).data.tree,
-    },
-  });
+  const getCategoryTreeQuery = useGetApiCategoriesAllTree();
 
   const treeData = useMemo(() => {
     if (!getCategoryTreeQuery.data) return [];
-    return getCategoryTreeQuery.data.map(transformCategoryToTreeItem);
+
+    // API response structure: {status, results, pagination, data: {tree: [...]}}
+    const apiResponse = getCategoryTreeQuery.data as any;
+    const treeArray = apiResponse?.data?.tree;
+
+    if (!Array.isArray(treeArray)) return [];
+    return treeArray.map(transformCategoryToTreeItem);
   }, [getCategoryTreeQuery.data]);
 
   // Methods
@@ -352,7 +353,7 @@ const ContentEditorForm = ({
                 <FileText className="w-5 h-5 text-blue-600" />
                 Điều Khoản Miễn Trừ Trách Nhiệm và Xác Nhận Đăng Bài
               </DialogTitle>
-              <DialogDescription className="text-left pt-4 space-y-4">
+              <div className="text-left pt-4 space-y-4 text-muted-foreground text-sm">
                 <div className="space-y-4 text-gray-700">
                   <div className="p-4 bg-amber-50 border border-amber-100 rounded-lg">
                     <h3 className="font-semibold text-amber-800 mb-2">
@@ -427,7 +428,7 @@ const ContentEditorForm = ({
                     <li>Tôi đã đọc và đồng ý với tất cả điều khoản sử dụng</li>
                   </ul>
                 </div>
-              </DialogDescription>
+              </div>
             </DialogHeader>
             <DialogFooter className="sm:justify-between pt-4 border-t">
               <Button
@@ -533,7 +534,6 @@ const ContentEditorForm = ({
                 nodes={mappedTreeData}
                 value={isEmpty(field.value) ? [] : [field.value]}
                 onChange={(selected) => {
-                  console.log("Selected category ID:", selected);
                   field.onChange(selected[0] || "");
                 }}
                 placeholder="Chọn danh mục"
@@ -648,14 +648,14 @@ const ContentEditorForm = ({
                     <Uploader.MediaList />
                     <Uploader.Exists
                       data={
-                        defaultFile
+                        defaultValues?.content_file
                           ? [
                               {
-                                id: defaultFile?.id || "",
-                                name: defaultFile?.name || "",
-                                size: defaultFile?.size || 0,
-                                path: defaultFile?.path || "",
-                                type: defaultFile?.type || "",
+                                id: defaultValues.content_file._id,
+                                name: defaultValues.content_file.name,
+                                size: defaultValues.content_file.size,
+                                path: defaultValues.content_file._id,
+                                type: defaultValues.content_file.type,
                               },
                             ]
                           : []

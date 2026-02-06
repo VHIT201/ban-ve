@@ -1,3 +1,5 @@
+"use client";
+
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -22,7 +24,7 @@ import {
   DEFAULT_REGISTER_FORM_VALUES,
   REGISTER_FORM_SCHEMA,
 } from "./lib/constants";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { BASE_PATHS } from "@/constants/paths";
 import { usePostApiAuthRegister } from "@/api/endpoints/auth";
 import { toast } from "sonner";
@@ -189,7 +191,7 @@ const RegisterForm: FC<Props> = (props) => {
             disabled={form.formState.isSubmitting}
             className="p-0 h-auto ml-2 font-medium text-primary hover:underline"
           >
-            <Link to={BASE_PATHS.auth.login.path}>Đăng nhập ngay</Link>
+            <Link href={BASE_PATHS.auth.login.path}>Đăng nhập ngay</Link>
           </Button>
         </div>
       </form>

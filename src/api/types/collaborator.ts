@@ -1,6 +1,7 @@
 export interface UserInfo {
   _id: string;
-  username: string;
+  username?: string;
+  fullname?: string;
   email: string;
   role: "user" | "admin" | string;
   createdAt: string;
@@ -9,7 +10,7 @@ export interface UserInfo {
 
 export interface CollaboratorRequest {
   _id: string;
-  user: UserInfo;
+  user: UserInfo | null;
   status: "pending" | "approved" | "rejected" | string;
   bankAccount: string;
   bankName: string;

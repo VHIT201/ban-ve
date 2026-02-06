@@ -1,4 +1,6 @@
-import React, { FC, useEffect, useState } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -41,8 +43,7 @@ interface Props {
   onSubmit?: (data: PersonalFormData) => Promise<void>;
 }
 
-const PersonalFormView: FC<Props> = ({ onSubmit }) => {
-  // Queries
+function PersonalFormView({ onSubmit }: Props) {
   const { data: userData, isLoading } = useGetApiAuthMe();
   const user = userData?.data;
 
@@ -59,7 +60,7 @@ const PersonalFormView: FC<Props> = ({ onSubmit }) => {
   useEffect(() => {
     if (user) {
       form.reset({
-        username: user.username || "",
+        username: user.fullname || "",
         email: user.email || "",
       });
     }

@@ -1,6 +1,8 @@
+"use client";
+
 // Core
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { UseQueryResult } from "@tanstack/react-query";
 
 // App
@@ -14,13 +16,13 @@ import { CollaboratorRequest } from "@/api/types/collaborator";
 
 const CollaboratorTable = () => {
   // Hooks
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // States
   const [pagination, setPagination] = useState<{
     pageIndex: number;
     pageSize: number;
-  }>({ pageIndex: 1, pageSize: 10 });
+  }>({ pageIndex: 0, pageSize: 10 });
 
   const [statusFilter, setStatusFilter] = useState<
     "pending" | "approved" | "rejected" | undefined
@@ -30,18 +32,18 @@ const CollaboratorTable = () => {
   const getCollaboratorsQuery = useGetApiCollaboratorsRequests(
     {
       status: statusFilter,
-      page: pagination.pageIndex,
+      page: pagination.pageIndex + 1, // API uses 1-based indexing
       limit: pagination.pageSize,
     },
     {
       query: {
-        select: (data) => ({
-          requests: data.data.requests,
-          pagination: data.data.pagination,
+        select: (data: any) => ({
+          requests: data?.data?.requests ?? data?.requests ?? [],
+          pagination: data?.data?.pagination ?? data?.pagination,
         }),
       },
     },
-  ) as UseQueryResult<{requests: CollaboratorRequest[], pagination: any}>;
+  ) as UseQueryResult<{requests: CollaboratorRequest[], pagination: { total: number; page: number; limit: number } | undefined}>;
 
   // Methods
   const handlePaginationChange = (newPagination: {
@@ -55,13 +57,16 @@ const CollaboratorTable = () => {
     status: "pending" | "approved" | "rejected" | undefined,
   ) => {
     setStatusFilter(status);
-    setPagination({ pageIndex: 1, pageSize: 10 }); // Reset to first page
+    setPagination({ pageIndex: 0, pageSize: 10 }); // Reset to first page (0-indexed)
   };
 
   // Columns
   const columns = useColumns({
     onView: (collaborator) => {
-      navigate(`/admin/collaborators/detail/${collaborator._id}`);
+      router.push(`/admin/collaborators/${collaborator._id}`);
+    },
+    onEdit: (collaborator) => {
+      router.push(`/admin/collaborators/${collaborator._id}/edit`);
     },
     onApprove: (collaborator) => {
       // TODO: Implement approve logic with mutation

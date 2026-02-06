@@ -1,17 +1,18 @@
-// Internal
+"use client";
+
 import { PlusIcon } from "lucide-react";
 
 // App
 import { Button } from "@/components/ui/button";
 import ContentTable from "@/components/modules/content/content-table";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
 import { useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
 import { useGetApiContentMyContents } from "@/api/endpoints/content";
 import { ContentResponse } from "@/api/types/content";
 import { UseQueryResult } from "@tanstack/react-query";
 import { PaginationState } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 // Internal
@@ -21,7 +22,7 @@ const ContentList = () => {
   const authProfile = useProfileStore(useShallow(({ email }) => ({ email })));
 
   // Hooks
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0, // 0-based for React Table
@@ -61,7 +62,7 @@ const ContentList = () => {
             Quản lý các nội dung trong hệ thống
           </p>
         </div>
-        <Button onClick={() => navigate("content-create")}>
+        <Button onClick={() => router.push("content-create")}>
           <PlusIcon className="mr-2 size-4" />
           Thêm mới
         </Button>

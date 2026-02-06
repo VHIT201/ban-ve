@@ -1,3 +1,5 @@
+"use client";
+
 // Internal
 import { Button } from "@/components/ui/button";
 import { CategoryDialog, CategoryTable } from "../../components";
@@ -14,13 +16,14 @@ import { CategoryFormValues } from "../../components/category-dialog";
 import { useUploadMedia } from "@/hooks";
 import { extractErrorMessage } from "@/utils/error";
 import baseConfig from "@/configs/base";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "next/navigation";
 
 const Categories = () => {
   // Hooks
-  const { id } = useParams<{ id: string }>();
-  const location = useLocation();
-  const withChildren = location.state?.withChildren || false;
+  const params = useParams<{ id: string }>();
+  const id = params.id;
+  const searchParams = useSearchParams();
+  const withChildren = searchParams.get("withChildren") === "true";
 
   // States
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -59,8 +62,8 @@ const Categories = () => {
           name: data.name,
           description: data.description,
           parentId: id,
-          imageUrl: imageRes?.path
-            ? `${baseConfig.mediaDomain}${imageRes.path}`
+          imageUrl: imageRes?.url
+            ? `${baseConfig.mediaDomain}${imageRes.url}`
             : undefined,
         },
       });

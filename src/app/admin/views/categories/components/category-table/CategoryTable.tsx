@@ -1,5 +1,13 @@
+"use client";
+
 // App
 import { Category } from "@/api/models";
+import type { 
+  GetApiCategories200,
+  GetApiCategoriesIdChildren200,
+  GetApiCategoriesIdWithChildren200,
+  PutApiCategoriesIdBody,
+} from "@/api/models";
 
 // Internal
 import { DataTable, QueryBoundary } from "@/components/shared";
@@ -24,7 +32,7 @@ import {
 } from "@/components/shared/data-table/shared";
 import { CategoryFormValues } from "../category-dialog/lib/types";
 import { extractErrorMessage } from "@/utils/error";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { ROUTE_PATHS } from "@/constants/paths";
 import { useUploadMedia } from "@/hooks";
 import baseConfig from "@/configs/base";
@@ -39,43 +47,51 @@ const CategoryTable: FC<Props> = (props) => {
   const { id, mode = "all" } = props;
 
   // States
-  const navigate = useNavigate();
+  const router = useRouter();
   const [editSelectRow, setEditSelectRow] = useState<Category | null>(null);
   const [deleteSelectRow, setDeleteSelectRow] = useState<Category | null>(null);
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 50 });
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 20 });
 
   // Queries
-  const getCategoryList = useGetApiCategories({
-    query: {
-      enabled: mode === "all",
-      select: (data: any) => {
-        const result = data.data?.categories || [];
-        return result;
-      },
-    },
-  }) as UseQueryResult<Category[]>;
-
-  const getCategoryChildrenList = useGetApiCategoriesIdChildren(id || "", {
-    query: {
-      enabled: mode === "children" && Boolean(id),
-      select: (data: any) => {
-        const result = data.data?.children || [];
-        return result;
-      },
-    },
-  }) as UseQueryResult<Category[]>;
-
-  const getCategoryWithChildrenList = useGetApiCategoriesIdWithChildren(
-    id || "",
+  const getCategoryList = useGetApiCategories(
+    {},
     {
       query: {
-        enabled: mode === "with-children" && Boolean(id),
-        select: (data: any) => {
+        enabled: mode === "all",
+        select: (data: GetApiCategories200) => {
+          const result = data.data?.categories || [];
+          return result;
+        },
+      },
+    }
+  ) as UseQueryResult<Category[]>;
+
+  const getCategoryChildrenList = useGetApiCategoriesIdChildren(
+    id || "",
+    {},
+    {
+      query: {
+        enabled: mode === "children" && Boolean(id),
+        select: (data: GetApiCategoriesIdChildren200) => {
           const result = data.data?.children || [];
           return result;
         },
       },
-    },
+    }
+  ) as UseQueryResult<Category[]>;
+
+  const getCategoryWithChildrenList = useGetApiCategoriesIdWithChildren(
+    id || "",
+    {},
+    {
+      query: {
+        enabled: mode === "with-children" && Boolean(id),
+        select: (data: GetApiCategoriesIdWithChildren200) => {
+          const result = data.data?.children || [];
+          return result;
+        },
+      },
+    }
   ) as UseQueryResult<Category[]>;
 
   // Mutations
@@ -135,41 +151,58 @@ const CategoryTable: FC<Props> = (props) => {
     if (!category._id) return;
 
     if (mode === "children") {
-      navigate(`/admin/${ROUTE_PATHS.admin.categories.path}/${category._id}`, {
-        state: { withChildren: true },
-      });
+      router.push(`/admin/${ROUTE_PATHS.admin.categories.path}/${category._id}?withChildren=true`);
       return;
     }
 
-    navigate(`/admin/${ROUTE_PATHS.admin.categories.path}/${category._id}`);
+    router.push(`/admin/${ROUTE_PATHS.admin.categories.path}/${category._id}`);
   };
 
   const handleEditCategory = async (values: CategoryFormValues) => {
     if (!editSelectRow) return;
+    
     try {
-      const imageRes = await uploadFileMutation.uploadSingle(
-        values.image as unknown as File,
-        {
-          filename: values.image?.name,
-          dir: "categories",
-          private: false,
-        },
-      );
+      let imageUrl = editSelectRow.imageUrl || values.imageUrl || "";
+
+      // Only upload if new image is selected
+      if (values.image) {
+        const imageRes = await uploadFileMutation.uploadSingle(
+          values.image,
+          {
+            filename: values.image?.name,
+            dir: "categories",
+            private: false,
+          },
+        );
+
+        if (imageRes?.path) {
+          imageUrl = `${baseConfig.mediaDomain}${imageRes.path}`;
+        }
+      }
+
+      const updateData: PutApiCategoriesIdBody = {
+        name: values.name,
+        description: values.description,
+      };
+
+      if (id) {
+        updateData.parentId = id;
+      }
+
+      if (imageUrl) {
+        updateData.imageUrl = imageUrl;
+      }
 
       await editCategoryMutation.mutateAsync({
         id: editSelectRow._id!,
-        data: {
-          name: values.name,
-          description: values.description,
-          parentId: id,
-          imageUrl: imageRes?.path
-            ? `${baseConfig.mediaDomain}${imageRes.path}`
-            : undefined,
-        },
+        data: updateData,
       });
 
       setEditSelectRow(null);
       toast.success("Cập nhật danh mục thành công.");
+      
+      // Reload page after success
+      window.location.reload();
     } catch (error) {
       console.error("Failed to edit category:", error);
       toast.error(
@@ -189,6 +222,9 @@ const CategoryTable: FC<Props> = (props) => {
 
       setDeleteSelectRow(null);
       toast.success("Xóa danh mục thành công.");
+      
+      // Reload page after success
+      window.location.reload();
     } catch (error) {
       toast.error(
         extractErrorMessage(error) || "Đã có lỗi xảy ra khi xóa danh mục.",
@@ -219,17 +255,14 @@ const CategoryTable: FC<Props> = (props) => {
     <Fragment>
       <QueryBoundary query={activeQuery}>
         {(activeData) => {
-          const displayData =
-            mode === "with-children"
-              ? activeQuery?.data?.children || []
-              : activeQuery.data || [];
+          const displayData = activeData || [];
 
           return (
             <DataTable
               columns={columns}
               data={displayData}
               rowCount={displayData.length}
-              manualPagination
+              manualPagination={false}
               enablePagination
               enableRowSelection
               state={{ pagination }}

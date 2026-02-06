@@ -1,5 +1,7 @@
+"use client";
+
 // Core
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useRouter } from "next/navigation";
 import { UseQueryResult } from "@tanstack/react-query";
 import { ArrowLeft, Loader2, CheckCircle2, XCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -21,8 +23,9 @@ import { extractErrorMessage } from "@/utils/error";
 
 const CollaboratorEdit = () => {
   // Hooks
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+  const params = useParams<{ id: string }>();
+  const id = params.id;
+  const router = useRouter();
 
   // Query
   const getRequestQuery = useGetApiCollaboratorsRequests(
@@ -128,7 +131,7 @@ const CollaboratorEdit = () => {
           <Button
             variant="outline"
             size="icon"
-            onClick={() => navigate(-1)}
+            onClick={() => router.back()}
             className="h-8 w-8"
           >
             <ArrowLeft className="h-4 w-4" />

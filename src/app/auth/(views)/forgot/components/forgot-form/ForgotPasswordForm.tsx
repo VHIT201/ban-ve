@@ -1,3 +1,5 @@
+"use client";
+
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -14,7 +16,7 @@ import { ForgotPasswordFormValues } from "./lib/types";
 import { Loader2Icon, MailIcon, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FC } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { BASE_PATHS } from "@/constants/paths";
 import { toast } from "sonner";
 
@@ -82,7 +84,7 @@ const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({ onEmailSubmit }) => {
             variant="link"
             className="text-muted-foreground hover:text-foreground"
           >
-            <Link to={BASE_PATHS.auth.login.path} className="flex items-center justify-center gap-1">
+            <Link href={BASE_PATHS.auth.login.path} className="flex items-center justify-center gap-1">
               <ArrowLeft className="h-4 w-4" />
               Quay lại đăng nhập
             </Link>

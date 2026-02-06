@@ -1,7 +1,11 @@
-import { Outlet } from "react-router-dom";
+import { ReactNode } from "react";
 
-const Payment = () => {
-  return <Outlet />;
+interface PaymentLayoutProps {
+  children: ReactNode;
+}
+
+const PaymentLayout = ({ children }: PaymentLayoutProps) => {
+  return <>{children}</>;
 };
 
-export default Payment;
+export default PaymentLayout;

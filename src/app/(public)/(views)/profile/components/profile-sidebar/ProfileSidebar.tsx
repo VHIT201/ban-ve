@@ -1,18 +1,27 @@
+"use client";
+
 import { Card, CardContent } from "@/components/ui/card";
-import { NavLink } from "react-router-dom";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
 import { SIDEBAR_MENU } from "./lib/constants";
 import { cn } from "@/lib/utils";
+
 import { useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
+
 import { UploadAvatarDialog } from "@/components/shared";
 import { usePutApiAuthUpdateProfile } from "@/api/endpoints/auth";
 import { useUploadMedia } from "@/hooks";
+
 import { toast } from "sonner";
 import { extractErrorMessage } from "@/utils/error";
 import baseConfig from "@/configs/base";
 
-const ProfileSidebar = () => {
-  // Stores
+export default function ProfileSidebar() {
+  const pathname = usePathname();
+
+  /* Store */
   const profileStore = useProfileStore(
     useShallow(({ username, email, avatar, setStore }) => ({
       username,
@@ -22,11 +31,11 @@ const ProfileSidebar = () => {
     })),
   );
 
-  // Mutations
+  /* Mutations */
   const updateUserProfileMutation = usePutApiAuthUpdateProfile();
   const uploadMediaMutation = useUploadMedia();
 
-  // Methods
+  /* Handler */
   const handleChangeAvatar = async (file: File) => {
     try {
       const resBlob = await uploadMediaMutation.uploadSingle(file, {
@@ -60,11 +69,11 @@ const ProfileSidebar = () => {
     }
   };
 
-  // Template
   return (
-    <Card className="sticky top-20 border border-gray-200 rounded-none! shadow-none!">
+    <Card className="sticky top-20 border border-gray-200 rounded-none shadow-none">
       <CardContent className="p-0">
-        {/* User Profile Header */}
+
+        {/* User info */}
         <div className="text-center p-6 border-b border-gray-100">
           <UploadAvatarDialog
             avatarUrl={`${baseConfig.mediaDomain}/${profileStore.avatar}`}
@@ -72,9 +81,11 @@ const ProfileSidebar = () => {
             onAvatarChange={handleChangeAvatar}
             className="mb-6"
           />
+
           <h3 className="font-semibold text-base text-primary mb-1">
             {profileStore.username}
           </h3>
+
           <p className="text-xs text-gray-500 truncate px-2">
             {profileStore.email}
           </p>
@@ -82,36 +93,35 @@ const ProfileSidebar = () => {
 
         {/* Navigation */}
         <nav className="p-3 space-y-1">
-          {SIDEBAR_MENU.map((item) => (
-            <NavLink
-              key={item.title}
-              to={item.path}
-              className={({ isActive }) =>
-                cn(
-                  "w-full cursor-pointer flex items-center gap-3 px-4 py-3 text-left rounded-none transition-all duration-200",
+          {SIDEBAR_MENU.map((item) => {
+            const isActive =
+              pathname === item.path ||
+              pathname.startsWith(item.path + "/");
+
+            return (
+              <Link
+                key={item.title}
+                href={item.path}
+                className={cn(
+                  "flex items-center gap-3 px-4 py-3 transition-all duration-200",
                   isActive
-                    ? "bg-primary text-white shadow-none"
+                    ? "bg-primary text-white"
                     : "text-gray-600 hover:bg-gray-100 hover:text-primary",
-                )
-              }
-            >
-              {({ isActive }) => (
-                <>
-                  <item.icon
-                    className={cn(
-                      "size-5 transition-transform",
-                      isActive && "scale-110",
-                    )}
-                  />
-                  <span className="text-sm font-medium">{item.title}</span>
-                </>
-              )}
-            </NavLink>
-          ))}
+                )}
+              >
+                <item.icon
+                  className={cn(
+                    "size-5 transition-transform",
+                    isActive && "scale-110",
+                  )}
+                />
+                <span className="text-sm font-medium">{item.title}</span>
+              </Link>
+            );
+          })}
         </nav>
+
       </CardContent>
     </Card>
   );
-};
-
-export default ProfileSidebar;
+}
