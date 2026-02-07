@@ -12,7 +12,6 @@ import { ContentEditorForm } from "@/components/modules/content";
 import { ContentFormValues } from "@/components/modules/content/content-editor-form/ContentEditorForm";
 import { QueryBoundary } from "@/components/shared";
 import { BASE_PATHS } from "@/constants/paths";
-import { useRequiredPathParams } from "@/hooks";
 import { extractErrorMessage } from "@/utils/error";
 import { UseQueryResult } from "@tanstack/react-query";
 import { ArrowLeftIcon } from "lucide-react";

@@ -46,17 +46,46 @@ const ContentCreate = () => {
       }
 
       const fileToUpload = values.files[0];
-      const fileUploadResponse = await uploadMediaMutation.uploadSingle(
-        fileToUpload,
+      const previewImages = values.images.slice(0, 4); // Max 4 images
+
+      const fileUploadResponse = await uploadMediaMutation.uploadWithImages(
+        fileToUpload as unknown as File,
+        previewImages as unknown as File[],
         {
           filename: fileToUpload.name,
           dir: "contents",
           private: false,
           compress: false,
+          applyWatermark: true, // Enable watermark
+          watermarkOptions: {
+            text: "TẠO BỞI BANVE.VN",
+            fontSize: 24,
+            textOpacity: 0.7,
+            overlayOpacity: 0.4,
+            enableOverlay: true,
+          },
         },
       );
 
       const fileData = fileUploadResponse as unknown as UploadedFile;
+
+      let image5Data = null;
+      if (values.images[4]) {
+        image5Data = await uploadMediaMutation.uploadSingle(
+          values.images[4] as unknown as File,
+          {
+            dir: "contents/previews",
+            compress: true,
+            applyWatermark: true,
+            watermarkOptions: {
+              text: "TẠO BỞI BANVE.VN",
+              fontSize: 24,
+              textOpacity: 0.7,
+              overlayOpacity: 0.4,
+            },
+          },
+        );
+      }
 
       const result = await createContentMutation.mutateAsync({
         data: {
@@ -69,18 +98,19 @@ const ContentCreate = () => {
           image2: values?.images[1],
           image3: values?.images[2],
           image4: values?.images[3],
-          image5: values?.images[4],
+          image5: image5Data
+            ? (image5Data as unknown as File)
+            : values?.images[4],
         },
       });
 
       if (result) {
         toast.success("Nội dung đã được tạo thành công.");
-        
+
         router.push(BASE_PATHS.admin.contents.path);
         router.refresh();
       }
     } catch (error) {
-      console.error("Failed to create content:", error);
       toast.error("Đã có lỗi xảy ra khi tạo nội dung.");
     }
   };

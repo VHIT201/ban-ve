@@ -69,7 +69,6 @@ export const useWatermark = (options: UseWatermarkOptions = {}) => {
     overlayColor,
     textColor,
     enableOverlay = true,
-    blendMode = "overlay",
   } = options;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -105,7 +104,6 @@ export const useWatermark = (options: UseWatermarkOptions = {}) => {
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
-      // Draw multiple watermarks in a grid
       for (let x = -canvas.width; x < canvas.width * 2; x += spacingX) {
         for (let y = -canvas.height; y < canvas.height * 2; y += spacingY) {
           ctx.fillText(text, x, y);
