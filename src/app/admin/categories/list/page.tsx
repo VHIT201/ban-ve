@@ -52,9 +52,8 @@ const Categories = () => {
   // Methods
   const handleCreateCategory = async (data: CategoryFormValues) => {
     try {
-      let imageUrl = "";
+      let imageUrl: string | undefined = undefined;
 
-      // Only upload if image exists
       if (data.image) {
         const imageRes = await uploadFileMutation.uploadSingle(data.image, {
           filename: data.image?.name,
@@ -62,11 +61,9 @@ const Categories = () => {
           private: false,
         });
 
-        if (imageRes?.url) {
-          imageUrl = `${baseConfig.mediaDomain}${imageRes.url}`;
+        if (imageRes?.path) {
+          imageUrl = `${baseConfig.mediaDomain}${imageRes.path}`;
         }
-      } else {
-        console.log("❌ No image selected");
       }
 
       const createData: PostApiCategoriesBody = {
@@ -74,12 +71,10 @@ const Categories = () => {
         description: data.description,
       };
 
-      // Only include parentId if exists
       if (id) {
         createData.parentId = id;
       }
 
-      // Only include imageUrl if exists
       if (imageUrl) {
         createData.imageUrl = imageUrl;
       }
@@ -91,7 +86,6 @@ const Categories = () => {
       setIsDialogOpen(false);
       toast.success("Danh mục mới đã được tạo thành công.");
     } catch (error) {
-      console.error("❌ Error creating category:", error);
       toast.error(extractErrorMessage(error));
     }
   };
@@ -114,7 +108,6 @@ const Categories = () => {
         </Button>
       </div>
 
-      {/* Category Table - Sử dụng mode dựa trên id */}
       <CategoryTable
         mode={id ? "children" : withChildren ? "with-children" : "all"}
         id={id}

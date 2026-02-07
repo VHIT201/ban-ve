@@ -189,11 +189,9 @@ export const CategoryDetail = () => {
           },
         );
 
-        if (imageRes?.url) {
-          imageUrl = `${baseConfig.mediaDomain}${imageRes.url}`;
+        if (imageRes?.path) {
+          imageUrl = `${baseConfig.mediaDomain}${imageRes.path}`;
         }
-      } else {
-        console.log("❌ No image selected");
       }
       // Create category with parentId and imageUrl
       createCategory({
@@ -201,11 +199,10 @@ export const CategoryDetail = () => {
           name: data.name,
           description: data.description,
           parentId: id,
-          ...(imageUrl && { imageUrl }), // Only include imageUrl if it exists
+          ...(imageUrl && { imageUrl }),
         },
       });
     } catch (error) {
-      console.error("❌ Error creating category:", error);
       toast.error("Có lỗi xảy ra khi upload ảnh");
     }
   };
@@ -237,8 +234,8 @@ export const CategoryDetail = () => {
           },
         );
 
-        if (imageRes?.url) {
-          imageUrl = `${baseConfig.mediaDomain}${imageRes.url}`;
+        if (imageRes?.path) {
+          imageUrl = `${baseConfig.mediaDomain}${imageRes.path}`;
         }
       }
 

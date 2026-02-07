@@ -191,7 +191,7 @@ const CategoryTable: FC<Props> = (props) => {
     if (!editSelectRow) return;
 
     try {
-      let imageUrl = editSelectRow.imageUrl || values.imageUrl || "";
+      let imageUrl = editSelectRow.imageUrl || values.imageUrl || undefined;
 
       // Only upload if new image is selected
       if (values.image) {
@@ -201,8 +201,8 @@ const CategoryTable: FC<Props> = (props) => {
           private: false,
         });
 
-        if (imageRes?.url) {
-          imageUrl = `${baseConfig.mediaDomain}${imageRes.url}`;
+        if (imageRes?.path) {
+          imageUrl = `${baseConfig.mediaDomain}${imageRes.path}`;
         }
       }
 

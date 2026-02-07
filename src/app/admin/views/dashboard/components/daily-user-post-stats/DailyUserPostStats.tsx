@@ -39,6 +39,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useGetApiAdminStats } from "@/api/endpoints/admin";
 import { cn } from "@/lib/utils";
+import DateRangerPicker from "@/components/ui/date-ranger-picker";
 
 export const description = "An interactive bar chart showing statistics";
 
@@ -172,7 +173,9 @@ const DailyUserPostStats = () => {
   return (
     <Card className="@container/card">
       <CardHeader>
-        <CardTitle>Thống kê hằng ngày</CardTitle>
+        <CardTitle className="text-lg font-semibold">
+          Thống kê hằng ngày
+        </CardTitle>
         <CardDescription>
           <span className="hidden @[540px]/card:block">
             Thống kê {timeRangeLabel}
@@ -193,100 +196,21 @@ const DailyUserPostStats = () => {
               <ToggleGroupItem value="90d">3 tháng</ToggleGroupItem>
               <ToggleGroupItem value="30d">30 ngày</ToggleGroupItem>
               <ToggleGroupItem value="7d">7 ngày</ToggleGroupItem>
-              <ToggleGroupItem value="custom">Tùy chỉnh</ToggleGroupItem>
+              <Popover>
+                <PopoverTrigger>
+                  <ToggleGroupItem value="custom">Tùy chỉnh</ToggleGroupItem>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <DateRangerPicker
+                    value={{
+                      from: customStartDate?.toISOString().split("T")[0] ?? "",
+                      to: customEndDate?.toISOString().split("T")[0] ?? "",
+                    }}
+                    onChange={({ from, to }) => {}}
+                  />
+                </PopoverContent>
+              </Popover>
             </ToggleGroup>
-            <Select
-              value={timeRange}
-              onValueChange={(value) => setTimeRange(value as TimeRange)}
-            >
-              <SelectTrigger
-                className="flex w-40 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden"
-                size="sm"
-                aria-label="Select a value"
-              >
-                <SelectValue placeholder="3 tháng trước" />
-              </SelectTrigger>
-              <SelectContent className="rounded-xl">
-                <SelectItem value="90d" className="rounded-lg">
-                  3 tháng trước
-                </SelectItem>
-                <SelectItem value="30d" className="rounded-lg">
-                  30 ngày trước
-                </SelectItem>
-                <SelectItem value="7d" className="rounded-lg">
-                  7 ngày trước
-                </SelectItem>
-                <SelectItem value="custom" className="rounded-lg">
-                  Tùy chỉnh
-                </SelectItem>
-              </SelectContent>
-            </Select>
-
-            {timeRange === "custom" && (
-              <div className="flex flex-wrap gap-2">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className={cn(
-                        "justify-start text-left font-normal",
-                        !customStartDate && "text-muted-foreground",
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {customStartDate
-                        ? format(customStartDate, "dd/MM/yyyy")
-                        : "Ngày bắt đầu"}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={customStartDate}
-                      onSelect={setCustomStartDate}
-                      disabled={(date) =>
-                        date > new Date() ||
-                        (customEndDate ? date > customEndDate : false)
-                      }
-                      initialFocus
-                      locale={vi}
-                    />
-                  </PopoverContent>
-                </Popover>
-
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className={cn(
-                        "justify-start text-left font-normal",
-                        !customEndDate && "text-muted-foreground",
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {customEndDate
-                        ? format(customEndDate, "dd/MM/yyyy")
-                        : "Ngày kết thúc"}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={customEndDate}
-                      onSelect={setCustomEndDate}
-                      disabled={(date) =>
-                        date > new Date() ||
-                        (customStartDate ? date < customStartDate : false)
-                      }
-                      initialFocus
-                      locale={vi}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-            )}
           </div>
         </CardAction>
       </CardHeader>
@@ -366,38 +290,40 @@ const DailyUserPostStats = () => {
                 className="text-sm"
               />
               <ChartTooltip
+                cursor={{ fill: "hsl(var(--muted))", opacity: 0.15 }}
                 content={
                   <ChartTooltipContent
-                    labelFormatter={(value) => value}
-                    formatter={(value, name) => [
-                      `${Number(value).toLocaleString("vi-VN")}`,
-                      chartConfig[name as keyof typeof chartConfig]?.label,
-                    ]}
+                    className="min-w-[200px]"
+                    labelFormatter={(value) => (
+                      <span className="font-semibold">{value}</span>
+                    )}
+                    formatter={(value, name) => (
+                      <div className="flex w-full items-center justify-between gap-4">
+                        <span className="text-muted-foreground">
+                          {chartConfig[name as keyof typeof chartConfig]?.label}
+                        </span>
+                        <span className="font-semibold">
+                          {Number(value).toLocaleString("vi-VN")}
+                        </span>
+                      </div>
+                    )}
                   />
                 }
               />
-              <Bar
-                dataKey="users"
-                fill="url(#colorUsers)"
-                radius={[8, 8, 0, 0]}
-                maxBarSize={60}
-              />
+              <Bar dataKey="users" fill="url(#colorUsers)" maxBarSize={60} />
               <Bar
                 dataKey="contents"
                 fill="url(#colorContents)"
-                radius={[8, 8, 0, 0]}
                 maxBarSize={60}
               />
               <Bar
                 dataKey="collaborators"
                 fill="url(#colorCollaborators)"
-                radius={[8, 8, 0, 0]}
                 maxBarSize={60}
               />
               <Bar
                 dataKey="comments"
                 fill="url(#colorComments)"
-                radius={[8, 8, 0, 0]}
                 maxBarSize={60}
               />
             </BarChart>

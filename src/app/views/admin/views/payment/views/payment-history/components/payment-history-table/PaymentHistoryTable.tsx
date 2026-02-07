@@ -1,8 +1,6 @@
 // Core
 import { useState } from "react";
 import { UseQueryResult } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-
 // App
 import { DataTable, QueryBoundary } from "@/components/shared";
 import { useGetApiPaymentsAll } from "@/api/endpoints/payments";
@@ -45,9 +43,6 @@ const PaymentHistoryTable = () => {
     };
   }>;
 
-  // Hooks
-  const navigate = useNavigate();
-
   // Methods
   const handlePaginationChange = (newPagination: {
     pageIndex: number;
@@ -56,11 +51,7 @@ const PaymentHistoryTable = () => {
     setPagination(newPagination);
   };
 
-  const handleView = (payment: PaymentTableRow) => {
-    if (payment._id) {
-      navigate(`/admin/payments/${payment._id}`);
-    }
-  };
+  const handleView = (payment: PaymentTableRow) => {};
 
   const handleRefund = (payment: PaymentTableRow) => {
     // TODO: Implement refund logic with mutation

@@ -1,6 +1,5 @@
 // Core
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { UseQueryResult } from "@tanstack/react-query";
 
 // App
@@ -14,7 +13,6 @@ import { CollaboratorRequest } from "@/api/types/collaborator";
 
 const CollaboratorTable = () => {
   // Hooks
-  const navigate = useNavigate();
 
   // States
   const [pagination, setPagination] = useState<{
@@ -56,9 +54,7 @@ const CollaboratorTable = () => {
 
   // Columns
   const columns = useColumns({
-    onView: (collaborator) => {
-      navigate(`/admin/collaborators/detail/${collaborator._id}`);
-    },
+    onView: (collaborator) => {},
     onApprove: (collaborator) => {
       // TODO: Implement approve logic with mutation
       console.log("Approve collaborator:", collaborator._id);

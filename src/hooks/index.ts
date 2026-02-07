@@ -1,5 +1,4 @@
 export { useWatermark } from "./use-watermark";
-export { default as useMatchPath } from "./use-match-path";
 export type { UseWatermarkOptions } from "./use-watermark";
 export { default as useSSEStream } from "./use-sse-stream";
 export { default as useDialogState } from "./use-dialog-state";

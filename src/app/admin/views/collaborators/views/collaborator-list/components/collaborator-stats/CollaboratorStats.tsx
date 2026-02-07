@@ -151,8 +151,8 @@ const CollaboratorStats = () => {
                       className="flex items-center justify-between p-3 py-4 rounded-none border bg-card"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold text-sm">
-                          # {index + 1}
+                        <div className="flex items-center justify-center w-8 h-8 rotate-6 bg-primary/10 text-primary font-semibold text-sm">
+                          <span className=" -rotate-6">#{index + 1}</span>
                         </div>
                         <div>
                           <div className="font-medium">

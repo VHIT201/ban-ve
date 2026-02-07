@@ -16,7 +16,6 @@ import { ContentResponse } from "@/api/types/content";
 
 import { UseQueryResult } from "@tanstack/react-query";
 import { QueryBoundary } from "@/components/shared";
-import { useNavigate } from "react-router-dom";
 import { ResponseData } from "@/api/types/base";
 import { useGetApiContentStatisticsPurchaseRanking } from "@/api/endpoints/content";
 

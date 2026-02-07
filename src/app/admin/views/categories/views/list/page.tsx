@@ -62,8 +62,8 @@ const Categories = () => {
           name: data.name,
           description: data.description,
           parentId: id,
-          imageUrl: imageRes?.url
-            ? `${baseConfig.mediaDomain}${imageRes.url}`
+          imageUrl: imageRes?.path
+            ? `${baseConfig.mediaDomain}${imageRes.path}`
             : undefined,
         },
       });

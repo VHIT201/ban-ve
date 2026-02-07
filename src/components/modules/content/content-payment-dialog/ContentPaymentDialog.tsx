@@ -3,7 +3,6 @@ import Image from "@/components/ui/image";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { Loader2Icon, QrCodeIcon } from "lucide-react";
 import { FC } from "react";
-import { useNavigate } from "react-router-dom";
 
 interface Props {
   urlQRCode?: string;
