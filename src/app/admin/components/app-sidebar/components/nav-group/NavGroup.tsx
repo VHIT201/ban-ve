@@ -35,6 +35,7 @@ import {
 } from "../../lib/types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { BASE_PATHS } from "@/constants/paths";
 
 const NavGroup = ({ title, items }: NavGroupProps) => {
   const { state, isMobile } = useSidebar();
@@ -178,16 +179,20 @@ function SidebarMenuCollapsedDropdown({
 
 function checkIsActive(href: string, item: NavItem) {
   const currentPath = href.split("?")[0];
-  const itemUrl = typeof item.url === "string" ? item.url : "";
-  
+
+  // Nếu là NavLink (không có sub-items)
   if (!item.items) {
-    return currentPath === itemUrl;
+    const itemUrl = typeof item.url === "string" ? item.url : "";
+
+    return currentPath === itemUrl || currentPath?.startsWith(itemUrl + "/");
   }
-  const isAnySubItemActive = item.items.some(subItem => {
+
+  return item.items.some((subItem) => {
     const subItemUrl = typeof subItem.url === "string" ? subItem.url : "";
-    return currentPath === subItemUrl;
+    return (
+      currentPath === subItemUrl || currentPath?.startsWith(subItemUrl + "/")
+    );
   });
-  return isAnySubItemActive && currentPath !== itemUrl;
 }
 
 export default NavGroup;

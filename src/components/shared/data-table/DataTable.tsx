@@ -114,8 +114,9 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
         const selectedRowIds = Object.keys(newRowSelection).filter(
           (id) => newRowSelection[id],
         );
+
         const selectedRows = selectedRowIds
-          .map((id) => data[parseInt(id, 10)])
+          .map((id) => data.find((row) => getRowId?.(row) === id))
           .filter((row): row is TData => row !== undefined);
 
         onSelectedRowsChange(selectedRows);
@@ -158,20 +159,19 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
 
   // Effects
   useEffect(() => {
-    if (selectedRows && getRowId) {
-      const newSelection: RowSelectionState = {};
+    if (!selectedRows || !getRowId) return;
 
-      selectedRows.forEach((row) => {
-        const rowId = getRowId!(row);
-        const rowIndex = data.findIndex((d) => getRowId!(d) === rowId);
-        if (rowIndex !== -1) {
-          newSelection[rowIndex] = true;
-        }
-      });
+    const newSelection: RowSelectionState = {};
 
-      setRowSelection(newSelection);
-    }
-  }, [selectedRows, data, getRowId]);
+    selectedRows.forEach((row) => {
+      const rowId = getRowId(row);
+      if (rowId != null) {
+        newSelection[rowId] = true;
+      }
+    });
+
+    setRowSelection(newSelection);
+  }, [selectedRows, getRowId]);
 
   const contextValues = useMemo(
     () => ({
@@ -187,6 +187,7 @@ const DataTable = <TData,>(props: DataTableRootProps<TData>) => {
     }),
     [
       table,
+      selectedRows,
       openDeleteDialog,
       enableRowSelection,
       enablePagination,

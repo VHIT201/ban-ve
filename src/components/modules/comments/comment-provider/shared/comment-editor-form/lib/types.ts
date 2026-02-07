@@ -2,6 +2,7 @@ export interface Props {
   editableCommentId?: string;
   defaultValues?: {
     content?: string;
+    stars?: number;
     mediaPathList?: string;
   };
   mode?: "create" | "reply" | "edit";

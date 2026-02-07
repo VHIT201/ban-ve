@@ -89,7 +89,6 @@ const BlueprintDetailFeedbackFilter = ({
               <span className="text-muted-foreground">/ 5</span>
             </div>
           </div>
-
           <div className="space-y-4">
             <div className="flex items-center gap-1">
               {[1, 2, 3, 4, 5].map((rating) => (
@@ -110,23 +109,13 @@ const BlueprintDetailFeedbackFilter = ({
               ))}
             </div>
           </div>
-
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <span className="font-medium text-foreground">
               {totalReviews.toLocaleString()}
             </span>
             <span>đánh giá</span>
           </div>
-
-          <div className="pt-2 border-t border-border">
-            {/* <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-muted-foreground">Đã xác thực</span>
-              <Badge variant="secondary" className="gap-1">
-                <ShieldCheck className="h-3 w-3" />
-                {verifiedPercentage}%
-              </Badge>
-            </div> */}
-          </div>
+          =
         </div>
       </Card>
 

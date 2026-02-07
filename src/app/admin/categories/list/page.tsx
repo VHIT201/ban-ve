@@ -38,10 +38,10 @@ const Categories = () => {
       meta: {
         invalidateQueries: [
           getGetApiCategoriesQueryKey(),
-          id ? getGetApiCategoriesIdChildrenQueryKey(id) : [],
-          withChildren
-            ? getGetApiCategoriesIdWithChildrenQueryKey(id || "")
-            : [],
+          ...(id ? [getGetApiCategoriesIdChildrenQueryKey(id)] : []),
+          ...(withChildren
+            ? [getGetApiCategoriesIdWithChildrenQueryKey(id || "")]
+            : []),
         ],
       },
     },
@@ -90,9 +90,6 @@ const Categories = () => {
 
       setIsDialogOpen(false);
       toast.success("Danh mục mới đã được tạo thành công.");
-
-      // Reload page after success
-      window.location.reload();
     } catch (error) {
       console.error("❌ Error creating category:", error);
       toast.error(extractErrorMessage(error));

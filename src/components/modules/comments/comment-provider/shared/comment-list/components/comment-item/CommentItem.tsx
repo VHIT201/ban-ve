@@ -1,11 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  Edit3Icon,
-  EllipsisIcon,
-  Trash2Icon,
-  Heart,
-  MessageCircle,
-} from "lucide-react";
+import { Edit3Icon, EllipsisIcon, Trash2Icon } from "lucide-react";
 import { FC, useState } from "react";
 import { ContentStatus, Props } from "./lib/types";
 import CommentCreationForm from "../../../comment-editor-form";
@@ -250,7 +244,7 @@ const CommentItem: FC<Props> = (props) => {
             <CommentCreationForm
               mode="edit"
               editableCommentId={comment._id}
-              defaultValues={{ content: comment.content }}
+              defaultValues={{ content: comment.content, stars: comment.stars }}
               onClose={() => setIsEdit(false)}
             />
           )}

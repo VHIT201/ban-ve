@@ -61,7 +61,7 @@ const DataTableBulkActions: FC<Props> = (props) => {
     if (!buttons) return;
 
     const currentIndex = Array.from(buttons).findIndex(
-      (button) => button === document.activeElement
+      (button) => button === document.activeElement,
     );
 
     switch (event.key) {
@@ -146,7 +146,7 @@ const DataTableBulkActions: FC<Props> = (props) => {
         className={cn(
           "fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-xl",
           "transition-all delay-100 duration-300 ease-out hover:scale-105",
-          "focus-visible:ring-ring/50 focus-visible:ring-2 focus-visible:outline-none"
+          "focus-visible:ring-ring/50 focus-visible:ring-2 focus-visible:outline-none",
         )}
       >
         <div
@@ -154,7 +154,7 @@ const DataTableBulkActions: FC<Props> = (props) => {
             "p-2 shadow-xl",
             "rounded-xl border",
             "bg-background/95 supports-[backdrop-filter]:bg-background/60 backdrop-blur-lg",
-            "flex items-center gap-x-2"
+            "flex items-center gap-x-2",
           )}
         >
           <Tooltip>
@@ -186,7 +186,11 @@ const DataTableBulkActions: FC<Props> = (props) => {
             className="flex items-center gap-x-1 text-sm"
             id="bulk-actions-description"
           >
-            <Badge variant="default" aria-label={`${selectedCount} selected`}>
+            <Badge
+              variant="default"
+              aria-label={`${selectedCount} selected`}
+              className="rounded-full"
+            >
               {selectedCount}
             </Badge>{" "}
             <span className="hidden sm:inline">
@@ -210,7 +214,7 @@ const DataTableBulkActions: FC<Props> = (props) => {
                     onClick={action.onAction}
                     aria-label={action.label}
                     title={action.label}
-                    className="size-8 rounded-xl shadow-md hover:scale-105 transition-transform hover:shadow-lg duration-500"
+                    className="size-8 rounded-md shadow-md hover:scale-105 transition-transform hover:shadow-lg duration-500"
                   >
                     {<ActionIcon className="size-4" />}
                     <span className="sr-only">{action.label}</span>

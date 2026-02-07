@@ -169,7 +169,11 @@ export const useCategoryTableColumnsDefs = (
   );
 };
 
-export const useBulkActions = () => {
+export const useBulkActions = ({
+  onDeleteSelected,
+}: {
+  onDeleteSelected?: () => void;
+}) => {
   return useMemo(
     () => [
       {
@@ -178,7 +182,7 @@ export const useBulkActions = () => {
         tooltip: "Xóa tất cả các danh mục đã chọn",
         variant: "destructive" as const,
         onAction: () => {
-          console.log("Delete selected categories");
+          onDeleteSelected?.();
         },
       },
     ],

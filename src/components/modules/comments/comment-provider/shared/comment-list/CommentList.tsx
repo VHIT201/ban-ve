@@ -14,6 +14,8 @@ const CommentList: FC<Props> = (props) => {
   // Hooks
   const { commentList, isFetching } = useCommentSectionContext();
 
+  console.log("Rendering CommentList with comments:", commentList);
+
   if (isFetching) {
     return (
       <div className="space-y-8">
@@ -32,7 +34,11 @@ const CommentList: FC<Props> = (props) => {
     <div className={className}>
       <ul className="flex flex-col gap-4 p-1">
         {commentList.map((comment) => (
-          <CommentItem key={comment._id} comment={comment} isReply={false} />
+          <CommentItem
+            key={`${comment._id}-${comment.createdAt}`}
+            comment={comment}
+            isReply={false}
+          />
         ))}
       </ul>
     </div>

@@ -10,7 +10,7 @@ import type {
 } from "@/api/models";
 
 // Internal
-import { DataTable, QueryBoundary } from "@/components/shared";
+import { DataTable, DeleteDialog, QueryBoundary } from "@/components/shared";
 import { useBulkActions, useCategoryTableColumnsDefs } from "./lib/hooks";
 import {
   getGetApiCategoriesIdChildrenQueryKey,
@@ -22,7 +22,7 @@ import {
   useGetApiCategoriesIdWithChildren,
   usePutApiCategoriesId,
 } from "@/api/endpoints/categories";
-import { UseQueryResult } from "@tanstack/react-query";
+import { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 import { FC, Fragment, useEffect, useMemo, useState } from "react";
 import CategoryDialog from "../category-dialog";
 import { toast } from "sonner";
@@ -36,9 +36,10 @@ import { useRouter } from "next/navigation";
 import { ROUTE_PATHS } from "@/constants/paths";
 import { useUploadMedia } from "@/hooks";
 import baseConfig from "@/configs/base";
+import { ResponseData } from "@/api/types/base";
 
 interface Props {
-  id?: string; // ID cho cả parentId và withChildrenId
+  id?: string;
   mode?: "all" | "children" | "with-children"; // Mode để xác định loại query
 }
 
@@ -46,11 +47,15 @@ const CategoryTable: FC<Props> = (props) => {
   // Props
   const { id, mode = "all" } = props;
 
-  // States
+  // Hooks
   const router = useRouter();
+
+  // States
+  const [selectedRows, setSelectedRows] = useState<Category[]>([]);
   const [editSelectRow, setEditSelectRow] = useState<Category | null>(null);
-  const [deleteSelectRow, setDeleteSelectRow] = useState<Category | null>(null);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 20 });
+  const [deleteSelectRow, setDeleteSelectRow] = useState<Category | null>(null);
+  const [openDeleteMultiDialog, setOpenDeleteMultiDialog] = useState(false);
 
   // Queries
   const getCategoryList = useGetApiCategories(
@@ -97,12 +102,20 @@ const CategoryTable: FC<Props> = (props) => {
   // Mutations
   const uploadFileMutation = useUploadMedia();
 
+  console.log("Query keys:", [
+    getGetApiCategoriesQueryKey(),
+    id ? getGetApiCategoriesIdChildrenQueryKey(id) : [],
+    mode === "with-children"
+      ? getGetApiCategoriesIdWithChildrenQueryKey(id || "")
+      : [],
+  ]);
+
   const editCategoryMutation = usePutApiCategoriesId({
     mutation: {
       meta: {
         invalidateQueries: [
           getGetApiCategoriesQueryKey(),
-          mode === "children" ? getGetApiCategoriesIdChildrenQueryKey(id) : [],
+          id ? getGetApiCategoriesIdChildrenQueryKey(id) : [],
           mode === "with-children"
             ? getGetApiCategoriesIdWithChildrenQueryKey(id || "")
             : [],
@@ -111,12 +124,12 @@ const CategoryTable: FC<Props> = (props) => {
     },
   });
 
-  const deleteCategoryMutation = useDeleteApiCategoriesId({
+  const deleteCategoryMutation = useDeleteApiCategoriesId<ResponseData<any>>({
     mutation: {
       meta: {
         invalidateQueries: [
           getGetApiCategoriesQueryKey(),
-          mode === "children" ? getGetApiCategoriesIdChildrenQueryKey(id) : [],
+          id ? getGetApiCategoriesIdChildrenQueryKey(id) : [],
           mode === "with-children"
             ? getGetApiCategoriesIdWithChildrenQueryKey(id || "")
             : [],
@@ -212,9 +225,6 @@ const CategoryTable: FC<Props> = (props) => {
 
       setEditSelectRow(null);
       toast.success("Cập nhật danh mục thành công.");
-
-      // Reload page after success
-      window.location.reload();
     } catch (error) {
       console.error("Failed to edit category:", error);
       toast.error(
@@ -228,15 +238,33 @@ const CategoryTable: FC<Props> = (props) => {
   };
 
   const handleDeleteCategory = async () => {
-    if (!deleteSelectRow) return;
+    if (!deleteSelectRow && selectedRows.length === 0) return;
+
     try {
-      await deleteCategoryMutation.mutateAsync({ id: deleteSelectRow._id! });
+      let resMutation;
 
-      setDeleteSelectRow(null);
-      toast.success("Xóa danh mục thành công.");
+      if (deleteSelectRow) {
+        resMutation = await deleteCategoryMutation.mutateAsync({
+          id: deleteSelectRow._id!,
+        });
+      } else {
+        const selectedIds = selectedRows.map((row) => row._id!).filter(Boolean);
+        resMutation = await deleteCategoryMutation.mutateAsync({
+          id: selectedIds.join(","),
+        });
+      }
 
-      // Reload page after success
-      window.location.reload();
+      const responseData = resMutation as unknown as ResponseData<any>;
+
+      if (selectedRows.length > 0) {
+        console.log("Deleting selected rows:", selectedRows);
+        setSelectedRows([]);
+        setOpenDeleteMultiDialog(false);
+        toast.success(responseData.message || "Xóa danh mục thành công.");
+      } else {
+        setDeleteSelectRow(null);
+        toast.success(responseData.message || "Xóa danh mục thành công.");
+      }
     } catch (error) {
       toast.error(
         extractErrorMessage(error) || "Đã có lỗi xảy ra khi xóa danh mục.",
@@ -251,8 +279,6 @@ const CategoryTable: FC<Props> = (props) => {
     setPagination(updater);
   };
 
-  console.log("Pagination Data:", pagination);
-
   // Columns
   const columns = useCategoryTableColumnsDefs({
     onEdit: handleColumnEdit,
@@ -261,7 +287,13 @@ const CategoryTable: FC<Props> = (props) => {
   });
 
   // Memos
-  const bulkActionList = useBulkActions();
+  const bulkActionList = useBulkActions({
+    onDeleteSelected: () => {
+      setOpenDeleteMultiDialog(true);
+    },
+  });
+
+  console.log("Selected Rows:", selectedRows);
 
   return (
     <Fragment>
@@ -274,10 +306,13 @@ const CategoryTable: FC<Props> = (props) => {
               columns={columns}
               data={displayData}
               rowCount={displayData.length}
+              getRowId={(row) => row._id!}
               manualPagination={false}
+              selectedRows={selectedRows}
               enablePagination
               enableRowSelection
               state={{ pagination }}
+              onSelectedRowsChange={(selected) => setSelectedRows(selected)}
               onPaginationChange={handlePaginationChange}
               classNames={{
                 header: "bg-primary/90",
@@ -290,12 +325,20 @@ const CategoryTable: FC<Props> = (props) => {
               <DataTable.Pagination />
 
               <DataTableBulkActions
-                actions={bulkActionList}
                 entityName="danh mục"
+                actions={bulkActionList}
               />
               <DataTableDeleteDialog
                 currentRow={deleteSelectRow}
+                deleting={deleteCategoryMutation.isPending}
                 onDelete={handleDeleteCategory}
+              />
+
+              <DeleteDialog
+                open={openDeleteMultiDialog}
+                onConfirm={handleDeleteCategory}
+                onOpenChange={setOpenDeleteMultiDialog}
+                deleting={deleteCategoryMutation.isPending}
               />
             </DataTable>
           );

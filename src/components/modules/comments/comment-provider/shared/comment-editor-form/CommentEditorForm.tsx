@@ -61,7 +61,9 @@ const CommentCreationForm: FC<Props> = (props) => {
   const [commentContent, setCommentContent] = useState<string>(
     defaultValues?.content ?? "",
   );
-  const [ratingValue, setRatingValue] = useState<number>(0);
+  const [ratingValue, setRatingValue] = useState<number>(
+    defaultValues?.stars ?? 0,
+  );
   const [commentMediaList, setCommentMediaList] = useState<File[]>([]);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   // Mutations
@@ -338,6 +340,7 @@ const CommentCreationForm: FC<Props> = (props) => {
 
             <div className="pt-2 pb-0 flex items-center gap-4">
               <RatingStar
+                view={mode === "edit"}
                 value={ratingValue}
                 onChange={setRatingValue}
                 className={{

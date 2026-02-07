@@ -1,12 +1,9 @@
 // Core
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient, MutationCache, QueryCache } from "@tanstack/react-query";
 import { isAxiosError, HttpStatusCode } from "axios";
 
 // App
 import { Response } from "@/api/types/base";
-import { BASE_PATHS } from "@/constants/paths";
-import { useAuthStore } from "@/stores";
-import { MutationCache } from "@tanstack/react-query";
 
 // Constants
 const RETRY_COUNT = 0;
@@ -23,6 +20,11 @@ const handleRetry = (failureCount: number, error: Error) => {
     return false;
   }
 
+  // Expired token error - will be handled in queryCache.onError
+  if (error.response?.status === HttpStatusCode.Unauthorized) {
+    return false;
+  }
+
   // Denied permission error
   if (error.response?.status === HttpStatusCode.Forbidden) {
     return false;
@@ -31,6 +33,23 @@ const handleRetry = (failureCount: number, error: Error) => {
   return error.response?.status === HttpStatusCode.InternalServerError
     ? false
     : true;
+};
+
+// Handle auth errors globally
+const handleAuthError = (error: unknown) => {
+  if (isAxiosError<Response>(error)) {
+    if (error.response?.status === HttpStatusCode.Unauthorized) {
+      // Dynamically import to avoid circular dependency
+      import("@/stores").then(({ useAuthStore }) => {
+        useAuthStore.getState().resetStore();
+      });
+
+      // Redirect to login
+      if (typeof window !== "undefined") {
+        window.location.href = "/auth/login";
+      }
+    }
+  }
 };
 
 // Query client
@@ -50,14 +69,20 @@ const queryClient = new QueryClient({
   },
   mutationCache: new MutationCache({
     onSuccess: async (_data, _variables, _context, mutation) => {
+      console.log("Mutation succeeded:", mutation);
       const meta = mutation.options.meta;
-
       if (meta?.invalidateQueries?.length) {
-        const promises = meta.invalidateQueries.map((qk) =>
-          queryClient.refetchQueries({ queryKey: qk }),
+        const validQueryKeys = meta.invalidateQueries.filter(
+          (qk) => qk && Array.isArray(qk) && qk.length > 0,
         );
 
-        await Promise.all(promises);
+        if (validQueryKeys.length > 0) {
+          const promises = validQueryKeys.map((qk) =>
+            queryClient.invalidateQueries({ queryKey: qk }),
+          );
+
+          await Promise.all(promises);
+        }
       }
     },
   }),

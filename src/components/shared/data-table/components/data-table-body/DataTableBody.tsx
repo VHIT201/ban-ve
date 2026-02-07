@@ -26,7 +26,7 @@ const DataTableBody = <TData,>() => {
                   checked={row.getIsSelected()}
                   onCheckedChange={(value) => row.toggleSelected(!!value)}
                   aria-label="Select row"
-                  className="[&>span]:data-[state=checked]:bg-primary [&>span]:data-[state=checked]:border-primary [&>span]:border-gray-300"
+                  className="[&>span]:data-[state=checked]:bg-primary [&>span]:data-[state=checked]:border-primary border-2 [&>span]:border-gray-700! cursor-pointer"
                 />
               </TableCell>
             )}

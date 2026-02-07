@@ -32,7 +32,7 @@ export const useCommentList = (postId: string) => {
   const getCommentInfiniteQuery = useInfiniteQuery<
     GetApiCommentsContentsContentId200,
     Error,
-    InfiniteData<ResponseData<FilterData<Comment[]>>, number>,
+    InfiniteData<Comment[], number>,
     typeof queryKey,
     number
   >({
@@ -67,12 +67,19 @@ export const useCommentList = (postId: string) => {
         const newPages: Comment[][] = [];
         let remaining = [...updatedComments];
 
+        console.log("Updated Comments:", updatedComments);
+
         while (remaining.length > 0) {
           const pageData = remaining.slice(0, COMMENT_PAGE_SIZE);
           remaining = remaining.slice(COMMENT_PAGE_SIZE);
 
           newPages.push(pageData as Comment[]);
         }
+
+        console.log("New Pages after update:", {
+          ...oldData,
+          pages: newPages,
+        });
 
         return {
           ...oldData,
@@ -92,22 +99,25 @@ export const useCommentList = (postId: string) => {
     }) => {
       updateCache((oldComments) => {
         if (parentCommentId) {
-          return oldComments.map((comment) => {
-            if (comment._id === parentCommentId) {
-              return {
-                ...comment,
-                // TODO: Add reply to comment.replies if needed
-              };
-            }
-            return comment;
-          });
+          return oldComments
+            .flatMap(
+              (page) =>
+                (page as unknown as GetApiCommentsContentsContentId200).data ??
+                [],
+            )
+            .map((comment) => {
+              if (comment._id === parentCommentId) {
+                return {
+                  ...comment,
+                };
+              }
+              return comment;
+            });
         }
 
         return [
           newCommentItem,
-          ...oldComments.flatMap(
-            (comment) => (comment as ResponseData<Comment>).data,
-          ),
+          ...oldComments.flatMap((page) => page ?? [], []),
         ];
       });
     },
@@ -125,8 +135,6 @@ export const useCommentList = (postId: string) => {
       parentCommentId?: string;
     }) => {
       updateCache((oldComments) => {
-        console.log("Updating comment in cache:", updatedCommentItem);
-
         if (parentCommentId) {
           return oldComments.map((comment) => {
             if (comment._id === parentCommentId) {
@@ -178,10 +186,9 @@ export const useCommentList = (postId: string) => {
   );
 
   const commentList =
-    getCommentInfiniteQuery.data?.pages.flatMap(
-      (page) =>
-        (page as unknown as GetApiCommentsContentsContentId200).data ?? [],
-    ) || [];
+    getCommentInfiniteQuery.data?.pages.flatMap((page) => page ?? []) || [];
+
+  console.log("COMMENT QUERY:", getCommentInfiniteQuery.data);
 
   return {
     commentList: commentList,
