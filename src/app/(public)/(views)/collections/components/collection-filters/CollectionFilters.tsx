@@ -124,26 +124,16 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
   const treeData = useMemo(() => {
     // Handle loading or error states
     if (getCategoryTreeQuery.isLoading || getCategoryTreeQuery.isError) {
-      console.log("Category tree query is loading or in error state");
       return [];
     }
 
     if (!getCategoryTreeQuery.data) {
-      console.log("Category tree data is null/undefined");
       return [];
     }
     if (!Array.isArray(getCategoryTreeQuery.data)) {
-      console.log(
-        "Category tree data is not an array:",
-        getCategoryTreeQuery.data,
-      );
       return [];
     }
-    console.log(
-      "Category tree data is valid array with",
-      getCategoryTreeQuery.data.length,
-      "items",
-    );
+
     return getCategoryTreeQuery.data.map(transformCategoryToTreeItem);
   }, [
     getCategoryTreeQuery.data,

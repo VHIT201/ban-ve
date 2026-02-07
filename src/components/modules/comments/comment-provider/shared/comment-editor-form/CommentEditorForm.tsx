@@ -120,7 +120,16 @@ const CommentCreationForm: FC<Props> = (props) => {
         const commentData = (
           commentResponse as unknown as MutationDataResult<CommentItem>
         ).data;
-        updateComment?.({ updatedCommentItem: commentData });
+
+        updateComment?.({
+          updatedCommentItem: {
+            ...commentData,
+            guestName: profileStore.fullName,
+            avatar: profileStore.avatar?.replace("//", "/"),
+            email: profileStore.email,
+            isGuest: false,
+          },
+        });
       }
 
       const successMessage =

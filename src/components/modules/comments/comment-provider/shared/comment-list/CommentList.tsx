@@ -6,13 +6,15 @@ import { Props } from "./lib/types";
 import { CommentItem, CommentItemSkeleton } from "./components";
 import { useCommentSectionContext } from "../../lib/hooks";
 import CommentDataEmpty from "../../components/comment-data-empty/CommentDataEmpty";
+import { Button } from "@/components/ui/button";
 
 const CommentList: FC<Props> = (props) => {
   // Props
   const { className } = props;
 
   // Hooks
-  const { commentList, isFetching } = useCommentSectionContext();
+  const { commentList, isFetching, hasNextPage, fetchNextPage } =
+    useCommentSectionContext();
 
   console.log("Rendering CommentList with comments:", commentList);
 
@@ -33,14 +35,22 @@ const CommentList: FC<Props> = (props) => {
   return (
     <div className={className}>
       <ul className="flex flex-col gap-4 p-1">
-        {commentList.map((comment) => (
+        {commentList.map((comment, index) => (
           <CommentItem
-            key={`${comment._id}-${comment.createdAt}`}
+            key={`${comment._id}-${comment.createdAt}-${index}`}
             comment={comment}
             isReply={false}
           />
         ))}
       </ul>
+
+      {hasNextPage && (
+        <div className="flex justify-center mt-6">
+          <Button variant="outline" onClick={() => fetchNextPage?.()}>
+            Xem thêm bình luận
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

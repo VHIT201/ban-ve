@@ -41,4 +41,4 @@ export const COMMENT_SECTION_CONTEXT = createContext<{
   likeComment?: (commentId: string, isLike: boolean) => void;
 }>({});
 
-export const COMMENT_PAGE_SIZE = 5;
+export const COMMENT_PAGE_SIZE = 10;

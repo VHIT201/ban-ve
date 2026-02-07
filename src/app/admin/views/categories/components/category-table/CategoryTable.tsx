@@ -37,6 +37,7 @@ import { ROUTE_PATHS } from "@/constants/paths";
 import { useUploadMedia } from "@/hooks";
 import baseConfig from "@/configs/base";
 import { ResponseData } from "@/api/types/base";
+import { DataTableSkeleton } from "@/components/shared/data-table";
 
 interface Props {
   id?: string;
@@ -297,7 +298,16 @@ const CategoryTable: FC<Props> = (props) => {
 
   return (
     <Fragment>
-      <QueryBoundary query={activeQuery}>
+      <QueryBoundary
+        query={activeQuery}
+        fetchingView={
+          <DataTableSkeleton
+            enableRowSelection
+            columns={columns.length}
+            rows={5}
+          />
+        }
+      >
         {(activeData) => {
           const displayData = activeData || [];
 

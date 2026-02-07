@@ -9,8 +9,6 @@ import {
 } from "@tanstack/react-query";
 import { getApiCommentsContentsContentId } from "@/api/endpoints/comments";
 import { Comment, GetApiCommentsContentsContentId200 } from "@/api/models";
-import { FilterData, ResponseData } from "@/api/types/base";
-
 // Hook useExamContext
 export const useCommentSectionContext = () => {
   // Hooks
@@ -37,56 +35,60 @@ export const useCommentList = (postId: string) => {
     number
   >({
     queryKey,
-    queryFn: async ({ pageParam }) => {
-      const res = await getApiCommentsContentsContentId(postId);
+    queryFn: async ({ pageParam = 1 }) => {
+      const res = await getApiCommentsContentsContentId(postId, {
+        limit: COMMENT_PAGE_SIZE,
+        page: pageParam,
+      });
 
       return res as unknown as GetApiCommentsContentsContentId200;
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       if (
-        (lastPage.pagination?.totalPages ?? 0) *
-          (lastPage.pagination?.limit ?? 0) >=
+        (lastPage.pagination?.currentPage ?? 0) * (COMMENT_PAGE_SIZE ?? 0) >=
         (lastPage?.pagination?.total ?? 0)
       )
         return undefined;
       return allPages.length + 1;
     },
     refetchOnWindowFocus: false,
+    select: (data) => {
+      return {
+        pageParams: data.pageParams,
+        pages: data.pages.map((page) => page.data as Comment[]),
+      };
+    },
   });
 
   const updateCache = (updater: (old: CommentItem[]) => CommentItem[]) => {
-    queryClient.setQueryData<InfiniteData<Comment[], number>>(
-      queryKey,
-      (oldData) => {
-        if (!oldData) return oldData;
+    queryClient.setQueryData<
+      InfiniteData<GetApiCommentsContentsContentId200, number>
+    >(queryKey, (oldData) => {
+      if (!oldData) return oldData;
 
-        const allComments = oldData.pages.flatMap((page) => page);
-        const updatedComments = updater(allComments);
+      const allComments = oldData.pages.flatMap((page) => page.data ?? []);
 
-        const newPages: Comment[][] = [];
-        let remaining = [...updatedComments];
+      const updatedComments = updater(allComments);
 
-        console.log("Updated Comments:", updatedComments);
+      const newPages: GetApiCommentsContentsContentId200[] = [];
+      let remaining = [...updatedComments];
 
-        while (remaining.length > 0) {
-          const pageData = remaining.slice(0, COMMENT_PAGE_SIZE);
-          remaining = remaining.slice(COMMENT_PAGE_SIZE);
+      while (remaining.length > 0) {
+        const pageData = remaining.slice(0, COMMENT_PAGE_SIZE);
+        remaining = remaining.slice(COMMENT_PAGE_SIZE);
 
-          newPages.push(pageData as Comment[]);
-        }
-
-        console.log("New Pages after update:", {
-          ...oldData,
-          pages: newPages,
+        newPages.push({
+          ...oldData.pages[0],
+          data: pageData,
         });
+      }
 
-        return {
-          ...oldData,
-          pages: newPages,
-        };
-      },
-    );
+      return {
+        ...oldData,
+        pages: newPages,
+      };
+    });
   };
 
   const handleCreateComment = useCallback(
@@ -98,30 +100,14 @@ export const useCommentList = (postId: string) => {
       parentCommentId?: string;
     }) => {
       updateCache((oldComments) => {
-        if (parentCommentId) {
-          return oldComments
-            .flatMap(
-              (page) =>
-                (page as unknown as GetApiCommentsContentsContentId200).data ??
-                [],
-            )
-            .map((comment) => {
-              if (comment._id === parentCommentId) {
-                return {
-                  ...comment,
-                };
-              }
-              return comment;
-            });
+        // ✅ comment gốc
+        if (!parentCommentId) {
+          return [newCommentItem, ...oldComments];
         }
 
-        return [
-          newCommentItem,
-          ...oldComments.flatMap((page) => page ?? [], []),
-        ];
+        return [];
       });
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
@@ -188,7 +174,7 @@ export const useCommentList = (postId: string) => {
   const commentList =
     getCommentInfiniteQuery.data?.pages.flatMap((page) => page ?? []) || [];
 
-  console.log("COMMENT QUERY:", getCommentInfiniteQuery.data);
+  console.log("COMMENT QUERY:", getCommentInfiniteQuery.hasNextPage);
 
   return {
     commentList: commentList,

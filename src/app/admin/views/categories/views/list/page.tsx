@@ -75,12 +75,6 @@ const Categories = () => {
     }
   };
 
-  console.log("Creating Categories - invalidateQueries:", [
-    getGetApiCategoriesQueryKey(),
-    id ? getGetApiCategoriesIdChildrenQueryKey(id) : [],
-    withChildren ? getGetApiCategoriesIdWithChildrenQueryKey(id || "") : [],
-  ]);
-
   return (
     <div className="space-y-6">
       {/* Category Header */}

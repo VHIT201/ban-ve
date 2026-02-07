@@ -264,18 +264,56 @@ const ContentEditorForm = ({
   };
 
   // Queries
-  const getCategoryTreeQuery = useGetApiCategoriesAllTree();
+  const getCategoryTreeQuery = useGetApiCategoriesAllTree(
+    {},
+    {
+      query: {
+        select: (data) => {
+          try {
+            const response = data as unknown as ResponseData<any>;
+            console.log("API Response:", response);
+
+            // Try different possible structures
+            if (response?.data?.tree && Array.isArray(response.data.tree)) {
+              return response.data.tree;
+            }
+            if (response?.data && Array.isArray(response.data)) {
+              return response.data;
+            }
+            if (Array.isArray(response)) {
+              return response;
+            }
+
+            console.log("Unexpected data structure:", response);
+            return [];
+          } catch (error) {
+            console.error("Error processing category tree data:", error);
+            return [];
+          }
+        },
+      },
+    },
+  );
 
   const treeData = useMemo(() => {
-    if (!getCategoryTreeQuery.data) return [];
+    // Handle loading or error states
+    if (getCategoryTreeQuery.isLoading || getCategoryTreeQuery.isError) {
+      return [];
+    }
 
-    // API response structure: {status, results, pagination, data: {tree: [...]}}
-    const apiResponse = getCategoryTreeQuery.data as any;
-    const treeArray = apiResponse?.data?.tree;
+    if (!getCategoryTreeQuery.data) {
+      return [];
+    }
+    if (!Array.isArray(getCategoryTreeQuery.data)) {
+      return [];
+    }
 
-    if (!Array.isArray(treeArray)) return [];
-    return treeArray.map(transformCategoryToTreeItem);
-  }, [getCategoryTreeQuery.data]);
+    return getCategoryTreeQuery.data.map(transformCategoryToTreeItem);
+  }, [
+    getCategoryTreeQuery.data,
+    getCategoryTreeQuery.isLoading,
+    getCategoryTreeQuery.isError,
+  ]);
 
   // Methods
   const handleSubmit = async (values: ContentFormValues) => {
@@ -625,8 +663,19 @@ const ContentEditorForm = ({
                     <Uploader.DropZone>
                       <Uploader.Placeholder />
                     </Uploader.DropZone>
-                    <Uploader.MediaList
-                      defaultValues={defaultImages?.map((image) => image)}
+                    <Uploader.MediaList />
+                    <Uploader.Exists
+                      data={
+                        defaultImages?.map((image) => {
+                          return {
+                            id: image,
+                            name: image.split("/").pop() || "image",
+                            size: 0,
+                            path: image,
+                            type: "image/*",
+                          };
+                        }) ?? []
+                      }
                     />
                   </Uploader>
                 </div>
@@ -706,11 +755,7 @@ const ContentEditorForm = ({
               Hủy
             </Button>
           )}
-          <Button
-            type="submit"
-            disabled={isLoading || isUploadingFile}
-            className="bg-blue-600 hover:bg-blue-700"
-          >
+          <Button type="submit" disabled={isLoading || isUploadingFile}>
             {isLoading || isUploadingFile ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />

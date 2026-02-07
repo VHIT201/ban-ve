@@ -161,7 +161,7 @@ const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
 
   return (
     <div className="flex flex-col">
-      <div className="flex items-center gap-2 px-2 py-1.5 hover:bg-primary/10 rounded-md transition-colors">
+      <div className="flex items-center gap-2 px-2 py-1.5 hover:bg-primary/10 transition-colors">
         <button
           onClick={handleExpandClick}
           className={cn(
@@ -184,7 +184,7 @@ const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
         <label
           className={cn(
             "flex-1 text-sm cursor-pointer user-select-none",
-            isSelected && "font-semibold text-primary",
+            isSelected && "text-primary",
             isDisabled && "opacity-50 cursor-not-allowed",
           )}
           onClick={() => handleCheckboxChange(!isSelected)}
@@ -298,7 +298,9 @@ const TreeSelect: React.FC<TreeSelectProps> = ({
             className,
           )}
         >
-          <span className="truncate text-left">{selectedLabel}</span>
+          <span className="truncate text-left font-medium!">
+            {selectedLabel}
+          </span>
           <div className="flex items-center gap-1">
             {value.length > 0 && (
               <X className="h-4 w-4 opacity-50 hover:opacity-100" />

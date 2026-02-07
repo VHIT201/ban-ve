@@ -4,7 +4,8 @@ import { FC, ImgHTMLAttributes, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "./skeleton";
 import { isEmpty, isUndefined } from "lodash-es";
-import { ImageIcon } from "lucide-react";
+import { EyeIcon, ImageIcon } from "lucide-react";
+import { Button } from "./button";
 
 interface ImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> {
   /** Image source URL */
@@ -33,6 +34,10 @@ interface ImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> {
   wrapperClassName?: string;
   /** Disable wrapper div (for inline usage) */
   noWrapper?: boolean;
+  /** Enable image preview on click */
+  preview?: boolean;
+  /** Custom preview component */
+  previewComponent?: React.ReactNode;
 }
 
 const Image: FC<ImageProps> = ({
@@ -50,12 +55,22 @@ const Image: FC<ImageProps> = ({
   className,
   wrapperClassName,
   noWrapper = true,
+  preview = false,
+  previewComponent,
   ...props
 }) => {
   const [imageState, setImageState] = useState<"loading" | "loaded" | "error">(
     "loading",
   );
   const [currentSrc, setCurrentSrc] = useState<string | undefined>(src);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+  const openPreview = () => {
+    if (!preview || imageState !== "loaded") return;
+    setIsPreviewOpen(true);
+  };
+
+  const closePreview = () => setIsPreviewOpen(false);
 
   useEffect(() => {
     setImageState("loading");
@@ -145,14 +160,45 @@ const Image: FC<ImageProps> = ({
     </>
   );
 
-  // Return with or without wrapper
-  if (noWrapper) {
+  if (noWrapper && !preview) {
     return imageElement;
   }
 
   return (
-    <div className={cn("relative inline-block", wrapperClassName)}>
+    <div className={cn("relative group", wrapperClassName)}>
       {imageElement}
+
+      {/* Preview Overlay */}
+      {preview && imageState === "loaded" && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={openPreview}
+            className="text-white w-fit h-fit group"
+          >
+            <EyeIcon className="size-5 group-hover:text-white! hover:size-8 transition-transform" />
+          </Button>
+        </div>
+      )}
+
+      {/* Preview Modal */}
+      {isPreviewOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+          onClick={closePreview}
+        >
+          <div onClick={(e) => e.stopPropagation()}>
+            {previewComponent || (
+              <img
+                src={currentSrc}
+                alt={alt}
+                className="max-h-[90vh] max-w-[90vw] rounded-lg"
+              />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

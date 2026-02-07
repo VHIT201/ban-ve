@@ -30,8 +30,8 @@ const BlueprintDetailFeedback: FC<Props> = (props) => {
 
       <CommentProvider contentId={content._id}>
         <div className="space-y-8">
-          {authStore.isSignedIn && (
-            <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+          {authStore.isSignedIn && content?.orderId && (
+            <div className="bg-gray-50 p-6 border border-gray-200">
               <CommentCreationForm />
             </div>
           )}

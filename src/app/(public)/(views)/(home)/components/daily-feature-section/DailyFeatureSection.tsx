@@ -85,7 +85,7 @@ const DailyFeatureSection = () => {
                         ? {
                             _id: blueprint.file_id._id ?? "",
                             name: blueprint.file_id.name ?? "",
-                            path: blueprint.file_id.path ?? "",
+                            path: blueprint.file_id.url ?? "",
                             type: blueprint.file_id.type ?? "",
                             size: blueprint.file_id.size ?? 0,
                           }

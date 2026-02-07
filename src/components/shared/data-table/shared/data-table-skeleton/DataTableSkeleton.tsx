@@ -31,7 +31,7 @@ const DataTableSkeleton: FC<Props> = (props) => {
   return (
     <div className="space-y-4 overflow-x-auto">
       {/* Bảng skeleton */}
-      <div className="overflow-hidden border border-gray-200 dark:border-gray-800">
+      <div className="overflow-hidden  border border-gray-200 dark:border-gray-800">
         <Table>
           <TableHeader className="bg-gray-100 dark:bg-gray-800">
             <TableRow className="border-0 hover:bg-transparent">

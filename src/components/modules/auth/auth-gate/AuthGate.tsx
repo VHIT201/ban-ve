@@ -31,6 +31,11 @@ const AuthGate: FC<Props> = (props) => {
     },
   });
 
+  console.log(
+    "AuthGate Rendered - isSignedIn:",
+    getProfileUserQuery?.data?.avatar,
+  );
+
   // Update profile store when query succeeds
   useEffect(() => {
     if (getProfileUserQuery.isSuccess) {

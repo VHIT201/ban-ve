@@ -69,7 +69,6 @@ const queryClient = new QueryClient({
   },
   mutationCache: new MutationCache({
     onSuccess: async (_data, _variables, _context, mutation) => {
-      console.log("Mutation succeeded:", mutation);
       const meta = mutation.options.meta;
       if (meta?.invalidateQueries?.length) {
         const validQueryKeys = meta.invalidateQueries.filter(

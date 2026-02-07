@@ -92,7 +92,9 @@ const CommentItem: FC<Props> = (props) => {
   };
 
   const avatarUrl = comment.avatar
-    ? `${baseConfig.mediaDomain}/${comment.avatar}`
+    ? comment.avatar.startsWith(`${baseConfig.mediaDomain}/`)
+      ? comment.avatar
+      : `${baseConfig.mediaDomain}/${comment.avatar}`
     : undefined;
   const displayName = getDisplayName();
 
@@ -101,9 +103,7 @@ const CommentItem: FC<Props> = (props) => {
     <div
       className={cn(
         "group transition-all duration-200",
-        isReplyDefault
-          ? "mt-3 w-full pl-12"
-          : "hover:bg-gray-50/50 rounded-xl p-3 -mx-3",
+        isReplyDefault ? "mt-3 w-full pl-12" : "hover:bg-gray-50/50 p-3 -mx-3",
       )}
     >
       <div className="flex gap-3">

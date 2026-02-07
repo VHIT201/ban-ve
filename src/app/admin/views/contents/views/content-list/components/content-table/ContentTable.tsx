@@ -18,7 +18,10 @@ import { toast } from "sonner";
 import { ContentResponse } from "@/api/types/content";
 import { UseQueryResult } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { DataTableDeleteDialog } from "@/components/shared/data-table/shared";
+import {
+  DataTableDeleteDialog,
+  DataTableSkeleton,
+} from "@/components/shared/data-table/shared";
 import { PaginationState, Updater } from "@tanstack/react-table";
 
 const ContentTable = () => {
@@ -166,7 +169,10 @@ const ContentTable = () => {
   // =====================
   return (
     <Fragment>
-      <QueryBoundary query={getContentListQuery}>
+      <QueryBoundary
+        query={getContentListQuery}
+        fetchingView={<DataTableSkeleton columns={columns.length} rows={10} />}
+      >
         {(contentList) => (
           <DataTable
             columns={columns}

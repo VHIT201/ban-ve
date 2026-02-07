@@ -1,147 +1,210 @@
 "use client";
 
-import { useState } from "react";
-import { Star, ThumbsUp, Loader2 } from "lucide-react";
+import { Star } from "lucide-react";
+import { easeOut, motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Avatar } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
 
-import { useParams } from "next/navigation";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import { RatingStar } from "@/components/shared";
+import { useGetApiCommentsContentsContentId } from "@/api/endpoints/comments";
+
 interface ReviewSidebarProps {
-  averageRating?: number;
-  totalReviews?: number;
-  ratingDistribution?: { stars: number; count: number; percentage: number }[];
-  verifiedPercentage?: number;
-  onRatingFilterChange?: (rating: number | null) => void;
-  ratingStats?: any;
+  contentId: string;
 }
 
 const BlueprintDetailFeedbackFilter = ({
-  ratingStats,
+  contentId,
 }: ReviewSidebarProps & {
   onRatingFilterChange?: (rating: number | null) => void;
 }) => {
-  const params = useParams<{ id: string }>();
+  // Queries
+  const getCommentListQuery = useGetApiCommentsContentsContentId(
+    contentId,
+    {
+      page: 1,
+      limit: 1000,
+    },
+    {
+      query: {
+        select: (query) => query.data,
+      },
+    },
+  );
 
-  const ratingData: any = (ratingStats as any)?.data;
-  const averageRating = ratingData?.averageStars || 0;
-  const totalReviews = ratingData?.totalRatings || 0;
+  // Memos
+  const comments = getCommentListQuery.data ?? [];
+
+  const totalReviews = comments.length;
+
+  const averageRating =
+    totalReviews === 0
+      ? 0
+      : Number(
+          (
+            comments.reduce((sum, comment) => sum + (comment.stars || 0), 0) /
+            totalReviews
+          ).toFixed(1),
+        );
+
   const ratingDistribution = [5, 4, 3, 2, 1].map((stars) => {
-    const count = ratingData?.starsCount?.[stars] || 0;
-    const percentage =
-      totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0;
+    const count = comments.filter((comment) => comment.stars === stars).length;
+    const percentage = totalReviews === 0 ? 0 : (count / totalReviews) * 100;
     return { stars, count, percentage };
   });
-  const [userRating] = useState<number | null>(null);
-  const [guestEmail, setGuestEmail] = useState("");
-  const [showEmailDialog, setShowEmailDialog] = useState(false);
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number],
+      },
+    },
+  };
+
+  const ratingBarVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: (i: number) => ({
+      opacity: 1,
+      x: 0,
+      transition: {
+        delay: i * 0.08,
+        duration: 0.4,
+        ease: easeOut,
+      },
+    }),
+  };
 
   return (
-    <div className="flex flex-col gap-6 w-full">
-      {/* Email Dialog */}
-      <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Đánh giá sản phẩm</DialogTitle>
-            <DialogDescription>
-              Vui lòng nhập email của bạn để gửi đánh giá
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Input
-              type="email"
-              placeholder="Email của bạn"
-              value={guestEmail}
-              onChange={(e) => setGuestEmail(e.target.value)}
-              className="w-full"
-            />
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setShowEmailDialog(false)}
-              >
-                Hủy
-              </Button>
-              <Button>Gửi đánh giá</Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
+    <motion.div
+      className="flex flex-col gap-4 w-full"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       {/* Rating Summary Card */}
-      <Card className="p-6 bg-card border-border">
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-3">
-            <div className="flex items-baseline gap-2">
-              <span className="text-5xl font-bold text-foreground">
-                {averageRating}
-              </span>
-              <span className="text-muted-foreground">/ 5</span>
-            </div>
-          </div>
-          <div className="space-y-4">
-            <div className="flex items-center gap-1">
-              {[1, 2, 3, 4, 5].map((rating) => (
-                <button
-                  key={rating}
-                  className="cursor-pointer p-1 rounded-full hover:bg-primary/20 backdrop-blur-md"
-                  aria-label={`${rating} star${rating > 1 ? "s" : ""}`}
+      <motion.div variants={cardVariants}>
+        <Card className="p-8 bg-gradient-to-br from-card to-card/50 border-border/50 backdrop-blur-sm overflow-hidden relative">
+          {/* Subtle background decoration */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-transparent pointer-events-none" />
+
+          <div className="relative flex flex-col items-center text-center gap-5">
+            {/* Rating Number */}
+            <motion.div
+              className="flex flex-col items-center gap-2"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
+            >
+              <div className="flex items-baseline gap-2">
+                <motion.span
+                  className="text-6xl font-bold bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{
+                    delay: 0.3,
+                    type: "spring",
+                    stiffness: 200,
+                    damping: 15,
+                  }}
                 >
-                  <Star
-                    className={cn(
-                      "h-6 w-6 transition-colors",
-                      userRating !== null && rating <= userRating
-                        ? "fill-amber-400 text-amber-400"
-                        : "text-muted-foreground/30",
-                    )}
-                  />
-                </button>
-              ))}
-            </div>
+                  {averageRating}
+                </motion.span>
+                <span className="text-lg text-muted-foreground/70">/ 5</span>
+              </div>
+            </motion.div>
+
+            {/* Stars */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+            >
+              <RatingStar view value={averageRating} />
+            </motion.div>
+
+            {/* Review Count */}
+            <motion.div
+              className="flex items-center gap-2 text-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+            >
+              <span className="font-semibold text-foreground/90">
+                {totalReviews.toLocaleString()}
+              </span>
+              <span className="text-muted-foreground/70">đánh giá</span>
+            </motion.div>
           </div>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span className="font-medium text-foreground">
-              {totalReviews.toLocaleString()}
-            </span>
-            <span>đánh giá</span>
-          </div>
-          =
-        </div>
-      </Card>
+        </Card>
+      </motion.div>
 
       {/* Rating Distribution */}
-      <Card className="p-6 bg-card border-border">
-        <h3 className="text-sm font-semibold mb-4 text-foreground">
-          Phân bổ đánh giá
-        </h3>
-        <div className="flex flex-col gap-3">
-          {ratingDistribution.map((item) => (
-            <div key={item.stars} className="flex items-center gap-3">
-              <div className="flex items-center gap-1 w-12">
-                <span className="text-sm text-muted-foreground">
-                  {item.stars}
-                </span>
-                <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-              </div>
-              <Progress value={item.percentage} className="flex-1 h-2" />
-              <span className="text-xs text-muted-foreground w-12 text-right">
-                {item.count}
-              </span>
-            </div>
-          ))}
-        </div>
-      </Card>
-    </div>
+      <motion.div variants={cardVariants}>
+        <Card className="p-6 bg-card/80 border-border/50 backdrop-blur-sm">
+          <h3 className="text-sm font-semibold mb-5 text-foreground/90">
+            Phân bổ đánh giá
+          </h3>
+          <div className="flex flex-col gap-3">
+            {ratingDistribution.map((item, index) => (
+              <motion.div
+                key={item.stars}
+                custom={index}
+                variants={ratingBarVariants}
+                className="group flex items-center gap-3 cursor-pointer"
+              >
+                {/* Star Rating Label */}
+                <div className="flex items-center gap-1.5 w-14">
+                  <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                    {item.stars}
+                  </span>
+                  <Star className="h-3.5 w-3.5 fill-amber-400/90 text-amber-400/90 transition-transform group-hover:scale-110" />
+                </div>
+
+                {/* Progress Bar */}
+                <div className="flex-1 relative">
+                  <Progress value={item.percentage} className="h-2 bg-muted/50">
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${item.percentage}%` }}
+                      transition={{
+                        delay: 0.6 + index * 0.08,
+                        duration: 0.8,
+                        ease: "easeOut",
+                      }}
+                    />
+                  </Progress>
+                </div>
+
+                {/* Count */}
+                <motion.span
+                  className="text-xs font-medium text-muted-foreground/70 w-12 text-right tabular-nums group-hover:text-foreground transition-colors"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.8 + index * 0.08 }}
+                >
+                  {item.count}
+                </motion.span>
+              </motion.div>
+            ))}
+          </div>
+        </Card>
+      </motion.div>
+    </motion.div>
   );
 };
 

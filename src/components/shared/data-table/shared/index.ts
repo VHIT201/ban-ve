@@ -1,3 +1,4 @@
+export { default as DataTableSkeleton } from "./data-table-skeleton";
 export { default as DataTableActionCell } from "./data-table-action-cell";
 export { default as DataTableBulkAction } from "./data-table-bulk-actions";
 export { default as DataTableBulkActions } from "./data-table-bulk-actions";

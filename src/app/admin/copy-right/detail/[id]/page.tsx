@@ -1,7 +1,17 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Calendar, CheckCircle2, Clock, ExternalLink, FileText, Shield, User, XCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar,
+  CheckCircle2,
+  Clock,
+  ExternalLink,
+  FileText,
+  Shield,
+  User,
+  XCircle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +20,10 @@ import { Separator } from "@/components/ui/separator";
 import { useGetApiReportsReportId } from "@/api/endpoints/copyright";
 import { GetApiReportsReportId200 } from "@/api/models/getApiReportsReportId200";
 import { QueryBoundary } from "@/components/shared";
-import { CopyRightRejectDialog, CopyRightResolveDialog } from "@/components/modules/copy-right";
+import {
+  CopyRightRejectDialog,
+  CopyRightResolveDialog,
+} from "@/components/modules/copy-right";
 import { useState } from "react";
 import { UseQueryResult } from "@tanstack/react-query";
 
@@ -97,7 +110,7 @@ const CopyRightDetailPage = () => {
   };
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
       <QueryBoundary query={reportQuery}>
         {(data) => {
           const report = data.data;
@@ -224,20 +237,22 @@ const CopyRightDetailPage = () => {
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-2">
-                          {report.evidence.map((link: string, index: number) => (
-                            <a
-                              key={index}
-                              href={link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-2 p-3 bg-muted hover:bg-muted/80 rounded-md transition-colors"
-                            >
-                              <ExternalLink className="h-4 w-4 text-muted-foreground" />
-                              <span className="text-sm truncate flex-1">
-                                {link}
-                              </span>
-                            </a>
-                          ))}
+                          {report.evidence.map(
+                            (link: string, index: number) => (
+                              <a
+                                key={index}
+                                href={link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 p-3 bg-muted hover:bg-muted/80 rounded-md transition-colors"
+                              >
+                                <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                                <span className="text-sm truncate flex-1">
+                                  {link}
+                                </span>
+                              </a>
+                            ),
+                          )}
                         </div>
                       </CardContent>
                     </Card>

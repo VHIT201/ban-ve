@@ -37,37 +37,9 @@ import {
   CheckCircle2,
   XCircle,
 } from "lucide-react";
+import { VIETNAM_BANKS } from "@/constants/banks";
 
 // Vietnamese banks list
-const vietnameseBanks = [
-  "Vietcombank - Ngân hàng TMCP Ngoại thương Việt Nam",
-  "VietinBank - Ngân hàng TMCP Công thương Việt Nam",
-  "BIDV - Ngân hàng TMCP Đầu tư và Phát triển Việt Nam",
-  "Agribank - Ngân hàng Nông nghiệp và Phát triển Nông thôn",
-  "Techcombank - Ngân hàng TMCP Kỹ thương Việt Nam",
-  "MB Bank - Ngân hàng TMCP Quân đội",
-  "ACB - Ngân hàng TMCP Á Châu",
-  "VPBank - Ngân hàng TMCP Việt Nam Thịnh Vượng",
-  "TPBank - Ngân hàng TMCP Tiên Phong",
-  "Sacombank - Ngân hàng TMCP Sài Gòn Thương Tín",
-  "HDBank - Ngân hàng TMCP Phát triển TP.HCM",
-  "VIB - Ngân hàng TMCP Quốc tế",
-  "SHB - Ngân hàng TMCP Sài Gòn - Hà Nội",
-  "Eximbank - Ngân hàng TMCP Xuất Nhập khẩu Việt Nam",
-  "MSB - Ngân hàng TMCP Hàng Hải",
-  "OCB - Ngân hàng TMCP Phương Đông",
-  "SCB - Ngân hàng TMCP Sài Gòn",
-  "SeABank - Ngân hàng TMCP Đông Nam Á",
-  "VietCapital Bank - Ngân hàng TMCP Bản Việt",
-  "Bac A Bank - Ngân hàng TMCP Bắc Á",
-  "Nam A Bank - Ngân hàng TMCP Nam Á",
-  "VietBank - Ngân hàng TMCP Việt Nam Thương Tín",
-  "LienViet Post Bank - Ngân hàng TMCP Bưu điện Liên Việt",
-  "PVComBank - Ngân hàng TMCP Đại Chúng Việt Nam",
-  "Cake by VPBank - Ngân hàng số",
-  "Timo by VPBank - Ngân hàng số",
-  "Ubank by VPBank - Ngân hàng số",
-];
 
 // Schema validation
 const collaboratorRequestFormSchema = z.object({
@@ -157,7 +129,7 @@ const CollaboratorRequestForm = ({
 
   const isViewMode = mode === "view";
   const isReviewMode = mode === "review";
-  const isDisabled = isLoading || isViewMode;
+  const isDisabled = isLoading || isViewMode || true;
 
   const getStatusConfig = (status: string) => {
     switch (status) {
@@ -205,7 +177,6 @@ const CollaboratorRequestForm = ({
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <StatusIcon className="h-5 w-5" />
                   <div>
                     <p className="font-medium">Trạng thái yêu cầu</p>
                     <Badge
@@ -258,6 +229,55 @@ const CollaboratorRequestForm = ({
           </Card>
         )}
 
+        {/* Bank Name */}
+        <FormField
+          control={form.control}
+          name="bankName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Ngân hàng <span className="text-red-500">*</span>
+              </FormLabel>
+              {isViewMode ? (
+                <FormControl>
+                  <div className="flex items-center gap-2 p-3 border disabled:bg-muted/50">
+                    <Building2 className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm">
+                      {field.value || "Chưa chọn ngân hàng"}
+                    </span>
+                  </div>
+                </FormControl>
+              ) : (
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  disabled={isDisabled}
+                >
+                  <FormControl>
+                    <SelectTrigger className="lg:min-w-[400px]">
+                      <div className="flex items-center gap-2">
+                        <Building2 className="h-4 w-4 text-gray-500" />
+                        <SelectValue placeholder="Chọn ngân hàng" />
+                      </div>
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent className="max-h-[300px]">
+                    {VIETNAM_BANKS.map((bank) => (
+                      <SelectItem key={bank} value={bank}>
+                        {bank}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+              <FormDescription>
+                Chọn ngân hàng nơi bạn mở tài khoản
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         {/* Bank Account */}
         <FormField
           control={form.control}
@@ -272,7 +292,7 @@ const CollaboratorRequestForm = ({
                   <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
                   <Input
                     placeholder="Nhập số tài khoản (6-20 chữ số)..."
-                    className="pl-10 font-mono"
+                    className="pl-10 font-mono disabled:bg-muted/50"
                     {...field}
                     disabled={isDisabled}
                     maxLength={20}
@@ -286,55 +306,6 @@ const CollaboratorRequestForm = ({
               </FormControl>
               <FormDescription>
                 Số tài khoản ngân hàng để nhận hoa hồng (6-20 chữ số)
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Bank Name */}
-        <FormField
-          control={form.control}
-          name="bankName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Ngân hàng <span className="text-red-500">*</span>
-              </FormLabel>
-              {isViewMode ? (
-                <FormControl>
-                  <div className="flex items-center gap-2 p-3 border rounded-md bg-muted/50">
-                    <Building2 className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm">
-                      {field.value || "Chưa chọn ngân hàng"}
-                    </span>
-                  </div>
-                </FormControl>
-              ) : (
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  disabled={isDisabled}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <div className="flex items-center gap-2">
-                        <Building2 className="h-4 w-4 text-gray-500" />
-                        <SelectValue placeholder="Chọn ngân hàng" />
-                      </div>
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="max-h-[300px]">
-                    {vietnameseBanks.map((bank) => (
-                      <SelectItem key={bank} value={bank}>
-                        {bank}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-              <FormDescription>
-                Chọn ngân hàng nơi bạn mở tài khoản
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -362,14 +333,14 @@ const CollaboratorRequestForm = ({
                       onChange={(e) =>
                         field.onChange(parseFloat(e.target.value) || 0)
                       }
-                      disabled={isDisabled}
+                      disabled={mode === "view"}
                       min={0}
                       max={100}
                       step={0.1}
                     />
                   </div>
                   {/* Commission Rate Preview */}
-                  <Card className="bg-muted/50">
+                  <Card className="disabled:bg-muted/50">
                     <CardContent className="p-4">
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-sm">

@@ -21,6 +21,10 @@ import {
   ShareIcon,
   FlagIcon,
   EllipsisIcon,
+  Package,
+  FileType,
+  Grid3x3,
+  FolderOpen,
 } from "lucide-react";
 import { FC, Fragment, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -52,6 +56,7 @@ import { Separator } from "@/components/ui/separator";
 import { useCountDown, useMetaTags } from "@/hooks";
 import { BlueprintDownload } from "./components";
 import { ImageProtection } from "@/components/shared";
+import { motion, AnimatePresence, easeOut, easeInOut } from "framer-motion";
 
 const DOWNLOAD_COUNTDOWN_SECONDS = 5;
 const BlueprintDetailView: FC<Props> = (props) => {
@@ -198,204 +203,370 @@ const BlueprintDetailView: FC<Props> = (props) => {
     setOpenQRPaymentDialog(false);
   }, [openPaymentStatusDialog]);
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number],
+      },
+    },
+  };
+
+  const imageVariants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.6,
+        ease: easeOut,
+      },
+    },
+  };
+
+  const buttonVariants = {
+    hover: {
+      scale: 1.02,
+      transition: {
+        duration: 0.2,
+        ease: easeInOut,
+      },
+    },
+    tap: {
+      scale: 0.98,
+    },
+  };
+
+  const infoItems = [
+    {
+      icon: Package,
+      label: "Loại file",
+      value: "Vector",
+    },
+    {
+      icon: FileType,
+      label: "Kích thước",
+      value: content.file_id?.size
+        ? formatFileSize(content.file_id.size)
+        : "N/A",
+    },
+    {
+      icon: Grid3x3,
+      label: "Định dạng",
+      value: "AI, PDF, PNG",
+    },
+    {
+      icon: FolderOpen,
+      label: "Danh mục",
+      value:
+        typeof content.category_id === "object" &&
+        content.category_id !== null &&
+        "name" in content.category_id &&
+        typeof (content.category_id as { name?: unknown }).name === "string"
+          ? (content.category_id as { name: string }).name
+          : "N/A",
+    },
+  ];
+
   return (
     <Fragment>
       <ImageProtection>
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-12">
+        <motion.div
+          className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-10"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
           {/* Left Column - Image Gallery */}
-          <div className="lg:col-span-3 space-y-4">
+          <motion.div
+            className="lg:col-span-3 space-y-4"
+            variants={itemVariants}
+          >
             {/* Main Image */}
-            <div className="bg-white rounded-xl overflow-hidden shadow-lg">
+            <motion.div
+              className="bg-white/5 backdrop-blur-sm overflow-hidden shadow-xl border border-white/10"
+              variants={imageVariants}
+              layoutId={`image-${selectedImage}`}
+            >
               <Lens
                 zoomFactor={2}
                 lensSize={150}
                 isStatic={false}
                 ariaLabel="Zoom Area"
               >
-                <img
+                <motion.img
+                  key={selectedImage}
                   src={imageList[selectedImage]}
                   alt={content.title}
                   className="w-full h-[300px] sm:h-[400px] lg:h-[550px] object-contain"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
                 />
               </Lens>
-            </div>
+            </motion.div>
 
             {/* Thumbnail Gallery */}
-            <Carousel
-              opts={{
-                align: "start",
-                loop: false,
-              }}
-              className="w-full"
-            >
-              <CarouselContent className="-ml-2">
-                {imageList.map((image, index) => (
-                  <CarouselItem
-                    key={index}
-                    className="pl-2 basis-1/4 md:basis-1/5"
-                  >
-                    <button
-                      onClick={() => setSelectedImage(index)}
-                      className={`aspect-square bg-white rounded-lg overflow-hidden border-2 transition-all duration-200 w-full ${
-                        selectedImage === index
-                          ? "border-white ring-2 ring-white/50 shadow-md"
-                          : "border-white/20 hover:border-white/60 opacity-70 hover:opacity-100"
-                      }`}
+            <motion.div variants={itemVariants}>
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: false,
+                }}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-2">
+                  {imageList.map((image, index) => (
+                    <CarouselItem
+                      key={index}
+                      className="pl-2 basis-1/4 md:basis-1/5"
                     >
-                      <img
-                        src={image}
-                        alt={`Preview ${index + 1}`}
-                        className="w-full h-full object-cover"
-                        draggable="false"
-                        onContextMenu={(e) => e.preventDefault()}
-                      />
-                    </button>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              {imageList.length > 5 && (
-                <>
-                  <CarouselPrevious className="-left-3 size-8 bg-white/90 backdrop-blur-sm border-white/20 hover:bg-white shadow-lg" />
-                  <CarouselNext className="-right-3 size-8 bg-white/90 backdrop-blur-sm border-white/20 hover:bg-white shadow-lg" />
-                </>
-              )}
-            </Carousel>
-          </div>
+                      <motion.button
+                        onClick={() => setSelectedImage(index)}
+                        className={`aspect-square bg-white/5 backdrop-blur-sm  overflow-hidden border transition-all duration-300 w-full ${
+                          selectedImage === index
+                            ? "border-white/40 ring-2 ring-white/20 shadow-lg"
+                            : "border-white/10 hover:border-white/30 opacity-60 hover:opacity-100"
+                        }`}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <img
+                          src={image}
+                          alt={`Preview ${index + 1}`}
+                          className="w-full h-full object-cover"
+                          draggable="false"
+                          onContextMenu={(e) => e.preventDefault()}
+                        />
+                      </motion.button>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                {imageList.length > 5 && (
+                  <>
+                    <CarouselPrevious className="-left-3 size-8 bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/20 shadow-lg" />
+                    <CarouselNext className="-right-3 size-8 bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/20 shadow-lg" />
+                  </>
+                )}
+              </Carousel>
+            </motion.div>
+          </motion.div>
 
           {/* Right Column - Product Info */}
-          <div className="lg:col-span-2 space-y-6 bg-white/5 p-4 sm:p-6 rounded-xl shadow-lg h-fit">
-            {/* Header with Actions */}
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white leading-tight flex-1">
-                {content.title}
-              </h1>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="text-white/70 hover:text-white hover:bg-white/10"
-                  >
-                    <EllipsisIcon className="size-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {/* <DropdownMenuItem>
-                  <HeartIcon className="size-4 mr-2" />
-                  Yêu thích
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <ShareIcon className="size-4 mr-2" />
-                  Chia sẻ
-                </DropdownMenuItem> */}
-                  <DropdownMenuItem onClick={handleShare}>
-                    <ShareIcon className="size-4 mr-2" />
-                    Chia sẻ
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    variant="destructive"
-                    onClick={() => setOpenReportDialog(true)}
-                  >
-                    <FlagIcon className="size-4 mr-2" />
-                    Báo cáo vi phạm
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            {/* Price & Rating */}
-            <div className="space-y-3 pb-6 border-b border-white/10">
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
-                {content.price
-                  ? new Intl.NumberFormat("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    }).format(content.price)
-                  : "Miễn phí"}
-              </div>
-            </div>
-            <h6 className="text-white/50 text-sm sm:text-md leading-relaxed">
-              {content.description || "Không có mô tả cho sản phẩm này."}
-            </h6>
-            {/* Quick Info */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-6 border-b border-white/10">
-              <div className="space-y-1.5">
-                <div className="text-xs text-white/50 uppercase tracking-wide">
-                  Loại file
-                </div>
-                <div className="font-medium text-white">Vector</div>
-              </div>
-              <div className="space-y-1.5">
-                <div className="text-xs text-white/50 uppercase tracking-wide">
-                  Kích thước
-                </div>
-                <span className="text-sm font-medium text-muted-foreground">
-                  {content.file_id?.size
-                    ? formatFileSize(content.file_id.size)
-                    : "N/A"}
-                </span>
-              </div>
-              <div className="space-y-1.5">
-                <div className="text-xs text-white/50 uppercase tracking-wide">
-                  Định dạng
-                </div>
-                <div className="font-medium text-white">AI, PDF, PNG</div>
-              </div>
-              <div className="space-y-1.5">
-                <div className="text-xs text-white/50 uppercase tracking-wide">
-                  Danh mục
-                </div>
-                <div className="font-medium text-white">
-                  {typeof content.category_id === "object" &&
-                  content.category_id !== null &&
-                  "name" in content.category_id &&
-                  typeof (content.category_id as { name?: unknown }).name ===
-                    "string"
-                    ? (content.category_id as { name: string }).name
-                    : "N/A"}
-                </div>
-              </div>
-            </div>
-            {/* Action Buttons */}
-            <div className="space-y-3 pt-4">
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button
-                  size="lg"
-                  className="w-full sm:flex-1 h-12 bg-white text-gray-900 hover:bg-white/90 font-semibold hover:text-gray-900"
-                  onClick={handleAddToCart}
-                  disabled={isAdding}
-                  variant="default"
+          <motion.div
+            className="lg:col-span-2 space-y-6"
+            variants={itemVariants}
+          >
+            <div className="bg-white/5 backdrop-blur-sm p-6 sm:p-8 shadow-xl border border-white/10 space-y-6 h-fit">
+              {/* Header with Actions */}
+              <div className="flex items-start justify-between gap-4">
+                <motion.h1
+                  className="text-2xl sm:text-3xl font-bold text-white leading-tight flex-1"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2, duration: 0.5 }}
                 >
-                  {isAdding ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
-                      Đang thêm...
-                    </>
-                  ) : justAdded ? (
-                    <>
-                      <Check className="h-5 w-5 mr-2" />
-                      Đã thêm vào giỏ
-                    </>
-                  ) : (
-                    <>
-                      <ShoppingCartIcon className="h-5 w-5 mr-2" />
-                      Thêm vào giỏ
-                    </>
-                  )}
-                </Button>
-                <Button
-                  size="lg"
-                  variant="destructive"
-                  className="w-full sm:flex-1 h-12 font-semibold"
-                  onClick={handleBuyNow}
-                  disabled={isFree}
+                  {content.title}
+                </motion.h1>
+
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.3 }}
                 >
-                  Mua ngay
-                </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="text-white/60 hover:text-white hover:bg-white/10  transition-colors"
+                      >
+                        <EllipsisIcon className="size-5" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={handleShare}>
+                        <ShareIcon className="size-4 mr-2" />
+                        Chia sẻ
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        variant="destructive"
+                        onClick={() => setOpenReportDialog(true)}
+                        className="hover:bg-red-500/10"
+                      >
+                        <FlagIcon className="size-4 mr-2" />
+                        Báo cáo vi phạm
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </motion.div>
               </div>
+
+              {/* Price */}
+              <motion.div
+                className="pb-6 border-b border-white/10"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+              >
+                <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-br from-white to-white/70 bg-clip-text text-transparent">
+                  {content.price
+                    ? new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(content.price)
+                    : "Miễn phí"}
+                </div>
+              </motion.div>
+
+              {/* Description */}
+              <motion.p
+                className="text-white/60 text-sm leading-relaxed"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+              >
+                {content.description || "Không có mô tả cho sản phẩm này."}
+              </motion.p>
+
+              {/* Quick Info Grid */}
+              <motion.div
+                className="grid grid-cols-2 gap-4 py-6 border-y border-white/10"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+              >
+                {infoItems.map((item, index) => {
+                  const Icon = item.icon;
+                  return (
+                    <motion.div
+                      key={item.label}
+                      className="group space-y-2 p-3  hover:bg-white/5 transition-colors"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 + index * 0.1, duration: 0.4 }}
+                      whileHover={{ scale: 1.02 }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Icon className="size-4 text-white/40 group-hover:text-white/60 transition-colors" />
+                        <div className="text-xs text-white/40 uppercase tracking-wider group-hover:text-white/60 transition-colors">
+                          {item.label}
+                        </div>
+                      </div>
+                      <div className="font-medium text-white/90 text-sm">
+                        {item.value}
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
+
+              {/* Action Buttons */}
+              <motion.div
+                className="space-y-3 pt-2"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7, duration: 0.5 }}
+              >
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <motion.div
+                    className="w-full sm:flex-1"
+                    variants={buttonVariants}
+                    whileHover="hover"
+                    whileTap="tap"
+                  >
+                    <Button
+                      size="lg"
+                      className="w-full h-12 bg-white text-gray-900 hover:bg-white/90 font-semibold  shadow-lg hover:shadow-xl transition-shadow"
+                      onClick={handleAddToCart}
+                      disabled={isAdding}
+                      variant="default"
+                    >
+                      <AnimatePresence mode="wait">
+                        {isAdding ? (
+                          <motion.div
+                            key="loading"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="flex items-center"
+                          >
+                            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
+                            Đang thêm...
+                          </motion.div>
+                        ) : justAdded ? (
+                          <motion.div
+                            key="success"
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="flex items-center"
+                          >
+                            <Check className="h-5 w-5 mr-2" />
+                            Đã thêm vào giỏ
+                          </motion.div>
+                        ) : (
+                          <motion.div
+                            key="default"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="flex items-center"
+                          >
+                            <ShoppingCartIcon className="h-5 w-5 mr-2" />
+                            Thêm vào giỏ
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </Button>
+                  </motion.div>
+
+                  <motion.div
+                    className="w-full sm:flex-1"
+                    variants={buttonVariants}
+                    whileHover="hover"
+                    whileTap="tap"
+                  >
+                    <Button
+                      size="lg"
+                      variant="destructive"
+                      className="w-full h-12 font-semibold  shadow-lg hover:shadow-xl transition-shadow"
+                      onClick={handleBuyNow}
+                      disabled={isFree}
+                    >
+                      Mua ngay
+                    </Button>
+                  </motion.div>
+                </div>
+              </motion.div>
+
+              {/* Download Section */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8, duration: 0.5 }}
+              >
+                <BlueprintDownload content={content} />
+              </motion.div>
             </div>
-            <BlueprintDownload content={content} />
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </ImageProtection>
 
       <ReportDialog

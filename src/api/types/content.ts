@@ -45,6 +45,7 @@ export interface ContentResponse {
   };
   createdAt?: string;
   updatedAt?: string;
+  orderId?: string;
 }
 
 export interface ContentProduct {

@@ -15,6 +15,7 @@ import baseConfig from "@/configs/base";
 import DeleteDialog from "@/components/shared/delete-dialog";
 import { id } from "date-fns/locale";
 import { useDeleteApiFileId } from "@/api/endpoints/files";
+import Image from "@/components/ui/image";
 
 interface Props {
   data: {
@@ -107,7 +108,20 @@ const UploaderExistList: FC<Props> = (props) => {
               <div className="flex items-start gap-4">
                 {/* File Icon */}
                 <div className="size-16">
-                  <FileIcon />
+                  {file.type.startsWith("image/") ? (
+                    <Image
+                      preview
+                      src={fileUrl}
+                      alt={fileName}
+                      loading="lazy"
+                      className="h-full w-full object-cover"
+                      wrapperClassName="h-full w-full"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-12 w-12 rounded-md bg-gray-100">
+                      <FileIcon />
+                    </div>
+                  )}
                 </div>
 
                 {/* File Info */}
@@ -256,20 +270,6 @@ const UploaderExistList: FC<Props> = (props) => {
                       */}
                     </div>
                   </div>
-
-                  {/* Preview (for images) */}
-                  {file.type.startsWith("image/") && (
-                    <div className="mt-3">
-                      <div className="relative h-32 w-full max-w-xs overflow-hidden rounded-md border">
-                        <img
-                          src={fileUrl}
-                          alt={fileName}
-                          className="h-full w-full object-contain"
-                          loading="lazy"
-                        />
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             </CardContent>

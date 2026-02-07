@@ -7,8 +7,9 @@ import { ArrowLeft, Loader2, CheckCircle2, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
 // App
-import { QueryBoundary } from "@/components/shared";
 import {
+  useGetApiCollaboratorsEarnings,
+  useGetApiCollaboratorsEarningsCollaboratorId,
   useGetApiCollaboratorsRequests,
   usePutApiCollaboratorsRequestsRequestIdApprove,
   usePutApiCollaboratorsRequestsRequestIdReject,
@@ -20,32 +21,25 @@ import { Response } from "@/api/types/base";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { extractErrorMessage } from "@/utils/error";
+import { useGetApiCollaboratorsRequestsRequestId } from "@/hooks/modules/collaborators";
 
 const CollaboratorEdit = () => {
   // Hooks
+  const router = useRouter();
   const params = useParams<{ id: string }>();
   const id = params.id;
-  const router = useRouter();
 
-  // Query
-  const getRequestQuery = useGetApiCollaboratorsRequests(
-    {},
-    {
-      query: {
-        queryKey: ["collaborator-request", id],
-        select: (data) =>
-          (data as unknown as Response<CollaboratorRequest[]>).data.find(
-            (request) => request._id === id,
-          )!,
-        // Tự động làm mới dữ liệu mỗi khi mở trang
-        staleTime: 0,
-        gcTime: 0, // Thay thế cacheTime bằng gcTime trong phiên bản mới
-        refetchOnWindowFocus: true,
-      },
+  // Queries
+  const getRequestQuery = useGetApiCollaboratorsEarningsCollaboratorId(id, {
+    query: {
+      select: (data) =>
+        (data as unknown as Response<CollaboratorRequest[]>).data.find(
+          (request) => request._id === id,
+        ),
     },
-  ) as UseQueryResult<CollaboratorRequest>;
+  }) as UseQueryResult<CollaboratorRequest>;
 
-  // Mutation for approving the collaborator request
+  // Mutations
   const approveMutation = usePutApiCollaboratorsRequestsRequestIdApprove({
     mutation: {
       onSuccess: () => {
@@ -68,7 +62,6 @@ const CollaboratorEdit = () => {
     },
   });
 
-  // Mutation for rejecting the collaborator request
   const rejectMutation = usePutApiCollaboratorsRequestsRequestIdReject({
     mutation: {
       onSuccess: () => {
