@@ -1,25 +1,24 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { UseWatermarkOptions } from "./use-watermark";
+import { FileStatus } from "@/components/shared/uploader";
 import { usePostApiFileUpload } from "@/api/endpoints/files";
-import type {
-  FileUploadResponse,
-  PostApiFileUploadBody,
-  File as ApiFile,
-} from "@/api/models";
-import { FileStatus, FileWithPreview } from "@/components/shared/uploader";
+import type { PostApiFileUploadBody, File as ApiFile } from "@/api/models";
 
 // ============================================
 // Types
 // ============================================
 
 interface UploadOptions {
-  filename?: string;
   dir?: string;
+  filename?: string;
   private?: boolean;
   compress?: boolean;
   requirePayment?: boolean;
+  applyWatermark?: boolean;
   expiresAfterDays?: number;
+  watermarkOptions?: UseWatermarkOptions;
 }
 
 interface UploadProgress {
@@ -114,6 +113,127 @@ const useUploadMedia = (): UseUploadMediaReturn => {
   }, []);
 
   // ============================================
+  // Watermark Utility
+  // ============================================
+
+  /**
+   * Apply watermark to an image file
+   */
+  const applyWatermarkToImage = useCallback(
+    async (
+      file: File,
+      watermarkOptions: UseWatermarkOptions = {},
+    ): Promise<File> => {
+      if (!file.type.startsWith("image/")) {
+        return file;
+      }
+
+      return new Promise((resolve, reject) => {
+        const {
+          text = "TẠO BỞI BANVE.VN",
+          rotation = -Math.PI / 6,
+          overlayOpacity = 0.5,
+          enableOverlay = true,
+          fontFamily = "Arial",
+          fontWeight = "bold",
+          textOpacity = 0.7,
+          spacingY = 150,
+          spacingX = 200,
+          fontSize = 22,
+          overlayColor,
+          textColor,
+        } = watermarkOptions;
+
+        // Create image element
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+
+        img.onload = () => {
+          try {
+            // Create canvas
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+
+            if (!ctx) {
+              reject(new Error("Failed to get canvas context"));
+              return;
+            }
+
+            // Set canvas size to image size
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            // Draw original image
+            ctx.drawImage(img, 0, 0);
+
+            // Add overlay
+            if (enableOverlay) {
+              ctx.fillStyle =
+                overlayColor || `rgba(0, 0, 0, ${overlayOpacity})`;
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            // Draw watermark text
+            ctx.save();
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.rotate(rotation);
+
+            ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+            ctx.fillStyle = textColor || `rgba(255, 255, 255, ${textOpacity})`;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+
+            // Draw multiple watermarks in a grid
+            for (let x = -canvas.width; x < canvas.width * 2; x += spacingX) {
+              for (
+                let y = -canvas.height;
+                y < canvas.height * 2;
+                y += spacingY
+              ) {
+                ctx.fillText(text, x, y);
+              }
+            }
+
+            ctx.restore();
+
+            // Convert canvas to blob
+            canvas.toBlob(
+              (blob) => {
+                if (!blob) {
+                  reject(new Error("Failed to create blob"));
+                  return;
+                }
+
+                // Create new File from blob
+                const watermarkedFile = new File([blob], file.name, {
+                  type: file.type,
+                  lastModified: Date.now(),
+                });
+
+                URL.revokeObjectURL(url);
+                resolve(watermarkedFile);
+              },
+              file.type,
+              0.95, // Quality
+            );
+          } catch (error) {
+            URL.revokeObjectURL(url);
+            reject(error);
+          }
+        };
+
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          reject(new Error("Failed to load image"));
+        };
+
+        img.src = url;
+      });
+    },
+    [],
+  );
+
+  // ============================================
   // Upload Methods
   // ============================================
 
@@ -139,10 +259,29 @@ const useUploadMedia = (): UseUploadMediaReturn => {
           status: FileStatus.PENDING,
         });
 
+        // Apply watermark if requested
+        let processedFile = file;
+        if (options.applyWatermark && file.type.startsWith("image/")) {
+          updateProgress(fileName, {
+            progress: 25,
+            status: FileStatus.PENDING,
+          });
+
+          processedFile = await applyWatermarkToImage(
+            file,
+            options.watermarkOptions,
+          );
+        }
+
         // Prepare payload
         const payload: PostApiFileUploadBody = {
-          file,
-          ...options,
+          file: processedFile,
+          filename: options.filename,
+          dir: options.dir,
+          private: options.private,
+          compress: options.compress,
+          requirePayment: options.requirePayment,
+          expiresAfterDays: options.expiresAfterDays,
         };
 
         // Start upload
@@ -165,7 +304,7 @@ const useUploadMedia = (): UseUploadMediaReturn => {
         return null;
       }
     },
-    [uploadMutation, updateProgress],
+    [uploadMutation, updateProgress, applyWatermarkToImage],
   );
 
   /**
@@ -210,14 +349,54 @@ const useUploadMedia = (): UseUploadMediaReturn => {
           status: FileStatus.PENDING,
         });
 
+        // Apply watermark to main file if requested
+        let processedMainFile = mainFile;
+        if (options.applyWatermark && mainFile.type.startsWith("image/")) {
+          updateProgress(fileName, {
+            progress: 15,
+            status: FileStatus.PENDING,
+          });
+
+          processedMainFile = await applyWatermarkToImage(
+            mainFile,
+            options.watermarkOptions,
+          );
+        }
+
+        // Apply watermark to preview images if requested
+        let processedImages = images;
+        if (options.applyWatermark) {
+          updateProgress(fileName, {
+            progress: 30,
+            status: FileStatus.PENDING,
+          });
+
+          processedImages = await Promise.all(
+            images.map(async (img) => {
+              if (img.type.startsWith("image/")) {
+                return await applyWatermarkToImage(
+                  img,
+                  options.watermarkOptions,
+                );
+              }
+              return img;
+            }),
+          );
+        }
+
         // Prepare payload with images
         const payload: PostApiFileUploadBody = {
-          file: mainFile,
-          image1: images[0],
-          image2: images[1],
-          image3: images[2],
-          image4: images[3],
-          ...options,
+          file: processedMainFile,
+          image1: processedImages[0],
+          image2: processedImages[1],
+          image3: processedImages[2],
+          image4: processedImages[3],
+          filename: options.filename,
+          dir: options.dir,
+          private: options.private,
+          compress: options.compress,
+          requirePayment: options.requirePayment,
+          expiresAfterDays: options.expiresAfterDays,
         };
 
         // Start upload
@@ -248,7 +427,7 @@ const useUploadMedia = (): UseUploadMediaReturn => {
         return null;
       }
     },
-    [uploadMutation, updateProgress],
+    [uploadMutation, updateProgress, applyWatermarkToImage],
   );
 
   // ============================================
@@ -257,8 +436,8 @@ const useUploadMedia = (): UseUploadMediaReturn => {
 
   return {
     // State
-    uploadProgress,
     isUploading,
+    uploadProgress,
 
     // Methods
     uploadSingle,
