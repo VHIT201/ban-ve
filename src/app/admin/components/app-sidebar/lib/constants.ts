@@ -65,46 +65,5 @@ export const SIDEBAR_MENU: SidebarData = {
         },
       ],
     },
-    {
-      title: "Khác",
-      items: [
-        {
-          title: "Cài đặt",
-          icon: Settings,
-          items: [
-            {
-              title: "Hồ sơ",
-              url: `${BASE_PATHS.admin.path}/settings`,
-              icon: UserCog,
-            },
-            {
-              title: "Tài khoản",
-              url: `${BASE_PATHS.admin.path}/settings/account`,
-              icon: Wrench,
-            },
-            // {
-            //   title: "Giao diện",
-            //   url: `${BASE_PATHS.admin.path}/settings/appearance`,
-            //   icon: Palette,
-            // },
-            // {
-            //   title: "Thông báo",
-            //   url: `${BASE_PATHS.admin.path}/settings/notifications`,
-            //   icon: Bell,
-            // },
-            // {
-            //   title: "Hiển thị",
-            //   url: `${BASE_PATHS.admin.path}/settings/display`,
-            //   icon: Monitor,
-            // },
-          ],
-        },
-        // {
-        //   title: "Mạng xã hội",
-        //   url: `${BASE_PATHS.admin.path}/social`,
-        //   icon: Share2,
-        // },
-      ],
-    },
   ],
 };

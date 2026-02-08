@@ -13,14 +13,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 
 // Internal
-import { QueryBoundary } from "@/components/shared";
+import { QueryBoundary, TreeSelect } from "@/components/shared";
 import {
   AutoCompleteFieldConfig,
   FieldConfig,
   SelectFieldConfig,
   SelectQueryFieldConfig,
+  TreeFieldConfig,
+  NumberRangeFieldConfig,
+  TreeNode,
 } from "../../lib/types";
 import { unwrapSchema } from "../../lib/utils";
 
@@ -157,6 +161,87 @@ const DynamicFilterFieldRenderer = (props: Props): ReactNode => {
 
     case "auto-complete": {
       return null;
+    }
+
+    case "tree": {
+      const configTree = config as TreeFieldConfig;
+      const nodes =
+        "data" in configTree.nodes ? configTree.nodes.data : configTree.nodes;
+
+      return (
+        <TreeSelect
+          nodes={nodes || []}
+          value={Array.isArray(field.value) ? field.value : []}
+          onChange={(selected) => field.onChange(selected)}
+          placeholder={configTree.placeholder || `Select ${name}`}
+          searchable={configTree.searchable ?? true}
+          maxHeight={configTree.maxHeight || "300px"}
+          multiple={true}
+        />
+      );
+    }
+
+    case "number-range": {
+      const configRange = config as NumberRangeFieldConfig;
+      const min = configRange.min ?? 0;
+      const max = configRange.max ?? 100;
+      const step = configRange.step ?? 1;
+      const showInputs = configRange.showInputs ?? true;
+      const formatValue =
+        configRange.formatValue || ((val: number) => String(val));
+
+      // Đảm bảo value luôn là mảng [min, max]
+      const rangeValue = Array.isArray(field.value) ? field.value : [min, max];
+
+      return (
+        <div className="space-y-3">
+          <Slider
+            value={rangeValue}
+            onValueChange={(value) => field.onChange(value)}
+            min={min}
+            max={max}
+            step={step}
+            className="w-full"
+          />
+          {showInputs && (
+            <div className="flex items-center gap-3">
+              <div className="flex-1 space-y-1">
+                <Input
+                  type="number"
+                  value={rangeValue[0] ?? min}
+                  onChange={(e) => {
+                    const newMin = parseFloat(e.target.value) || min;
+                    const validMin = Math.min(newMin, rangeValue[1]);
+                    field.onChange([validMin, rangeValue[1]]);
+                  }}
+                  placeholder={String(min)}
+                  className="w-full h-9 text-sm"
+                />
+                <span className="text-xs text-gray-500 block">
+                  {formatValue(rangeValue[0] ?? min)}
+                </span>
+              </div>
+              <span className="text-gray-400 text-sm">-</span>
+              <div className="flex-1 space-y-1">
+                <Input
+                  type="number"
+                  value={rangeValue[1] ?? max}
+                  onChange={(e) => {
+                    const newMax = parseFloat(e.target.value) || max;
+                    const validMax = Math.max(newMax, rangeValue[0]);
+                    field.onChange([rangeValue[0], validMax]);
+                  }}
+                  placeholder={String(max)}
+                  className="w-full h-9 text-sm"
+                />
+                <span className="text-xs text-gray-500 block">
+                  {formatValue(rangeValue[1] ?? max)}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      );
     }
 
     default:

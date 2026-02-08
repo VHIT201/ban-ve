@@ -11,17 +11,50 @@ import { Button } from "@/components/ui/button";
 import { ContentTable } from "../../views/contents/views/content-list/components";
 import { useRouter } from "next/navigation";
 import { DynamicFilter } from "@/components/shared";
+import { TreeNode } from "@/components/shared/dynamic-filter";
 import { useMemo, useState } from "react";
 import { CONTENT_FILTER_SCHEMA, ContentFilterSchema } from "./lib/constant";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { BASE_PATHS } from "@/constants/paths";
+import { useGetApiCategoriesAllTree } from "@/api/endpoints/categories";
+import { ResponseData } from "@/api/types/base";
 
 const ContentList = () => {
   const router = useRouter();
   // States
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<ContentFilterSchema>();
+
+  // Query để lấy category tree từ API
+  const getCategoryTreeQuery = useGetApiCategoriesAllTree(
+    {},
+    {
+      query: {
+        select: (data) => {
+          try {
+            const response = data as unknown as ResponseData<any>;
+
+            // Xử lý các cấu trúc response khác nhau
+            if (response?.data?.tree && Array.isArray(response.data.tree)) {
+              return transformToTreeNodes(response.data.tree);
+            }
+            if (response?.data && Array.isArray(response.data)) {
+              return transformToTreeNodes(response.data);
+            }
+            if (Array.isArray(response)) {
+              return transformToTreeNodes(response);
+            }
+
+            return [];
+          } catch (error) {
+            console.error("Error processing category tree data:", error);
+            return [];
+          }
+        },
+      },
+    },
+  );
 
   // Methods
   const handleFilterSubmit = (data: ContentFilterSchema) => {
@@ -30,7 +63,10 @@ const ContentList = () => {
 
     // Kiểm tra nếu tất cả các giá trị đều empty/undefined
     const hasValues = Object.values(data).some(
-      (value) => value !== undefined && value !== "",
+      (value) =>
+        value !== undefined &&
+        value !== "" &&
+        (!Array.isArray(value) || value.length > 0),
     );
     if (!hasValues) {
       toast.info("Đã xóa bộ lọc");
@@ -46,19 +82,28 @@ const ContentList = () => {
       type: "text" as const,
       placeholder: "Tìm theo tên sản phẩm...",
     },
-    category: {
+    categories: {
       label: "Danh mục",
-      type: "text" as const,
-      placeholder: "Tìm theo danh mục...",
+      type: "tree" as const,
+      placeholder: "Chọn danh mục",
+      nodes: getCategoryTreeQuery,
+      searchable: true,
+      maxHeight: "350px",
+    },
+    priceRange: {
+      label: "Khoảng giá",
+      type: "number-range" as const,
+      min: 0,
+      max: 10000000,
+      step: 100000,
+      showInputs: true,
+      formatValue: (value: number) =>
+        new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        }).format(value),
     },
   };
-
-  const activeFiltersCount = useMemo(() => {
-    if (!filterValues) return 0;
-    return Object.values(filterValues).filter(
-      (value) => value !== undefined && value !== "",
-    ).length;
-  }, [filterValues]);
 
   return (
     <div className="flex overflow-hidden bg-background">
@@ -100,14 +145,6 @@ const ContentList = () => {
               >
                 <FilterIcon className="h-4 w-4" />
                 <span className="hidden sm:inline">Bộ lọc</span>
-                {activeFiltersCount > 0 && (
-                  <Badge
-                    variant="default"
-                    className="ml-1 h-5 min-w-5 px-1 text-xs font-medium"
-                  >
-                    {activeFiltersCount}
-                  </Badge>
-                )}
               </Button>
               <Button
                 onClick={() =>
@@ -122,11 +159,36 @@ const ContentList = () => {
           </div>
 
           {/* Content Table */}
-          <ContentTable />
+          <ContentTable
+            filterValues={{
+              category: filterValues?.categories?.join(",") || "",
+              search: filterValues?.name || "",
+              minPrice: filterValues?.priceRange
+                ? filterValues.priceRange[0]
+                : undefined,
+              maxPrice: filterValues?.priceRange
+                ? filterValues.priceRange[1]
+                : undefined,
+            }}
+          />
         </div>
       </div>
     </div>
   );
+};
+
+// Helper function để transform API category data thành TreeNode format
+const transformToTreeNodes = (categories: any[]): TreeNode[] => {
+  if (!Array.isArray(categories)) return [];
+
+  return categories.map((category) => ({
+    id: category._id || category.id,
+    label: category.name,
+    children: category.children
+      ? transformToTreeNodes(category.children)
+      : undefined,
+    disabled: category.disabled || false,
+  }));
 };
 
 export default ContentList;

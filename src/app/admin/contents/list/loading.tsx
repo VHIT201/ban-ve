@@ -15,7 +15,10 @@ export default function ContentsLoading() {
           <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
         </div>
         {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="p-4 border-b flex items-center gap-4 animate-pulse">
+          <div
+            key={i}
+            className="p-4 border-b flex items-center gap-4 animate-pulse"
+          >
             <div className="h-20 w-32 bg-gray-200 rounded"></div>
             <div className="flex-1 space-y-2">
               <div className="h-5 bg-gray-200 rounded w-2/3"></div>

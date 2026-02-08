@@ -23,13 +23,6 @@ import { UseQueryResult } from "@tanstack/react-query";
 import { ChevronLeftIcon, ChevronRight, ChevronRightIcon } from "lucide-react";
 import baseConfig from "@/configs/base";
 
-interface BestSellingProduct {
-  id: number;
-  title: string;
-  image: string;
-  price: number;
-}
-
 const BestSellingData = () => {
   // Hooks
   const router = useRouter();

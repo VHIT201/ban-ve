@@ -6,11 +6,11 @@ import { GetApiContentAll200Pagination } from "@/api/models";
 
 // Internal
 import { useContentTableColumnsDefs } from "./lib/hooks";
-import { Fragment, useEffect, useState } from "react";
+import { FC, Fragment, useState } from "react";
 import {
   getGetApiContentAllQueryKey,
   useDeleteApiContentId,
-  useGetApiContentAll,
+  useGetApiContent,
   usePutApiContentIdApprove,
 } from "@/api/endpoints/content";
 import { QueryBoundary } from "@/components/shared";
@@ -24,7 +24,22 @@ import {
 } from "@/components/shared/data-table/shared";
 import { PaginationState, Updater } from "@tanstack/react-table";
 
-const ContentTable = () => {
+interface ContentFilterValues {
+  status?: string;
+  category?: string;
+  search?: string;
+  minPrice?: number;
+  maxPrice?: number;
+}
+
+interface Props {
+  filterValues?: ContentFilterValues;
+}
+
+const ContentTable: FC<Props> = (props) => {
+  // Props
+  const { filterValues } = props;
+
   // =====================
   // States
   // =====================
@@ -44,13 +59,14 @@ const ContentTable = () => {
   // =====================
   // Queries
   // =====================
-  const getContentListQuery = useGetApiContentAll<{
+  const getContentListQuery = useGetApiContent<{
     data: ContentResponse[];
     pagination?: GetApiContentAll200Pagination;
   }>(
     {
-      page: pagination.pageIndex + 1, // API: 1-based
+      ...filterValues,
       limit: pagination.pageSize,
+      page: pagination.pageIndex + 1,
     },
     {
       query: {

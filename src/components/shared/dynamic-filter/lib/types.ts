@@ -21,7 +21,9 @@ export type FieldType =
   | "select"
   | "date"
   | "date-range"
-  | "auto-complete";
+  | "auto-complete"
+  | "tree"
+  | "number-range";
 
 export interface FieldConfig {
   label?: string;
@@ -47,6 +49,29 @@ export interface AutoCompleteFieldConfig extends Omit<FieldConfig, "type"> {
   onChange?: (value: string) => void;
   onSelect?: (value: string) => void;
   onSearch?: (value: string) => Promise<SelectOption[]>;
+}
+
+export interface TreeNode {
+  id: string;
+  label: string;
+  children?: TreeNode[];
+  disabled?: boolean;
+}
+
+export interface TreeFieldConfig extends Omit<FieldConfig, "type"> {
+  type: "tree";
+  nodes: TreeNode[] | UseQueryResult<TreeNode[]>;
+  searchable?: boolean;
+  maxHeight?: string;
+}
+
+export interface NumberRangeFieldConfig extends Omit<FieldConfig, "type"> {
+  type: "number-range";
+  min?: number;
+  max?: number;
+  step?: number;
+  showInputs?: boolean;
+  formatValue?: (value: number) => string;
 }
 
 export interface Props<T extends z.ZodTypeAny> {
