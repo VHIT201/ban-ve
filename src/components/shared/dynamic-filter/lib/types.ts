@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { ReactNode } from 'react'
-import { ControllerRenderProps, FieldValues, SubmitHandler } from 'react-hook-form'
+import { ControllerRenderProps, FieldValues, SubmitHandler, UseFormReturn } from 'react-hook-form'
 import { UseQueryResult } from '@tanstack/react-query'
 
 export type FieldRenderProps = ControllerRenderProps<FieldValues, string>
@@ -49,4 +49,13 @@ export interface Props<T extends z.ZodTypeAny> {
   onSubmit: SubmitHandler<z.infer<T>>
   defaultValues?: Partial<z.infer<T>>
   fieldConfig?: Record<string, FieldConfig>
+  children?: ReactNode
+}
+
+export interface DynamicFilterContextValue {
+  // Props
+  form: UseFormReturn<FieldValues>
+  schema: z.ZodTypeAny
+  fieldConfig: Record<string, FieldConfig>
+  onSubmit: SubmitHandler<FieldValues>
 }
