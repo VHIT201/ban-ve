@@ -13,6 +13,8 @@ import {
 import { BASE_PATHS } from "@/constants/paths";
 import { useGetApiCategories } from "@/api/endpoints/categories";
 import { useRouter } from "next/navigation";
+import { cn } from "@/utils/ui";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 const CategoriesFeatureSection = () => {
   // Hooks
@@ -117,8 +119,27 @@ const CategoriesFeatureSection = () => {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-0" />
-        <CarouselNext className="right-0" />
+        <CarouselPrevious
+          className={cn(
+            "absolute left-4 top-1/2 -translate-y-1/2 z-20 rounded-none",
+            "bg-transparent/20 border-white/40 text-white backdrop-blur-sm",
+            "hover:bg-white/30 hover:border-white/60",
+            "transition-all duration-200 w-10 h-10 md:w-12 md:h-12",
+          )}
+        >
+          <ChevronLeftIcon className="w-5 h-5 md:w-6 md:h-6" />
+        </CarouselPrevious>
+
+        <CarouselNext
+          className={cn(
+            "absolute right-4 top-1/2 -translate-y-1/2 z-20 rounded-none",
+            "bg-transparent/20 border-white/40 text-white backdrop-blur-sm",
+            "hover:bg-white/30 hover:border-white/60",
+            "transition-all duration-200 w-10 h-10 md:w-12 md:h-12",
+          )}
+        >
+          <ChevronRightIcon className="w-5 h-5 md:w-6 md:h-6" />
+        </CarouselNext>
       </Carousel>
     </section>
   );

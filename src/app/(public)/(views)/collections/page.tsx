@@ -6,40 +6,10 @@ import { Category } from "@/api/models/category";
 import { ChevronRight, ChevronDown, ChevronUp, Filter, X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
-import {
-  CategoriesSection,
-  CollectionFilters,
-  CollectionList,
-} from "./components";
+import { CollectionFilters, CollectionList } from "./components";
 import { FilterFormValues } from "./components/collection-filters/lib/types";
 import { DEFAULT_FILTER_VALUES } from "./components/collection-filters/lib/constants";
 import { Main } from "@/components/layouts";
-
-// Mock data
-const mockCategories: Category[] = [
-  { _id: "1", name: "Cad", slug: "cad", description: "CAD files" },
-  {
-    _id: "2",
-    name: "Flat Vector",
-    slug: "flat-vector",
-    description: "Flat vector graphics",
-  },
-  {
-    _id: "3",
-    name: "Axonometric Vector",
-    slug: "axonometric-vector",
-    description: "Axonometric views",
-  },
-  { _id: "4", name: "3D Model", slug: "3d-model", description: "3D models" },
-  { _id: "5", name: "Cutout", slug: "cutout", description: "Cutout graphics" },
-  {
-    _id: "6",
-    name: "Brush & Swatch",
-    slug: "brush-swatch",
-    description: "Brushes and swatches",
-  },
-  { _id: "7", name: "Other", slug: "other", description: "Other files" },
-];
 
 const CategoryPage = () => {
   // Hooks
@@ -55,13 +25,13 @@ const CategoryPage = () => {
     const categoryId = searchParams.get("category");
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
-    
+
     setFilteredProducts((prev) => ({
       ...prev,
       categories: categoryId ? [categoryId] : [],
       priceRange: [
         minPrice ? parseInt(minPrice) / 10000 : 0,
-        maxPrice ? parseInt(maxPrice) / 10000 : 10000000
+        maxPrice ? parseInt(maxPrice) / 10000 : 10000000,
       ],
     }));
   }, [searchParams]);

@@ -75,7 +75,8 @@ const DataTableDeleteDialog = <TData,>({
           </Alert>
         </div>
       }
-      confirmText="Delete"
+      cancelBtnText="Hủy"
+      confirmText="Xóa dữ liệu"
       destructive
     />
   );

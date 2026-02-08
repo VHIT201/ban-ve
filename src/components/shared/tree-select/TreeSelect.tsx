@@ -159,22 +159,31 @@ const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
     }
   };
 
+  const hasAllNoChild = (node: TreeNode): boolean => {
+    if (!node.children || node.children.length === 0) {
+      return true;
+    }
+    return node.children.every((child) => hasAllNoChild(child));
+  };
+
   return (
     <div className="flex flex-col">
       <div className="flex items-center gap-2 px-2 py-1.5 hover:bg-primary/10 transition-colors">
-        <button
-          onClick={handleExpandClick}
-          className={cn(
-            "flex-shrink-0 p-0 h-5 w-5 flex items-center justify-center transition-transform",
-            !hasChildren && "invisible",
-            hasChildren && isExpanded && "rotate-90",
-          )}
-          tabIndex={-1}
-        >
-          {hasChildren && (
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-          )}
-        </button>
+        {!hasAllNoChild(node) && (
+          <button
+            onClick={handleExpandClick}
+            className={cn(
+              "flex-shrink-0 p-0 h-5 w-5 flex items-center justify-center transition-transform",
+              !hasChildren && "invisible",
+              hasChildren && isExpanded && "rotate-90",
+            )}
+            tabIndex={-1}
+          >
+            {hasChildren && (
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            )}
+          </button>
+        )}
         <Checkbox
           checked={isSelected}
           onCheckedChange={handleCheckboxChange}

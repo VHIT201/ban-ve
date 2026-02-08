@@ -71,66 +71,64 @@ const DailyBestDownloaded = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
-          {/* Product Cards */}
-          <QueryBoundary
-            query={getBluerintListQuery}
-            fetchingView={
-              <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <BlueprintCardSkeleton key={index} />
-                ))}
-              </div>
-            }
-          >
-            {(products) => {
-              console.log("PRODUCTS", products);
-              return (
-                <div className="lg:col-span-4">
-                  <CarouselContent className="-ml-10">
-                    {products?.map((product) => (
-                      <CarouselItem
-                        key={product?.contentId}
-                        className="pl-10 md:basis-1/2 lg:basis-1/4"
-                      >
-                        <BlueprintCard
-                          product={{
-                            _id: product.contentId!,
-                            ...(product.contentInfo as Content),
-                            images: product.contentInfo?.images || [],
-                            purchaseCount: product.purchaseCount,
-                            file_id:
-                              product.contentInfo?.file_id &&
-                              product.contentInfo.file_id._id
-                                ? (product.contentInfo.file_id as {
-                                    _id: string;
-                                    name: string;
-                                    path: string;
-                                    type: string;
-                                    size: number;
-                                  })
-                                : undefined,
-                            // normalize createdBy so _id is a string (or undefined)
-                            createdBy: product.contentInfo?.createdBy
-                              ? {
-                                  _id: product.contentInfo.createdBy._id ?? "",
-                                  email: product.contentInfo.createdBy.email,
-                                  fullname:
-                                    product.contentInfo.createdBy.fullname,
-                                  avatar: "",
-                                }
+        {/* Product Cards */}
+        <QueryBoundary
+          query={getBluerintListQuery}
+          fetchingView={
+            <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <BlueprintCardSkeleton key={index} />
+              ))}
+            </div>
+          }
+        >
+          {(products) => {
+            console.log("PRODUCTS", products);
+            return (
+              <div className="lg:col-span-4">
+                <CarouselContent className="-ml-10">
+                  {products?.map((product) => (
+                    <CarouselItem
+                      key={product?.contentId}
+                      className="pl-10 md:basis-1/2 lg:basis-1/5"
+                    >
+                      <BlueprintCard
+                        product={{
+                          _id: product.contentId!,
+                          ...(product.contentInfo as Content),
+                          images: product.contentInfo?.images || [],
+                          purchaseCount: product.purchaseCount,
+                          file_id:
+                            product.contentInfo?.file_id &&
+                            product.contentInfo.file_id._id
+                              ? (product.contentInfo.file_id as {
+                                  _id: string;
+                                  name: string;
+                                  path: string;
+                                  type: string;
+                                  size: number;
+                                })
                               : undefined,
-                          }}
-                          onViewDetail={handleViewDetail}
-                        />
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                </div>
-              );
-            }}
-          </QueryBoundary>
-        </div>
+                          // normalize createdBy so _id is a string (or undefined)
+                          createdBy: product.contentInfo?.createdBy
+                            ? {
+                                _id: product.contentInfo.createdBy._id ?? "",
+                                email: product.contentInfo.createdBy.email,
+                                fullname:
+                                  product.contentInfo.createdBy.fullname,
+                                avatar: "",
+                              }
+                            : undefined,
+                        }}
+                        onViewDetail={handleViewDetail}
+                      />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+              </div>
+            );
+          }}
+        </QueryBoundary>
       </Carousel>
     </section>
   );

@@ -1,6 +1,5 @@
 export { default as Uploader } from "./uploader";
 export { default as DataTable } from "./data-table";
-export { default as DynamicFilter } from "./dynamic-filter";
 export { default as QueryBoundary } from "./query-boundary";
 export { default as ConfirmDialog } from "./confirm-dialog";
 export { default as DeleteDialog } from "./delete-dialog";
@@ -10,3 +9,4 @@ export { default as UploadAvatarDialog } from "./upload-avatar-dialog";
 export { default as TreeSelect } from "./tree-select";
 export { ImageProtection } from "./image-protection";
 export { default as RatingStar } from "./rating-star";
+export { default as DynamicFilter } from "./dynamic-filter";

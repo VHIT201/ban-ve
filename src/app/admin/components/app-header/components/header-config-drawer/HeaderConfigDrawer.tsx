@@ -25,6 +25,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useSidebar } from "@/components/ui/sidebar";
+import { AnimatedThemeWrapper } from "@/components/ui/animated-theme-wrapper";
 
 const HeaderConfigDrawer = () => {
   const { setOpen } = useSidebar();
@@ -50,9 +51,9 @@ const HeaderConfigDrawer = () => {
       </SheetTrigger>
       <SheetContent className="flex flex-col">
         <SheetHeader className="pb-0 text-start">
-          <SheetTitle>Theme Settings</SheetTitle>
+          <SheetTitle>Cấu hình giao diện</SheetTitle>
           <SheetDescription id="config-drawer-description">
-            Adjust the appearance and layout to suit your preferences.
+            Cấu hình giao diện theo sở thích của bạn
           </SheetDescription>
         </SheetHeader>
         <div className="space-y-6 overflow-y-auto px-4">
@@ -60,11 +61,12 @@ const HeaderConfigDrawer = () => {
           <SidebarConfig />
           <LayoutConfig />
         </div>
-        <SheetFooter className="gap-2">
+        <SheetFooter className="gap-2 mt-auto">
           <Button
             variant="destructive"
             onClick={handleReset}
             aria-label="Reset all settings to default values"
+            className="w-full"
           >
             Reset
           </Button>
@@ -89,7 +91,7 @@ function SectionTitle({
     <div
       className={cn(
         "text-muted-foreground mb-2 flex items-center gap-2 text-sm font-semibold",
-        className
+        className,
       )}
     >
       {title}
@@ -121,7 +123,10 @@ function RadioGroupItem({
   return (
     <Item
       value={item.value}
-      className={cn("group outline-none", "transition duration-200 ease-in")}
+      className={cn(
+        "w-full h-full group outline-none",
+        "transition duration-200 ease-in",
+      )}
       aria-label={`Select ${item.label.toLowerCase()}`}
       aria-describedby={`${item.value}-description`}
     >
@@ -129,7 +134,7 @@ function RadioGroupItem({
         className={cn(
           "ring-border relative rounded-[6px] ring-[1px]",
           "group-data-[state=checked]:ring-primary group-data-[state=checked]:shadow-2xl",
-          "group-focus-visible:ring-2"
+          "group-focus-visible:ring-2",
         )}
         role="img"
         aria-hidden="false"
@@ -139,14 +144,14 @@ function RadioGroupItem({
           className={cn(
             "fill-primary size-6 stroke-white",
             "group-data-[state=unchecked]:hidden",
-            "absolute top-0 right-0 translate-x-1/2 -translate-y-1/2"
+            "absolute top-0 right-0 translate-x-1/2 -translate-y-1/2",
           )}
           aria-hidden="true"
         />
         <item.icon
           className={cn(
             !isTheme &&
-              "stroke-primary fill-primary group-data-[state=unchecked]:stroke-muted-foreground group-data-[state=unchecked]:fill-muted-foreground"
+              "stroke-primary fill-primary group-data-[state=unchecked]:stroke-muted-foreground group-data-[state=unchecked]:fill-muted-foreground",
           )}
           aria-hidden="true"
         />
@@ -162,11 +167,84 @@ function RadioGroupItem({
   );
 }
 
+function RadioGroupThemeItem({
+  item,
+  isTheme = false,
+}: {
+  item: {
+    value: string;
+    label: string;
+    icon: (props: SVGProps<SVGSVGElement>) => React.ReactElement;
+  };
+  isTheme?: boolean;
+}) {
+  // Map system to light theme for preview
+  const displayTheme = (item.value === "system" ? "light" : item.value) as
+    | "light"
+    | "dark";
+
+  return (
+    <Item
+      value={item.value}
+      className={cn(
+        "w-full h-full group outline-none",
+        "transition duration-200 ease-in",
+      )}
+      aria-label={`Select ${item.label.toLowerCase()}`}
+      aria-describedby={`${item.value}-description`}
+    >
+      <AnimatedThemeWrapper theme={displayTheme}>
+        <div
+          className={cn(
+            "ring-border relative rounded-md ring-[1px]",
+            "group-data-[state=checked]:ring-primary group-data-[state=checked]:shadow-2xl",
+            "group-focus-visible:ring-2",
+          )}
+          role="img"
+          aria-hidden="false"
+          aria-label={`${item.label} option preview`}
+        >
+          <CircleCheck
+            className={cn(
+              "fill-primary size-6 stroke-white",
+              "group-data-[state=unchecked]:hidden",
+              "absolute top-0 right-0 translate-x-1/2 -translate-y-1/2",
+            )}
+            aria-hidden="true"
+          />
+          <item.icon
+            className={cn(
+              !isTheme &&
+                "stroke-primary fill-primary group-data-[state=unchecked]:stroke-muted-foreground group-data-[state=unchecked]:fill-muted-foreground",
+            )}
+            aria-hidden="true"
+          />
+        </div>
+        <div
+          className="mt-1 text-xs"
+          id={`${item.value}-description`}
+          aria-live="polite"
+        >
+          {item.label}
+        </div>
+      </AnimatedThemeWrapper>
+    </Item>
+  );
+}
+
 function ThemeConfig() {
+  const { defaultTheme, theme, setTheme } = useLayout();
+
   return (
     <div>
-      <SectionTitle title="Theme" />
+      <SectionTitle
+        title="Theme"
+        showReset={defaultTheme !== theme}
+        onReset={() => setTheme(defaultTheme)}
+      />
       <Radio
+        value={theme}
+        onValueChange={setTheme}
         className="grid w-full max-w-md grid-cols-3 gap-4"
         aria-label="Select theme preference"
         aria-describedby="theme-description"
@@ -188,7 +266,7 @@ function ThemeConfig() {
             icon: IconThemeDark,
           },
         ].map((item) => (
-          <RadioGroupItem key={item.value} item={item} isTheme />
+          <RadioGroupThemeItem key={item.value} item={item} isTheme />
         ))}
       </Radio>
       <div id="theme-description" className="sr-only">

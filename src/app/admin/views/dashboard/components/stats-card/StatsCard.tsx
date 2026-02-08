@@ -76,13 +76,13 @@ const StatsCards = () => {
             className="flex-1 border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-              <div className="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+              <div className="h-4 w-32 animate-pulse bg-gray-200 dark:bg-gray-700" />
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="h-8 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-              <div className="h-8 w-full animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-              <div className="h-4 w-full animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
-              <div className="h-4 w-full animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+              <div className="h-8 w-24 animate-pulse bg-gray-200 dark:bg-gray-700" />
+              <div className="h-8 w-full animate-pulse bg-gray-200 dark:bg-gray-700" />
+              <div className="h-4 w-full animate-pulse bg-gray-200 dark:bg-gray-700" />
+              <div className="h-4 w-full animate-pulse bg-gray-200 dark:bg-gray-700" />
             </CardContent>
           </Card>
         ))}

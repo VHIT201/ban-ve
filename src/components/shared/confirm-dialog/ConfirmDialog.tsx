@@ -49,11 +49,12 @@ const ConfirmDialog = (props: ConfirmDialogProps) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         {children}
-        <AlertDialogFooter>
+        <AlertDialogFooter className="flex justify-between">
           <AlertDialogCancel disabled={isLoading}>
             {cancelBtnText ?? "Cancel"}
           </AlertDialogCancel>
           <Button
+            loading={isLoading}
             variant={destructive ? "destructive" : "default"}
             onClick={handleConfirm}
             disabled={disabled || isLoading}
