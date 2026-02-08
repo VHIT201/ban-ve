@@ -64,41 +64,37 @@ const DailyBestDownloaded = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
-          {/* Product Cards */}
-          <QueryBoundary
-            query={getBluerintListQuery}
-            fetchingView={
-              <div className="lg:col-span-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <BlueprintCardSkeleton key={index} />
-                ))}
+        {/* Product Cards */}
+        <QueryBoundary
+          query={getBluerintListQuery}
+          fetchingView={
+            <div className="lg:col-span-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <BlueprintCardSkeleton key={index} />
+              ))}
+            </div>
+          }
+        >
+          {(products) => {
+            return (
+              <div className="lg:col-span-4">
+                <CarouselContent className="-ml-10">
+                  {products.map((product, index) => (
+                    <CarouselItem
+                      key={`product-${index}`}
+                      className="pl-10 md:basis-1/2 lg:basis-1/5"
+                    >
+                      <BlueprintCard
+                        product={product}
+                        onViewDetail={handleViewDetail}
+                      />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
               </div>
-            }
-          >
-            {(products) => {
-              console.log("DAILY BEST DOWNLOADED PRODUCTS", products);
-
-              return (
-                <div className="lg:col-span-4">
-                  <CarouselContent className="-ml-10">
-                    {products.map((product, index) => (
-                      <CarouselItem
-                        key={`product-${index}`}
-                        className="pl-10 md:basis-1/2 lg:basis-1/4"
-                      >
-                        <BlueprintCard
-                          product={product}
-                          onViewDetail={handleViewDetail}
-                        />
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                </div>
-              );
-            }}
-          </QueryBoundary>
-        </div>
+            );
+          }}
+        </QueryBoundary>
       </Carousel>
     </section>
   );

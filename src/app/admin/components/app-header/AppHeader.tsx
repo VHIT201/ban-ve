@@ -4,12 +4,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import {
-  HeaderConfigDrawer,
-  HeaderProfileDropdown,
-  HeaderThemeSwitch,
-} from "./components";
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { HeaderConfigDrawer, HeaderProfileDropdown } from "./components";
 
 type HeaderProps = React.HTMLAttributes<HTMLElement> & {
   fixed?: boolean;
