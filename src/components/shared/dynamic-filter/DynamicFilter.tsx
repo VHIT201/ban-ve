@@ -57,9 +57,7 @@ const DynamicFilter = <T extends z.ZodTypeAny>(
   return (
     <DYNAMIC_FILTER_CONTEXT.Provider value={contextValues}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="p-2 sm:p-4">
-          {children}
-        </form>
+        <form onSubmit={form.handleSubmit(onSubmit)}>{children}</form>
       </Form>
     </DYNAMIC_FILTER_CONTEXT.Provider>
   );

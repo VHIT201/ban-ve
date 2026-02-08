@@ -76,14 +76,18 @@ const DynamicFilterFieldRenderer = (props: Props): ReactNode => {
           onValueChange={(val) => field.onChange(val)}
           value={field.value ?? ""}
         >
-          <SelectTrigger className="w-full sm:min-w-[180px]">
+          <SelectTrigger className="w-full h-9 text-sm">
             <SelectValue
               placeholder={configSelect.placeholder || `Select ${name}`}
             />
           </SelectTrigger>
-          <SelectContent side="bottom" className="w-full">
+          <SelectContent side="bottom" align="start">
             {configSelect.options?.map((option) => (
-              <SelectItem key={option.value} value={String(option.value)}>
+              <SelectItem
+                key={option.value}
+                value={String(option.value)}
+                className="text-sm"
+              >
                 {option.label}
               </SelectItem>
             ))}
@@ -100,16 +104,17 @@ const DynamicFilterFieldRenderer = (props: Props): ReactNode => {
           onValueChange={(val) => field.onChange(val)}
           value={field.value ?? ""}
         >
-          <SelectTrigger className="w-full sm:min-w-[180px]">
+          <SelectTrigger className="w-full h-9 text-sm">
             <SelectValue placeholder={config.placeholder ?? `Select ${name}`} />
           </SelectTrigger>
-          <SelectContent side="bottom" className="w-full">
+          <SelectContent side="bottom" align="start">
             <QueryBoundary query={configSelectQuery.query}>
               {(selectData) =>
                 selectData.map((option) => (
                   <SelectItem
                     key={String(option.value)}
                     value={String(option.value)}
+                    className="text-sm"
                   >
                     {option.label}
                   </SelectItem>
@@ -123,10 +128,13 @@ const DynamicFilterFieldRenderer = (props: Props): ReactNode => {
 
     case "checkbox":
       return (
-        <Checkbox
-          checked={!!field.value}
-          onCheckedChange={(val) => field.onChange(val)}
-        />
+        <div className="flex items-center space-x-2 py-1">
+          <Checkbox
+            checked={!!field.value}
+            onCheckedChange={(val) => field.onChange(val)}
+            className="h-4 w-4"
+          />
+        </div>
       );
 
     case "number":
@@ -143,7 +151,7 @@ const DynamicFilterFieldRenderer = (props: Props): ReactNode => {
             const value = e.target.value;
             field.onChange(value === "" ? undefined : parseFloat(value));
           }}
-          className="w-full"
+          className="w-full h-9 text-sm"
         />
       );
 
@@ -157,7 +165,7 @@ const DynamicFilterFieldRenderer = (props: Props): ReactNode => {
           type={config.type}
           placeholder={config.placeholder}
           {...field}
-          className="w-full"
+          className="w-full h-9 text-sm"
         />
       );
   }

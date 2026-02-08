@@ -1,12 +1,17 @@
 "use client";
 
+// Core
+import { z } from "zod";
+import { useMemo } from "react";
+
 // Internal
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   CategoryDialog,
   CategoryTable,
 } from "../../views/categories/components";
-import { PlusIcon } from "lucide-react";
+import { FilterIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import {
   getGetApiCategoriesIdChildrenQueryKey,
@@ -21,6 +26,16 @@ import { useUploadMedia } from "@/hooks";
 import { extractErrorMessage } from "@/utils/error";
 import baseConfig from "@/configs/base";
 import { useParams, useSearchParams } from "next/navigation";
+import { DynamicFilter } from "@/components/shared";
+
+// Filter Schema
+const categoryFilterSchema = z.object({
+  name: z.string().optional(),
+  level: z.string().optional(),
+  description: z.string().optional(),
+  createdAfter: z.string().optional(),
+  createdBefore: z.string().optional(),
+});
 
 const Categories = () => {
   // Hooks
@@ -31,6 +46,9 @@ const Categories = () => {
 
   // States
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filterValues, setFilterValues] =
+    useState<z.infer<typeof categoryFilterSchema>>();
 
   // Mutations
   const createCategoryMutation = usePostApiCategories({
@@ -49,7 +67,39 @@ const Categories = () => {
 
   const uploadFileMutation = useUploadMedia();
 
+  // Filter Configuration
+  const filterFieldConfig = {
+    name: {
+      label: "Tên danh mục",
+      type: "text" as const,
+      placeholder: "Tìm theo tên danh mục...",
+    },
+  };
+
   // Methods
+  const handleFilterSubmit = (data: z.infer<typeof categoryFilterSchema>) => {
+    setFilterValues(data);
+    console.log("Filter values:", data);
+
+    // Kiểm tra nếu tất cả các giá trị đều empty/undefined
+    const hasValues = Object.values(data).some(
+      (value) => value !== undefined && value !== "",
+    );
+    if (!hasValues) {
+      toast.info("Đã xóa bộ lọc");
+    } else {
+      toast.success("Đã áp dụng bộ lọc");
+    }
+  };
+
+  // Count active filters
+  const activeFiltersCount = useMemo(() => {
+    if (!filterValues) return 0;
+    return Object.values(filterValues).filter(
+      (value) => value !== undefined && value !== "",
+    ).length;
+  }, [filterValues]);
+
   const handleCreateCategory = async (data: CategoryFormValues) => {
     try {
       let imageUrl: string | undefined = undefined;
@@ -91,37 +141,79 @@ const Categories = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Category Header */}
-      <div className="flex flex-wrap items-end justify-between gap-2">
-        <div>
-          <h2 className="text-2xl font-bold tracking-wider">
-            Thể loại sản phẩm
-          </h2>
-          <p className="text-muted-foreground">
-            Quản lý các thể loại sản phẩm trong hệ thống
-          </p>
+    <div className="flex h-screen overflow-hidden bg-background">
+      {/* Filter Sidebar */}
+      <DynamicFilter
+        schema={categoryFilterSchema}
+        onSubmit={handleFilterSubmit}
+        fieldConfig={filterFieldConfig}
+      >
+        <DynamicFilter.Sidebar
+          open={isFilterOpen}
+          onClose={() => setIsFilterOpen(false)}
+        >
+          <div className="space-y-5">
+            <DynamicFilter.Fields />
+            <DynamicFilter.Actions />
+          </div>
+        </DynamicFilter.Sidebar>
+      </DynamicFilter>
+
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto">
+        <div className="container max-w-7xl mx-auto space-y-6 p-6 lg:p-8">
+          {/* Category Header */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="space-y-1">
+              <h1 className="text-2xl font-bold tracking-tight">
+                Thể loại sản phẩm
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                Quản lý các thể loại sản phẩm trong hệ thống
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="default"
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                className="gap-2 relative"
+              >
+                <FilterIcon className="h-4 w-4" />
+                <span className="hidden sm:inline">Bộ lọc</span>
+                {activeFiltersCount > 0 && (
+                  <Badge
+                    variant="default"
+                    className="ml-1 h-5 min-w-5 px-1 text-xs font-medium"
+                  >
+                    {activeFiltersCount}
+                  </Badge>
+                )}
+              </Button>
+              <Button onClick={() => setIsDialogOpen(true)} className="gap-2">
+                <PlusIcon className="h-4 w-4" />
+                Thêm mới
+              </Button>
+            </div>
+          </div>
+
+          {/* Category Table */}
+          <CategoryTable
+            mode={id ? "children" : withChildren ? "with-children" : "all"}
+            id={id}
+          />
+
+          {/* Category Dialog */}
+          <CategoryDialog
+            open={isDialogOpen}
+            onOpenChange={setIsDialogOpen}
+            onSubmit={handleCreateCategory}
+            loading={
+              createCategoryMutation.isPending || uploadFileMutation.isUploading
+            }
+          />
         </div>
-        <Button onClick={() => setIsDialogOpen(true)}>
-          <PlusIcon className="mr-2 size-4" />
-          Thêm mới
-        </Button>
       </div>
-
-      <CategoryTable
-        mode={id ? "children" : withChildren ? "with-children" : "all"}
-        id={id}
-      />
-
-      {/* Category Dialog */}
-      <CategoryDialog
-        open={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
-        onSubmit={handleCreateCategory}
-        loading={
-          createCategoryMutation.isPending || uploadFileMutation.isUploading
-        }
-      />
     </div>
   );
 };

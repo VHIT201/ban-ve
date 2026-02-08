@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import {
   Accordion,
   AccordionContent,
@@ -14,20 +15,24 @@ const DynamicFilterSection = ({
   id: string;
   children: React.ReactNode;
 }) => {
-  // States
   return (
-    <div className="border-b border-border">
-      <Accordion type="single" collapsible>
-        <AccordionItem value={id}>
-          <AccordionTrigger className="w-full px-4 py-3 text-left font-medium">
+    <motion.div
+      initial={{ opacity: 0, y: 5 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="border-b border-border/50 last:border-0"
+    >
+      <Accordion type="single" collapsible defaultValue={id}>
+        <AccordionItem value={id} className="border-0">
+          <AccordionTrigger className="w-full px-0 py-3 text-sm font-medium hover:no-underline">
             {title}
           </AccordionTrigger>
-          <AccordionContent className="px-4 pb-4 pt-0">
-            <div className="flex flex-col gap-4">{children}</div>
+          <AccordionContent className="px-0 pb-4 pt-1">
+            <div className="flex flex-col gap-3">{children}</div>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-    </div>
+    </motion.div>
   );
 };
 

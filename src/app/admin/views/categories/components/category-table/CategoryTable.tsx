@@ -39,8 +39,13 @@ import baseConfig from "@/configs/base";
 import { ResponseData } from "@/api/types/base";
 import { DataTableSkeleton } from "@/components/shared/data-table";
 
+interface FilterValues {
+  name?: string;
+}
+
 interface Props {
   id?: string;
+  filterValues?: FilterValues;
   mode?: "all" | "children" | "with-children"; // Mode để xác định loại query
 }
 
@@ -102,14 +107,6 @@ const CategoryTable: FC<Props> = (props) => {
 
   // Mutations
   const uploadFileMutation = useUploadMedia();
-
-  console.log("Query keys:", [
-    getGetApiCategoriesQueryKey(),
-    id ? getGetApiCategoriesIdChildrenQueryKey(id) : [],
-    mode === "with-children"
-      ? getGetApiCategoriesIdWithChildrenQueryKey(id || "")
-      : [],
-  ]);
 
   const editCategoryMutation = usePutApiCategoriesId({
     mutation: {
@@ -227,7 +224,6 @@ const CategoryTable: FC<Props> = (props) => {
       setEditSelectRow(null);
       toast.success("Cập nhật danh mục thành công.");
     } catch (error) {
-      console.error("Failed to edit category:", error);
       toast.error(
         extractErrorMessage(error) || "Đã có lỗi xảy ra khi cập nhật danh mục.",
       );
@@ -258,7 +254,6 @@ const CategoryTable: FC<Props> = (props) => {
       const responseData = resMutation as unknown as ResponseData<any>;
 
       if (selectedRows.length > 0) {
-        console.log("Deleting selected rows:", selectedRows);
         setSelectedRows([]);
         setOpenDeleteMultiDialog(false);
         toast.success(responseData.message || "Xóa danh mục thành công.");
@@ -293,8 +288,6 @@ const CategoryTable: FC<Props> = (props) => {
       setOpenDeleteMultiDialog(true);
     },
   });
-
-  console.log("Selected Rows:", selectedRows);
 
   return (
     <Fragment>

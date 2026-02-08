@@ -1,5 +1,6 @@
 // Core
 import { FC } from "react";
+import { motion } from "framer-motion";
 
 // App
 import {
@@ -16,6 +17,21 @@ import { useDynamicFilterContext } from "../../lib/hooks";
 import { getSchemaShape } from "../../lib/utils";
 import { DynamicFilterFieldRenderer } from "../../shared";
 
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+    },
+  },
+};
+
+const item = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0 },
+};
+
 // Component
 const DynamicFilterFields: FC = () => {
   // Hooks
@@ -23,7 +39,12 @@ const DynamicFilterFields: FC = () => {
 
   // Template
   return (
-    <>
+    <motion.div
+      variants={container}
+      initial="hidden"
+      animate="show"
+      className="space-y-4"
+    >
       {Object.entries(getSchemaShape(schema)).map(([name, fieldSchema]) => {
         const config = fieldConfig[name];
 
@@ -35,29 +56,32 @@ const DynamicFilterFields: FC = () => {
             control={form.control}
             name={name}
             render={({ field }) => (
-              // min-w-0 để tránh overflow trong flex/grid
-              <FormItem className="min-w-0">
-                <FormLabel className="text-sm">
-                  {config.label ?? name}
-                </FormLabel>
-                <FormControl>
-                  <DynamicFilterFieldRenderer
-                    field={field}
-                    name={name}
-                    config={config}
-                    fieldSchema={fieldSchema}
-                  />
-                </FormControl>
-                {config.description && (
-                  <FormDescription>{config.description}</FormDescription>
-                )}
-                <FormMessage />
-              </FormItem>
+              <motion.div variants={item}>
+                <FormItem className="min-w-0 space-y-2">
+                  <FormLabel className="text-xs font-medium text-muted-foreground">
+                    {config.label ?? name}
+                  </FormLabel>
+                  <FormControl>
+                    <DynamicFilterFieldRenderer
+                      field={field}
+                      name={name}
+                      config={config}
+                      fieldSchema={fieldSchema}
+                    />
+                  </FormControl>
+                  {config.description && (
+                    <FormDescription className="text-xs">
+                      {config.description}
+                    </FormDescription>
+                  )}
+                  <FormMessage className="text-xs" />
+                </FormItem>
+              </motion.div>
             )}
           />
         );
       })}
-    </>
+    </motion.div>
   );
 };
 
