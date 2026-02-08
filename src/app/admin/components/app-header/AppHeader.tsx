@@ -9,6 +9,7 @@ import {
   HeaderProfileDropdown,
   HeaderThemeSwitch,
 } from "./components";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 
 type HeaderProps = React.HTMLAttributes<HTMLElement> & {
   fixed?: boolean;
@@ -36,7 +37,7 @@ const AppHeader = ({ className, fixed, children, ...props }: HeaderProps) => {
         "z-50 h-16",
         fixed && "header-fixed peer/header sticky top-0 w-[inherit]",
         offset > 10 && fixed ? "shadow" : "shadow-none",
-        className
+        className,
       )}
       {...props}
     >
@@ -45,7 +46,7 @@ const AppHeader = ({ className, fixed, children, ...props }: HeaderProps) => {
           "relative flex h-full items-center justify-between gap-3 p-4 sm:gap-4",
           offset > 10 &&
             fixed &&
-            "after:bg-background/20 after:absolute after:inset-0 after:-z-10 after:backdrop-blur-lg"
+            "after:bg-background/20 after:absolute after:inset-0 after:-z-10 after:backdrop-blur-lg",
         )}
       >
         <div>
@@ -54,7 +55,6 @@ const AppHeader = ({ className, fixed, children, ...props }: HeaderProps) => {
         </div>
         <div className="flex items-center gap-2">
           <HeaderConfigDrawer />
-          <HeaderThemeSwitch />
           <HeaderProfileDropdown />
         </div>
       </div>
