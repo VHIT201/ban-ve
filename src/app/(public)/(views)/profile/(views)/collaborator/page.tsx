@@ -47,6 +47,7 @@ import {
 } from "@/components/ui/select";
 import { VIETNAM_BANKS } from "@/constants/banks";
 import { ResponseData } from "@/api/types/base";
+import CollaboratorRevenue from "./components/collaborator-revenue";
 
 const collaboratorApplySchema = z.object({
   bankAccount: z
@@ -198,7 +199,13 @@ function CollaboratorForm() {
   );
 }
 
-function CollaboratorStatus({ data }: { data: any; loading: boolean }) {
+function CollaboratorStatus({
+  data,
+  loading,
+}: {
+  data: any;
+  loading: boolean;
+}) {
   const getStatusBadge = (status: CollaboratorResponseStatus) => {
     switch (status) {
       case CollaboratorResponseStatus.approved:
@@ -222,15 +229,15 @@ function CollaboratorStatus({ data }: { data: any; loading: boolean }) {
     }
   };
 
-  // const revenueData = useMemo(() => {
-  //   const earnings = data?.earnings || null;
-  //   return {
-  //     totalRevenue: earnings?.totalAmount || 0,
-  //     totalCommission: earnings?.totalCommission || 0,
-  //     totalOrders: earnings?.totalOrders || 0,
-  //     totalAdmin: earnings?.totalAdminAmount || 0,
-  //   };
-  // }, [data]);
+  const revenueData = useMemo(() => {
+    const earnings = data?.earnings || null;
+    return {
+      totalRevenue: earnings?.totalAmount || 0,
+      totalCommission: earnings?.totalCommission || 0,
+      totalOrders: earnings?.totalOrders || 0,
+      totalAdmin: earnings?.totalAdminAmount || 0,
+    };
+  }, [data]);
 
   return (
     <Tabs defaultValue="info">
@@ -240,6 +247,7 @@ function CollaboratorStatus({ data }: { data: any; loading: boolean }) {
       </TabsList>
 
       <TabsContent value="info" className="space-y-6">
+        <CollaboratorRevenue loading={loading} revenueData={revenueData} />
         <Card className="border border-gray-200 shadow-sm">
           <CardHeader className="border-b border-gray-100">
             <div className="flex items-start justify-between">

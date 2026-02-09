@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -44,6 +44,7 @@ import { PaymentStatus } from "@/enums/payment";
 import { useCart } from "@/hooks/use-cart";
 import baseConfig from "@/configs/base";
 import Image from "@/components/ui/image";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Zod validation schemas
 const momoSchema = z.object({
@@ -203,14 +204,45 @@ const PaymentPage = () => {
     })),
   });
 
-  useEffect(() => {
-    if (cart.items.length === 0) {
-      router.push("/collections");
-    }
-  }, [cart.items.length, router]);
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
+  };
 
-  const handleApplyDiscount = () => {
-    console.log("Apply discount code:", form.getValues("discountCode"));
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+      },
+    },
+  };
+
+  const cartItemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 0.4,
+      },
+    },
+    exit: {
+      opacity: 0,
+      x: 20,
+      transition: {
+        duration: 0.3,
+      },
+    },
   };
 
   const handleSubmitPayment = async (data: PaymentFormValues) => {
@@ -276,64 +308,85 @@ const PaymentPage = () => {
 
   if (!authStore.isSignedIn) {
     return (
-      <div className="bg-linear-to-br from-gray-50 via-blue-50 to-gray-50 flex items-center justify-center p-4">
-        <Card className="overflow-hidden max-w-lg w-full border-0 shadow-2xl p-0">
-          <CardContent className="p-0">
-            {/* Image Section */}
-            <div className="relative flex justify-center items-center bg-linear-to-br from-primary/10 to-gray-200 h-64">
-              <Image
-                src={paymentWallet.src}
-                alt="Payment required"
-                className="w-64 h-64 object-contain drop-shadow-2xl relative z-10 animate-in fade-in-0 zoom-in-95 duration-500"
-              />
-            </div>
-            {/* Content Section */}
-            <div className="p-8 space-y-6">
-              <div className="text-center space-y-3">
-                <h2 className="text-2xl font-bold text-gray-900">
-                  Yêu cầu đăng nhập
-                </h2>
+      <div className="min-h-screen bg-linear-to-br from-primary/5 via-background to-primary/10 flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Card className="overflow-hidden max-w-lg w-full border shadow-xl">
+            <CardContent className="p-0">
+              {/* Image Section */}
+              <motion.div
+                className="relative flex justify-center items-center bg-linear-to-br from-primary/10 to-muted h-64"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <Image
+                  src={paymentWallet.src}
+                  alt="Payment required"
+                  className="w-64 h-64 object-contain drop-shadow-2xl relative z-10"
+                />
+              </motion.div>
+              {/* Content Section */}
+              <motion.div
+                className="p-8 space-y-6"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                <div className="text-center space-y-3">
+                  <h2 className="text-2xl font-bold text-foreground">
+                    Yêu cầu đăng nhập
+                  </h2>
 
-                <p className="text-gray-600 text-base leading-relaxed">
-                  Bạn cần đăng nhập để tiếp tục thanh toán và hoàn tất đơn hàng
-                  của mình.
-                </p>
-              </div>
+                  <p className="text-muted-foreground text-base leading-relaxed">
+                    Bạn cần đăng nhập để tiếp tục thanh toán và hoàn tất đơn
+                    hàng của mình.
+                  </p>
+                </div>
 
-              {/* Action Buttons */}
-              <div className="flex items-center justify-center gap-4">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full h-12 font-medium"
-                  onClick={() => router.push("/")}
-                >
-                  Quay về trang chủ
-                </Button>
-                <Button
-                  size="lg"
-                  className="w-full bg-linear-to-r from-primary/70 to-primary/80 hover:from-primary/70 hover:to-primary/80 text-white shadow-lg shadow-primary/30 h-12 font-semibold"
-                  onClick={() => {
-                    router.push(BASE_PATHS.auth.login.path);
-                  }}
-                >
-                  <Lock className="w-4 h-4 mr-2" />
-                  Đăng nhập ngay
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+                {/* Action Buttons */}
+                <div className="flex items-center justify-center gap-4">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="w-full h-12 font-medium"
+                    onClick={() => router.push("/")}
+                  >
+                    Quay về trang chủ
+                  </Button>
+                  <Button
+                    size="lg"
+                    className="w-full h-12 font-semibold"
+                    onClick={() => {
+                      router.push(BASE_PATHS.auth.login.path);
+                    }}
+                  >
+                    <Lock className="w-4 h-4 mr-2" />
+                    Đăng nhập ngay
+                  </Button>
+                </div>
+              </motion.div>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className="min-h-screen bg-linear-to-br from-primary/5 via-background to-primary/10">
+      <div className="container mx-auto px-4 py-12">
+        <motion.div
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
           {/* Left Column - Payment Form */}
-          <div className="space-y-6">
+          <motion.div className="space-y-6" variants={itemVariants}>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(handleSubmitPayment)}
@@ -341,246 +394,284 @@ const PaymentPage = () => {
               >
                 {/* Payment Section */}
                 <div>
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                    Phương thức thanh toán
-                  </h2>
-                  <p className="text-sm text-gray-600 mb-6">
-                    Chọn phương thức thanh toán phù hợp với bạn
-                  </p>
+                  <motion.div
+                    className="mb-6"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <h2 className="text-xl font-semibold text-foreground mb-2">
+                      Phương thức thanh toán
+                    </h2>
+                    <p className="text-sm text-muted-foreground">
+                      Chọn phương thức thanh toán phù hợp với bạn
+                    </p>
+                  </motion.div>
 
                   {/* Payment Method Forms */}
-                  <Card className="overflow-hidden">
-                    <CardContent className="p-6 space-y-4">
-                      {/* MoMo Form */}
-                      {paymentMethod === "momo" && <PaymentMomo form={form} />}
+                  <motion.div variants={itemVariants}>
+                    <Card className="overflow-hidden bg-card/80 backdrop-blur-sm border shadow-lg">
+                      <CardContent className="p-6 space-y-4">
+                        {/* MoMo Form */}
+                        {paymentMethod === "momo" && (
+                          <PaymentMomo form={form} />
+                        )}
 
-                      {/* Bank Transfer Form */}
-                      {paymentMethod === "bank_transfer" && (
-                        <PaymentBank form={form} />
-                      )}
+                        {/* Bank Transfer Form */}
+                        {paymentMethod === "bank_transfer" && (
+                          <PaymentBank form={form} />
+                        )}
 
-                      {/* Credit Card Form */}
-                      {paymentMethod === "credit_card" && (
-                        <PaymentVisa form={form} />
-                      )}
+                        {/* Credit Card Form */}
+                        {paymentMethod === "credit_card" && (
+                          <PaymentVisa form={form} />
+                        )}
 
-                      {/* QR Code Form */}
-                      {paymentMethod === "qr_code" && (
-                        <PaymentQR
-                          loading={createQRPaymentMutation.isPending}
-                          urlQRCode={createQRPaymentMutation.qrCodeUrl}
-                        />
-                      )}
-                    </CardContent>
-                  </Card>
+                        {/* QR Code Form */}
+                        {paymentMethod === "qr_code" && (
+                          <PaymentQR
+                            loading={createQRPaymentMutation.isPending}
+                            urlQRCode={createQRPaymentMutation.qrCodeUrl}
+                          />
+                        )}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
                 </div>
 
                 {/* Billing Address */}
                 {paymentMethod !== "qr_code" && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-2xl font-semibold text-gray-900 mb-6">
-                        Thông tin người nhận
-                      </CardTitle>
-                    </CardHeader>
+                  <motion.div variants={itemVariants}>
+                    <Card className="bg-card/80 backdrop-blur-sm border shadow-lg">
+                      <CardHeader>
+                        <CardTitle className="text-xl font-semibold text-foreground">
+                          Thông tin người nhận
+                        </CardTitle>
+                      </CardHeader>
 
-                    <CardContent className="space-y-4">
-                      {/* Country */}
-                      <FormField
-                        control={form.control}
-                        name="country"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Quốc gia</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              value={field.value}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="Vietnam">
-                                  Việt Nam
-                                </SelectItem>
-                                <SelectItem value="USA">Hoa Kỳ</SelectItem>
-                                <SelectItem value="UK">Anh</SelectItem>
-                                <SelectItem value="Japan">Nhật Bản</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      {/* First Name & Last Name */}
-                      <div className="grid grid-cols-2 gap-4">
+                      <CardContent className="space-y-4">
+                        {/* Country */}
                         <FormField
                           control={form.control}
-                          name="firstName"
+                          name="country"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Họ</FormLabel>
+                              <FormLabel>Quốc gia</FormLabel>
+                              <Select
+                                onValueChange={field.onChange}
+                                value={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="Vietnam">
+                                    Việt Nam
+                                  </SelectItem>
+                                  <SelectItem value="USA">Hoa Kỳ</SelectItem>
+                                  <SelectItem value="UK">Anh</SelectItem>
+                                  <SelectItem value="Japan">
+                                    Nhật Bản
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        {/* First Name & Last Name */}
+                        <div className="grid grid-cols-2 gap-4">
+                          <FormField
+                            control={form.control}
+                            name="firstName"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Họ</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Nhập họ" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="lastName"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Tên</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Nhập tên" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        {/* Company */}
+                        <FormField
+                          control={form.control}
+                          name="company"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Công ty (tùy chọn)</FormLabel>
                               <FormControl>
-                                <Input placeholder="Nhập họ" {...field} />
+                                <Input
+                                  placeholder="Nhập tên công ty"
+                                  {...field}
+                                />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
-                        <FormField
-                          control={form.control}
-                          name="lastName"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Tên</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Nhập tên" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      {/* Company */}
-                      <FormField
-                        control={form.control}
-                        name="company"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Công ty (tùy chọn)</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="Nhập tên công ty"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
                 )}
 
                 {/* Submit Button - Mobile only */}
                 {paymentMethod !== "qr_code" && (
-                  <div className="lg:hidden">
+                  <motion.div
+                    className="lg:hidden"
+                    variants={itemVariants}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
                     <Button
                       type="submit"
                       size="lg"
                       loading={isProcessing}
                       disabled={cart.items.length === 0}
-                      className="w-full bg-primary/60 hover:bg-primary/70 text-white h-12"
+                      className="w-full h-12 font-semibold"
                     >
                       {`Thanh toán ${new Intl.NumberFormat("vi-VN", {
                         style: "currency",
                         currency: "VND",
                       }).format(total)}`}
                     </Button>
-                  </div>
+                  </motion.div>
                 )}
               </form>
             </Form>
-          </div>
+          </motion.div>
 
           {/* Right Column - Order Summary */}
-          <div className="lg:sticky lg:top-8 h-fit">
-            <Card className="border-0 shadow-lg">
+          <motion.div
+            className="lg:sticky lg:top-8 h-fit"
+            variants={itemVariants}
+          >
+            <Card className="border bg-card/80 backdrop-blur-sm shadow-xl">
               <CardContent className="p-6 space-y-6">
                 {/* Order Summary Header */}
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    Đơn hàng ({cart.totalItems} sản phẩm)
+                <motion.div
+                  className="flex items-center justify-between"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <h3 className="text-lg font-semibold text-foreground">
+                    Đơn hàng
                   </h3>
-                </div>
+                  <Badge variant="secondary" className="font-semibold">
+                    {cart.totalItems} sản phẩm
+                  </Badge>
+                </motion.div>
 
                 <Separator />
 
                 {/* Cart Items */}
-                <div className="space-y-4 py-2 max-h-[400px] overflow-y-auto">
-                  {cart.items.map((item) => (
-                    <div
-                      key={item.product._id}
-                      className="flex items-start gap-4 group"
-                    >
-                      <div className="relative shrink-0">
-                        <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden border">
-                          <img
-                            src={
-                              item.product.images &&
-                              item.product.images.length > 0
-                                ? `${baseConfig.mediaDomain}/${item.product.images[0]}`
-                                : generateImageRandom()
-                            }
-                            alt={item.product.title}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <Badge className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gray-800 text-white flex items-center justify-center p-0 text-xs">
-                          {item.quantity}
-                        </Badge>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-1">
-                          {item.product.title}
-                        </h3>
-                        {/* <p className="text-xs text-gray-500 mb-2">
-                          {item.product.category?.name || "No category"}
-                        </p> */}
-                        <p className="text-sm font-semibold text-gray-900">
-                          {new Intl.NumberFormat("vi-VN", {
-                            style: "currency",
-                            currency: "VND",
-                          }).format(
-                            (item?.product?.price || 0) * item.quantity,
-                          )}
-                        </p>
-                      </div>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => cart.removeItem(item.product._id)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-red-500"
+                <div className="space-y-3 py-2 max-h-[400px] overflow-y-auto custom-scrollbar">
+                  <AnimatePresence mode="popLayout">
+                    {cart.items.map((item, index) => (
+                      <motion.div
+                        key={item.product._id}
+                        className="flex items-start gap-4 group p-3 rounded-lg hover:bg-muted/50 transition-colors"
+                        variants={cartItemVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        transition={{ delay: index * 0.05 }}
+                        layout
                       >
-                        <X className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
+                        <div className="relative shrink-0">
+                          <motion.div
+                            className="w-20 h-20 bg-muted rounded-lg overflow-hidden border"
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <img
+                              src={
+                                item.product.images &&
+                                item.product.images.length > 0
+                                  ? `${baseConfig.mediaDomain}/${item.product.images[0]}`
+                                  : generateImageRandom()
+                              }
+                              alt={item.product.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </motion.div>
+                          <Badge className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center p-0 text-xs font-semibold">
+                            {item.quantity}
+                          </Badge>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-sm font-medium text-foreground line-clamp-2 mb-2">
+                            {item.product.title}
+                          </h3>
+                          <p className="text-sm font-semibold text-foreground">
+                            {new Intl.NumberFormat("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            }).format(
+                              (item?.product?.price || 0) * item.quantity,
+                            )}
+                          </p>
+                        </div>
+                        <motion.div
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                        >
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            onClick={() => cart.removeItem(item.product._id)}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive h-8 w-8"
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </motion.div>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
 
-                <Separator />
-
-                {/* Discount Code */}
-                <div className="flex gap-2">
-                  <Input
-                    type="text"
-                    placeholder="Nhập mã giảm giá"
-                    value={form.watch("discountCode") || ""}
-                    onChange={(e) =>
-                      form.setValue("discountCode", e.target.value)
-                    }
-                    className="flex-1"
-                  />
-                  <Button
-                    type="button"
-                    onClick={handleApplyDiscount}
-                    className="px-6"
-                  >
-                    Áp dụng
-                  </Button>
+                  {cart.items.length === 0 && (
+                    <motion.div
+                      className="text-center py-12 text-muted-foreground"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                    >
+                      <p>Giỏ hàng trống</p>
+                    </motion.div>
+                  )}
                 </div>
 
                 <Separator />
 
                 {/* Price Breakdown */}
-                <div className="space-y-3">
+                <motion.div
+                  className="space-y-3"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Tạm tính:</span>
-                    <span className="font-medium text-gray-900">
+                    <span className="text-muted-foreground">Tạm tính:</span>
+                    <span className="font-medium text-foreground">
                       {new Intl.NumberFormat("vi-VN", {
                         style: "currency",
                         currency: "VND",
@@ -588,8 +679,10 @@ const PaymentPage = () => {
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Phí vận chuyển:</span>
-                    <span className="font-medium text-green-600">
+                    <span className="text-muted-foreground">
+                      Phí vận chuyển:
+                    </span>
+                    <span className="font-medium text-green-600 dark:text-green-500">
                       {shipping === 0
                         ? "Miễn phí"
                         : new Intl.NumberFormat("vi-VN", {
@@ -600,8 +693,8 @@ const PaymentPage = () => {
                   </div>
                   {discount > 0 && (
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Giảm giá:</span>
-                      <span className="font-medium text-green-600">
+                      <span className="text-muted-foreground">Giảm giá:</span>
+                      <span className="font-medium text-green-600 dark:text-green-500">
                         -
                         {new Intl.NumberFormat("vi-VN", {
                           style: "currency",
@@ -611,28 +704,37 @@ const PaymentPage = () => {
                     </div>
                   )}
                   <Separator />
-                  <div className="flex items-center justify-between text-lg font-semibold">
-                    <span className="text-gray-900">Tổng cộng:</span>
+                  <motion.div
+                    className="flex items-center justify-between text-lg font-semibold pt-2"
+                    initial={{ scale: 0.95 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.6, type: "spring" }}
+                  >
+                    <span className="text-foreground">Tổng cộng:</span>
                     <div className="flex items-baseline gap-2">
-                      <span className="text-2xl text-gray-900">
+                      <span className="text-2xl bg-linear-to-br from-primary to-primary/60 bg-clip-text text-transparent">
                         {new Intl.NumberFormat("vi-VN", {
                           style: "currency",
                           currency: "VND",
                         }).format(total)}
                       </span>
                     </div>
-                  </div>
-                </div>
+                  </motion.div>
+                </motion.div>
 
                 {/* Pay Now Button - Desktop */}
                 {paymentMethod !== "qr_code" && (
-                  <div className="hidden lg:block">
+                  <motion.div
+                    className="hidden lg:block"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
                     <Button
                       type="submit"
                       size="lg"
                       loading={isProcessing}
                       disabled={cart.items.length === 0}
-                      className="w-full bg-primary/60 hover:bg-primary/70 text-white h-12"
+                      className="w-full h-12 font-semibold"
                       onClick={form.handleSubmit(handleSubmitPayment)}
                     >
                       {`Thanh toán ${new Intl.NumberFormat("vi-VN", {
@@ -640,18 +742,23 @@ const PaymentPage = () => {
                         currency: "VND",
                       }).format(total)}`}
                     </Button>
-                  </div>
+                  </motion.div>
                 )}
 
                 {/* Security Badge */}
-                <div className="flex items-center justify-center gap-2 text-xs text-gray-500 pt-2">
+                <motion.div
+                  className="flex items-center justify-center gap-2 text-xs text-muted-foreground pt-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.7 }}
+                >
                   <ShieldCheck className="w-4 h-4" />
                   <span>Thanh toán bảo mật</span>
-                </div>
+                </motion.div>
               </CardContent>
             </Card>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
       <PaymentStatusDialog
         open={openPaymentStatus}
@@ -660,6 +767,22 @@ const PaymentPage = () => {
         status={PaymentStatus.COMPLETED}
         onOpenChange={setOpenPaymentStatus}
       />
+
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: hsl(var(--muted-foreground) / 0.3);
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: hsl(var(--muted-foreground) / 0.5);
+        }
+      `}</style>
     </div>
   );
 };

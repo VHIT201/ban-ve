@@ -31,7 +31,7 @@ interface Props {
   pagination?: PaginationState;
   onPaginationChange?: (updater: Updater<PaginationState>) => void;
   filter?: (content: ContentResponse) => boolean;
-  actions: {
+  actions?: {
     onEdit?: (content: ContentResponse) => void;
     onDelete?: (content: ContentResponse) => void;
     onView?: (content: ContentResponse) => void;
@@ -106,9 +106,9 @@ const ContentTable = (props: Props) => {
   };
 
   const columns = useContentTableColumnsDefs({
-    onEdit: actions.onEdit || handleEdit,
-    onDelete: actions.onDelete || handleDelete,
-    onView: actions.onView,
+    onEdit: actions?.onEdit || handleEdit,
+    onDelete: actions?.onDelete || handleDelete,
+    onView: actions?.onView,
   });
 
   return (
