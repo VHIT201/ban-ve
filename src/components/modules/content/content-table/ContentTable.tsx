@@ -128,7 +128,10 @@ const ContentTable = (props: Props) => {
         <DataTableDeleteDialog
           currentRow={
             deleteSelectRow
-              ? { ...deleteSelectRow, name: deleteSelectRow.title ?? deleteSelectRow._id }
+              ? {
+                  ...deleteSelectRow,
+                  name: deleteSelectRow.title ?? deleteSelectRow._id,
+                }
               : null
           }
           onDelete={handleConfirmDelete}

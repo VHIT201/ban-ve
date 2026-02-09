@@ -8,17 +8,16 @@ import { FilterIcon, PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 // Internal
-import { ContentTable } from "../../views/contents/views/content-list/components";
 import { useRouter } from "next/navigation";
 import { DynamicFilter } from "@/components/shared";
 import { TreeNode } from "@/components/shared/dynamic-filter";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { CONTENT_FILTER_SCHEMA, ContentFilterSchema } from "./lib/constant";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
 import { BASE_PATHS } from "@/constants/paths";
 import { useGetApiCategoriesAllTree } from "@/api/endpoints/categories";
 import { ResponseData } from "@/api/types/base";
+import { ContentTable } from "@/components/modules/content";
 
 const ContentList = () => {
   const router = useRouter();

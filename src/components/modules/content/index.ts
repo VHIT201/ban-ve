@@ -5,3 +5,4 @@ export {
 } from "./blueprint-card";
 export { default as ContentEditorForm } from "./content-editor-form";
 export { default as ContentPaymentDialog } from "./content-payment-dialog";
+export { default as ContentTable } from "./content-table";
