@@ -6,6 +6,6 @@ export type RegisterVerifyFormValues = z.infer<
 >;
 
 export interface Props {
-  email: string;
+  email: string | null;
   onCancel: () => void;
 }

@@ -3,8 +3,9 @@
 import { Stepper } from "@/components/ui/stepper";
 
 import { User, Shield } from "lucide-react";
-import { FC, useState, useEffect } from "react";
+import { FC, useState } from "react";
 import { RegisterForm, RegisterVerifyForm } from "./components";
+import { useSessionStorage } from "@/hooks/use-session-storage";
 
 // Steps data for Stepper
 const stepsData = [
@@ -23,8 +24,13 @@ const stepsData = [
 ];
 
 const Register: FC = () => {
-  const [currentStep, setCurrentStep] = useState<number>(1);
-  const [registerEmail, setRegisterEmail] = useState<string>("");
+  const [registerEmail, setRegisterEmail] = useSessionStorage<string | null>(
+    "auth-register-email",
+    null,
+  );
+  const [currentStep, setCurrentStep] = useState<number>(() =>
+    registerEmail ? 2 : 1,
+  );
 
   return (
     <div className="space-y-8">
@@ -51,7 +57,10 @@ const Register: FC = () => {
       ) : (
         <RegisterVerifyForm
           email={registerEmail}
-          onCancel={() => setCurrentStep(1)}
+          onCancel={() => {
+            setCurrentStep(1);
+            setRegisterEmail(null);
+          }}
         />
       )}
     </div>

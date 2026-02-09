@@ -66,6 +66,11 @@ const RegisterVerifyForm: FC<Props> = (props) => {
 
   // Methods
   const handleResendOTP = async () => {
+    if (!registeredEmail) {
+      toast.error(" Email đăng ký không hợp lệ. Vui lòng thử lại.");
+      return;
+    }
+
     try {
       await reSendOTPMutation.mutateAsync({
         data: {
@@ -86,6 +91,11 @@ const RegisterVerifyForm: FC<Props> = (props) => {
   };
 
   const handleSubmit = async (data: RegisterVerifyFormValues) => {
+    if (!registeredEmail) {
+      toast.error(" Email đăng ký không hợp lệ. Vui lòng thử lại.");
+      return;
+    }
+
     try {
       await verifyOTPMutation.mutateAsync({
         data: {
@@ -134,7 +144,7 @@ const RegisterVerifyForm: FC<Props> = (props) => {
     }
   }, [countdown]);
 
-  return isEmpty(registeredEmail) ? (
+  return !registeredEmail ? (
     <div className="flex items-center justify-center space-y-6 flex-col">
       <p className="text-sm text-muted-foreground">
         Không có email đăng ký. Vui lòng quay lại bước trước và nhập email của
@@ -173,12 +183,30 @@ const RegisterVerifyForm: FC<Props> = (props) => {
                   <div className="flex justify-center">
                     <InputOTP maxLength={6} {...field}>
                       <InputOTPGroup>
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
-                        <InputOTPSlot index={3} />
-                        <InputOTPSlot index={4} />
-                        <InputOTPSlot index={5} />
+                        <InputOTPSlot
+                          index={0}
+                          className="size-12 shadow-none"
+                        />
+                        <InputOTPSlot
+                          index={1}
+                          className="size-12 shadow-none"
+                        />
+                        <InputOTPSlot
+                          index={2}
+                          className="size-12 shadow-none"
+                        />
+                        <InputOTPSlot
+                          index={3}
+                          className="size-12 shadow-none"
+                        />
+                        <InputOTPSlot
+                          index={4}
+                          className="size-12 shadow-none"
+                        />
+                        <InputOTPSlot
+                          index={5}
+                          className="size-12 shadow-none"
+                        />
                       </InputOTPGroup>
                     </InputOTP>
                   </div>

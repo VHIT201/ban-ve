@@ -38,14 +38,25 @@ import {
   RefreshCcw,
 } from "lucide-react";
 import { FC, useState, useEffect } from "react";
+import { toast } from "sonner";
+import { useSessionStorage } from "@/hooks/use-session-storage";
 
 const RegisterForm: FC<Props> = (props) => {
+  // Props
   const { onSwitchViewMode } = props;
-  const [currentStep, setCurrentStep] = useState<RegistrationStep>(1);
+
+  // Hooks
+  const [_, setStoredEmail] = useSessionStorage<string | null>(
+    "auth-register-email",
+    null,
+  );
+
+  // States
   const [registrationData, setRegistrationData] =
     useState<RegisterStep1Values | null>(null);
   const [countdown, setCountdown] = useState(0);
   const [isResending, setIsResending] = useState(false);
+  const [currentStep, setCurrentStep] = useState<RegistrationStep>(1);
 
   // Form for Step 1: Basic Information
   const step1Form = useForm<RegisterStep1Values>({
@@ -69,11 +80,9 @@ const RegisterForm: FC<Props> = (props) => {
 
   const onStep1Submit = async (data: RegisterStep1Values) => {
     try {
-      // Simulate API call to send OTP
-      console.log("Sending OTP to:", data.email);
-
       // Store registration data for step 2
       setRegistrationData(data);
+      setStoredEmail(data.email);
 
       // Move to step 2
       setCurrentStep(2);
@@ -84,31 +93,20 @@ const RegisterForm: FC<Props> = (props) => {
       // Reset step 2 form
       step2Form.reset();
     } catch (error) {
-      console.error("Error sending OTP:", error);
+      toast.error("Lỗi khi gửi OTP. Vui lòng thử lại.");
     }
   };
 
   const onStep2Submit = async (data: RegisterStep2Values) => {
     try {
       if (!registrationData) return;
+      toast.success("Đăng ký thành công!");
 
-      // Combine step 1 and step 2 data
-      const completeRegistrationData = { ...registrationData, ...data };
-      console.log("Complete registration data:", completeRegistrationData);
-
-      // Simulate API call for registration
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Registration successful
-      alert("Đăng ký thành công!");
-
-      // Reset forms and go back to step 1
       step1Form.reset();
       step2Form.reset();
       setCurrentStep(1);
       setRegistrationData(null);
     } catch (error) {
-      console.error("Error verifying OTP:", error);
       step2Form.setError("otp", {
         message: "Mã OTP không đúng hoặc đã hết hạn",
       });
@@ -127,7 +125,7 @@ const RegisterForm: FC<Props> = (props) => {
       setCountdown(60);
       step2Form.setError("otp", { message: "" });
     } catch (error) {
-      console.error("Error resending OTP:", error);
+      toast.error("Lỗi khi gửi lại OTP. Vui lòng thử lại.");
     } finally {
       setIsResending(false);
     }
