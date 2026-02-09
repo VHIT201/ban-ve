@@ -6,17 +6,21 @@ import DataTable from "@/components/shared/data-table/DataTable";
 // Internal
 import { useContentTableColumnsDefs } from "./lib/hooks";
 import { useState, useEffect } from "react";
-import {
-  useDeleteApiContentId,
-  useGetApiContent,
-} from "@/api/endpoints/content";
+import { useDeleteApiContentId } from "@/api/endpoints/content";
 import { ContentResponse } from "@/api/types/content";
 import { UseQueryResult } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { BASE_PATHS } from "@/constants/paths";
 import { toast } from "sonner";
-import { DataTableDeleteDialog } from "@/components/shared/data-table/shared";
+import {
+  DataTableBulkActions,
+  DataTableDeleteDialog,
+} from "@/components/shared/data-table/shared";
 import { PaginationState, Updater } from "@tanstack/react-table";
+import { Action } from "@/components/shared/data-table/shared/data-table-bulk-actions/lib/types";
+import { TrashIcon } from "lucide-react";
+import { DeleteDialog } from "@/components/shared";
+import { extractErrorMessage } from "@/utils/error";
 
 interface Props {
   queryData: UseQueryResult<{
@@ -28,21 +32,37 @@ interface Props {
       itemsPerPage: number;
     };
   }>;
+  selectedRows?: ContentResponse[];
+  enableRowSelection?: boolean;
   pagination?: PaginationState;
+  onSelectedRowsChange?: (selectedRows: ContentResponse[]) => void;
   onPaginationChange?: (updater: Updater<PaginationState>) => void;
   filter?: (content: ContentResponse) => boolean;
   actions?: {
     onEdit?: (content: ContentResponse) => void;
     onDelete?: (content: ContentResponse) => void;
     onView?: (content: ContentResponse) => void;
+    onApprove?: (content: ContentResponse) => void;
   };
+  bulkActions?: Action[];
 }
 
 const ContentTable = (props: Props) => {
   // Props
-  const { filter, queryData, pagination, onPaginationChange, actions } = props;
+  const {
+    filter,
+    queryData,
+    pagination,
+    onPaginationChange,
+    actions,
+    selectedRows,
+    enableRowSelection,
+    onSelectedRowsChange,
+    bulkActions,
+  } = props;
 
   // States
+  const [openDeleteMultiDialog, setOpenDeleteMultiDialog] = useState(false);
   const [deleteSelectRow, setDeleteSelectRow] =
     useState<ContentResponse | null>(null);
 
@@ -99,26 +119,63 @@ const ContentTable = (props: Props) => {
   };
 
   const handleConfirmDelete = async () => {
-    if (!deleteSelectRow) return;
-    await deleteContentMutation.mutateAsync({
-      id: deleteSelectRow._id,
-    });
+    if (!deleteSelectRow && selectedRows?.length === 0) return;
+
+    try {
+      if (deleteSelectRow) {
+        await deleteContentMutation.mutateAsync({
+          id: deleteSelectRow._id || "",
+        });
+
+        setDeleteSelectRow(null);
+        toast.success("Xóa nội dung thành công");
+      } else if (selectedRows && selectedRows.length > 0) {
+        const res = await deleteContentMutation.mutateAsync({
+          id: selectedRows.map((row) => row._id || "").join(","),
+        });
+        setOpenDeleteMultiDialog(false);
+        onSelectedRowsChange?.([]);
+
+        const resData = res as unknown as { message?: string };
+        toast.success(resData.message || "Xóa các nội dung đã chọn thành công");
+      }
+    } catch (error) {
+      toast.error(extractErrorMessage(error) || "Lỗi khi xóa nội dung");
+    }
   };
 
   const columns = useContentTableColumnsDefs({
     onEdit: actions?.onEdit || handleEdit,
     onDelete: actions?.onDelete || handleDelete,
     onView: actions?.onView,
+    onApprove: actions?.onApprove,
   });
+
+  const bulkActionList = [
+    ...(bulkActions || []),
+    {
+      label: "Xóa mục đã chọn",
+      icon: TrashIcon,
+      variant: "destructive" as const,
+      tooltip: "Xóa tất cả mục đã chọn",
+      onAction: () => {
+        setOpenDeleteMultiDialog(true);
+      },
+    },
+  ];
 
   return (
     <div className="space-y-4">
       <DataTable
+        manualPagination
         columns={columns}
+        selectedRows={selectedRows}
+        enableRowSelection={enableRowSelection}
         data={(queryData.data?.data || []).filter(filter || (() => true))}
         rowCount={queryData.data?.pagination?.total || 0}
-        manualPagination
         state={{ pagination }}
+        getRowId={(row: ContentResponse) => row._id || ""}
+        onSelectedRowsChange={onSelectedRowsChange}
         onPaginationChange={handlePaginationChange}
       >
         <DataTable.Content>
@@ -127,6 +184,8 @@ const ContentTable = (props: Props) => {
         </DataTable.Content>
 
         <DataTable.Pagination />
+
+        <DataTableBulkActions entityName="sản phẩm" actions={bulkActionList} />
 
         <DataTableDeleteDialog
           currentRow={
@@ -138,6 +197,13 @@ const ContentTable = (props: Props) => {
               : null
           }
           onDelete={handleConfirmDelete}
+        />
+
+        <DeleteDialog
+          open={openDeleteMultiDialog}
+          onConfirm={handleConfirmDelete}
+          onOpenChange={setOpenDeleteMultiDialog}
+          deleting={deleteContentMutation.isPending}
         />
       </DataTable>
 

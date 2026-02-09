@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 
 // Internal
 import { useRouter } from "next/navigation";
-import { DynamicFilter } from "@/components/shared";
+import { DeleteDialog, DynamicFilter } from "@/components/shared";
 import { TreeNode } from "@/components/shared/dynamic-filter";
 import { useState } from "react";
 import {
@@ -22,13 +22,18 @@ import { BASE_PATHS } from "@/constants/paths";
 import { useGetApiCategoriesAllTree } from "@/api/endpoints/categories";
 import { ResponseData } from "@/api/types/base";
 import { ContentTable } from "@/components/modules/content";
-import { useGetApiContent } from "@/api/endpoints/content";
+import {
+  useGetApiContent,
+  usePutApiContentIdApprove,
+} from "@/api/endpoints/content";
 import { ContentResponse } from "@/api/types/content";
 import { UseQueryResult } from "@tanstack/react-query";
+import { useBulkActions } from "./lib/hook";
 
 const ContentList = () => {
   const router = useRouter();
   // States
+  const [selectedRows, setSelectedRows] = useState<ContentResponse[]>([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<ContentFilterSchema>();
   const [pagination, setPagination] = useState({
@@ -96,6 +101,19 @@ const ContentList = () => {
     };
   }>;
 
+  // Mutations
+  const approveContentMutation = usePutApiContentIdApprove({
+    mutation: {
+      onSuccess: () => {
+        toast.success("Duyệt nội dung thành công");
+        getContentListQuery.refetch();
+      },
+      onError: () => {
+        toast.error("Có lỗi xảy ra khi duyệt nội dung");
+      },
+    },
+  });
+
   // Methods
   const handleFilterSubmit = (data: ContentFilterSchema) => {
     setFilterValues(data);
@@ -124,6 +142,16 @@ const ContentList = () => {
     router.push(
       BASE_PATHS.admin.contents.detail.path.replace(":id", content._id || ""),
     );
+  };
+
+  const handleApprove = (content: ContentResponse) => {
+    if (!content._id) return;
+    if (confirm(`Bạn có chắc chắn muốn duyệt nội dung "${content.title}"?`)) {
+      approveContentMutation.mutate({
+        id: content._id,
+        data: { status: "approved" },
+      });
+    }
   };
 
   // Memos
@@ -161,6 +189,8 @@ const ContentList = () => {
         }).format(value),
     },
   };
+
+  console.log("Rendered ContentList with filterValues:", selectedRows);
 
   return (
     <div className="flex overflow-hidden bg-background">
@@ -220,12 +250,19 @@ const ContentList = () => {
 
           {/* Content Table */}
           <ContentTable
+            selectedRows={selectedRows}
+            enableRowSelection={true}
             queryData={getContentListQuery}
             pagination={pagination}
             onPaginationChange={setPagination}
+            onSelectedRowsChange={(rows) => {
+              console.log("Selected rows changed:", rows);
+              setSelectedRows(rows);
+            }}
             actions={{
               onEdit: handleViewEdit,
               onView: handleViewDetail,
+              onApprove: handleApprove,
             }}
           />
         </div>

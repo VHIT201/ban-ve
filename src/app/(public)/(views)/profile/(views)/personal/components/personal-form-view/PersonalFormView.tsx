@@ -67,7 +67,6 @@ function PersonalFormView({ onSubmit }: Props) {
     setSaving(true);
     try {
       await onSubmit?.(data);
-      toast.success("Cập nhật thông tin cá nhân thành công");
     } finally {
       setSaving(false);
     }

@@ -187,6 +187,6 @@ function OrderDetailInformation({ order }: Props) {
       </CardContent>
     </Card>
   );
-};
+}
 
 export default OrderDetailInformation;

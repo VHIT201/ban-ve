@@ -21,7 +21,7 @@ const OrderDataItem = ({ order }: Props) => {
 
   const handleViewDetail = () => {
     router.push(
-      BASE_PATHS.app.profile.order.detail.path.replace(":id", order._id || "")
+      BASE_PATHS.app.profile.order.detail.path.replace(":id", order._id || ""),
     );
   };
 
@@ -58,12 +58,6 @@ const OrderDataItem = ({ order }: Props) => {
             </div>
 
             <div className="flex gap-2 pt-2 justify-end">
-              {order.status === OrderStatus.completed && (
-                <Button variant="outline" size="sm" className="h-9">
-                  <Download className="w-4 h-4 mr-2" />
-                  Tải xuống
-                </Button>
-              )}
               <Button
                 variant="link"
                 size="sm"
