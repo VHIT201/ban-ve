@@ -1,5 +1,5 @@
 // Core
-import { EyeIcon, FileText } from "lucide-react";
+import { CheckIcon, EyeIcon, FileText } from "lucide-react";
 import { useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -10,6 +10,7 @@ import { DataTableActionCell } from "@/components/shared/data-table/shared";
 
 // Internal
 import { ContentTableRow, useContentTableColumnsDefsProps } from "./types";
+import { ContentStatus } from "@/api/models";
 
 const getStatusConfig = (status?: string) => {
   switch (status?.toLowerCase()) {
@@ -257,11 +258,21 @@ export const useContentTableColumnsDefs = (
         header: () => <div className="min-w-[100px]">Thao tác</div>,
         cell: ({ row }) => {
           const content = row.original;
+          const actions = [];
+
+          if (content.status?.toLowerCase() === ContentStatus.pending) {
+            actions.push({
+              label: "Xét duyệt",
+              icon: CheckIcon,
+              onAction: () => onApprove?.(content),
+            });
+          }
 
           return (
             <DataTableActionCell
               rowName={content.title || "Nội dung"}
               actions={[
+                ...actions,
                 ...(onView
                   ? [
                       {

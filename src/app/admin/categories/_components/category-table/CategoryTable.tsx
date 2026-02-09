@@ -331,6 +331,7 @@ const CategoryTable: FC<Props> = (props) => {
                 entityName="danh mục"
                 actions={bulkActionList}
               />
+
               <DataTableDeleteDialog
                 currentRow={deleteSelectRow}
                 deleting={deleteCategoryMutation.isPending}

@@ -3,12 +3,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Package, ShoppingBag } from "lucide-react";
 import baseConfig from "@/configs/base";
+import { CartItemContent } from "@/api/types/order";
+import Image from "@/components/ui/image";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   items?: OrderItem[];
 }
 
 function OrderDetailSoldList({ items = [] }: Props) {
+  console.log("OrderDetailSoldList items:", items);
+
   if (items.length === 0) {
     return (
       <Card className="border border-gray-200 shadow-sm">
@@ -24,42 +29,51 @@ function OrderDetailSoldList({ items = [] }: Props) {
 
   const subtotal = items.reduce(
     (sum, item) => sum + (item.price || 0) * (item.quantity || 0),
-    0
+    0,
   );
 
   return (
     <Card className="border border-gray-200 shadow-sm">
       <CardHeader className="border-b border-gray-100">
-        <CardTitle className="text-lg font-bold text-gray-900 flex items-center gap-2">
-          <Package className="w-5 h-5" />
-          Sản phẩm đã mua
-          <span className="text-sm font-normal text-gray-500">({items.length})</span>
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <Package className="w-5 h-5" />
+            Sản phẩm đã mua
+            <span className="text-sm font-normal text-gray-500">
+              ({items.length})
+            </span>
+          </CardTitle>
+
+          <Button variant="success">Mua lại</Button>
+        </div>
       </CardHeader>
       <CardContent className="pt-6">
         <div className="space-y-4">
           {items.map((item, index) => {
-            const content = item.contentId;
+            const content = item.contentId as CartItemContent;
             const itemTotal = (item.price || 0) * (item.quantity || 1);
 
             return (
               <div key={`${content?._id || index}`}>
                 <div className="flex gap-4">
-                  <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0">
-                    <img
-                      src={content?.images?.[0] ? `${baseConfig.backendDomain}${content.images[0]}` : "/placeholder-product.jpg"}
+                  <div className="w-20 h-20 relative rounded-lg overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0">
+                    <Image
+                      src={
+                        content?.images?.[0]
+                          ? `${baseConfig.backendDomain}${content.images[0]}`
+                          : ""
+                      }
                       alt={content?.title || "Product"}
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        e.currentTarget.src = "/placeholder-product.jpg";
+                        e.currentTarget.src = "";
                       }}
                     />
                   </div>
 
                   <div className="flex-1 min-w-0">
                     <h4 className="font-semibold text-sm text-gray-900 mb-1 line-clamp-2">
-                      {content?.title ||
-                        `Sản phẩm #${content?._id?.slice(-8).toUpperCase()}`}
+                      {content?.title || "Không có tiêu đề"}
                     </h4>
                     {content?.description && (
                       <p className="text-xs text-gray-500 mb-2 line-clamp-1">
@@ -95,7 +109,9 @@ function OrderDetailSoldList({ items = [] }: Props) {
 
           <Separator className="my-4" />
           <div className="flex items-center justify-between bg-gray-50 p-4 border border-gray-100">
-            <span className="text-sm font-semibold text-gray-900">Tổng cộng</span>
+            <span className="text-sm font-semibold text-gray-900">
+              Tổng cộng
+            </span>
             <span className="text-xl font-bold text-gray-900">
               {new Intl.NumberFormat("vi-VN", {
                 style: "currency",
@@ -107,6 +123,6 @@ function OrderDetailSoldList({ items = [] }: Props) {
       </CardContent>
     </Card>
   );
-};
+}
 
 export default OrderDetailSoldList;

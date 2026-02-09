@@ -1,6 +1,6 @@
 import { LucideIcon } from "lucide-react";
 
-interface Action {
+export interface Action {
   label: string;
   icon: LucideIcon;
   tooltip: string;
