@@ -14,6 +14,7 @@ import {
   GroupIcon,
   HistoryIcon,
   Share2,
+  Contact2Icon,
 } from "lucide-react";
 import { type SidebarData } from "./types";
 import { BASE_PATHS } from "@/constants/paths";
@@ -42,6 +43,11 @@ export const SIDEBAR_MENU: SidebarData = {
           title: "Nội dung",
           url: BASE_PATHS.admin.contents.path,
           icon: InboxIcon,
+        },
+        {
+          title: "Liên hệ",
+          url: BASE_PATHS.admin.contacts.path,
+          icon: Contact2Icon,
         },
         {
           title: "Bản quyền",

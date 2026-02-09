@@ -1,5 +1,5 @@
 // @ts-nocheck
-import type { UserRole } from "./userRole";
+import type { UserRole } from './userRole';
 
 export interface User {
   /** ID của người dùng */
@@ -14,5 +14,4 @@ export interface User {
   createdAt?: string;
   /** Thời gian cập nhật cuối cùng */
   updatedAt?: string;
-  avatar?: string;
 }

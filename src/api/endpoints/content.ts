@@ -910,7 +910,7 @@ export const usePutApiContentId = <TError = ErrorType<void>,
       return useMutation(mutationOptions, queryClient);
     }
     /**
- * Xóa một nội dung (chỉ dành cho admin hoặc người tạo)
+ * Xóa một hoặc nhiều nội dung (chỉ dành cho admin hoặc người tạo). Có thể nhập nhiều ID cách nhau bằng dấu phẩy.
  * @summary Xóa nội dung
  */
 export const deleteApiContentId = (

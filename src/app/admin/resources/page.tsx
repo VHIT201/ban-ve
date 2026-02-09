@@ -22,11 +22,12 @@ import {
   ResourceItemCompact,
 } from "./components";
 import { toast } from "sonner";
+
+import { MAIN_AXIOS_INSTANCE } from "@/api/mutator/custom-instance";
+import { PaginationState } from "@tanstack/react-table";
 import ResourceItem, {
   ResourceItemData,
 } from "./components/resource-item/ResourceItem";
-import { MAIN_AXIOS_INSTANCE } from "@/api/mutator/custom-instance";
-import { PaginationState } from "@tanstack/react-table";
 
 const Resources = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");

@@ -2,12 +2,8 @@
 
 import { useCallback, useState } from "react";
 import { usePostApiFileUpload } from "@/api/endpoints/files";
-import type {
-  FileUploadResponse,
-  PostApiFileUploadBody,
-  File as ApiFile,
-} from "@/api/models";
-import { FileStatus, FileWithPreview } from "@/components/shared/uploader";
+import type { PostApiFileUploadBody, File as ApiFile } from "@/api/models";
+import { FileStatus } from "@/components/shared/uploader";
 
 // ============================================
 // Types
@@ -29,6 +25,10 @@ interface UploadProgress {
   error?: string;
 }
 
+type ApiFileUploadResponse = ApiFile & {
+  path?: string;
+};
+
 interface UseUploadMediaReturn {
   // State
   uploadProgress: Record<string, UploadProgress>;
@@ -38,16 +38,16 @@ interface UseUploadMediaReturn {
   uploadSingle: (
     file: File | null,
     options?: UploadOptions,
-  ) => Promise<ApiFile | null>;
+  ) => Promise<ApiFileUploadResponse | null>;
   uploadMultiple: (
     files: File[],
     options?: UploadOptions,
-  ) => Promise<ApiFile[]>;
+  ) => Promise<ApiFileUploadResponse[]>;
   uploadWithImages: (
     mainFile: File,
     images: File[],
     options?: UploadOptions,
-  ) => Promise<ApiFile | null>;
+  ) => Promise<ApiFileUploadResponse | null>;
 
   // Helpers
   resetProgress: () => void;
@@ -124,7 +124,7 @@ const useUploadMedia = (): UseUploadMediaReturn => {
     async (
       file: File | null,
       options: UploadOptions = {},
-    ): Promise<ApiFile | null> => {
+    ): Promise<ApiFileUploadResponse | null> => {
       if (!file) {
         // No file provided, nothing to upload
         return null;
@@ -195,7 +195,7 @@ const useUploadMedia = (): UseUploadMediaReturn => {
       mainFile: File,
       images: File[],
       options: UploadOptions = {},
-    ): Promise<ApiFile | null> => {
+    ): Promise<ApiFileUploadResponse | null> => {
       const fileName = mainFile.name;
 
       try {

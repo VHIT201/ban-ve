@@ -94,6 +94,7 @@ export const BASE_PATHS = {
     path: "/admin",
     dashboard: { path: "/admin/dashboard" },
     categories: { path: "/admin/categories" },
+    contacts: { path: "/admin/contacts" },
     contents: {
       path: "/admin/contents",
       create: { path: "/admin/contents/create" },
