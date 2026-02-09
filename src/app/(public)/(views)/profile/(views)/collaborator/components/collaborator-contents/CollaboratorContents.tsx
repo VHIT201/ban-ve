@@ -18,9 +18,6 @@ import { useState } from "react";
 // Internal
 
 const ContentList = () => {
-  // Stores
-  const authProfile = useProfileStore(useShallow(({ email }) => ({ email })));
-
   // Hooks
   const router = useRouter();
 

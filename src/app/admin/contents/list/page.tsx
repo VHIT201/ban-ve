@@ -18,12 +18,19 @@ import { BASE_PATHS } from "@/constants/paths";
 import { useGetApiCategoriesAllTree } from "@/api/endpoints/categories";
 import { ResponseData } from "@/api/types/base";
 import { ContentTable } from "@/components/modules/content";
+import { useGetApiContent } from "@/api/endpoints/content";
+import { ContentResponse } from "@/api/types/content";
+import { UseQueryResult } from "@tanstack/react-query";
 
 const ContentList = () => {
   const router = useRouter();
   // States
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<ContentFilterSchema>();
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
   // Query để lấy category tree từ API
   const getCategoryTreeQuery = useGetApiCategoriesAllTree(
@@ -55,6 +62,35 @@ const ContentList = () => {
     },
   );
 
+  const getContentListQuery = useGetApiContent<{
+    data: ContentResponse[];
+    pagination: {
+      total: number;
+      totalPages: number;
+      currentPage: number;
+      itemsPerPage: number;
+    };
+  }>({
+    page: pagination.pageIndex + 1, // API 1-based
+    limit: pagination.pageSize,
+    category: filterValues?.categories
+      ? Array.isArray(filterValues.categories)
+        ? filterValues.categories.join(",")
+        : filterValues.categories
+      : undefined,
+    search: filterValues?.name,
+    minPrice: filterValues?.priceRange?.[0],
+    maxPrice: filterValues?.priceRange?.[1],
+  }) as UseQueryResult<{
+    data: ContentResponse[];
+    pagination: {
+      total: number;
+      totalPages: number;
+      currentPage: number;
+      itemsPerPage: number;
+    };
+  }>;
+
   // Methods
   const handleFilterSubmit = (data: ContentFilterSchema) => {
     setFilterValues(data);
@@ -85,7 +121,7 @@ const ContentList = () => {
       label: "Danh mục",
       type: "tree" as const,
       placeholder: "Chọn danh mục",
-      nodes: getCategoryTreeQuery,
+      nodes: getCategoryTreeQuery.data || [],
       searchable: true,
       maxHeight: "350px",
     },
@@ -159,16 +195,9 @@ const ContentList = () => {
 
           {/* Content Table */}
           <ContentTable
-            filterValues={{
-              category: filterValues?.categories?.join(",") || "",
-              search: filterValues?.name || "",
-              minPrice: filterValues?.priceRange
-                ? filterValues.priceRange[0]
-                : undefined,
-              maxPrice: filterValues?.priceRange
-                ? filterValues.priceRange[1]
-                : undefined,
-            }}
+            queryData={getContentListQuery}
+            pagination={pagination}
+            onPaginationChange={setPagination}
           />
         </div>
       </div>

@@ -1,7 +1,8 @@
 "use client";
 
+import { CopyRightTable } from "@/components/modules/copy-right";
+
 // App
-import { CopyRightTable } from "../../views/copy-right/views/copy-right-list/components";
 
 const CopyRightList = () => {
   return (
