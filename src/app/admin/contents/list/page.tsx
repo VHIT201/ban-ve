@@ -12,7 +12,11 @@ import { useRouter } from "next/navigation";
 import { DynamicFilter } from "@/components/shared";
 import { TreeNode } from "@/components/shared/dynamic-filter";
 import { useState } from "react";
-import { CONTENT_FILTER_SCHEMA, ContentFilterSchema } from "./lib/constant";
+import {
+  CONTENT_FILTER_SCHEMA,
+  CONTENT_STATUS_OPTIONS,
+  ContentFilterSchema,
+} from "./lib/constant";
 import { toast } from "sonner";
 import { BASE_PATHS } from "@/constants/paths";
 import { useGetApiCategoriesAllTree } from "@/api/endpoints/categories";
@@ -73,6 +77,7 @@ const ContentList = () => {
   }>({
     page: pagination.pageIndex + 1, // API 1-based
     limit: pagination.pageSize,
+    status: filterValues?.status,
     category: filterValues?.categories
       ? Array.isArray(filterValues.categories)
         ? filterValues.categories.join(",")
@@ -94,7 +99,6 @@ const ContentList = () => {
   // Methods
   const handleFilterSubmit = (data: ContentFilterSchema) => {
     setFilterValues(data);
-    console.log("Filter values:", data);
 
     // Kiểm tra nếu tất cả các giá trị đều empty/undefined
     const hasValues = Object.values(data).some(
@@ -110,8 +114,26 @@ const ContentList = () => {
     }
   };
 
+  const handleViewEdit = (content: ContentResponse) => {
+    router.push(
+      BASE_PATHS.admin.contents.edit.path.replace(":id", content._id || ""),
+    );
+  };
+
+  const handleViewDetail = (content: ContentResponse) => {
+    router.push(
+      BASE_PATHS.admin.contents.detail.path.replace(":id", content._id || ""),
+    );
+  };
+
   // Memos
   const filterFieldConfig = {
+    status: {
+      label: "Trạng thái",
+      type: "select" as const,
+      placeholder: "Chọn trạng thái",
+      options: CONTENT_STATUS_OPTIONS,
+    },
     name: {
       label: "Tên sản phẩm",
       type: "text" as const,
@@ -146,6 +168,9 @@ const ContentList = () => {
       <DynamicFilter
         schema={CONTENT_FILTER_SCHEMA}
         onSubmit={handleFilterSubmit}
+        defaultValues={{
+          status: "approved",
+        }}
         fieldConfig={filterFieldConfig}
       >
         <DynamicFilter.Sidebar
@@ -198,6 +223,10 @@ const ContentList = () => {
             queryData={getContentListQuery}
             pagination={pagination}
             onPaginationChange={setPagination}
+            actions={{
+              onEdit: handleViewEdit,
+              onView: handleViewDetail,
+            }}
           />
         </div>
       </div>

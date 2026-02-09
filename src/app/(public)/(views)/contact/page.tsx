@@ -66,7 +66,7 @@ const contactInfoItems = [
     content: (
       <a
         href="mailto:contact@blueprint.vn"
-        className="text-primary hover:underline transition-all"
+        className="text-primary hover:text-primary/80 hover:underline transition-all font-medium"
       >
         contact@blueprint.vn
       </a>
@@ -79,7 +79,7 @@ const contactInfoItems = [
       <>
         <a
           href="tel:+84234567890"
-          className="text-primary hover:underline transition-all"
+          className="text-primary hover:text-primary/80 hover:underline transition-all font-medium"
         >
           +84 234 567 890
         </a>
@@ -122,8 +122,8 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-t from-muted to-primary">
-      <div className="container mx-auto px-4 sm:px-6 py-16 md:py-24 max-w-6xl">
+    <main className="min-h-screen bg-gradient-to-b from-primary/5 via-background to-primary/50">
+      <div className="container mx-auto px-4 sm:px-6 py-16 pt-0 md:py-24 max-w-6xl">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -132,7 +132,7 @@ export default function ContactPage() {
           className="text-center mb-16 md:mb-20"
         >
           <motion.h1
-            className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4"
+            className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-4 bg-gradient-to-br py-2 from-primary to-primary/60 bg-clip-text text-transparent"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.1 }}
@@ -140,7 +140,7 @@ export default function ContactPage() {
             Liên hệ với chúng tôi
           </motion.h1>
           <motion.p
-            className="text-lg text-white/50 max-w-2xl mx-auto"
+            className="text-lg text-muted-foreground max-w-2xl mx-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
@@ -161,10 +161,10 @@ export default function ContactPage() {
             className="lg:col-span-2 space-y-8"
           >
             <div className="space-y-3">
-              <h2 className="text-2xl font-semibold text-white">
+              <h2 className="text-2xl font-semibold text-foreground">
                 Thông tin liên hệ
               </h2>
-              <p className="text-white/50 leading-relaxed text-sm">
+              <p className="text-muted-foreground leading-relaxed text-sm">
                 Hãy liên hệ với chúng tôi qua biểu mẫu hoặc thông tin bên dưới
               </p>
             </div>
@@ -177,14 +177,16 @@ export default function ContactPage() {
                   whileHover={{ x: 4 }}
                   className="flex items-start gap-4 group"
                 >
-                  <div className="p-2.5 rounded-lg bg-primary/5 group-hover:bg-primary/10 transition-colors">
+                  <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/15 transition-all border border-primary/20">
                     <item.icon className="w-5 h-5 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-medium text-white text-sm mb-1">
+                    <h3 className="font-medium text-foreground text-sm mb-1">
                       {item.title}
                     </h3>
-                    <div className="text-sm text-white/50">{item.content}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {item.content}
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -200,7 +202,7 @@ export default function ContactPage() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
-                  className="absolute inset-0 z-10 flex items-center justify-center bg-background/95 backdrop-blur-sm"
+                  className="absolute inset-0 z-10 flex items-center justify-center bg-background/95 backdrop-blur-sm rounded-lg"
                 >
                   <div className="text-center space-y-4">
                     <motion.div
@@ -212,13 +214,13 @@ export default function ContactPage() {
                         damping: 15,
                       }}
                     >
-                      <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto" />
+                      <CheckCircle2 className="w-16 h-16 text-green-600 dark:text-green-500 mx-auto" />
                     </motion.div>
                     <div className="space-y-2">
-                      <h3 className="text-xl font-semibold text-white">
+                      <h3 className="text-xl font-semibold text-foreground">
                         Gửi thành công!
                       </h3>
-                      <p className=" text-sm">
+                      <p className="text-muted-foreground text-sm">
                         Chúng tôi sẽ liên hệ lại sớm nhất
                       </p>
                     </div>
@@ -226,10 +228,12 @@ export default function ContactPage() {
                 </motion.div>
               )}
 
-              <div className="bg-card border p-8 shadow-sm">
+              <div className="bg-card/80 backdrop-blur-sm border border-border/50 p-8 shadow-lg hover:-translate-y-6 transition-all duration-500">
                 <div className="mb-8">
-                  <h2 className="text-2xl font-semibold mb-2">Gửi tin nhắn</h2>
-                  <p className=" text-sm">
+                  <h2 className="text-2xl font-semibold mb-2 text-foreground">
+                    Gửi tin nhắn
+                  </h2>
+                  <p className="text-muted-foreground text-sm">
                     Điền thông tin bên dưới để liên hệ với chúng tôi
                   </p>
                 </div>

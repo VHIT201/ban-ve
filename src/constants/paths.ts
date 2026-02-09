@@ -99,6 +99,7 @@ export const BASE_PATHS = {
       path: "/admin/contents",
       create: { path: "/admin/contents/create" },
       detail: { path: "/admin/contents/:id" },
+      edit: { path: "/admin/contents/edit/:id" },
     },
     resources: { path: "/admin/resources" },
     copyRight: { path: "/admin/copy-right" },

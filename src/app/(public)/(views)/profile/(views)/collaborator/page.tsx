@@ -46,6 +46,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { VIETNAM_BANKS } from "@/constants/banks";
+import { ResponseData } from "@/api/types/base";
 
 const collaboratorApplySchema = z.object({
   bankAccount: z
@@ -197,13 +198,7 @@ function CollaboratorForm() {
   );
 }
 
-function CollaboratorStatus({
-  data,
-  loading,
-}: {
-  data: any;
-  loading: boolean;
-}) {
+function CollaboratorStatus({ data }: { data: any; loading: boolean }) {
   const getStatusBadge = (status: CollaboratorResponseStatus) => {
     switch (status) {
       case CollaboratorResponseStatus.approved:
@@ -226,8 +221,6 @@ function CollaboratorStatus({
         );
     }
   };
-
-  console.log("Collaborator Status Data:", data?.earnings);
 
   // const revenueData = useMemo(() => {
   //   const earnings = data?.earnings || null;
@@ -366,14 +359,17 @@ function CollaboratorStatus({
 }
 
 const Collaborator = () => {
-  console.log("Collaborator component mounted");
-
-  const getCollaboratorMeQuery =
-    useGetApiCollaboratorsMe() as UseQueryResult<CollaboratorMe>;
+  const getCollaboratorMeQuery = useGetApiCollaboratorsMe({
+    query: {
+      select: (data) => (data as unknown as ResponseData<CollaboratorMe>).data,
+    },
+  }) as UseQueryResult<CollaboratorMe>;
 
   const collaboratorMe = useMemo(() => {
     return getCollaboratorMeQuery.data;
   }, [getCollaboratorMeQuery.data]);
+
+  console.log("Collaborator data:", collaboratorMe);
 
   return (
     <div className="space-y-6">

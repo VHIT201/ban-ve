@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { motion, AnimatePresence } from "framer-motion";
 
 // App
 import {
@@ -18,20 +19,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import {
-  useGetApiCategories,
-  useGetApiCategoriesAllTree,
-} from "@/api/endpoints/categories";
+import { useGetApiCategoriesAllTree } from "@/api/endpoints/categories";
 import {
   Loader2,
   DollarSign,
@@ -39,9 +30,11 @@ import {
   X,
   Check,
   FileText,
+  ShieldAlert,
+  Info,
+  CheckCircle2,
 } from "lucide-react";
 import { ResponseData } from "@/api/types/base";
-import { Category } from "@/api/models";
 import { TreeSelect, Uploader } from "@/components/shared";
 import { useUploadMedia } from "@/hooks";
 import {
@@ -113,7 +106,7 @@ const contentFormSchemaStatic = z
 export type ContentFormValues = z.infer<typeof contentFormSchemaStatic>;
 
 interface ContentEditorFormProps {
-  mode?: "create" | "edit";
+  mode?: "create" | "edit" | "view";
   defaultFile?: {
     name: string;
     size: number;
@@ -176,7 +169,6 @@ const ContentEditorForm = ({
         .optional(),
     });
 
-    // Tạo schema cho files dựa trên mode và defaultFile
     const filesSchema = defaultFile
       ? z
           .array(z.instanceof(File))
@@ -217,6 +209,7 @@ const ContentEditorForm = ({
 
   // Initialize form
   const form = useForm<ContentFormValues>({
+    disabled: mode === "view",
     resolver: zodResolver(contentFormSchema),
     defaultValues: {
       title: defaultValues?.title || "",
@@ -397,117 +390,176 @@ const ContentEditorForm = ({
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         {/* Confirmation Dialog */}
         <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="text-xl flex items-center gap-2">
-                <FileText className="w-5 h-5 text-blue-600" />
-                Điều Khoản Miễn Trừ Trách Nhiệm và Xác Nhận Đăng Bài
-              </DialogTitle>
-              <div className="text-left pt-4 space-y-4 text-muted-foreground text-sm">
-                <div className="space-y-4 text-gray-700">
-                  <div className="p-4 bg-amber-50 border border-amber-100 rounded-lg">
-                    <h3 className="font-semibold text-amber-800 mb-2">
-                      THÔNG BÁO QUAN TRỌNG
+          <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden p-0">
+            <div className="overflow-y-auto max-h-[85vh]">
+              {/* Header */}
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="sticky top-0 z-10 bg-white border-b px-6 py-4"
+              >
+                <DialogTitle className="text-lg font-semibold flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50">
+                    <FileText className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <span>Xác nhận đăng bài</span>
+                </DialogTitle>
+              </motion.div>
+
+              {/* Content */}
+              <div className="px-6 py-5 space-y-4">
+                {/* Warning Banner */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                  className="flex items-start gap-3 p-3.5 bg-amber-50/50 border border-amber-200/60 rounded-lg"
+                >
+                  <ShieldAlert className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-medium text-amber-900">
+                      Vui lòng đọc kỹ trước khi tiếp tục
                     </h3>
-                    <p className="text-sm">
-                      Trước khi đăng tải nội dung, vui lòng đọc kỹ các điều
-                      khoản sau:
+                    <p className="text-xs text-amber-700/80">
+                      Bạn cần xác nhận các điều khoản bên dưới để đăng tải nội
+                      dung
                     </p>
                   </div>
-                </div>
+                </motion.div>
 
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-semibold mb-2">
-                    1. Miễn Trừ Trách Nhiệm
-                  </h4>
-                  <ul className="list-disc pl-5 space-y-2 text-sm">
-                    <li>
-                      Nền tảng không chịu trách nhiệm về nội dung do người dùng
-                      đăng tải.
-                    </li>
-                    <li>
-                      Bạn hoàn toàn chịu trách nhiệm về bản quyền và tính hợp
-                      pháp của nội dung.
-                    </li>
-                    <li>
-                      Chúng tôi có quyền gỡ bỏ bất kỳ nội dung nào vi phạm điều
-                      khoản dịch vụ.
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-semibold mb-2">2. Thông Tin Bài Đăng</h4>
-                  <div className="space-y-2 text-sm">
-                    <p>
-                      <span className="font-medium">Tiêu đề:</span>{" "}
-                      {formValues?.title || "Chưa có tiêu đề"}
-                    </p>
-                    {/* <p>
-                      <span className="font-medium">Danh mục:</span>{" "}
-                      {categories.find((c) => c._id === formValues?.category_id)
-                        ?.name || "Chưa chọn"}
-                    </p> */}
-                    <p>
-                      <span className="font-medium">Giá:</span>{" "}
-                      {formValues?.price
-                        ? new Intl.NumberFormat("vi-VN", {
-                            style: "currency",
-                            currency: "VND",
-                          }).format(formValues.price)
-                        : "Miễn phí"}
-                    </p>
+                {/* Post Information */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.15 }}
+                  className="space-y-3"
+                >
+                  <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                    <Info className="h-4 w-4 text-blue-600" />
+                    <span>Thông tin bài đăng</span>
                   </div>
-                </div>
+                  <div className="grid gap-2 rounded-lg border bg-muted/30 p-3.5">
+                    <div className="flex items-start justify-between gap-4">
+                      <span className="text-xs text-muted-foreground">
+                        Tiêu đề
+                      </span>
+                      <span className="text-xs font-medium text-right">
+                        {formValues?.title || "Chưa có tiêu đề"}
+                      </span>
+                    </div>
+                    <div className="flex items-start justify-between gap-4">
+                      <span className="text-xs text-muted-foreground">
+                        Giá bán
+                      </span>
+                      <span className="text-xs font-semibold text-green-600">
+                        {formValues?.price
+                          ? new Intl.NumberFormat("vi-VN", {
+                              style: "currency",
+                              currency: "VND",
+                            }).format(formValues.price)
+                          : "Miễn phí"}
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
 
-                <div className="p-4 bg-red-50 border border-red-100 rounded-lg">
-                  <h4 className="font-semibold text-red-700 mb-2">
-                    3. Cam Kết Của Người Đăng
+                {/* Terms & Conditions */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.2 }}
+                  className="space-y-3"
+                >
+                  <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                    <span>Cam kết của người đăng</span>
+                  </div>
+                  <div className="space-y-2">
+                    {[
+                      "Tôi là chủ sở hữu hoặc có đầy đủ quyền đối với nội dung đăng tải",
+                      "Nội dung không vi phạm bản quyền hoặc quyền sở hữu trí tuệ",
+                      "Tôi đã đọc và đồng ý với điều khoản sử dụng",
+                    ].map((item, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{
+                          duration: 0.3,
+                          delay: 0.25 + index * 0.05,
+                        }}
+                        className="flex items-start gap-2.5 text-xs text-muted-foreground"
+                      >
+                        <div className="mt-0.5 h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
+                        <span>{item}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+
+                {/* Disclaimer */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.3 }}
+                  className="rounded-lg border border-border/50 bg-muted/20 p-3.5"
+                >
+                  <h4 className="text-xs font-medium text-foreground mb-2">
+                    Miễn trừ trách nhiệm
                   </h4>
-                  <p className="text-sm text-red-700">
-                    Bằng việc nhấn "Xác nhận đăng bài", bạn cam kết:
-                  </p>
-                  <ul className="list-disc pl-5 mt-2 space-y-1 text-sm text-red-700">
-                    <li>
-                      Tôi là chủ sở hữu hoặc có đầy đủ quyền đối với nội dung
+                  <div className="space-y-1.5 text-xs text-muted-foreground">
+                    <p>
+                      • Nền tảng không chịu trách nhiệm về nội dung người dùng
                       đăng tải
-                    </li>
-                    <li>
-                      Nội dung không vi phạm bản quyền hoặc quyền sở hữu trí tuệ
-                    </li>
-                    <li>Tôi đã đọc và đồng ý với tất cả điều khoản sử dụng</li>
-                  </ul>
-                </div>
+                    </p>
+                    <p>
+                      • Bạn hoàn toàn chịu trách nhiệm về bản quyền và tính hợp
+                      pháp
+                    </p>
+                    <p>
+                      • Chúng tôi có quyền gỡ bỏ nội dung vi phạm điều khoản
+                    </p>
+                  </div>
+                </motion.div>
               </div>
-            </DialogHeader>
-            <DialogFooter className="sm:justify-between pt-4 border-t">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setShowConfirmDialog(false)}
-                className="min-w-[100px]"
+
+              {/* Footer Actions */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.35 }}
+                className="sticky bottom-0 bg-white border-t px-6 py-4 flex items-center justify-between gap-3"
               >
-                Hủy bỏ
-              </Button>
-              <Button
-                type="button"
-                onClick={handleConfirmSubmit}
-                disabled={isLoading || isUploadingFile}
-                className="bg-blue-600 hover:bg-blue-700 min-w-[150px]"
-              >
-                {isLoading || isUploadingFile ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Đang xử lý...
-                  </>
-                ) : (
-                  <>
-                    <Check className="w-4 h-4 mr-2" />
-                    Xác nhận đăng bài
-                  </>
-                )}
-              </Button>
-            </DialogFooter>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setShowConfirmDialog(false)}
+                  disabled={isLoading || isUploadingFile}
+                  className="min-w-[100px]"
+                >
+                  Hủy bỏ
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleConfirmSubmit}
+                  disabled={isLoading || isUploadingFile}
+                  className="min-w-[140px] bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+                >
+                  {isLoading || isUploadingFile ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Đang xử lý...
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-4 h-4 mr-2" />
+                      Xác nhận
+                    </>
+                  )}
+                </Button>
+              </motion.div>
+            </div>
           </DialogContent>
         </Dialog>
 
@@ -660,9 +712,11 @@ const ContentEditorForm = ({
                     maxSize={100 * 1024 * 1024}
                     accept={{ "image/*": [".png", ".jpg", ".jpeg", ".webp"] }}
                   >
-                    <Uploader.DropZone>
-                      <Uploader.Placeholder />
-                    </Uploader.DropZone>
+                    {mode !== "view" && (
+                      <Uploader.DropZone>
+                        <Uploader.Placeholder />
+                      </Uploader.DropZone>
+                    )}
                     <Uploader.MediaList />
                     <Uploader.Exists
                       data={
@@ -705,9 +759,11 @@ const ContentEditorForm = ({
                     maxFiles={1}
                     maxSize={100 * 1024 * 1024}
                   >
-                    <Uploader.DropZone>
-                      <Uploader.Placeholder />
-                    </Uploader.DropZone>
+                    {mode !== "view" && (
+                      <Uploader.DropZone>
+                        <Uploader.Placeholder />
+                      </Uploader.DropZone>
+                    )}
                     <Uploader.MediaList />
                     <Uploader.Exists
                       data={
@@ -744,30 +800,32 @@ const ContentEditorForm = ({
         )}
 
         {/* Form actions */}
-        <div className="flex items-center justify-end gap-4 pt-4 border-t">
-          {onCancel && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
-              disabled={isLoading || isUploadingFile}
-            >
-              Hủy
-            </Button>
-          )}
-          <Button type="submit" disabled={isLoading || isUploadingFile}>
-            {isLoading || isUploadingFile ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Đang xử lý...
-              </>
-            ) : mode === "create" ? (
-              "Đăng bài"
-            ) : (
-              "Cập nhật"
+        {mode !== "view" && (
+          <div className="flex items-center justify-end gap-4 pt-4 border-t">
+            {onCancel && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onCancel}
+                disabled={isLoading || isUploadingFile}
+              >
+                Hủy
+              </Button>
             )}
-          </Button>
-        </div>
+            <Button type="submit" disabled={isLoading || isUploadingFile}>
+              {isLoading || isUploadingFile ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Đang xử lý...
+                </>
+              ) : mode === "create" ? (
+                "Đăng bài"
+              ) : (
+                "Cập nhật"
+              )}
+            </Button>
+          </div>
+        )}
       </form>
     </Form>
   );

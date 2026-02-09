@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -68,7 +69,13 @@ const HeaderShoppingCart = ({ sync = true }: HeaderShoppingCartProps) => {
       </SheetTrigger>
 
       <SheetContent className="p-0 flex flex-col">
-        <SheetHeader className="border-b px-4 py-3 bg-primary">
+      <SheetHeader className="relative border-b px-4 py-3 bg-primary">
+        <SheetClose asChild>
+          <button className="absolute right-3 top-3 z-50 rounded-full bg-white/15 p-1 text-white hover:bg-white/25 transition">
+            <XIcon className="w-5 h-5" />
+          </button>
+        </SheetClose>
+
           <SheetTitle className="text-white text-base font-semibold">
             Giỏ hàng
           </SheetTitle>
@@ -83,7 +90,7 @@ const HeaderShoppingCart = ({ sync = true }: HeaderShoppingCartProps) => {
           <EmptyCart onClose={cart.closeCart} />
         ) : (
           <>
-            <ScrollArea className="flex-1 px-4 py-3 h-[420px]">
+            <ScrollArea className="flex-1 px-4 py-3 max-h-[420px] overflow-y-auto">
               <div className="space-y-3">
                 {cart.items.map((item, index) => (
                   <CartItemRow
@@ -92,6 +99,7 @@ const HeaderShoppingCart = ({ sync = true }: HeaderShoppingCartProps) => {
                     isLoading={cart.isLoading}
                     onUpdate={handleUpdateQuantity}
                     onRemove={handleRemoveItem}
+                    onClose={cart.closeCart}
                   />
                 ))}
                 {cart.isFetchingCartList &&
@@ -138,17 +146,24 @@ interface CartItemRowProps {
   isLoading: boolean;
   onUpdate: (id: string, quantity: number) => void;
   onRemove: (id: string) => void;
+  onClose: () => void;
 }
 
-const CartItemRow = ({ item, isLoading, onUpdate, onRemove }: any) => {
+const CartItemRow = ({ item, isLoading, onUpdate, onRemove, onClose }: any) => {
   // States
   const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
 
   // Methods
   const handleRemove = async () => {
     setIsDeleting(true);
     await onRemove(item.product._id);
     setIsDeleting(false);
+  };
+
+  const handleProductClick = () => {
+    onClose();
+    router.push(`/detail/${item.product._id}`);
   };
 
   return (
@@ -165,7 +180,10 @@ const CartItemRow = ({ item, isLoading, onUpdate, onRemove }: any) => {
 
       <div className="flex-1 flex flex-col justify-between">
         <div>
-          <p className="text-sm font-medium line-clamp-2">
+          <p 
+            className="text-sm font-medium line-clamp-2 cursor-pointer hover:text-primary transition-colors"
+            onClick={handleProductClick}
+          >
             {item.product?.title}
           </p>
           <p className="text-sm font-semibold text-primary mt-1">

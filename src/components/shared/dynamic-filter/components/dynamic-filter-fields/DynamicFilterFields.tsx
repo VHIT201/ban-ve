@@ -37,6 +37,11 @@ const DynamicFilterFields: FC = () => {
   // Hooks
   const { form, schema, fieldConfig } = useDynamicFilterContext();
 
+  console.log(
+    "DynamicFilterFields render with schema:",
+    Object.entries(getSchemaShape(schema)),
+  );
+
   // Template
   return (
     <motion.div
