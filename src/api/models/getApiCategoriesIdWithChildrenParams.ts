@@ -14,4 +14,8 @@ limit?: number;
  * Sắp xếp danh mục con theo mới nhất hoặc cũ nhất
  */
 sort?: GetApiCategoriesIdWithChildrenSort;
+/**
+ * Lọc danh mục con theo tên (không phân biệt hoa thường)
+ */
+name?: string;
 };

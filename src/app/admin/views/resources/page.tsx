@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Grid3x3, List, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, Grid3x3, List, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useDeleteApiFileId } from "@/api/endpoints/files";
 import { DeleteDialog, QueryBoundary } from "@/components/shared";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -34,6 +34,9 @@ const Resources = () => {
   const [deleteItem, setDeleteItem] = useState<ResourceItemData | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("name");
+  const [filterType, setFilterType] = useState("all");
+  const [minSize, setMinSize] = useState("");
+  const [maxSize, setMaxSize] = useState("");
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 12,
@@ -42,10 +45,31 @@ const Resources = () => {
   // API Query
   const queryClient = useQueryClient();
 
-  // Custom query với pagination params
+  // Custom query với pagination và filter params
   const getFileListQuery = useQuery({
-    queryKey: ["/api/file", pagination.pageIndex + 1, pagination.pageSize],
+    queryKey: ["/api/file", pagination.pageIndex + 1, pagination.pageSize, searchQuery, filterType, minSize, maxSize],
     queryFn: async () => {
+      const params: any = {
+        page: pagination.pageIndex + 1,
+        limit: pagination.pageSize,
+      };
+      
+      if (searchQuery.trim()) {
+        params.name = searchQuery.trim();
+      }
+      
+      if (filterType && filterType !== "all") {
+        params.type = filterType;
+      }
+      
+      if (minSize) {
+        params.minSize = parseFloat(minSize) * 1024 * 1024; // Convert MB to bytes
+      }
+      
+      if (maxSize) {
+        params.maxSize = parseFloat(maxSize) * 1024 * 1024; // Convert MB to bytes
+      }
+      
       const response = await MAIN_AXIOS_INSTANCE.get<
         ResponseData<{
           files: FileResponse[];
@@ -57,10 +81,7 @@ const Resources = () => {
           };
         }>
       >("/api/file", {
-        params: {
-          page: pagination.pageIndex + 1,
-          limit: pagination.pageSize,
-        },
+        params,
       });
       return response.data;
     },
@@ -70,41 +91,11 @@ const Resources = () => {
     ? getFileListQuery.data.data.files
     : [];
 
-  const filteredItems = fileList
-    .filter((item) =>
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    )
-    .sort((a: ResourceItemData, b: ResourceItemData) => {
-      switch (sortBy) {
-        case "size":
-          return (b.size || 0) - (a.size || 0);
-        case "date":
-          return (
-            new Date(b.createdAt || "").getTime() -
-            new Date(a.createdAt || "").getTime()
-          );
-        case "type":
-          return a.type.localeCompare(b.type);
-        case "name":
-        default:
-          return a.name.localeCompare(b.name);
-      }
-    });
-
   // Handle page change
   const handlePageChange = (page: number) => {
     setPagination((prev) => ({
       ...prev,
       pageIndex: page - 1,
-    }));
-  };
-
-  // Handle items per page change
-  const handleItemsPerPageChange = (newLimit: number) => {
-    setPagination((prev) => ({
-      ...prev,
-      pageSize: newLimit,
-      pageIndex: 0,
     }));
   };
 
@@ -187,85 +178,117 @@ const Resources = () => {
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <div className="border-b bg-background px-0 py-4">
+          <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-0 py-6">
             {/* Filters Bar */}
-            <div className="flex items-center gap-3 flex-wrap">
-              <div className="relative flex-1 max-w-sm min-w-[200px]">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-muted-foreground" />
-                <Input
-                  placeholder="Tìm kiếm..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9"
-                />
+            <div className="space-y-4">
+              {/* First Row - Main Filters */}
+              <div className="flex items-center gap-3 flex-wrap">
+                <div className="relative flex-1 max-w-md min-w-[240px]">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Tìm kiếm theo tên file..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10 h-11 bg-background border-border/50 shadow-sm focus:shadow-md transition-all duration-200"
+                  />
+                </div>
+
+                {/* File Type Filter */}
+                <Select value={filterType} onValueChange={setFilterType}>
+                  <SelectTrigger className="w-[150px] h-11 bg-background border-border/50 shadow-sm focus:shadow-md transition-all duration-200">
+                    <SelectValue placeholder="Loại file" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tất cả</SelectItem>
+                    <SelectItem value="PDF">PDF</SelectItem>
+                    <SelectItem value="JPG">JPG</SelectItem>
+                    <SelectItem value="PNG">PNG</SelectItem>
+                    <SelectItem value="ZIP">ZIP</SelectItem>
+                    <SelectItem value="RAR">RAR</SelectItem>
+                    <SelectItem value="DWG">DWG</SelectItem>
+                    <SelectItem value="SKP">SKP</SelectItem>
+                    <SelectItem value="3DS">3DS</SelectItem>
+                    <SelectItem value="MAX">MAX</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-[130px] h-11 bg-background border-border/50 shadow-sm focus:shadow-md transition-all duration-200">
+                    <SelectValue placeholder="Sắp xếp" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="name">Tên</SelectItem>
+                    <SelectItem value="size">Kích thước</SelectItem>
+                    <SelectItem value="date">Ngày tạo</SelectItem>
+                    <SelectItem value="type">Loại file</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <div className="flex border rounded-md shadow-sm ml-auto">
+                  <Button
+                    variant={viewMode === "grid" ? "default" : "ghost"}
+                    size="icon"
+                    className="rounded-md rounded-r-none h-11"
+                    onClick={() => setViewMode("grid")}
+                  >
+                    <Grid3x3 className="size-4" />
+                  </Button>
+                  <Button
+                    variant={viewMode === "list" ? "default" : "ghost"}
+                    size="icon"
+                    className="rounded-md rounded-l-none h-11"
+                    onClick={() => setViewMode("list")}
+                  >
+                    <List className="size-4" />
+                  </Button>
+                </div>
               </div>
 
-              {/* Page Size Filter */}
-              <Select
-                value={pagination.pageSize.toString()}
-                onValueChange={(value) =>
-                  setPagination((prev) => ({
-                    ...prev,
-                    pageSize: Number(value),
-                    pageIndex: 0,
-                  }))
-                }
-              >
-                <SelectTrigger className="w-[140px]">
-                  <SelectValue placeholder="Số lượng" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="12">12 file</SelectItem>
-                  <SelectItem value="24">24 file</SelectItem>
-                  <SelectItem value="48">48 file</SelectItem>
-                  <SelectItem value="96">96 file</SelectItem>
-                </SelectContent>
-              </Select>
+              {/* Second Row - Size Filters and Page Size */}
+              <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-lg border border-border/50">
+                  <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">Kích thước:</span>
+                  <Input
+                    placeholder="Tối thiểu (MB)"
+                    value={minSize}
+                    onChange={(e) => setMinSize(e.target.value)}
+                    className="w-[140px] h-9 bg-background border-border/50"
+                    type="number"
+                    min="0"
+                    step="0.1"
+                  />
+                  <span className="text-muted-foreground">-</span>
+                  <Input
+                    placeholder="Tối đa (MB)"
+                    value={maxSize}
+                    onChange={(e) => setMaxSize(e.target.value)}
+                    className="w-[140px] h-9 bg-background border-border/50"
+                    type="number"
+                    min="0"
+                    step="0.1"
+                  />
+                </div>
 
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[140px]">
-                  <SelectValue placeholder="Sắp xếp" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="name">Tên</SelectItem>
-                  <SelectItem value="size">Kích thước</SelectItem>
-                  <SelectItem value="date">Ngày tạo</SelectItem>
-                  <SelectItem value="type">Loại file</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select
-                value={pagination.pageSize.toString()}
-                onValueChange={(value) =>
-                  handleItemsPerPageChange(Number(value))
-                }
-              >
-                <SelectTrigger className="w-[100px]">
-                  <SelectValue placeholder="Hiển thị" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="12">12</SelectItem>
-                  <SelectItem value="24">24</SelectItem>
-                  <SelectItem value="48">48</SelectItem>
-                  <SelectItem value="96">96</SelectItem>
-                </SelectContent>
-              </Select>
-              <div className="flex border rounded-md ml-auto">
-                <Button
-                  variant={viewMode === "grid" ? "default" : "ghost"}
-                  size="icon"
-                  className="rounded-md rounded-r-none"
-                  onClick={() => setViewMode("grid")}
+                <Select
+                  value={pagination.pageSize.toString()}
+                  onValueChange={(value) =>
+                    setPagination((prev) => ({
+                      ...prev,
+                      pageSize: Number(value),
+                      pageIndex: 0,
+                    }))
+                  }
                 >
-                  <Grid3x3 className="size-4" />
-                </Button>
-                <Button
-                  variant={viewMode === "list" ? "default" : "ghost"}
-                  size="icon"
-                  className="rounded-md rounded-l-none"
-                  onClick={() => setViewMode("list")}
-                >
-                  <List className="size-4" />
-                </Button>
+                  <SelectTrigger className="w-[130px] h-11 bg-background border-border/50 shadow-sm focus:shadow-md transition-all duration-200">
+                    <SelectValue placeholder="Hiển thị" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="12">12 file/trang</SelectItem>
+                    <SelectItem value="24">24 file/trang</SelectItem>
+                    <SelectItem value="48">48 file/trang</SelectItem>
+                    <SelectItem value="96">96 file/trang</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
@@ -277,7 +300,7 @@ const Resources = () => {
                 <>
                   {viewMode === "grid" ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-                      {filteredItems.map((item: ResourceItemData) => (
+                      {fileList.map((item: ResourceItemData) => (
                         <ResourceItem
                           key={item._id}
                           item={item}
@@ -292,7 +315,7 @@ const Resources = () => {
                     </div>
                   ) : (
                     <div className="space-y-2">
-                      {filteredItems.map((item: ResourceItemData) => (
+                      {fileList.map((item: ResourceItemData) => (
                         <ResourceItemCompact
                           key={item._id}
                           item={{
@@ -310,7 +333,7 @@ const Resources = () => {
                       ))}
                     </div>
                   )}
-                  {filteredItems.length === 0 && (
+                  {fileList.length === 0 && (
                     <div className="flex flex-col items-center justify-center h-64 text-center">
                       <p className="text-lg font-medium text-muted-foreground">
                         Không tìm thấy file nào
