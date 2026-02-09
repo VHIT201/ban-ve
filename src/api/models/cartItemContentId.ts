@@ -7,5 +7,4 @@ export type CartItemContentId = {
   description?: string;
   category_id?: string;
   category?: CartItemContentIdCategory;
-  images?: string[];
 };

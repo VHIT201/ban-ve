@@ -4,6 +4,7 @@ import {
   useGetApiFileIdDownload,
   useGetApiFileDownloadFreeContentId,
 } from "@/api/endpoints/files";
+import { useGetApiContentId } from "@/api/endpoints/content";
 import { OrderItem } from "@/api/models";
 import { ResponseData } from "@/api/types/base";
 import { Button } from "@/components/ui/button";
@@ -42,14 +43,21 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
   const [isError, setIsError] = useState<boolean>(false);
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
+  // Fetch content data using the contentId string
+  const { data: contentData } = useGetApiContentId(item.contentId!, {
+    query: {
+      enabled: !!item.contentId,
+    },
+  });
+
   // Check if file is free
-  const isFreeFile = item.contentId?.price === 0;
+  const isFreeFile = contentData?.price === 0;
 
   // Mutations
   const downloadPaidFile = useGetApiFileIdDownload(
     orderId!,
     {
-      fileId: item.contentId?.file_id!,
+      fileId: contentData?.file_id?._id!,
     },
     {
       query: {
@@ -59,7 +67,7 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
   );
 
   const downloadFreeFile = useGetApiFileDownloadFreeContentId(
-    item.contentId?._id!,
+    contentData?._id!,
     {
       query: {
         enabled: false,
@@ -96,7 +104,7 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
       }
 
       setIsDownloading(true);
-      downloadFile(res.data, item.contentId?.title || "downloaded-file");
+      downloadFile(res.data, contentData?.title || "downloaded-file");
       toast.success("Tải file thành công");
 
       setIsDownloading(false);
@@ -114,21 +122,21 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
   const FileIcon = getFileIcon("PDF");
 
   return (
-    <motion.div
-      key={`file-item-${item.contentId?._id}-${index}`}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        delay: 0.6 + index * 0.1,
-        duration: 0.4,
-        type: "spring",
-        stiffness: 100,
-      }}
-      whileHover={{
-        scale: 1.02,
-        transition: { duration: 0.2 },
-      }}
-    >
+      <motion.div
+        key={`file-item-${contentData?._id}-${index}`}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          delay: 0.6 + index * 0.1,
+          duration: 0.4,
+          type: "spring",
+          stiffness: 100,
+        }}
+        whileHover={{
+          scale: 1.02,
+          transition: { duration: 0.2 },
+        }}
+      >
       <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-primary/50">
         <CardContent className="p-4">
           <div className="flex items-center gap-4">
@@ -161,7 +169,7 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.7 + index * 0.1 }}
               >
-                {item.contentId?.title || "Unknown File"}
+                {contentData?.title || "Unknown File"}
               </motion.h3>
 
               <motion.p
@@ -170,7 +178,7 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.7 + index * 0.1 }}
               >
-                {item.contentId?.description || "Unknown description"}
+                {contentData?.description || "Unknown description"}
               </motion.p>
 
               <motion.div
@@ -185,7 +193,7 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
                 </span>
                 <span className="flex items-center gap-1">
                   {/* <Package className="h-3 w-3" /> */}
-                  {item.contentId?.price} đ
+                  {contentData?.price} đ
                 </span>
               </motion.div>
             </div>

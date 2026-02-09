@@ -46,6 +46,8 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { VIETNAM_BANKS } from "@/constants/banks";
+import { ResponseData } from "@/api/types/base";
+import CollaboratorRevenue from "./components/collaborator-revenue";
 
 const collaboratorApplySchema = z.object({
   bankAccount: z
@@ -204,40 +206,15 @@ function CollaboratorStatus({
   data: any;
   loading: boolean;
 }) {
-  const getStatusBadge = (status: CollaboratorResponseStatus) => {
-    switch (status) {
-      case CollaboratorResponseStatus.approved:
-        return (
-          <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-            Đã duyệt
-          </Badge>
-        );
-      case CollaboratorResponseStatus.rejected:
-        return (
-          <Badge className="bg-red-100 text-red-700 hover:bg-red-100">
-            Đã từ chối
-          </Badge>
-        );
-      default:
-        return (
-          <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100">
-            Chờ duyệt
-          </Badge>
-        );
-    }
-  };
-
-  console.log("Collaborator Status Data:", data?.earnings);
-
-  // const revenueData = useMemo(() => {
-  //   const earnings = data?.earnings || null;
-  //   return {
-  //     totalRevenue: earnings?.totalAmount || 0,
-  //     totalCommission: earnings?.totalCommission || 0,
-  //     totalOrders: earnings?.totalOrders || 0,
-  //     totalAdmin: earnings?.totalAdminAmount || 0,
-  //   };
-  // }, [data]);
+  const revenueData = useMemo(() => {
+    const earnings = data?.earnings || null;
+    return {
+      totalRevenue: earnings?.totalAmount || 0,
+      totalCommission: earnings?.totalCommission || 0,
+      totalOrders: earnings?.totalOrders || 0,
+      totalAdmin: earnings?.totalAdminAmount || 0,
+    };
+  }, [data]);
 
   return (
     <Tabs defaultValue="info">
@@ -247,6 +224,7 @@ function CollaboratorStatus({
       </TabsList>
 
       <TabsContent value="info" className="space-y-6">
+        <CollaboratorRevenue loading={loading} revenueData={revenueData} />
         <Card className="border border-gray-200 shadow-sm">
           <CardHeader className="border-b border-gray-100">
             <div className="flex items-start justify-between">
@@ -258,7 +236,6 @@ function CollaboratorStatus({
                   Chi tiết đơn đăng ký của bạn
                 </CardDescription>
               </div>
-              {getStatusBadge(data.status)}
             </div>
           </CardHeader>
           <CardContent className="pt-0">
@@ -366,14 +343,17 @@ function CollaboratorStatus({
 }
 
 const Collaborator = () => {
-  console.log("Collaborator component mounted");
-
-  const getCollaboratorMeQuery =
-    useGetApiCollaboratorsMe() as UseQueryResult<CollaboratorMe>;
+  const getCollaboratorMeQuery = useGetApiCollaboratorsMe({
+    query: {
+      select: (data) => (data as unknown as ResponseData<CollaboratorMe>).data,
+    },
+  }) as UseQueryResult<CollaboratorMe>;
 
   const collaboratorMe = useMemo(() => {
     return getCollaboratorMeQuery.data;
   }, [getCollaboratorMeQuery.data]);
+
+  console.log("Collaborator data:", collaboratorMe);
 
   return (
     <div className="space-y-6">

@@ -14,5 +14,6 @@ export interface User {
   createdAt?: string;
   /** Thời gian cập nhật cuối cùng */
   updatedAt?: string;
+  /** URL avatar người dùng */
   avatar?: string;
 }

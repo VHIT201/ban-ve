@@ -26,15 +26,12 @@ const ContentEditPage = () => {
   const router = useRouter();
 
   // Queries
-  const getContentDetailQuery = useGetApiContentId(
-    contentId,
-    {
-      query: {
-        enabled: !!contentId,
-        retry: 1,
-      },
+  const getContentDetailQuery = useGetApiContentId(contentId, {
+    query: {
+      enabled: !!contentId,
+      retry: 1,
     },
-  ) as UseQueryResult<ContentResponse>;
+  }) as UseQueryResult<ContentResponse>;
 
   // Mutations
   const editContentMutation = usePutApiContentId({
@@ -50,7 +47,9 @@ const ContentEditPage = () => {
   });
 
   // Methods
-  const handleUpdateContent = async (formData: ContentFormValues & { removeImages?: string[] }) => {
+  const handleUpdateContent = async (
+    formData: ContentFormValues & { removeImages?: string[] },
+  ) => {
     try {
       const result = await editContentMutation.mutateAsync({
         id: contentId,
@@ -71,9 +70,9 @@ const ContentEditPage = () => {
 
       if (result) {
         toast.success("Nội dung đã được cập nhật thành công.");
-        
+
         await getContentDetailQuery.refetch();
-        
+
         setTimeout(() => {
           router.push(BASE_PATHS.admin.contents.path);
           router.refresh();
@@ -107,7 +106,7 @@ const ContentEditPage = () => {
       </div>
 
       {/* Content Edit Form */}
-      <QueryBoundary 
+      <QueryBoundary
         query={getContentDetailQuery}
         errorView={(error) => (
           <div className="rounded-lg border border-red-200 bg-red-50 p-6">
@@ -130,7 +129,7 @@ const ContentEditPage = () => {
       >
         {(contentDetail) => {
           console.log("Content Detail Data:", contentDetail);
-          
+
           return (
             <ContentEditorForm
               mode="edit"

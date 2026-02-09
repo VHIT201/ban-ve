@@ -69,6 +69,24 @@ export const formatBytes = (bytes: number, decimals = 2): string => {
   return Number.parseFloat((bytes / k ** i).toFixed(dm)) + " " + sizes[i];
 };
 
+export function getFileExtensionFromMimeType(mimeType: string): string {
+  const mimeToExt: Record<string, string> = {
+    'application/pdf': '.pdf',
+    'application/zip': '.zip',
+    'application/x-zip-compressed': '.zip',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
+    'application/msword': '.doc',
+    'application/vnd.ms-excel': '.xls',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '.xlsx',
+    'image/jpeg': '.jpg',
+    'image/png': '.png',
+    'image/gif': '.gif',
+    'text/plain': '.txt',
+  };
+
+  return mimeToExt[mimeType] || '.pdf'; // Default fallback
+}
+
 export function downloadFile(blob: Blob, title: string) {
   const url = window.URL.createObjectURL(blob);
   const link = document.createElement("a");

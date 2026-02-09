@@ -190,7 +190,6 @@ const DynamicFilterFieldRenderer = (props: Props): ReactNode => {
       const formatValue =
         configRange.formatValue || ((val: number) => String(val));
 
-      // Đảm bảo value luôn là mảng [min, max]
       const rangeValue = Array.isArray(field.value) ? field.value : [min, max];
 
       return (

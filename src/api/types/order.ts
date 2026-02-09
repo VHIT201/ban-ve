@@ -4,4 +4,5 @@ export interface CartItemContent {
   description: string;
   file_id: string;
   price: number;
+  images: string[];
 }

@@ -16,8 +16,6 @@ const CommentList: FC<Props> = (props) => {
   const { commentList, isFetching, hasNextPage, fetchNextPage } =
     useCommentSectionContext();
 
-  console.log("Rendering CommentList with comments:", commentList);
-
   if (isFetching) {
     return (
       <div className="space-y-8">

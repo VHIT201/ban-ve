@@ -6,6 +6,7 @@ import { Content } from "@/api/models";
 import { Button } from "@/components/ui/button";
 import { useCountDown } from "@/hooks";
 import { extractErrorMessage } from "@/utils/error";
+import { downloadFile, getFileExtensionFromMimeType } from "@/utils/file";
 import { Clock, CheckCircle, Sparkles, DownloadIcon } from "lucide-react";
 import { FC, useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -79,15 +80,10 @@ const isFree = content.price === 0 || content.price === undefined;
         }
 
         if (res.data) {
-          // Tạo link tải xuống
-          const url = window.URL.createObjectURL(new Blob([res.data]));
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", `${content.title || "tai-xuong"}.pdf`);
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-          window.URL.revokeObjectURL(url);
+          // Lấy extension đúng từ MIME type
+          const extension = getFileExtensionFromMimeType(res.data.type);
+          const fileName = `${content.title || "tai-xuong"}${extension}`;
+          downloadFile(res.data, fileName);
 
           toast.success("Đã tải file miễn phí thành công");
           setIsSuccess(true);
@@ -110,9 +106,17 @@ const isFree = content.price === 0 || content.price === undefined;
         return;
       }
 
-      toast.success("Đã tải file xuống thành công");
-      setIsSuccess(true);
-      countdown.start();
+      if (res.data) {
+        // Lấy extension đúng từ MIME type
+        const extension = getFileExtensionFromMimeType(res.data.type);
+        const fileName = `${content.title || "tai-xuong"}${extension}`;
+        downloadFile(res.data, fileName);
+
+        toast.success("Đã tải file xuống thành công");
+        setIsSuccess(true);
+        countdown.start();
+        return;
+      }
     } catch (error) {
       toast.error(extractErrorMessage(error));
       setIsDownloading(false);

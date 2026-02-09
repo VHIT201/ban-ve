@@ -6,8 +6,6 @@ import { PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ContentTable from "@/components/modules/content/content-table";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useProfileStore } from "@/stores";
-import { useShallow } from "zustand/shallow";
 import { useGetApiContentMyContents } from "@/api/endpoints/content";
 import { ContentResponse } from "@/api/types/content";
 import { UseQueryResult } from "@tanstack/react-query";
@@ -18,9 +16,6 @@ import { useState } from "react";
 // Internal
 
 const ContentList = () => {
-  // Stores
-  const authProfile = useProfileStore(useShallow(({ email }) => ({ email })));
-
   // Hooks
   const router = useRouter();
 
@@ -62,7 +57,7 @@ const ContentList = () => {
             Quản lý các nội dung trong hệ thống
           </p>
         </div>
-        <Button onClick={() => router.push("content-create")}>
+        <Button onClick={() => router.push("collaborator-content-create")}>
           <PlusIcon className="mr-2 size-4" />
           Thêm mới
         </Button>

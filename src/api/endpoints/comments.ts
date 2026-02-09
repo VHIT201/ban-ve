@@ -30,6 +30,7 @@ import type {
   GetApiCommentsContentsContentIdParams,
   GetApiCommentsMe200,
   GetApiCommentsMeParams,
+  GetApiCommentsStatisticsLatestFiveStar200,
   PostApiCommentsContentsContentIdBody,
   PutApiCommentsId200,
   UpdateCommentInput
@@ -38,6 +39,171 @@ import type {
 import { mainInstance } from '../mutator/custom-instance';
 import type { ErrorType , BodyType } from '../mutator/custom-instance';
 
+
+
+
+
+/**
+ * @summary Lấy 10 bình luận 5 sao mới nhất (bao gồm thông tin Content)
+ */
+export const getApiCommentsStatisticsLatestFiveStar = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<GetApiCommentsStatisticsLatestFiveStar200>(
+      {url: `/api/comments/statistics/latest-five-star`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiCommentsStatisticsLatestFiveStarInfiniteQueryKey = () => {
+    return [
+    'infinite', `/api/comments/statistics/latest-five-star`
+    ] as const;
+    }
+
+export const getGetApiCommentsStatisticsLatestFiveStarQueryKey = () => {
+    return [
+    `/api/comments/statistics/latest-five-star`
+    ] as const;
+    }
+
+    
+export const getGetApiCommentsStatisticsLatestFiveStarInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCommentsStatisticsLatestFiveStarInfiniteQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>> = ({ signal }) => getApiCommentsStatisticsLatestFiveStar(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiCommentsStatisticsLatestFiveStarInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>>
+export type GetApiCommentsStatisticsLatestFiveStarInfiniteQueryError = ErrorType<unknown>
+
+
+export function useGetApiCommentsStatisticsLatestFiveStarInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCommentsStatisticsLatestFiveStarInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCommentsStatisticsLatestFiveStarInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lấy 10 bình luận 5 sao mới nhất (bao gồm thông tin Content)
+ */
+
+export function useGetApiCommentsStatisticsLatestFiveStarInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiCommentsStatisticsLatestFiveStarInfiniteQueryOptions(options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+export const getGetApiCommentsStatisticsLatestFiveStarQueryOptions = <TData = Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiCommentsStatisticsLatestFiveStarQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>> = ({ signal }) => getApiCommentsStatisticsLatestFiveStar(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiCommentsStatisticsLatestFiveStarQueryResult = NonNullable<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>>
+export type GetApiCommentsStatisticsLatestFiveStarQueryError = ErrorType<unknown>
+
+
+export function useGetApiCommentsStatisticsLatestFiveStar<TData = Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCommentsStatisticsLatestFiveStar<TData = Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>,
+          TError,
+          Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiCommentsStatisticsLatestFiveStar<TData = Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Lấy 10 bình luận 5 sao mới nhất (bao gồm thông tin Content)
+ */
+
+export function useGetApiCommentsStatisticsLatestFiveStar<TData = Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiCommentsStatisticsLatestFiveStar>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiCommentsStatisticsLatestFiveStarQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
 
 
 

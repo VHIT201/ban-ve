@@ -8,23 +8,33 @@ import { FilterIcon, PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 // Internal
-import { ContentTable } from "../../views/contents/views/content-list/components";
 import { useRouter } from "next/navigation";
 import { DynamicFilter } from "@/components/shared";
 import { TreeNode } from "@/components/shared/dynamic-filter";
-import { useMemo, useState } from "react";
-import { CONTENT_FILTER_SCHEMA, ContentFilterSchema } from "./lib/constant";
+import { useState } from "react";
+import {
+  CONTENT_FILTER_SCHEMA,
+  CONTENT_STATUS_OPTIONS,
+  ContentFilterSchema,
+} from "./lib/constant";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
 import { BASE_PATHS } from "@/constants/paths";
 import { useGetApiCategoriesAllTree } from "@/api/endpoints/categories";
 import { ResponseData } from "@/api/types/base";
+import { ContentTable } from "@/components/modules/content";
+import { useGetApiContent } from "@/api/endpoints/content";
+import { ContentResponse } from "@/api/types/content";
+import { UseQueryResult } from "@tanstack/react-query";
 
 const ContentList = () => {
   const router = useRouter();
   // States
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<ContentFilterSchema>();
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
   // Query để lấy category tree từ API
   const getCategoryTreeQuery = useGetApiCategoriesAllTree(
@@ -56,10 +66,39 @@ const ContentList = () => {
     },
   );
 
+  const getContentListQuery = useGetApiContent<{
+    data: ContentResponse[];
+    pagination: {
+      total: number;
+      totalPages: number;
+      currentPage: number;
+      itemsPerPage: number;
+    };
+  }>({
+    page: pagination.pageIndex + 1, // API 1-based
+    limit: pagination.pageSize,
+    status: filterValues?.status,
+    category: filterValues?.categories
+      ? Array.isArray(filterValues.categories)
+        ? filterValues.categories.join(",")
+        : filterValues.categories
+      : undefined,
+    search: filterValues?.name,
+    minPrice: filterValues?.priceRange?.[0],
+    maxPrice: filterValues?.priceRange?.[1],
+  }) as UseQueryResult<{
+    data: ContentResponse[];
+    pagination: {
+      total: number;
+      totalPages: number;
+      currentPage: number;
+      itemsPerPage: number;
+    };
+  }>;
+
   // Methods
   const handleFilterSubmit = (data: ContentFilterSchema) => {
     setFilterValues(data);
-    console.log("Filter values:", data);
 
     // Kiểm tra nếu tất cả các giá trị đều empty/undefined
     const hasValues = Object.values(data).some(
@@ -75,8 +114,26 @@ const ContentList = () => {
     }
   };
 
+  const handleViewEdit = (content: ContentResponse) => {
+    router.push(
+      BASE_PATHS.admin.contents.edit.path.replace(":id", content._id || ""),
+    );
+  };
+
+  const handleViewDetail = (content: ContentResponse) => {
+    router.push(
+      BASE_PATHS.admin.contents.detail.path.replace(":id", content._id || ""),
+    );
+  };
+
   // Memos
   const filterFieldConfig = {
+    status: {
+      label: "Trạng thái",
+      type: "select" as const,
+      placeholder: "Chọn trạng thái",
+      options: CONTENT_STATUS_OPTIONS,
+    },
     name: {
       label: "Tên sản phẩm",
       type: "text" as const,
@@ -86,7 +143,7 @@ const ContentList = () => {
       label: "Danh mục",
       type: "tree" as const,
       placeholder: "Chọn danh mục",
-      nodes: getCategoryTreeQuery,
+      nodes: getCategoryTreeQuery.data || [],
       searchable: true,
       maxHeight: "350px",
     },
@@ -111,6 +168,9 @@ const ContentList = () => {
       <DynamicFilter
         schema={CONTENT_FILTER_SCHEMA}
         onSubmit={handleFilterSubmit}
+        defaultValues={{
+          status: "approved",
+        }}
         fieldConfig={filterFieldConfig}
       >
         <DynamicFilter.Sidebar
@@ -160,15 +220,12 @@ const ContentList = () => {
 
           {/* Content Table */}
           <ContentTable
-            filterValues={{
-              category: filterValues?.categories?.join(",") || "",
-              search: filterValues?.name || "",
-              minPrice: filterValues?.priceRange
-                ? filterValues.priceRange[0]
-                : undefined,
-              maxPrice: filterValues?.priceRange
-                ? filterValues.priceRange[1]
-                : undefined,
+            queryData={getContentListQuery}
+            pagination={pagination}
+            onPaginationChange={setPagination}
+            actions={{
+              onEdit: handleViewEdit,
+              onView: handleViewDetail,
             }}
           />
         </div>

@@ -1,7 +1,7 @@
 "use client";
 
 // App
-import { PaymentHistoryTable } from "../../views/payment/views/payment-history/components";
+import { PaymentHistoryTable } from "./components";
 
 const PaymentHistory = () => {
   return (

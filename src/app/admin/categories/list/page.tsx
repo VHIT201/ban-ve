@@ -7,10 +7,7 @@ import { useMemo } from "react";
 // Internal
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  CategoryDialog,
-  CategoryTable,
-} from "../../views/categories/components";
+
 import { FilterIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import {
@@ -21,12 +18,15 @@ import {
 } from "@/api/endpoints/categories";
 import type { PostApiCategoriesBody } from "@/api/models";
 import { toast } from "sonner";
-import { CategoryFormValues } from "../../views/categories/components/category-dialog";
 import { useUploadMedia } from "@/hooks";
 import { extractErrorMessage } from "@/utils/error";
 import baseConfig from "@/configs/base";
 import { useParams, useSearchParams } from "next/navigation";
 import { DynamicFilter } from "@/components/shared";
+import CategoryDialog, {
+  CategoryFormValues,
+} from "../_components/category-dialog";
+import CategoryTable from "../_components/category-table";
 
 // Filter Schema
 const categoryFilterSchema = z.object({

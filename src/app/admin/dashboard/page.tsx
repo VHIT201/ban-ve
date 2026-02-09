@@ -1,6 +1,6 @@
 "use client";
 
-import { DailyUserPostStats, StatsCard } from "../views/dashboard/components";
+import { DailyUserPostStats, StatsCard } from "./components";
 
 const Dashboard = () => {
   return (

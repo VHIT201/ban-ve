@@ -106,7 +106,7 @@ const contentFormSchemaStatic = z
 export type ContentFormValues = z.infer<typeof contentFormSchemaStatic>;
 
 interface ContentEditorFormProps {
-  mode?: "create" | "edit";
+  mode?: "create" | "edit" | "view";
   defaultFile?: {
     name: string;
     size: number;
@@ -209,6 +209,7 @@ const ContentEditorForm = ({
 
   // Initialize form
   const form = useForm<ContentFormValues>({
+    disabled: mode === "view",
     resolver: zodResolver(contentFormSchema),
     defaultValues: {
       title: defaultValues?.title || "",
@@ -711,9 +712,11 @@ const ContentEditorForm = ({
                     maxSize={100 * 1024 * 1024}
                     accept={{ "image/*": [".png", ".jpg", ".jpeg", ".webp"] }}
                   >
-                    <Uploader.DropZone>
-                      <Uploader.Placeholder />
-                    </Uploader.DropZone>
+                    {mode !== "view" && (
+                      <Uploader.DropZone>
+                        <Uploader.Placeholder />
+                      </Uploader.DropZone>
+                    )}
                     <Uploader.MediaList />
                     <Uploader.Exists
                       data={
@@ -756,9 +759,11 @@ const ContentEditorForm = ({
                     maxFiles={1}
                     maxSize={100 * 1024 * 1024}
                   >
-                    <Uploader.DropZone>
-                      <Uploader.Placeholder />
-                    </Uploader.DropZone>
+                    {mode !== "view" && (
+                      <Uploader.DropZone>
+                        <Uploader.Placeholder />
+                      </Uploader.DropZone>
+                    )}
                     <Uploader.MediaList />
                     <Uploader.Exists
                       data={
@@ -795,30 +800,32 @@ const ContentEditorForm = ({
         )}
 
         {/* Form actions */}
-        <div className="flex items-center justify-end gap-4 pt-4 border-t">
-          {onCancel && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
-              disabled={isLoading || isUploadingFile}
-            >
-              Hủy
-            </Button>
-          )}
-          <Button type="submit" disabled={isLoading || isUploadingFile}>
-            {isLoading || isUploadingFile ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Đang xử lý...
-              </>
-            ) : mode === "create" ? (
-              "Đăng bài"
-            ) : (
-              "Cập nhật"
+        {mode !== "view" && (
+          <div className="flex items-center justify-end gap-4 pt-4 border-t">
+            {onCancel && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onCancel}
+                disabled={isLoading || isUploadingFile}
+              >
+                Hủy
+              </Button>
             )}
-          </Button>
-        </div>
+            <Button type="submit" disabled={isLoading || isUploadingFile}>
+              {isLoading || isUploadingFile ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Đang xử lý...
+                </>
+              ) : mode === "create" ? (
+                "Đăng bài"
+              ) : (
+                "Cập nhật"
+              )}
+            </Button>
+          </div>
+        )}
       </form>
     </Form>
   );

@@ -1,5 +1,5 @@
 // Core
-import { FileText } from "lucide-react";
+import { EyeIcon, FileText } from "lucide-react";
 import { useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -79,9 +79,9 @@ const formatCurrency = (price?: number): string => {
 };
 
 export const useContentTableColumnsDefs = (
-  props: useContentTableColumnsDefsProps
+  props: useContentTableColumnsDefsProps,
 ) => {
-  const { onEdit, onDelete, onApprove, onReject } = props;
+  const { onEdit, onDelete, onApprove, onReject, onView } = props;
 
   return useMemo<ColumnDef<ContentTableRow>[]>(
     () => [
@@ -90,13 +90,6 @@ export const useContentTableColumnsDefs = (
         header: "Nội dung",
         cell: ({ row }) => {
           const content = row.original;
-          const initials =
-            content.title
-              ?.split(" ")
-              .slice(0, 2)
-              .map((word) => word[0])
-              .join("")
-              .toUpperCase() || "??";
 
           return (
             <div className="flex items-start gap-3 min-w-[250px]">
@@ -268,6 +261,17 @@ export const useContentTableColumnsDefs = (
           return (
             <DataTableActionCell
               rowName={content.title || "Nội dung"}
+              actions={[
+                ...(onView
+                  ? [
+                      {
+                        label: "Xem chi tiết",
+                        icon: EyeIcon,
+                        onAction: () => onView?.(content),
+                      },
+                    ]
+                  : []),
+              ]}
               onDelete={() => onDelete?.(content)}
               onEdit={() => onEdit?.(content)}
             />
@@ -276,6 +280,6 @@ export const useContentTableColumnsDefs = (
       },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [onEdit, onDelete, onApprove, onReject]
+    [onEdit, onDelete, onApprove, onReject, onView],
   );
 };

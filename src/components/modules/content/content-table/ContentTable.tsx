@@ -31,11 +31,16 @@ interface Props {
   pagination?: PaginationState;
   onPaginationChange?: (updater: Updater<PaginationState>) => void;
   filter?: (content: ContentResponse) => boolean;
+  actions?: {
+    onEdit?: (content: ContentResponse) => void;
+    onDelete?: (content: ContentResponse) => void;
+    onView?: (content: ContentResponse) => void;
+  };
 }
 
 const ContentTable = (props: Props) => {
   // Props
-  const { filter, queryData, pagination, onPaginationChange } = props;
+  const { filter, queryData, pagination, onPaginationChange, actions } = props;
 
   // States
   const [deleteSelectRow, setDeleteSelectRow] =
@@ -101,11 +106,9 @@ const ContentTable = (props: Props) => {
   };
 
   const columns = useContentTableColumnsDefs({
-    onEdit: handleEdit,
-    onDelete: handleDelete,
-    onApprove: () => {},
-    onReject: () => {},
-    onView: () => {},
+    onEdit: actions?.onEdit || handleEdit,
+    onDelete: actions?.onDelete || handleDelete,
+    onView: actions?.onView,
   });
 
   return (
@@ -128,7 +131,10 @@ const ContentTable = (props: Props) => {
         <DataTableDeleteDialog
           currentRow={
             deleteSelectRow
-              ? { ...deleteSelectRow, name: deleteSelectRow.title ?? deleteSelectRow._id }
+              ? {
+                  ...deleteSelectRow,
+                  name: deleteSelectRow.title ?? deleteSelectRow._id,
+                }
               : null
           }
           onDelete={handleConfirmDelete}

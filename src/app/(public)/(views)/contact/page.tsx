@@ -1,151 +1,347 @@
-import { Metadata } from 'next';
-import { Mail, MapPin, Phone } from 'lucide-react';
+"use client";
 
-export const metadata: Metadata = {
-  title: 'Liên hệ - Blueprint Marketplace',
-  description: 'Liên hệ với đội ngũ hỗ trợ của Blueprint Marketplace',
+import { Mail, MapPin, Phone, Send, CheckCircle2, Loader2 } from "lucide-react";
+import { motion, Variants } from "framer-motion";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { toast } from "sonner";
+
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { usePostApiContacts } from "@/api/endpoints/contacts";
+
+// Form schema
+const contactFormSchema = z.object({
+  full_name: z.string().min(2, "Họ tên phải có ít nhất 2 ký tự"),
+  email: z.string().email("Email không hợp lệ").optional().or(z.literal("")),
+  phone: z.string().optional(),
+  title: z.string().min(3, "Tiêu đề phải có ít nhất 3 ký tự").optional(),
+  message: z.string().min(10, "Nội dung phải có ít nhất 10 ký tự").optional(),
+});
+
+type ContactFormData = z.infer<typeof contactFormSchema>;
+
+// Animation variants
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
 };
 
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+    },
+  },
+};
+
+const contactInfoItems = [
+  {
+    icon: MapPin,
+    title: "Địa chỉ",
+    content: (
+      <>
+        123 Đường ABC, Phường XYZ
+        <br />
+        Quận 1, TP. Hồ Chí Minh
+      </>
+    ),
+  },
+  {
+    icon: Mail,
+    title: "Email",
+    content: (
+      <a
+        href="mailto:contact@blueprint.vn"
+        className="text-primary hover:text-primary/80 hover:underline transition-all font-medium"
+      >
+        contact@blueprint.vn
+      </a>
+    ),
+  },
+  {
+    icon: Phone,
+    title: "Điện thoại",
+    content: (
+      <>
+        <a
+          href="tel:+84234567890"
+          className="text-primary hover:text-primary/80 hover:underline transition-all font-medium"
+        >
+          +84 234 567 890
+        </a>
+        <p className="text-xs text-muted-foreground mt-1">
+          T2 - T6: 8:00 - 17:00
+        </p>
+      </>
+    ),
+  },
+];
+
 export default function ContactPage() {
+  const [successMessage, setSuccessMessage] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<ContactFormData>({
+    resolver: zodResolver(contactFormSchema),
+  });
+
+  const postContactMutation = usePostApiContacts({
+    mutation: {
+      onSuccess: () => {
+        setSuccessMessage(true);
+        reset();
+        toast.success("Gửi tin nhắn thành công! Chúng tôi sẽ liên hệ lại sớm.");
+        setTimeout(() => setSuccessMessage(false), 5000);
+      },
+      onError: (error: any) => {
+        toast.error(error?.message || "Có lỗi xảy ra, vui lòng thử lại");
+      },
+    },
+  });
+
+  const onSubmit = (data: ContactFormData) => {
+    postContactMutation.mutate({ data });
+  };
+
   return (
-    <main className="container mx-auto px-4 sm:px-6 py-12 md:py-16 lg:py-20 max-w-6xl">
-      <div className="text-center mb-12 md:mb-16">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-3 md:mb-4">Liên hệ với chúng tôi</h1>
-        <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">Chúng tôi luôn sẵn sàng hỗ trợ bạn mọi lúc, mọi nơi</p>
-      </div>
+    <main className="min-h-screen bg-gradient-to-b from-primary/5 via-background to-primary/50">
+      <div className="container mx-auto px-4 sm:px-6 py-16 pt-0 md:py-24 max-w-6xl">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16 md:mb-20"
+        >
+          <motion.h1
+            className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground mb-4 bg-gradient-to-br py-2 from-primary to-primary/60 bg-clip-text text-transparent"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            Liên hệ với chúng tôi
+          </motion.h1>
+          <motion.p
+            className="text-lg text-muted-foreground max-w-2xl mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            Chúng tôi luôn sẵn sàng hỗ trợ bạn
+          </motion.p>
+        </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-        {/* Contact Information */}
-        <div className="space-y-8 md:space-y-10">
-          <div className="space-y-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground">Thông tin liên hệ</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              Bạn có câu hỏi hoặc cần hỗ trợ? Hãy điền vào biểu mẫu hoặc liên hệ với chúng tôi qua thông tin dưới đây. 
-              Đội ngũ hỗ trợ của chúng tôi sẽ phản hồi trong thời gian sớm nhất.
-            </p>
-          </div>
-
-          <div className="space-y-6">
-            <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-accent/50 transition-colors">
-              <div className="bg-primary/10 p-3 rounded-full flex-shrink-0">
-                <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-foreground">Địa chỉ</h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  123 Đường ABC, Phường XYZ
-                  <br />
-                  Quận 1, TP. Hồ Chí Minh, Việt Nam
-                </p>
-              </div>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 lg:grid-cols-5 gap-12 md:gap-16"
+        >
+          {/* Contact Information */}
+          <motion.div
+            variants={itemVariants}
+            className="lg:col-span-2 space-y-8"
+          >
+            <div className="space-y-3">
+              <h2 className="text-2xl font-semibold text-foreground">
+                Thông tin liên hệ
+              </h2>
+              <p className="text-muted-foreground leading-relaxed text-sm">
+                Hãy liên hệ với chúng tôi qua biểu mẫu hoặc thông tin bên dưới
+              </p>
             </div>
 
-            <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-accent/50 transition-colors">
-              <div className="bg-primary/10 p-3 rounded-full flex-shrink-0">
-                <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-foreground">Email</h3>
-                <a 
-                  href="mailto:contact@blueprint.vn" 
-                  className="text-sm text-primary hover:underline mt-1 inline-block"
+            <div className="space-y-4">
+              {contactInfoItems.map((item, index) => (
+                <motion.div
+                  key={item.title}
+                  variants={itemVariants}
+                  whileHover={{ x: 4 }}
+                  className="flex items-start gap-4 group"
                 >
-                  contact@blueprint.vn
-                </a>
-              </div>
+                  <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/15 transition-all border border-primary/20">
+                    <item.icon className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-medium text-foreground text-sm mb-1">
+                      {item.title}
+                    </h3>
+                    <div className="text-sm text-muted-foreground">
+                      {item.content}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
             </div>
+          </motion.div>
 
-            <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-accent/50 transition-colors">
-              <div className="bg-primary/10 p-3 rounded-full flex-shrink-0">
-                <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-foreground">Điện thoại</h3>
-                <a 
-                  href="tel:+84234567890" 
-                  className="text-sm text-primary hover:underline mt-1 inline-block"
+          {/* Contact Form */}
+          <motion.div variants={itemVariants} className="lg:col-span-3">
+            <div className="relative">
+              {/* Success Message Overlay */}
+              {successMessage && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  className="absolute inset-0 z-10 flex items-center justify-center bg-background/95 backdrop-blur-sm rounded-lg"
                 >
-                  +84 234 567 890
-                </a>
-                <p className="text-xs text-muted-foreground mt-1">Thứ 2 - Thứ 6: 8:00 - 17:00</p>
+                  <div className="text-center space-y-4">
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 200,
+                        damping: 15,
+                      }}
+                    >
+                      <CheckCircle2 className="w-16 h-16 text-green-600 dark:text-green-500 mx-auto" />
+                    </motion.div>
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-semibold text-foreground">
+                        Gửi thành công!
+                      </h3>
+                      <p className="text-muted-foreground text-sm">
+                        Chúng tôi sẽ liên hệ lại sớm nhất
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              <div className="bg-card/80 backdrop-blur-sm border border-border/50 p-8 shadow-lg hover:-translate-y-6 transition-all duration-500">
+                <div className="mb-8">
+                  <h2 className="text-2xl font-semibold mb-2 text-foreground">
+                    Gửi tin nhắn
+                  </h2>
+                  <p className="text-muted-foreground text-sm">
+                    Điền thông tin bên dưới để liên hệ với chúng tôi
+                  </p>
+                </div>
+
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="full_name">
+                        Họ và tên <span className="text-destructive">*</span>
+                      </Label>
+                      <Input
+                        id="full_name"
+                        {...register("full_name")}
+                        placeholder="Nguyễn Văn A"
+                        className="h-11"
+                      />
+                      {errors.full_name && (
+                        <p className="text-xs text-destructive">
+                          {errors.full_name.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Số điện thoại</Label>
+                      <Input
+                        id="phone"
+                        {...register("phone")}
+                        placeholder="0912 345 678"
+                        className="h-11"
+                      />
+                      {errors.phone && (
+                        <p className="text-xs text-destructive">
+                          {errors.phone.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      {...register("email")}
+                      placeholder="email@example.com"
+                      className="h-11"
+                    />
+                    {errors.email && (
+                      <p className="text-xs text-destructive">
+                        {errors.email.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="title">Tiêu đề</Label>
+                    <Input
+                      id="title"
+                      {...register("title")}
+                      placeholder="Tiêu đề liên hệ"
+                      className="h-11"
+                    />
+                    {errors.title && (
+                      <p className="text-xs text-destructive">
+                        {errors.title.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="message">Nội dung</Label>
+                    <Textarea
+                      id="message"
+                      {...register("message")}
+                      placeholder="Nhập nội dung chi tiết..."
+                      rows={5}
+                      className="resize-none"
+                    />
+                    {errors.message && (
+                      <p className="text-xs text-destructive">
+                        {errors.message.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full h-11 gap-2"
+                    disabled={postContactMutation.isPending}
+                  >
+                    {postContactMutation.isPending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Đang gửi...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        Gửi tin nhắn
+                      </>
+                    )}
+                  </Button>
+                </form>
               </div>
             </div>
-          </div>
-
-
-        </div>
-
-        {/* Contact Form */}
-        <div className="bg-card rounded-xl p-6 sm:p-8 shadow-sm border">
-          <div className="mb-6">
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Gửi tin nhắn</h2>
-            <p className="text-muted-foreground text-sm">Điền đầy đủ thông tin bên dưới, chúng tôi sẽ liên hệ lại với bạn sớm nhất.</p>
-          </div>
-          
-          <form className="space-y-5">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label htmlFor="name" className="block text-sm font-medium text-foreground">
-                  Họ và tên <span className="text-destructive">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  className="w-full px-4 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent"
-                  placeholder="Nhập họ và tên"
-                  required
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label htmlFor="email" className="block text-sm font-medium text-foreground">
-                  Email <span className="text-destructive">*</span>
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  className="w-full px-4 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent"
-                  placeholder="email@example.com"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <label htmlFor="subject" className="block text-sm font-medium text-foreground">
-                Tiêu đề <span className="text-destructive">*</span>
-              </label>
-              <input
-                type="text"
-                id="subject"
-                className="w-full px-4 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent"
-                placeholder="Tiêu đề liên hệ"
-                required
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label htmlFor="message" className="block text-sm font-medium text-foreground">
-                Nội dung <span className="text-destructive">*</span>
-              </label>
-              <textarea
-                id="message"
-                rows={4}
-                className="w-full px-4 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent resize-none"
-                placeholder="Nội dung chi tiết..."
-                required
-              ></textarea>
-            </div>
-
-            <div className="pt-2">
-              <button
-                type="submit"
-                className="w-full bg-primary text-primary-foreground py-3 px-6 rounded-lg font-medium hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
-              >
-                Gửi tin nhắn
-              </button>
-            </div>
-          </form>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </main>
   );
