@@ -206,29 +206,6 @@ function CollaboratorStatus({
   data: any;
   loading: boolean;
 }) {
-  const getStatusBadge = (status: CollaboratorResponseStatus) => {
-    switch (status) {
-      case CollaboratorResponseStatus.approved:
-        return (
-          <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-            Đã duyệt
-          </Badge>
-        );
-      case CollaboratorResponseStatus.rejected:
-        return (
-          <Badge className="bg-red-100 text-red-700 hover:bg-red-100">
-            Đã từ chối
-          </Badge>
-        );
-      default:
-        return (
-          <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100">
-            Chờ duyệt
-          </Badge>
-        );
-    }
-  };
-
   const revenueData = useMemo(() => {
     const earnings = data?.earnings || null;
     return {
@@ -259,7 +236,6 @@ function CollaboratorStatus({
                   Chi tiết đơn đăng ký của bạn
                 </CardDescription>
               </div>
-              {getStatusBadge(data.status)}
             </div>
           </CardHeader>
           <CardContent className="pt-0">

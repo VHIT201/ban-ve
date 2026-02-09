@@ -1,11 +1,11 @@
 // @ts-nocheck
-import type { CartItemContentId } from './cartItemContentId';
+import { CartItemContent } from "@/api/types/order";
 
 /**
  * Thông tin sản phẩm trong giỏ hàng
  */
 export interface CartItem {
-  contentId?: CartItemContentId;
+  contentId?: CartItemContent;
   quantity?: number;
   _id?: string;
 }
