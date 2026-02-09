@@ -75,7 +75,7 @@ const ContentCreate = () => {
 
       if (result) {
         toast.success("Nội dung đã được tạo thành công.");
-        
+
         router.push(BASE_PATHS.admin.contents.path);
         router.refresh();
       }

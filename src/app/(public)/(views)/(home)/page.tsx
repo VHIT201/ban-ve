@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Main } from "@/components/layouts";
 import {
   BannerSection,
-  CategoriesSection,
   DailyBestDownloaded,
   DailyBestSeller,
   DailyFeatureSection,
@@ -12,7 +11,6 @@ import {
   CategoriesFeatureSection,
 } from "@/app/(public)/(views)/(home)/components";
 
-// Metadata for home page
 export const metadata: Metadata = {
   title: "Trang chủ",
   description:
@@ -35,13 +33,9 @@ export const metadata: Metadata = {
   },
 };
 
-// Revalidate every hour
 export const revalidate = 3600;
 
 export default async function HomePage() {
-  // Server-side data fetching can be added here
-  // For now, components will handle their own data fetching
-
   return (
     <Fragment>
       <div className="bg-gray-50 py-4">

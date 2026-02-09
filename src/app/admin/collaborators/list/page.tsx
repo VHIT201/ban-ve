@@ -1,7 +1,10 @@
 "use client";
 
 // App
-import { CollaboratorTable, CollaboratorStats } from "../../views/collaborators/views/collaborator-list/components";
+import {
+  CollaboratorTable,
+  CollaboratorStats,
+} from "../../views/collaborators/views/collaborator-list/components";
 
 const CollaboratorList = () => {
   return (

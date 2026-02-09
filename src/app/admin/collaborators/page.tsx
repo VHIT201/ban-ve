@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
+import { redirect } from "next/navigation";
 
 export default async function CollaboratorsPage() {
-  redirect('/admin/collaborators/list');
+  redirect("/admin/collaborators/list");
 }

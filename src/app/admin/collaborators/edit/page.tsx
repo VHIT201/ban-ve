@@ -8,9 +8,7 @@ import { toast } from "sonner";
 
 // App
 import {
-  useGetApiCollaboratorsEarnings,
   useGetApiCollaboratorsEarningsCollaboratorId,
-  useGetApiCollaboratorsRequests,
   usePutApiCollaboratorsRequestsRequestIdApprove,
   usePutApiCollaboratorsRequestsRequestIdReject,
 } from "@/api/endpoints/collaborators";
@@ -21,7 +19,6 @@ import { Response } from "@/api/types/base";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { extractErrorMessage } from "@/utils/error";
-import { useGetApiCollaboratorsRequestsRequestId } from "@/hooks/modules/collaborators";
 
 const CollaboratorEdit = () => {
   // Hooks
