@@ -17,11 +17,9 @@ import {
   DataTableDeleteDialog,
 } from "@/components/shared/data-table/shared";
 import { PaginationState, Updater } from "@tanstack/react-table";
-import { DataTableBulkAction as DataTableBulkActionType } from "./lib/types";
 import { Action } from "@/components/shared/data-table/shared/data-table-bulk-actions/lib/types";
 import { TrashIcon } from "lucide-react";
 import { DeleteDialog } from "@/components/shared";
-import { se } from "date-fns/locale";
 import { extractErrorMessage } from "@/utils/error";
 
 interface Props {
