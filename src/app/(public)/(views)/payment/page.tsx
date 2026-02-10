@@ -39,12 +39,11 @@ import PaymentBank from "./components/payment-bank/PaymentBank";
 import PaymentVisa from "./components/payment-visa/PaymentVisa";
 import PaymentQR from "./components/payment-qr/PaymentQR";
 import { useCreateQrPayment } from "@/hooks/modules/payments";
-import { PaymentStatusDialog } from "@/components/modules/payment";
-import { PaymentStatus } from "@/enums/payment";
 import { useCart } from "@/hooks/use-cart";
 import baseConfig from "@/configs/base";
 import Image from "@/components/ui/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { PaymentStatus } from "@/enums/payment";
 
 // Zod validation schemas
 const momoSchema = z.object({
@@ -170,7 +169,6 @@ const PaymentPage = () => {
   const router = useRouter();
 
   const [isProcessing, setIsProcessing] = useState(false);
-  const [openPaymentStatus, setOpenPaymentStatus] = useState<boolean>(false);
 
   // React Hook Form
   const form = useForm<PaymentFormValues>({
@@ -299,13 +297,6 @@ const PaymentPage = () => {
     }
   }, [paymentMethod, cart.items.length, profileStore.email]);
 
-  useEffect(() => {
-    if (createQRPaymentMutation.streamingStatus === PaymentStatus.COMPLETED) {
-      cart.clearCart();
-      setOpenPaymentStatus(true);
-    }
-  }, [createQRPaymentMutation.streamingStatus]);
-
   if (!authStore.isSignedIn) {
     return (
       <div className="min-h-screen bg-linear-to-br from-primary/5 via-background to-primary/10 flex items-center justify-center p-4">
@@ -430,8 +421,13 @@ const PaymentPage = () => {
                         {/* QR Code Form */}
                         {paymentMethod === "qr_code" && (
                           <PaymentQR
-                            loading={createQRPaymentMutation.isPending}
                             urlQRCode={createQRPaymentMutation.qrCodeUrl}
+                            loading={createQRPaymentMutation.isPending}
+                            status={
+                              createQRPaymentMutation.streamingStatus as PaymentStatus
+                            }
+                            order={createQRPaymentMutation.order}
+                            amount={total}
                           />
                         )}
                       </CardContent>
@@ -760,13 +756,6 @@ const PaymentPage = () => {
           </motion.div>
         </motion.div>
       </div>
-      <PaymentStatusDialog
-        open={openPaymentStatus}
-        order={createQRPaymentMutation.order}
-        amount={createQRPaymentMutation.order?.totalAmount}
-        status={PaymentStatus.COMPLETED}
-        onOpenChange={setOpenPaymentStatus}
-      />
 
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar {

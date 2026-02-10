@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   order: Order;
@@ -167,8 +168,6 @@ function OrderDetailInformation({ order }: Props) {
             </div>
           </div>
 
-          <Separator />
-
           {/* Total Amount */}
           <div className="bg-gray-50 rounded-none p-4 border border-gray-100">
             <div className="flex items-center justify-between">
@@ -183,6 +182,12 @@ function OrderDetailInformation({ order }: Props) {
               </span>
             </div>
           </div>
+
+          <Separator />
+
+          <Button variant="destructive" className="w-full">
+            Mua lại
+          </Button>
         </div>
       </CardContent>
     </Card>
