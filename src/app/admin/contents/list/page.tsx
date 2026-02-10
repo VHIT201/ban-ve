@@ -256,7 +256,6 @@ const ContentList = () => {
             pagination={pagination}
             onPaginationChange={setPagination}
             onSelectedRowsChange={(rows) => {
-              console.log("Selected rows changed:", rows);
               setSelectedRows(rows);
             }}
             actions={{
