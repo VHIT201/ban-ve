@@ -42,7 +42,7 @@ export function generateMetadata(params: GenerateMetadataParams): Metadata {
       description,
       images: [
         {
-          url: image.startsWith("http") ? image : `${baseUrl}${image}`,
+          url: image.startsWith("http") ? image : `${baseUrl}/${image}`,
           width: 1200,
           height: 630,
           alt: title,
