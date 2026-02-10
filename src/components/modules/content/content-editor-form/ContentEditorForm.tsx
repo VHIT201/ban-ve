@@ -264,7 +264,6 @@ const ContentEditorForm = ({
         select: (data) => {
           try {
             const response = data as unknown as ResponseData<any>;
-            console.log("API Response:", response);
 
             // Try different possible structures
             if (response?.data?.tree && Array.isArray(response.data.tree)) {
@@ -277,10 +276,8 @@ const ContentEditorForm = ({
               return response;
             }
 
-            console.log("Unexpected data structure:", response);
             return [];
           } catch (error) {
-            console.error("Error processing category tree data:", error);
             return [];
           }
         },
@@ -339,10 +336,23 @@ const ContentEditorForm = ({
           return;
         }
 
-        // Upload file with compression
+        // Upload file with compression and watermark
         const uploadedFile = await uploadSingle(file, {
           compress: true,
           requirePayment: values.price > 0,
+          applyWatermark: true,
+          watermarkOptions: {
+            text: "TẠO BỞI BANVE.VN",
+            rotation: -Math.PI / 6,
+            overlayOpacity: 0.5,
+            enableOverlay: true,
+            fontFamily: "Arial",
+            fontWeight: "bold",
+            textOpacity: 0.7,
+            spacingY: 150,
+            spacingX: 200,
+            fontSize: 22,
+          },
         });
 
         if (!uploadedFile) {
