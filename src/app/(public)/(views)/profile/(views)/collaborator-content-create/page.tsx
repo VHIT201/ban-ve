@@ -1,6 +1,10 @@
 "use client";
 
-import { usePostApiContentUpload } from "@/api/endpoints/content";
+import {
+  getGetApiContentAllQueryKey,
+  getGetApiContentQueryKey,
+  usePostApiContentUpload,
+} from "@/api/endpoints/content";
 import { ContentEditorForm } from "@/components/modules/content";
 import { ContentFormValues } from "@/components/modules/content/content-editor-form/ContentEditorForm";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -22,6 +26,12 @@ const ContentDetail = () => {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["/api/content"] });
         router.push(BASE_PATHS.app.profile.collaborator.path);
+      },
+      meta: {
+        invalidateQueries: [
+          getGetApiContentQueryKey(),
+          getGetApiContentAllQueryKey(),
+        ],
       },
     },
   });

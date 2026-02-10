@@ -7,7 +7,7 @@ const RouterHydrateFallbackElement = () => {
     <div
       className={cn(
         "flex h-screen w-screen items-center justify-center p-4",
-        "bg-white/80 backdrop-blur-sm dark:bg-gray-900/80"
+        "bg-white/80 backdrop-blur-sm dark:bg-gray-900/80",
       )}
     >
       <div className="flex flex-col items-center justify-center gap-4">
@@ -15,7 +15,7 @@ const RouterHydrateFallbackElement = () => {
           {/* Background effect */}
           <div
             className={cn(
-              "text-primary absolute inset-0 animate-ping rounded-full opacity-10"
+              "text-primary absolute inset-0 animate-ping rounded-full opacity-10",
             )}
           />
           <svg
