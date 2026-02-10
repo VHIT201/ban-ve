@@ -55,7 +55,7 @@ export function generateMetadata(params: GenerateMetadataParams): Metadata {
       card: "summary_large_image",
       title,
       description,
-      images: [image.startsWith("http") ? image : `${baseUrl}${image}`],
+      images: [image.startsWith("http") ? image : `${baseUrl}/${image}`],
     },
   };
 }
