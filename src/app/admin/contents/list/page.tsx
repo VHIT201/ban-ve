@@ -180,7 +180,7 @@ const ContentList = () => {
       type: "number-range" as const,
       min: 0,
       max: 10000000,
-      step: 100000,
+      step: 1000,
       showInputs: true,
       formatValue: (value: number) =>
         new Intl.NumberFormat("vi-VN", {

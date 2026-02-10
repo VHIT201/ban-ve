@@ -12,6 +12,7 @@ import { ContentEditorForm } from "@/components/modules/content";
 import { ContentFormValues } from "@/components/modules/content/content-editor-form/ContentEditorForm";
 import { QueryBoundary } from "@/components/shared";
 import { BASE_PATHS } from "@/constants/paths";
+import { useUploadMedia } from "@/hooks";
 import { extractErrorMessage } from "@/utils/error";
 import { UseQueryResult } from "@tanstack/react-query";
 import { ArrowLeftIcon, AlertCircle } from "lucide-react";
@@ -34,6 +35,8 @@ const ContentEditPage = () => {
   }) as UseQueryResult<ContentResponse>;
 
   // Mutations
+  const uploadMediaMutation = useUploadMedia();
+
   const editContentMutation = usePutApiContentId({
     mutation: {
       meta: {
@@ -51,6 +54,25 @@ const ContentEditPage = () => {
     formData: ContentFormValues & { removeImages?: string[] },
   ) => {
     try {
+      const warkMarkImages = [];
+      if (formData.images && formData.images.length > 0) {
+        for (const image of formData?.images) {
+          const watermarkedImage =
+            await uploadMediaMutation.applyWatermarkToImage(
+              image as unknown as File,
+              {
+                text: "TẠO BỞI BANVE.VN",
+                fontSize: 24,
+                textOpacity: 0.7,
+                overlayOpacity: 0.4,
+                enableOverlay: true,
+              },
+            );
+
+          warkMarkImages.push(watermarkedImage);
+        }
+      }
+
       const result = await editContentMutation.mutateAsync({
         id: contentId,
         data: {
@@ -60,11 +82,11 @@ const ContentEditPage = () => {
           price: formData.price,
           file_id: formData?.content_file?._id,
           removeImages: formData?.removeImages,
-          image1: formData?.images?.[0],
-          image2: formData?.images?.[1],
-          image3: formData?.images?.[2],
-          image4: formData?.images?.[3],
-          image5: formData?.images?.[4],
+          image1: warkMarkImages?.[0],
+          image2: warkMarkImages?.[1],
+          image3: warkMarkImages?.[2],
+          image4: warkMarkImages?.[3],
+          image5: warkMarkImages?.[4],
         },
       });
 

@@ -151,6 +151,10 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
   };
 
   const handleMinPriceChange = (value: number) => {
+    if (value < 0) {
+      return;
+    }
+
     const maxPrice = form.getValues("maxPrice");
     const validValue = Math.min(value, maxPrice);
     form.setValue("minPrice", validValue, { shouldValidate: true });
@@ -160,6 +164,10 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
   };
 
   const handleMaxPriceChange = (value: number) => {
+    if (value > 10000000) {
+      return;
+    }
+
     const minPrice = form.getValues("minPrice");
     const validValue = Math.max(value, minPrice);
     form.setValue("maxPrice", validValue, { shouldValidate: true });

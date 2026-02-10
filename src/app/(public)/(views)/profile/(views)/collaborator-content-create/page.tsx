@@ -14,6 +14,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { extractErrorMessage } from "@/utils/error";
+import { useUploadMedia } from "@/hooks";
 
 const ContentDetail = () => {
   // Hooks
@@ -21,6 +23,7 @@ const ContentDetail = () => {
   const router = useRouter();
 
   // Mutations
+  const uploadMediaMutation = useUploadMedia();
   const createContentMutation = usePostApiContentUpload({
     mutation: {
       onSuccess: () => {
@@ -46,6 +49,25 @@ const ContentDetail = () => {
     const price = Number(values.price) >= 0 ? Number(values.price) : 0;
 
     try {
+      const warkMarkImages = [];
+      if (values.images && values.images.length > 0) {
+        for (const image of values.images) {
+          const watermarkedImage =
+            await uploadMediaMutation.applyWatermarkToImage(
+              image as unknown as File,
+              {
+                text: "TẠO BỞI BANVE.VN",
+                fontSize: 36,
+                textOpacity: 0.7,
+                overlayOpacity: 0.4,
+                enableOverlay: true,
+              },
+            );
+
+          warkMarkImages.push(watermarkedImage);
+        }
+      }
+
       await createContentMutation.mutateAsync({
         data: {
           title: values.title,
@@ -53,14 +75,19 @@ const ContentDetail = () => {
           file_id: values.content_file._id,
           category_id: values.category_id,
           price: price,
+          image1: warkMarkImages?.[0],
+          image2: warkMarkImages?.[1],
+          image3: warkMarkImages?.[2],
+          image4: warkMarkImages?.[3],
+          image5: warkMarkImages?.[4],
         },
       });
-
-      toast.success(
-        "Đã gửi yêu cầu tạo bản vẽ mới thành công. Vui lòng chờ quản trị viên phê duyệt.",
-      );
     } catch (error) {
-      toast.error("Đã có lỗi xảy ra khi tạo bản vẽ mới. Vui lòng thử lại sau.");
+      const errorMessage = extractErrorMessage(error);
+      toast.error(
+        errorMessage ||
+          "Đã có lỗi xảy ra khi tạo nội dung mới. Vui lòng thử lại sau.",
+      );
     }
   };
 
