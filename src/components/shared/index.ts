@@ -10,3 +10,4 @@ export { default as TreeSelect } from "./tree-select";
 export { ImageProtection } from "./image-protection";
 export { default as RatingStar } from "./rating-star";
 export { default as DynamicFilter } from "./dynamic-filter";
+export { default as QRPayment } from "./qr-payment";

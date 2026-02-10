@@ -43,8 +43,6 @@ function OrderDetailSoldList({ items = [] }: Props) {
               ({items.length})
             </span>
           </CardTitle>
-
-          <Button variant="success">Mua lại</Button>
         </div>
       </CardHeader>
       <CardContent className="pt-6">
@@ -108,6 +106,7 @@ function OrderDetailSoldList({ items = [] }: Props) {
           })}
 
           <Separator className="my-4" />
+
           <div className="flex items-center justify-between bg-gray-50 p-4 border border-gray-100">
             <span className="text-sm font-semibold text-gray-900">
               Tổng cộng

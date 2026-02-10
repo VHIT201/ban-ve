@@ -44,7 +44,6 @@ import {
   useGetApiFileDownloadFreeContentId,
 } from "@/api/endpoints/files";
 import { toast } from "sonner";
-import { PaymentStatusDialog } from "@/components/modules/payment";
 import { useCreateQrPayment } from "@/hooks/modules/payments";
 import { PaymentStatus } from "@/enums/payment";
 import baseConfig from "@/configs/base";
@@ -73,10 +72,8 @@ const BlueprintDetailView: FC<Props> = (props) => {
 
   // States
   const [openEmailDialog, setOpenEmailDialog] = useState(false);
-  const [openQRPaymentDialog, setOpenQRPaymentDialog] = useState(false);
+  const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
   const [openReportDialog, setOpenReportDialog] = useState(false);
-  const [openPaymentStatusDialog, setOpenPaymentStatusDialog] =
-    useState<boolean>(false);
   const [shareSuccess, setShareSuccess] = useState(false);
 
   // Cart Store
@@ -90,7 +87,6 @@ const BlueprintDetailView: FC<Props> = (props) => {
 
   // States
   const [selectedImage, setSelectedImage] = useState(0);
-  const [rating] = useState(4);
   const [isAdding, setIsAdding] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
 
@@ -129,7 +125,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
 
   const handleConfirmEmail = (email: string) => {
     setOpenEmailDialog(false);
-    setOpenQRPaymentDialog(true);
+    setOpenPaymentDialog(true);
     createQRPaymentMutation.createPaymentQR(email);
   };
 
@@ -193,15 +189,9 @@ const BlueprintDetailView: FC<Props> = (props) => {
 
   // Effects
   useEffect(() => {
-    if (createQRPaymentMutation.streamingStatus === PaymentStatus.COMPLETED) {
-      setOpenPaymentStatusDialog(true);
-    }
+    // Dialog will automatically show success view when status changes to COMPLETED
+    // No need for separate dialog management
   }, [createQRPaymentMutation.streamingStatus]);
-
-  useEffect(() => {
-    if (!openPaymentStatusDialog) return;
-    setOpenQRPaymentDialog(false);
-  }, [openPaymentStatusDialog]);
 
   // Animation variants
   const containerVariants = {
@@ -585,16 +575,11 @@ const BlueprintDetailView: FC<Props> = (props) => {
       <ContentPaymentDialog
         urlQRCode={createQRPaymentMutation.qrCodeUrl}
         loading={createQRPaymentMutation.isPending}
-        open={openQRPaymentDialog}
-        onOpenChange={setOpenQRPaymentDialog}
-      />
-
-      <PaymentStatusDialog
+        open={openPaymentDialog}
+        onOpenChange={setOpenPaymentDialog}
+        status={createQRPaymentMutation.streamingStatus}
         order={createQRPaymentMutation.order}
-        open={openPaymentStatusDialog}
         amount={content.price}
-        status={PaymentStatus.COMPLETED}
-        onOpenChange={setOpenPaymentStatusDialog}
       />
     </Fragment>
   );

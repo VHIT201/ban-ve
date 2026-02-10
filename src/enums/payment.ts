@@ -22,7 +22,6 @@ export enum PaymentMethod {
 
 export enum PaymentStatus {
   SUCCESS = "success",
-  PAID = "paid",
   FAILED = "failed",
   CANCELLED = "cancelled",
   PENDING = "pending",
