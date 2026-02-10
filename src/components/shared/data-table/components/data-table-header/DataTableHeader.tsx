@@ -58,8 +58,8 @@ const DataTableHeader = <TData,>() => {
                   isLastLeftPinned
                     ? "left"
                     : isFirstRightPinned
-                    ? "right"
-                    : undefined
+                      ? "right"
+                      : undefined
                 }
                 colSpan={header.colSpan}
                 style={{ width: header.getSize() }}
@@ -70,7 +70,7 @@ const DataTableHeader = <TData,>() => {
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
 
                   {!header.isPlaceholder &&
@@ -81,9 +81,6 @@ const DataTableHeader = <TData,>() => {
                         variant="ghost"
                         className="-mr-1 size-7"
                         onClick={() => header.column.pin(false)}
-                        aria-label={`Unpin ${
-                          header.column.columnDef.header as string
-                        } column`}
                         title={`Unpin ${
                           header.column.columnDef.header as string
                         } column`}

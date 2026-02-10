@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { DeleteDialog, DynamicFilter } from "@/components/shared";
 import { TreeNode } from "@/components/shared/dynamic-filter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   CONTENT_FILTER_SCHEMA,
   CONTENT_STATUS_OPTIONS,
@@ -40,6 +40,14 @@ const ContentList = () => {
     pageIndex: 0,
     pageSize: 10,
   });
+
+  // Option 1: Auto-clear selection when changing page (simple but clears selection)
+  // Uncomment this if you want to clear selection on page change
+  // useEffect(() => {
+  //   setSelectedRows([]);
+  // }, [pagination.pageIndex]);
+
+  // Option 2 is now active: Selection persists across pages via externalSelectedRows prop
 
   // Query để lấy category tree từ API
   const getCategoryTreeQuery = useGetApiCategoriesAllTree(
