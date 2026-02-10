@@ -14,6 +14,7 @@ import { BASE_PATHS } from "@/constants/paths";
 import Link from "next/link";
 import { ArrowLeftIcon } from "lucide-react";
 import { useUploadMedia } from "@/hooks";
+import { extractErrorMessage } from "@/utils/error";
 
 const ContentCreate = () => {
   // Hooks
@@ -46,11 +47,8 @@ const ContentCreate = () => {
       }
 
       const fileToUpload = values.files[0];
-      const previewImages = values.images.slice(0, 4); // Max 4 images
-
-      const fileUploadResponse = await uploadMediaMutation.uploadWithImages(
+      const fileUploadResponse = await uploadMediaMutation.uploadSingle(
         fileToUpload as unknown as File,
-        previewImages as unknown as File[],
         {
           filename: fileToUpload.name,
           dir: "contents",
@@ -58,8 +56,8 @@ const ContentCreate = () => {
           compress: false,
           applyWatermark: true,
           watermarkOptions: {
-            text: "TẠO BỞI BANVE.VN",
-            fontSize: 24,
+            text: "CREATED BY BANVE.VN",
+            fontSize: 36,
             textOpacity: 0.7,
             overlayOpacity: 0.4,
             enableOverlay: true,
@@ -67,25 +65,25 @@ const ContentCreate = () => {
         },
       );
 
-      const fileData = fileUploadResponse as unknown as UploadedFile;
-
-      let image5Data = null;
-      if (values.images[4]) {
-        image5Data = await uploadMediaMutation.uploadSingle(
-          values.images[4] as unknown as File,
-          {
-            dir: "contents/previews",
-            compress: true,
-            applyWatermark: true,
-            watermarkOptions: {
+      const warkMarkImages = [];
+      for (const image of values.images) {
+        const watermarkedImage =
+          await uploadMediaMutation.applyWatermarkToImage(
+            image as unknown as File,
+            {
               text: "TẠO BỞI BANVE.VN",
               fontSize: 24,
-              textOpacity: 0.7,
+              textOpacity: 1,
               overlayOpacity: 0.4,
+              enableOverlay: true,
+              textColor: "#FFFFFF",
             },
-          },
-        );
+          );
+
+        warkMarkImages.push(watermarkedImage);
       }
+
+      const fileData = fileUploadResponse as unknown as UploadedFile;
 
       const result = await createContentMutation.mutateAsync({
         data: {
@@ -94,13 +92,11 @@ const ContentCreate = () => {
           category_id: values.category_id,
           file_id: fileData._id,
           price: values.price,
-          image1: values?.images[0],
-          image2: values?.images[1],
-          image3: values?.images[2],
-          image4: values?.images[3],
-          image5: image5Data
-            ? (image5Data as unknown as File)
-            : values?.images[4],
+          image1: warkMarkImages?.[0],
+          image2: warkMarkImages?.[1],
+          image3: warkMarkImages?.[2],
+          image4: warkMarkImages?.[3],
+          image5: warkMarkImages?.[4],
         },
       });
 
@@ -111,7 +107,9 @@ const ContentCreate = () => {
         router.refresh();
       }
     } catch (error) {
-      toast.error("Đã có lỗi xảy ra khi tạo nội dung.");
+      toast.error(
+        extractErrorMessage(error) || "Có lỗi không xác định xảy ra.",
+      );
     }
   };
 

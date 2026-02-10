@@ -210,8 +210,11 @@ const DynamicFilterFieldRenderer = (props: Props): ReactNode => {
                   value={rangeValue[0] ?? min}
                   onChange={(e) => {
                     const newMin = parseFloat(e.target.value) || min;
-                    const validMin = Math.min(newMin, rangeValue[1]);
-                    field.onChange([validMin, rangeValue[1]]);
+
+                    if (newMin > min) {
+                      const validMin = Math.min(newMin, rangeValue[1]);
+                      field.onChange([validMin, rangeValue[1]]);
+                    }
                   }}
                   placeholder={String(min)}
                   className="w-full h-9 text-sm"
@@ -226,9 +229,12 @@ const DynamicFilterFieldRenderer = (props: Props): ReactNode => {
                   type="number"
                   value={rangeValue[1] ?? max}
                   onChange={(e) => {
+                    console.log(rangeValue);
                     const newMax = parseFloat(e.target.value) || max;
-                    const validMax = Math.max(newMax, rangeValue[0]);
-                    field.onChange([rangeValue[0], validMax]);
+                    if (newMax < max) {
+                      const validMax = Math.max(newMax, rangeValue[0]);
+                      field.onChange([rangeValue[0], validMax]);
+                    }
                   }}
                   placeholder={String(max)}
                   className="w-full h-9 text-sm"

@@ -52,6 +52,11 @@ interface UseUploadMediaReturn {
     options?: UploadOptions,
   ) => Promise<ApiFileUploadResponse | null>;
 
+  applyWatermarkToImage: (
+    file: File,
+    options?: UseWatermarkOptions,
+  ) => Promise<File>;
+
   // Helpers
   resetProgress: () => void;
   clearProgress: (fileName: string) => void;
@@ -141,11 +146,9 @@ const useUploadMedia = (): UseUploadMediaReturn => {
           fontFamily = "Arial",
           fontWeight = "bold",
           textOpacity = 0.7,
-          spacingY = 150,
-          spacingX = 200,
           fontSize = 22,
           overlayColor,
-          textColor,
+          textColor = "#808080",
         } = watermarkOptions;
 
         // Create image element
@@ -177,26 +180,20 @@ const useUploadMedia = (): UseUploadMediaReturn => {
               ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
 
-            // Draw watermark text
+            // Draw watermark text - single large text in center
             ctx.save();
             ctx.translate(canvas.width / 2, canvas.height / 2);
             ctx.rotate(rotation);
 
-            ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+            // Use larger font size for single watermark
+            const largeFontSize = fontSize;
+            ctx.font = `${fontWeight} ${largeFontSize}px ${fontFamily}`;
             ctx.fillStyle = textColor || `rgba(255, 255, 255, ${textOpacity})`;
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
 
-            // Draw multiple watermarks in a grid
-            for (let x = -canvas.width; x < canvas.width * 2; x += spacingX) {
-              for (
-                let y = -canvas.height;
-                y < canvas.height * 2;
-                y += spacingY
-              ) {
-                ctx.fillText(text, x, y);
-              }
-            }
+            // Draw single watermark in the center
+            ctx.fillText(text, 0, 0);
 
             ctx.restore();
 
@@ -265,11 +262,14 @@ const useUploadMedia = (): UseUploadMediaReturn => {
 
         // Apply watermark if requested
         let processedFile = file;
+        console.log("Upload file:", file);
         if (options.applyWatermark && file.type.startsWith("image/")) {
           updateProgress(fileName, {
             progress: 25,
             status: FileStatus.PENDING,
           });
+
+          console.log("Applying watermark to file:", fileName);
 
           processedFile = await applyWatermarkToImage(
             file,
@@ -447,6 +447,7 @@ const useUploadMedia = (): UseUploadMediaReturn => {
     uploadSingle,
     uploadMultiple,
     uploadWithImages,
+    applyWatermarkToImage,
 
     // Helpers
     resetProgress,
