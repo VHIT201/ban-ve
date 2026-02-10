@@ -35,20 +35,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ReportDialog } from "@/components/shared";
 import { ContentPaymentDialog } from "@/components/modules/content";
-import {
-  useGetApiFileIdDownload,
-  useGetApiFileDownloadFreeContentId,
-} from "@/api/endpoints/files";
+
 import { toast } from "sonner";
-import { PaymentStatusDialog } from "@/components/modules/payment";
 import { useCreateQrPayment } from "@/hooks/modules/payments";
 import { PaymentStatus } from "@/enums/payment";
 import baseConfig from "@/configs/base";
 import { useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
 import EmailDialog from "@/components/shared/email-dialog";
-import { extractErrorMessage } from "@/utils/error";
-import { Separator } from "@/components/ui/separator";
 import { useCountDown } from "@/hooks";
 import { BlueprintDownload } from "./components";
 
@@ -366,14 +360,9 @@ const BlueprintDetailView: FC<Props> = (props) => {
         loading={createQRPaymentMutation.isPending}
         open={openQRPaymentDialog}
         onOpenChange={setOpenQRPaymentDialog}
-      />
-
-      <PaymentStatusDialog
         order={createQRPaymentMutation.order}
-        open={openPaymentStatusDialog}
         amount={content.price}
         status={PaymentStatus.COMPLETED}
-        onOpenChange={setOpenPaymentStatusDialog}
       />
     </Fragment>
   );
