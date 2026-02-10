@@ -45,6 +45,10 @@ const ContentList = () => {
     };
   }>;
 
+  const handleEdit = (content: ContentResponse) => {
+    router.push(`collaborator-content-edit/${content._id}`);
+  };
+
   return (
     <Card className="space-y-6">
       {/* Category Header */}
@@ -69,6 +73,9 @@ const ContentList = () => {
           queryData={getContentListQuery}
           pagination={pagination}
           onPaginationChange={setPagination}
+          actions={{
+            onEdit: handleEdit,
+          }}
         />
       </CardContent>
     </Card>

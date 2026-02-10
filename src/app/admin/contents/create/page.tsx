@@ -56,7 +56,7 @@ const ContentCreate = () => {
           dir: "contents",
           private: false,
           compress: false,
-          applyWatermark: true, // Enable watermark
+          applyWatermark: true,
           watermarkOptions: {
             text: "TẠO BỞI BANVE.VN",
             fontSize: 24,
