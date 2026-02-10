@@ -43,8 +43,6 @@ const DailyBestDownloaded = () => {
     router.push(`/detail/${blueprint._id}`);
   };
 
-  console.log("getBluerintListQuery", getBluerintListQuery.data);
-
   return (
     <section className="py-12 px-4 max-w-[1500px] mx-auto">
       <Carousel
