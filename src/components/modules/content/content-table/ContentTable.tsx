@@ -78,7 +78,6 @@ const ContentTable = (props: Props) => {
   const deleteContentMutation = useDeleteApiContentId({
     mutation: {
       onSuccess: () => {
-        toast.success("Xóa nội dung thành công");
         setDeleteSelectRow(null);
         queryData.refetch();
         router.refresh();
@@ -185,7 +184,11 @@ const ContentTable = (props: Props) => {
 
         <DataTable.Pagination />
 
-        <DataTableBulkActions entityName="sản phẩm" actions={bulkActionList} />
+        <DataTableBulkActions
+          entityName="sản phẩm"
+          actions={bulkActionList}
+          externalSelectedRows={selectedRows}
+        />
 
         <DataTableDeleteDialog
           currentRow={

@@ -17,4 +17,5 @@ export interface Action {
 export interface Props {
   entityName: string;
   actions: Action[];
+  externalSelectedRows?: any[]; // Optional external selected rows for cross-page selection
 }
