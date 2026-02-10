@@ -39,7 +39,7 @@ export async function generateMetadata({
         }).format(content.price)
       : "Miễn phí";
 
-    return generateSEOMetadata({
+    const metadata = generateSEOMetadata({
       title: content.title || "Chi tiết sản phẩm",
       description:
         content.description ||
@@ -57,6 +57,10 @@ export async function generateMetadata({
       publishedTime: content.createdAt,
       authors: content.createdBy?.fullname ? [content.createdBy.fullname] : [],
     });
+
+    console.log("Generated metadata:", metadata);
+
+    return metadata;
   } catch (error) {
     // If error, return default metadata
     return generateSEOMetadata({

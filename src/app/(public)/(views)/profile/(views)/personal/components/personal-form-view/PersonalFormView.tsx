@@ -23,7 +23,6 @@ import { Calendar, Save, Loader2 } from "lucide-react";
 
 import { useGetApiAuthMe } from "@/api/endpoints/auth";
 import { getRoleLabel, getRoleVariant } from "@/utils/role";
-import { toast } from "sonner";
 
 const personalFormSchema = z.object({
   fullname: z
