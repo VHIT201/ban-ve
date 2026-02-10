@@ -182,37 +182,104 @@ const DailyUserPostStats = () => {
           </span>
           <span className="@[540px]/card:hidden">{timeRangeLabel}</span>
         </CardDescription>
-        <CardAction>
-          <div className="flex flex-col gap-3 @[767px]/card:flex-row @[767px]/card:items-center">
-            <ToggleGroup
-              type="single"
-              value={timeRange}
-              onValueChange={(value) =>
-                value && setTimeRange(value as TimeRange)
+      <CardAction className="w-full flex justify-end">
+  {/* Desktop */}
+  <div className="hidden md:block">
+    <ToggleGroup
+      type="single"
+      value={timeRange}
+      onValueChange={(value) =>
+        value && setTimeRange(value as TimeRange)
+      }
+      variant="outline"
+      className="flex gap-1"
+    >
+      <ToggleGroupItem value="90d" className="px-4 py-2">3 tháng</ToggleGroupItem>
+      <ToggleGroupItem value="30d" className="px-4 py-2">30 ngày</ToggleGroupItem>
+      <ToggleGroupItem value="7d" className="px-4 py-2">7 ngày</ToggleGroupItem>
+
+      <Popover>
+        <PopoverTrigger asChild>
+          <ToggleGroupItem value="custom" className="px-4 py-2">Tùy chỉnh</ToggleGroupItem>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="end">
+          <DateRangerPicker
+            value={{
+              from: customStartDate?.toISOString().split("T")[0] ?? "",
+              to: customEndDate?.toISOString().split("T")[0] ?? "",
+            }}
+            onChange={({ from, to }) => {
+              if (from && to) {
+                setCustomStartDate(new Date(from));
+                setCustomEndDate(new Date(to));
+                setTimeRange("custom");
               }
-              variant="outline"
-              className="hidden *:data-[slot=toggle-group-item]:px-4! @[767px]/card:flex"
-            >
-              <ToggleGroupItem value="90d">3 tháng</ToggleGroupItem>
-              <ToggleGroupItem value="30d">30 ngày</ToggleGroupItem>
-              <ToggleGroupItem value="7d">7 ngày</ToggleGroupItem>
-              <Popover>
-                <PopoverTrigger>
-                  <ToggleGroupItem value="custom">Tùy chỉnh</ToggleGroupItem>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <DateRangerPicker
-                    value={{
-                      from: customStartDate?.toISOString().split("T")[0] ?? "",
-                      to: customEndDate?.toISOString().split("T")[0] ?? "",
-                    }}
-                    onChange={({ from, to }) => {}}
-                  />
-                </PopoverContent>
-              </Popover>
-            </ToggleGroup>
-          </div>
-        </CardAction>
+            }}
+          />
+        </PopoverContent>
+      </Popover>
+    </ToggleGroup>
+  </div>
+
+  {/* Mobile dropdown */}
+  <div className="md:hidden">
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" className="flex items-center gap-2 min-w-[140px] justify-between">
+          {timeRangeLabel}
+          <CalendarIcon className="h-4 w-4" />
+        </Button>
+      </PopoverTrigger>
+
+      <PopoverContent
+        align="end"
+        sideOffset={8}
+        className="w-48 p-2 space-y-1"
+      >
+        {[
+          { value: "90d", label: "3 tháng" },
+          { value: "30d", label: "30 ngày" },
+          { value: "7d", label: "7 ngày" },
+        ].map((item) => (
+          <Button
+            key={item.value}
+            variant={timeRange === item.value ? "default" : "ghost"}
+            className="w-full justify-start h-8 px-2"
+            onClick={() => setTimeRange(item.value as TimeRange)}
+          >
+            {item.label}
+          </Button>
+        ))}
+
+        <div className="border-t pt-1">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" className="w-full justify-start h-8 px-2">
+                Tùy chỉnh khoảng ngày
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start" side="right">
+              <DateRangerPicker
+                value={{
+                  from: customStartDate?.toISOString().split("T")[0] ?? "",
+                  to: customEndDate?.toISOString().split("T")[0] ?? "",
+                }}
+                onChange={({ from, to }) => {
+                  if (from && to) {
+                    setCustomStartDate(new Date(from));
+                    setCustomEndDate(new Date(to));
+                    setTimeRange("custom");
+                  }
+                }}
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+      </PopoverContent>
+    </Popover>
+  </div>
+</CardAction>
+
       </CardHeader>
       <CardContent className="space-y-4 px-2 pt-4 sm:px-6 sm:pt-6">
         {/* Legend at top */}
