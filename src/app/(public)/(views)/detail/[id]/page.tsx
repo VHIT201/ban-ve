@@ -58,8 +58,6 @@ export async function generateMetadata({
       authors: content.createdBy?.fullname ? [content.createdBy.fullname] : [],
     });
 
-    console.log("Generated metadata:", metadata);
-
     return metadata;
   } catch (error) {
     // If error, return default metadata

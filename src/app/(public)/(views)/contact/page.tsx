@@ -16,11 +16,17 @@ import { usePostApiContacts } from "@/api/endpoints/contacts";
 
 // Form schema
 const contactFormSchema = z.object({
-  full_name: z.string().min(2, "Họ tên phải có ít nhất 2 ký tự"),
+  full_name: z.string().min(2, "Họ tên phải có ít nhất 2 ký tự").max(25,"Họ tên có nhiều nhất 25 ký tự").regex(
+    /^\S(.*\S)?$/,
+    "Họ tên không được có khoảng trắng ở đầu hoặc cuối"
+  ),
   email: z.string().email("Email không hợp lệ").optional().or(z.literal("")),
-  phone: z.string().optional(),
-  title: z.string().min(3, "Tiêu đề phải có ít nhất 3 ký tự").optional(),
-  message: z.string().min(10, "Nội dung phải có ít nhất 10 ký tự").optional(),
+  phone: z.string().regex(/^0\d{9}$/, "Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0").regex(
+    /^\S(.*\S)?$/,
+    "Số điện thoại không được có khoảng trắng ở đầu hoặc cuối"
+  ),
+  title: z.string().min(3, "Tiêu đề phải có ít nhất 3 ký tự").max(30,"Tiêu đề phải có nhiều nhất 30 ký tự").optional(),
+  message: z.string().min(10, "Nội dung phải có ít nhất 10 ký tự").max(2000,"Nội dung phải có nhiều nhất 2000 ký tự").optional(),
 });
 
 type ContactFormData = z.infer<typeof contactFormSchema>;
