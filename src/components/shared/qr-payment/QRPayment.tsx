@@ -42,6 +42,8 @@ const QRPayment: FC<Props> = (props) => {
   const router = useRouter();
   const confettiRef = useRef<ConfettiRef>(null);
 
+  console.log("QRPayment rendered with status:", status);
+
   // Derived states
   const isSuccess = status === PaymentStatus.COMPLETED;
 
@@ -62,7 +64,11 @@ const QRPayment: FC<Props> = (props) => {
   }, [isSuccess]);
 
   return (
-    <Confetti ref={confettiRef} className="fixed">
+    <Confetti
+      manualstart={true}
+      ref={confettiRef}
+      className="fixed inset-0 pointer-events-none z-50 w-full h-full"
+    >
       <AnimatePresence mode="wait">
         {isSuccess ? (
           // Success View

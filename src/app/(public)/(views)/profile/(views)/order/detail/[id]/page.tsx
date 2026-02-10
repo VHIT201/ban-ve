@@ -45,23 +45,34 @@ function OrderDetail() {
 
       {/* Content */}
       <QueryBoundary query={getOrderDetailQuery}>
-        {(order) => (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <OrderDetailSoldList
-                items={
-                  order?.paymentId?.paymentDetails?.orderDetails?.items ?? []
-                }
-              />
-            </div>
-
-            {order ? (
-              <div className="lg:col-span-1">
-                <OrderDetailInformation order={order} />
+        {(order) => {
+          if (!order) {
+            return (
+              <div className="text-center py-8 text-gray-500">
+                Không tìm thấy đơn hàng.
               </div>
-            ) : null}
-          </div>
-        )}
+            );
+          }
+
+          return (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <OrderDetailSoldList
+                  items={
+                    order?.paymentId?.paymentDetails?.orderDetails?.items ?? []
+                  }
+                />
+              </div>
+
+              <div className="lg:col-span-1">
+                <OrderDetailInformation
+                  order={order}
+                  items={order?.paymentId?.paymentDetails?.items ?? []}
+                />
+              </div>
+            </div>
+          );
+        }}
       </QueryBoundary>
     </div>
   );

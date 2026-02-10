@@ -5,15 +5,12 @@ import { Package, ShoppingBag } from "lucide-react";
 import baseConfig from "@/configs/base";
 import { CartItemContent } from "@/api/types/order";
 import Image from "@/components/ui/image";
-import { Button } from "@/components/ui/button";
 
 interface Props {
   items?: OrderItem[];
 }
 
 function OrderDetailSoldList({ items = [] }: Props) {
-  console.log("OrderDetailSoldList items:", items);
-
   if (items.length === 0) {
     return (
       <Card className="border border-gray-200 shadow-sm">

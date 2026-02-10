@@ -10,17 +10,26 @@ import {
   CreditCard,
   Calendar,
   Hash,
-  User,
 } from "lucide-react";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
+import { ContentPaymentDialog } from "@/components/modules/content";
+import { useProfileStore } from "@/stores";
+import { useShallow } from "zustand/shallow";
+import { useCreateQrPayment } from "@/hooks/modules/payments";
+import { toast } from "sonner";
+import { extractErrorMessage } from "@/utils/error";
+import { OrderItem } from "@/api/models";
+import { PaymentStatus } from "@/enums/payment";
+import { useState } from "react";
 
 interface Props {
   order: Order;
+  items: OrderItem[];
 }
 
-function OrderDetailInformation({ order }: Props) {
+function OrderDetailInformation({ order, items }: Props) {
   const getStatusConfig = (status?: OrderStatus) => {
     switch (status) {
       case OrderStatus.completed:
@@ -68,6 +77,36 @@ function OrderDetailInformation({ order }: Props) {
   const formatDate = (dateString?: string) => {
     if (!dateString) return "—";
     return format(new Date(dateString), "dd/MM/yyyy HH:mm", { locale: vi });
+  };
+
+  // Stores
+  const profileStore = useProfileStore(useShallow(({ email }) => ({ email })));
+
+  // States
+  const [openQRPaymentDialog, setOpenQRPaymentDialog] = useState(false);
+
+  // Mutations
+  const createQRPaymentMutation = useCreateQrPayment({
+    orders: items.map((item) => ({
+      contentId: item.contentId as string,
+      quantity: item.quantity || 1,
+    })),
+  });
+
+  // Methods
+  const handleRetryPayment = async () => {
+    if (!profileStore.email) {
+      toast.warning("Email người dùng không tồn tại.");
+      return;
+    }
+
+    try {
+      await createQRPaymentMutation.createPaymentQR(profileStore.email);
+
+      setOpenQRPaymentDialog(true);
+    } catch (error) {
+      toast.error(extractErrorMessage(error) || "Tạo QR Payment thất bại.");
+    }
   };
 
   return (
@@ -185,11 +224,25 @@ function OrderDetailInformation({ order }: Props) {
 
           <Separator />
 
-          <Button variant="destructive" className="w-full">
+          <Button
+            variant="destructive"
+            onClick={handleRetryPayment}
+            className="w-full"
+          >
             Mua lại
           </Button>
         </div>
       </CardContent>
+
+      <ContentPaymentDialog
+        open={openQRPaymentDialog}
+        onOpenChange={setOpenQRPaymentDialog}
+        urlQRCode={createQRPaymentMutation.qrCodeUrl}
+        loading={createQRPaymentMutation.isPending}
+        order={createQRPaymentMutation.order}
+        status={createQRPaymentMutation.streamingStatus}
+        amount={order.totalAmount || 0}
+      />
     </Card>
   );
 }

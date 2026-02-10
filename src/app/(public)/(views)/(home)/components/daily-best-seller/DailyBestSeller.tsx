@@ -92,7 +92,7 @@ const DailyBestDownloaded = () => {
           {(products) => {
             return (
               <div className="lg:col-span-4">
-                <CarouselContent className="-ml-10">
+                <CarouselContent className="-ml-10 pt-6">
                   {products?.map((product) => (
                     <CarouselItem
                       key={product?.contentId}

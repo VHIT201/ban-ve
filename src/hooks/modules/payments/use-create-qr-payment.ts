@@ -44,15 +44,18 @@ const useCreateQRPayment = (props: Props) => {
   );
 
   // Methods
-  const handlePaymentSSEEvent = useCallback((data: SSEPaymentMessage) => {
-    if (data.status === PaymentStatus.PENDING) {
-      onConnect?.();
-      setIsStreaming(true);
-    } else if (data.status === PaymentStatus.COMPLETED) {
-      setIsStreaming(false);
-    }
-    setStreamingStatus(data.status);
-  }, [onConnect]);
+  const handlePaymentSSEEvent = useCallback(
+    (data: SSEPaymentMessage) => {
+      if (data.status === PaymentStatus.PENDING) {
+        onConnect?.();
+        setIsStreaming(true);
+      } else if (data.status === PaymentStatus.COMPLETED) {
+        setIsStreaming(false);
+      }
+      setStreamingStatus(data.status);
+    },
+    [onConnect],
+  );
 
   // Mutations
   const createOrderMutation = usePostApiOrders();
@@ -64,7 +67,7 @@ const useCreateQRPayment = (props: Props) => {
       const paymentStore = usePaymentStore.getState();
 
       const existsOrder = paymentStore.findExistsOrder({
-        items: orders,
+        items: orders as any[],
         paymentMethod: PaymentMethod.SEPAY,
       });
 
@@ -128,11 +131,14 @@ const useCreateQRPayment = (props: Props) => {
   };
 
   // Stream SSE Payment
-  const handleSSEEvent = useCallback((event: string, data: SSEPaymentMessage) => {
-    if (event === "payment_status") {
-      handlePaymentSSEEvent(data);
-    }
-  }, [handlePaymentSSEEvent]);
+  const handleSSEEvent = useCallback(
+    (event: string, data: SSEPaymentMessage) => {
+      if (event === "payment_status") {
+        handlePaymentSSEEvent(data);
+      }
+    },
+    [handlePaymentSSEEvent],
+  );
 
   useSSEStream({
     enable:
