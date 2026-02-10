@@ -68,6 +68,13 @@ const DailyFeatureSection = () => {
           </h2>
         </div>
 
+        {blueprintInfiniteList.length === 0 &&
+        !getBluePrintListInfiniteQuery.isFetching ? (
+          <div className="text-center py-8 text-gray-500">
+            Chưa có sản phẩm nổi bật.
+          </div>
+        ) : null}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8">
           {blueprintInfiniteList.map(
             (blueprint) =>

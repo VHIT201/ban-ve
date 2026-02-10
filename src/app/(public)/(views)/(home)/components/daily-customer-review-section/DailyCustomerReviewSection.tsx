@@ -30,6 +30,12 @@ const CustomerReviewSection = () => {
           </h2>
         </div>
 
+        {getCustomerReviewsQuery?.data?.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">
+            Chưa có đánh giá từ khách hàng.
+          </div>
+        ) : null}
+
         <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
           <Carousel
             opts={{

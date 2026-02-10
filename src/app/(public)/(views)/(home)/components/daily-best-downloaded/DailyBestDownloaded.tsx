@@ -64,6 +64,12 @@ const DailyBestDownloaded = () => {
           </div>
         </div>
 
+        {getBluerintListQuery.data?.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">
+            Chưa có dữ liệu tải nhiều nhất.
+          </div>
+        ) : null}
+
         {/* Product Cards */}
         <QueryBoundary
           query={getBluerintListQuery}

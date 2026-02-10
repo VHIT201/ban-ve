@@ -25,6 +25,7 @@ import {
 } from "@/api/models";
 
 import { useRouter } from "next/navigation";
+import { get } from "http";
 
 const DailyBestDownloaded = () => {
   // Hooks
@@ -71,6 +72,12 @@ const DailyBestDownloaded = () => {
           </div>
         </div>
 
+        {getBluerintListQuery.data?.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">
+            Chưa có dữ liệu tải nhiều nhất.
+          </div>
+        ) : null}
+
         {/* Product Cards */}
         <QueryBoundary
           query={getBluerintListQuery}
@@ -83,7 +90,6 @@ const DailyBestDownloaded = () => {
           }
         >
           {(products) => {
-            console.log("PRODUCTS", products);
             return (
               <div className="lg:col-span-4">
                 <CarouselContent className="-ml-10">
