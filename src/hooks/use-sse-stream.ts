@@ -21,7 +21,7 @@ export default function useSSEStream<T>({
   useEffect(() => {
     const authStore = useAuthStore.getState();
 
-    if (!url || !enable || !authStore.accessToken) {
+    if (!url || !enable) {
       return undefined;
     }
 

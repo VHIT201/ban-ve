@@ -20,7 +20,7 @@ import { SearchX } from "lucide-react";
 
 const OrderDataList = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 3;
+  const pageSize = 6;
 
   const ordersQuery = useGetApiOrders(
     {
@@ -31,10 +31,14 @@ const OrderDataList = () => {
       query: {
         select: (res: any) => ({
           orders: res.data?.orders ?? [],
-          pagination: res.data?.pagination ?? { total: 0, page: 1, limit: pageSize },
+          pagination: res.data?.pagination ?? {
+            total: 0,
+            page: 1,
+            limit: pageSize,
+          },
         }),
       },
-    }
+    },
   ) as UseQueryResult<{ orders: Order[]; pagination: any }>;
 
   return (
@@ -62,7 +66,7 @@ const OrderDataList = () => {
           }
 
           const totalPages = Math.ceil(pagination.total / pagination.limit);
-          
+
           const handlePageChange = (page: number) => {
             setCurrentPage(page);
           };
@@ -70,7 +74,7 @@ const OrderDataList = () => {
           const generatePaginationItems = () => {
             const items = [];
             const maxVisiblePages = 5;
-            
+
             if (totalPages <= maxVisiblePages) {
               for (let i = 1; i <= totalPages; i++) {
                 items.push(
@@ -85,7 +89,7 @@ const OrderDataList = () => {
                     >
                       {i}
                     </PaginationLink>
-                  </PaginationItem>
+                  </PaginationItem>,
                 );
               }
             } else {
@@ -102,7 +106,7 @@ const OrderDataList = () => {
                   >
                     1
                   </PaginationLink>
-                </PaginationItem>
+                </PaginationItem>,
               );
 
               // Show ellipsis if needed
@@ -110,14 +114,14 @@ const OrderDataList = () => {
                 items.push(
                   <PaginationItem key="ellipsis-start">
                     <PaginationEllipsis />
-                  </PaginationItem>
+                  </PaginationItem>,
                 );
               }
 
               // Show pages around current page
               const startPage = Math.max(2, currentPage - 1);
               const endPage = Math.min(totalPages - 1, currentPage + 1);
-              
+
               for (let i = startPage; i <= endPage; i++) {
                 items.push(
                   <PaginationItem key={i}>
@@ -131,7 +135,7 @@ const OrderDataList = () => {
                     >
                       {i}
                     </PaginationLink>
-                  </PaginationItem>
+                  </PaginationItem>,
                 );
               }
 
@@ -140,7 +144,7 @@ const OrderDataList = () => {
                 items.push(
                   <PaginationItem key="ellipsis-end">
                     <PaginationEllipsis />
-                  </PaginationItem>
+                  </PaginationItem>,
                 );
               }
 
@@ -158,7 +162,7 @@ const OrderDataList = () => {
                     >
                       {totalPages}
                     </PaginationLink>
-                  </PaginationItem>
+                  </PaginationItem>,
                 );
               }
             }
@@ -197,10 +201,14 @@ const OrderDataList = () => {
                               handlePageChange(currentPage - 1);
                             }
                           }}
-                          className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                          className={
+                            currentPage === 1
+                              ? "pointer-events-none opacity-50"
+                              : ""
+                          }
                         />
                       </PaginationItem>
-                      
+
                       {generatePaginationItems()}
 
                       <PaginationItem>
@@ -212,7 +220,11 @@ const OrderDataList = () => {
                               handlePageChange(currentPage + 1);
                             }
                           }}
-                          className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                          className={
+                            currentPage === totalPages
+                              ? "pointer-events-none opacity-50"
+                              : ""
+                          }
                         />
                       </PaginationItem>
                     </PaginationContent>
