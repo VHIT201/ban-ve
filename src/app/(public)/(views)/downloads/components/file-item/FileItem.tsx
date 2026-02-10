@@ -44,9 +44,9 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   // Fetch content data using the contentId string
-  const { data: contentData } = useGetApiContentId(item.contentId!, {
+  const { data: contentData } = useGetApiContentId(item.contentId?._id!, {
     query: {
-      enabled: !!item.contentId,
+      enabled: !!item.contentId?._id,
     },
   });
 
@@ -122,21 +122,21 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
   const FileIcon = getFileIcon("PDF");
 
   return (
-      <motion.div
-        key={`file-item-${contentData?._id}-${index}`}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{
-          delay: 0.6 + index * 0.1,
-          duration: 0.4,
-          type: "spring",
-          stiffness: 100,
-        }}
-        whileHover={{
-          scale: 1.02,
-          transition: { duration: 0.2 },
-        }}
-      >
+    <motion.div
+      key={`file-item-${contentData?._id}-${index}`}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        delay: 0.6 + index * 0.1,
+        duration: 0.4,
+        type: "spring",
+        stiffness: 100,
+      }}
+      whileHover={{
+        scale: 1.02,
+        transition: { duration: 0.2 },
+      }}
+    >
       <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-primary/50">
         <CardContent className="p-4">
           <div className="flex items-center gap-4">

@@ -17,6 +17,10 @@ const BlueprintDetailFeedback: FC<Props> = (props) => {
     useShallow(({ isSignedIn }) => ({ isSignedIn })),
   );
 
+  // Memos
+  const allowedToComment =
+    (authStore.isSignedIn && Boolean(content?.orderId)) || content.price === 0;
+
   return (
     <div>
       <div className="mb-8">
@@ -30,7 +34,7 @@ const BlueprintDetailFeedback: FC<Props> = (props) => {
 
       <CommentProvider contentId={content._id}>
         <div className="space-y-8">
-          {authStore.isSignedIn && content?.orderId && (
+          {allowedToComment && (
             <div className="bg-gray-50 p-6 border border-gray-200">
               <CommentCreationForm />
             </div>
