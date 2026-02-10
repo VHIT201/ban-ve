@@ -36,8 +36,7 @@ const CommentItem: FC<Props> = (props) => {
   // States
   const [isEdit, setIsEdit] = useState(false);
   const [isReply, setIsReply] = useState(false);
-  // const [isLiked, setIsLiked] = useState(false);
-  // const [likeCount, setLikeCount] = useState(0);
+
   const [isDisplayContentSeeMore, setIsDisplayContentSeeMore] =
     useState<ContentStatus>(() => {
       return (comment?.content?.split("")?.length ?? 0) > MAX_CONTENT_LENGTH

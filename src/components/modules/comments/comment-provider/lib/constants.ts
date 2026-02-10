@@ -3,6 +3,7 @@ import { CommentItem } from "./types";
 
 export const COMMENT_SECTION_CONTEXT = createContext<{
   // Props
+  admin?: boolean;
   contentId?: string;
   commentList?: CommentItem[];
   isFetching?: boolean;
