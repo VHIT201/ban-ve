@@ -51,8 +51,12 @@ const CommentCreationForm: FC<Props> = (props) => {
   );
 
   // Hooks
-  const { contentId, createComment, updateComment } =
-    useCommentSectionContext();
+  const {
+    contentId,
+    createComment,
+    updateComment,
+    admin: isAdmin,
+  } = useCommentSectionContext();
 
   // Constants
   const MAX_COMMENT_LENGTH = 500;
@@ -198,7 +202,6 @@ const CommentCreationForm: FC<Props> = (props) => {
         ? "Chỉnh sửa bình luận..."
         : "Viết bình luận của bạn...";
 
-  // Helper function to get user initials
   const getUserInitials = (name?: string) => {
     if (!name) return "U";
     const words = name.trim().split(" ");

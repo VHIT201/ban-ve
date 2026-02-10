@@ -6,7 +6,7 @@ import { CommentDeleteDialog } from "./components";
 
 const CommentProvider: FC<Props> = (props) => {
   // Props
-  const { contentId, children } = props;
+  const { admin, contentId, children } = props;
 
   // Hooks
   const {
@@ -37,6 +37,7 @@ const CommentProvider: FC<Props> = (props) => {
     <COMMENT_SECTION_CONTEXT.Provider
       value={{
         // Props
+        admin,
         contentId,
         commentList,
         isFetching,
