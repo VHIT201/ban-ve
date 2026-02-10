@@ -260,11 +260,14 @@ export const useContentTableColumnsDefs = (
           const content = row.original;
           const actions = [];
 
-          if (content.status?.toLowerCase() === ContentStatus.pending) {
+          if (
+            onApprove &&
+            content.status?.toLowerCase() === ContentStatus.pending
+          ) {
             actions.push({
               label: "Xét duyệt",
               icon: CheckIcon,
-              onAction: () => onApprove?.(content),
+              onAction: () => onApprove(content),
             });
           }
 

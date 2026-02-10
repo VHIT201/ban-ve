@@ -2,6 +2,7 @@
 
 import {
   getGetApiContentAllQueryKey,
+  getGetApiContentMyContentsQueryKey,
   getGetApiContentQueryKey,
   usePostApiContentUpload,
 } from "@/api/endpoints/content";
@@ -34,6 +35,7 @@ const ContentDetail = () => {
         invalidateQueries: [
           getGetApiContentQueryKey(),
           getGetApiContentAllQueryKey(),
+          getGetApiContentMyContentsQueryKey(),
         ],
       },
     },
@@ -82,6 +84,8 @@ const ContentDetail = () => {
           image5: warkMarkImages?.[4],
         },
       });
+
+      toast.success("Tạo nội dung mới thành công");
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
       toast.error(
