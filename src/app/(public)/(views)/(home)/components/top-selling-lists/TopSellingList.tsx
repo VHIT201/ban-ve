@@ -112,6 +112,12 @@ const BestSellingData = () => {
         </h2>
       </div>
 
+      {bestSellingProducts.length === 0 && !getBluerintListQuery.isFetching ? (
+        <div className="text-center py-8 text-gray-500">
+          Chưa có dữ liệu bán chạy.
+        </div>
+      ) : null}
+
       {getBluerintListQuery.isFetching ? (
         <BestSellingCarouselSkeleton />
       ) : (
