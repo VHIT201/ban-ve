@@ -172,6 +172,7 @@ const Image: FC<ImageProps> = ({
       {preview && imageState === "loaded" && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <Button
+            type="button"
             size="icon"
             variant="ghost"
             onClick={openPreview}

@@ -410,9 +410,6 @@ const ContentEditorForm = ({
                 className="sticky top-0 z-10 bg-white border-b px-6 py-4"
               >
                 <DialogTitle className="text-lg font-semibold flex items-center gap-2.5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50">
-                    <FileText className="h-5 w-5 text-blue-600" />
-                  </div>
                   <span>Xác nhận đăng bài</span>
                 </DialogTitle>
               </motion.div>
@@ -424,7 +421,7 @@ const ContentEditorForm = ({
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3, delay: 0.1 }}
-                  className="flex items-start gap-3 p-3.5 bg-amber-50/50 border border-amber-200/60 rounded-lg"
+                  className="flex items-start gap-3 p-3.5 bg-amber-50/50 border border-amber-200/60"
                 >
                   <ShieldAlert className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
                   <div className="space-y-1">
@@ -449,7 +446,7 @@ const ContentEditorForm = ({
                     <Info className="h-4 w-4 text-blue-600" />
                     <span>Thông tin bài đăng</span>
                   </div>
-                  <div className="grid gap-2 rounded-lg border bg-muted/30 p-3.5">
+                  <div className="grid gap-2 border bg-muted/30 p-3.5">
                     <div className="flex items-start justify-between gap-4">
                       <span className="text-xs text-muted-foreground">
                         Tiêu đề
