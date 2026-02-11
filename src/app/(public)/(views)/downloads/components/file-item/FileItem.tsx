@@ -12,7 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { extractErrorMessage } from "@/utils/error";
 import { downloadFile, getFileIcon } from "@/utils/file";
 import { motion } from "framer-motion";
-import { DownloadIcon, FileText, XIcon } from "lucide-react";
+import { DownloadIcon } from "lucide-react";
 import { FC, useState } from "react";
 import { toast } from "sonner";
 import Image from "@/components/ui/image";
@@ -44,8 +44,9 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
   const [isError, setIsError] = useState<boolean>(false);
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
-  // Fetch content data using the contentId string
-  const { data: contentData } = useGetApiContentId(item.contentId?._id!, {
+  const contentId = (item.contentId?._id ?? "") as unknown as string;
+
+  const { data: contentData } = useGetApiContentId(contentId, {
     query: {
       enabled: !!item.contentId?._id,
     },
@@ -58,7 +59,7 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
   const downloadPaidFile = useGetApiFileIdDownload(
     orderId!,
     {
-      fileId: contentData?.file_id?._id!,
+      fileId: contentData?.file_id?._id! as string,
     },
     {
       query: {

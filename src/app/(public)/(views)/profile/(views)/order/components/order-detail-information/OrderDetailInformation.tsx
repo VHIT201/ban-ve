@@ -88,7 +88,7 @@ function OrderDetailInformation({ order, items }: Props) {
   // Mutations
   const createQRPaymentMutation = useCreateQrPayment({
     orders: items.map((item) => ({
-      contentId: item.contentId as string,
+      contentId: item.contentId?._id || "",
       quantity: item.quantity || 1,
     })),
   });
