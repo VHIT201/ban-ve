@@ -44,7 +44,7 @@ interface Props {
 }
 
 function PersonalFormView({ onSubmit }: Props) {
-  const { data: userData, isLoading } = useGetApiAuthMe();
+  const { data: userData, isLoading, refetch } = useGetApiAuthMe();
   const user = userData?.data;
 
   const [saving, setSaving] = useState(false);
@@ -72,6 +72,7 @@ function PersonalFormView({ onSubmit }: Props) {
       await onSubmit?.(data);
     } finally {
       setSaving(false);
+      refetch();
     }
   };
 
