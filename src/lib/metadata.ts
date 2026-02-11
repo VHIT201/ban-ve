@@ -42,7 +42,7 @@ export function generateMetadata(params: GenerateMetadataParams): Metadata {
       description,
       images: [
         {
-          url: image.startsWith("http") ? image : `${baseUrl}/${image}`,
+          url: "https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m2zj7kewi6eo98",
           width: 1200,
           height: 630,
           alt: title,
