@@ -10,8 +10,10 @@ import { extractErrorMessage } from "@/utils/error";
 
 function Personal() {
   const profileStore = useProfileStore(
-    useShallow(({ avatar, setStore }) => ({
+    useShallow(({ avatar, fullName, email, setStore }) => ({
       avatar,
+      fullName,
+      email,
       setStore,
     })),
   );
@@ -20,22 +22,25 @@ function Personal() {
 
   const handleUpdateProfile = async (data: PersonalFormData) => {
     try {
-      await updateUserProfileMutation.mutateAsync({
+      const response = await updateUserProfileMutation.mutateAsync({
         data: {
-          avatar: profileStore.avatar,
           fullname: data.fullname,
           email: data.email,
         },
       });
 
-      profileStore.setStore({
-        avatar: profileStore.avatar,
-        fullName: data.fullname,
-        email: data.email,
-      });
+      // Cập nhật store với thông tin từ server
+      if (response.data) {
+        profileStore.setStore({
+          avatar: response.data.avatar || profileStore.avatar,
+          fullName: response.data.fullname,
+          email: response.data.email,
+        });
+        toast.success("Cập nhật thông tin thành công");
+      }
     } catch (error) {
       toast.error(
-        extractErrorMessage(error) || "Cập nhật ảnh đại diện thất bại",
+        extractErrorMessage(error) || "Cập nhật thông tin thất bại",
       );
     }
   };

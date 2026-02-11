@@ -12,7 +12,6 @@ import { useShallow } from "zustand/shallow";
 
 import { UploadAvatarDialog } from "@/components/shared";
 import { usePutApiAuthUpdateProfile } from "@/api/endpoints/auth";
-import { useUploadMedia } from "@/hooks";
 
 import { toast } from "sonner";
 import { extractErrorMessage } from "@/utils/error";
@@ -37,21 +36,25 @@ export default function ProfileSidebar() {
   /* Handler */
   const handleChangeAvatar = async (file: File) => {
     try {
-      // Gửi thẳng file (Blob) lên API update-profile
-      await updateUserProfileMutation.mutateAsync({
+      // Gửi file trực tiếp lên API update-profile
+      const response = await updateUserProfileMutation.mutateAsync({
         data: {
+          avatar: file, 
           fullname: profileStore.fullName,
           email: profileStore.email,
         },
       });
-
-      // Tạo URL tạm thời để hiển thị avatar mới
-      const avatarUrl = URL.createObjectURL(file);
-      profileStore.setStore({
-        avatar: avatarUrl,
-        fullName: profileStore.fullName,
-        email: profileStore.email,
-      });
+// Tạo URL tạm thời để hiển thị avatar mới
+//       const avatarUrl = URL.createObjectURL(file);
+      // Cập nhật store với thông tin từ server
+      if (response.data?.avatar) {
+        profileStore.setStore({
+          avatar: response.data.avatar,
+          fullName: response.data.fullname,
+          email: response.data.email,
+        });
+        toast.success("Cập nhật ảnh đại diện thành công");
+      }
     } catch (error) {
       toast.error(
         extractErrorMessage(error) || "Cập nhật ảnh đại diện thất bại",
