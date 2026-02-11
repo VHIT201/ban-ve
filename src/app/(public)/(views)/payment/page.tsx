@@ -264,8 +264,6 @@ const PaymentPage = () => {
         });
       });
 
-      cart.clearCart();
-
       toast.success("Thanh toán thành công. Cảm ơn bạn đã mua hàng.");
       router.push("/");
     } catch (error) {
@@ -296,6 +294,13 @@ const PaymentPage = () => {
       createQRPaymentMutation.createPaymentQR(profileStore.email);
     }
   }, [paymentMethod, cart.items.length, profileStore.email]);
+
+  useEffect(() => {
+    if (createQRPaymentMutation.streamingStatus === PaymentStatus.COMPLETED) {
+      cart.clearCart();
+      toast.success("Thanh toán QR Code thành công. Cảm ơn bạn đã mua hàng.");
+    }
+  }, [createQRPaymentMutation.streamingStatus]);
 
   if (!authStore.isSignedIn) {
     return (

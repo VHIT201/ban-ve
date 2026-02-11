@@ -96,8 +96,8 @@ const CollectionList: FC<Props> = (props) => {
       page: currentPage,
       limit: itemsPerPage,
       category: filter.categories.join(","),
-      minPrice: filter.priceRange[0] * 10000,
-      maxPrice: filter.priceRange[1] * 10000,
+      minPrice: filter.priceRange[0],
+      maxPrice: filter.priceRange[1],
       search: filter.searchQuery,
     },
     {

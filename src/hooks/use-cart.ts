@@ -221,9 +221,9 @@ export const useCart = ({
         ),
       );
       await queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
-    } else {
-      cartStore.clearCart();
     }
+
+    cartStore.clearCart();
   }, [isSignedIn, items, deleteCartMutation, cartStore, queryClient]);
 
   // UI Actions (luôn dùng store cho UI state)
