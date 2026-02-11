@@ -148,8 +148,6 @@ const BlueprintDownload: FC<Props> = ({ content }) => {
 
   const buttonState = getButtonState();
 
-  console.log("BlueprintDownload render:", countdown);
-
   return (
     <>
       {isFree && (

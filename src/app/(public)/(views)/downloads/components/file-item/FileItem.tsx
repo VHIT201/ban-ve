@@ -10,7 +10,11 @@ import { ResponseData } from "@/api/types/base";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { extractErrorMessage } from "@/utils/error";
-import { downloadFile, getFileIcon } from "@/utils/file";
+import {
+  downloadFile,
+  getFileExtensionFromMimeType,
+  getFileIcon,
+} from "@/utils/file";
 import { motion } from "framer-motion";
 import { DownloadIcon } from "lucide-react";
 import { FC, useState } from "react";
@@ -106,7 +110,9 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
       }
 
       setIsDownloading(true);
-      downloadFile(res.data, contentData?.title || "downloaded-file");
+      const extension = getFileExtensionFromMimeType(res.data.type);
+      const fileName = `${contentData?.title || "tai-xuong"}${extension}`;
+      downloadFile(res.data, fileName);
       toast.success("Tải file thành công");
 
       setIsDownloading(false);

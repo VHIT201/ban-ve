@@ -12,6 +12,7 @@ import { useGetApiCollaboratorsRequests } from "@/api/endpoints/collaborators";
 // Internal
 import { useColumns } from "./lib/hooks";
 import { CollaboratorRequest } from "@/api/types/collaborator";
+import { Separator } from "@/components/ui/separator";
 
 const CollaboratorTable = () => {
   // Hooks
@@ -104,30 +105,35 @@ const CollaboratorTable = () => {
 
   return (
     <div className="space-y-4">
-      {/* Filters */}
-      <div className="flex items-center gap-3 flex-wrap">
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium text-gray-700">
-            Lọc theo trạng thái:
-          </label>
-          <select
-            value={statusFilter || "all"}
-            onChange={(e) =>
-              handleStatusFilterChange(
-                e.target.value === "all"
-                  ? undefined
-                  : (e.target.value as "pending" | "approved" | "rejected"),
-              )
-            }
-            className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="all">Tất cả</option>
-            <option value="pending">Chờ duyệt</option>
-            <option value="approved">Đã phê duyệt</option>
-            <option value="rejected">Đã từ chối</option>
-          </select>
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold">Danh sách cộng tác viên</h3>
+        {/* Filters */}
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700">
+              Lọc theo trạng thái:
+            </label>
+            <select
+              value={statusFilter || "all"}
+              onChange={(e) =>
+                handleStatusFilterChange(
+                  e.target.value === "all"
+                    ? undefined
+                    : (e.target.value as "pending" | "approved" | "rejected"),
+                )
+              }
+              className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">Tất cả</option>
+              <option value="pending">Chờ duyệt</option>
+              <option value="approved">Đã phê duyệt</option>
+              <option value="rejected">Đã từ chối</option>
+            </select>
+          </div>
         </div>
       </div>
+
+      <Separator />
 
       {/* Table */}
       <QueryBoundary query={getCollaboratorsQuery}>
