@@ -94,7 +94,7 @@ const Detail = async ({ params }: DetailPageProps) => {
       availability: "InStock",
     });
   } catch (error) {
-    // Ignore error, just don't show JSON-LD
+    console.error("Error generating JSON-LD for content:", error);
   }
 
   return (
