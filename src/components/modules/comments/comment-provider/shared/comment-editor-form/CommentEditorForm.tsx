@@ -98,7 +98,7 @@ const CommentCreationForm: FC<Props> = (props) => {
           contentId,
           data: {
             content: commentContent,
-            stars: ratingValue,
+            stars: ratingValue === 0 ? 1 : ratingValue,
           },
         });
 
