@@ -3,12 +3,13 @@
 import { useState, useRef, useCallback } from "react";
 import { ForgotPasswordForm } from "./components/forgot-form";
 import ResetPasswordForm from "./components/reset-password/ResetPasswordForm";
-import { 
-  usePostApiAuthForgotPassword, 
-  usePostApiAuthResetPassword
+import {
+  usePostApiAuthForgotPassword,
+  usePostApiAuthResetPassword,
 } from "@/api/endpoints/auth";
 import { toast } from "sonner";
 import { useSessionStorage } from "@/hooks/use-session-storage";
+import { encodeSHA256 } from "@/utils/encode";
 
 type ForgotPasswordStep = "email" | "reset";
 
@@ -27,7 +28,7 @@ const ForgotPassword = () => {
     mutation: {
       onSuccess: () => {
         toast.success("Mã OTP đã được gửi đến email của bạn", {
-          duration: 1000
+          duration: 1000,
         });
       },
       onError: (error: any) => {
@@ -44,7 +45,6 @@ const ForgotPassword = () => {
       retry: 0,
     },
   });
-  
 
   const handleResetPassword = useCallback(
     async (otp: string, newPassword: string) => {
@@ -56,7 +56,7 @@ const ForgotPassword = () => {
           data: {
             email: forgotEmail || "",
             otp,
-            newPassword,
+            newPassword: encodeSHA256(newPassword),
           } as any,
         });
       } catch (error) {
@@ -64,7 +64,7 @@ const ForgotPassword = () => {
         throw error;
       }
     },
-    [forgotEmail, resetPasswordMutation]
+    [forgotEmail, resetPasswordMutation],
   );
 
   const handleEmailSubmit = async (emailValue: string) => {

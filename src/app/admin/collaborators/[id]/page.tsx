@@ -41,7 +41,6 @@ import {
 import { extractErrorMessage } from "@/utils/error";
 import { ResponseData } from "@/api/types/base";
 import { CollaboratorRevenue } from "./components";
-import { get } from "http";
 
 const CollaboratorDetail = () => {
   // Hooks

@@ -116,6 +116,7 @@ export async function middleware(request: NextRequest) {
 
   // Token refresh logic (if access token expired but refresh token exists)
   if (!session && refreshToken) {
+    console.log("Attempting token refresh...");
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh`,
