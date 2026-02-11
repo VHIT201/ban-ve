@@ -11,3 +11,4 @@ export { ImageProtection } from "./image-protection";
 export { default as RatingStar } from "./rating-star";
 export { default as DynamicFilter } from "./dynamic-filter";
 export { default as QRPayment } from "./qr-payment";
+export { default as ButtonScrollToTop } from "./button-scroll-to-top";

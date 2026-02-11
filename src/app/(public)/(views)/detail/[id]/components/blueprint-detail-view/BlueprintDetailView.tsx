@@ -39,25 +39,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ReportDialog } from "@/components/shared";
 import { ContentPaymentDialog } from "@/components/modules/content";
-import {
-  useGetApiFileIdDownload,
-  useGetApiFileDownloadFreeContentId,
-} from "@/api/endpoints/files";
+
 import { toast } from "sonner";
 import { useCreateQrPayment } from "@/hooks/modules/payments";
-import { PaymentStatus } from "@/enums/payment";
 import baseConfig from "@/configs/base";
 import { useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
 import EmailDialog from "@/components/shared/email-dialog";
-import { extractErrorMessage } from "@/utils/error";
-import { Separator } from "@/components/ui/separator";
-import { useCountDown, useMetaTags } from "@/hooks";
+import { useMetaTags } from "@/hooks";
 import { BlueprintDownload } from "./components";
 import { ImageProtection } from "@/components/shared";
 import { motion, AnimatePresence, easeOut, easeInOut } from "framer-motion";
+import { useCart } from "@/hooks/use-cart";
 
-const DOWNLOAD_COUNTDOWN_SECONDS = 5;
 const BlueprintDetailView: FC<Props> = (props) => {
   // Props
   const { content } = props;
@@ -67,23 +61,12 @@ const BlueprintDetailView: FC<Props> = (props) => {
   const profileStore = useProfileStore(useShallow(({ email }) => ({ email })));
 
   // Hooks
-  const queryClient = useQueryClient();
-  const router = useRouter();
+  const cart = useCart({ sync: false });
 
   // States
   const [openEmailDialog, setOpenEmailDialog] = useState(false);
   const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
   const [openReportDialog, setOpenReportDialog] = useState(false);
-  const [shareSuccess, setShareSuccess] = useState(false);
-
-  // Cart Store
-  const addItem = useCartStore((state) => state.addItem);
-
-  // Hooks
-  const countdown = useCountDown({
-    seconds: DOWNLOAD_COUNTDOWN_SECONDS,
-    autoStart: false,
-  });
 
   // States
   const [selectedImage, setSelectedImage] = useState(0);
@@ -93,34 +76,6 @@ const BlueprintDetailView: FC<Props> = (props) => {
   // Mutations
   const createQRPaymentMutation = useCreateQrPayment({
     orders: [{ contentId: content._id || "", quantity: 1 }],
-  });
-
-  // Methods
-  const { mutate: addToCart } = usePostApiCart({
-    mutation: {
-      onSuccess: async () => {
-        // Cập nhật store cục bộ sau khi gọi API thành công
-        if (!content._id) {
-          console.error("Missing content._id, cannot add to cart");
-          toast.error("Không thể thêm vào giỏ hàng: thiếu ID sản phẩm");
-        } else {
-          // content has required _id, cast to ContentResponse for the store API
-          addItem(content as unknown as ContentResponse, 1);
-          setJustAdded(true);
-        }
-
-        // Làm mới dữ liệu giỏ hàng
-        await queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
-
-        setTimeout(() => {
-          setJustAdded(false);
-        }, 2000);
-      },
-      onError: (error) => {
-        console.error("Lỗi khi thêm vào giỏ hàng:", error);
-        toast.error("Có lỗi xảy ra khi thêm vào giỏ hàng");
-      },
-    },
   });
 
   const handleConfirmEmail = (email: string) => {
@@ -139,12 +94,9 @@ const BlueprintDetailView: FC<Props> = (props) => {
         return;
       }
 
-      await addToCart({
-        data: {
-          contentId,
-          quantity: 1,
-        },
-      });
+      await cart.addItem(content as any, 1);
+      setJustAdded(true);
+      setTimeout(() => setJustAdded(false), 1000);
     } finally {
       setIsAdding(false);
     }
@@ -165,8 +117,6 @@ const BlueprintDetailView: FC<Props> = (props) => {
     try {
       await navigator.clipboard.writeText(url);
       toast.success("Đã sao chép link vào clipboard!");
-      setShareSuccess(true);
-      setTimeout(() => setShareSuccess(false), 2000);
     } catch (error) {
       console.error("Error copying to clipboard:", error);
       toast.error("Không thể sao chép link");

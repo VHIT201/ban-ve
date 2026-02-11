@@ -45,7 +45,7 @@ function OrderDetailSoldList({ items = [] }: Props) {
       <CardContent className="pt-6">
         <div className="space-y-4">
           {items.map((item, index) => {
-            const content = item.contentId as CartItemContent;
+            const content = item.contentId as unknown as CartItemContent;
             const itemTotal = (item.price || 0) * (item.quantity || 1);
 
             return (
