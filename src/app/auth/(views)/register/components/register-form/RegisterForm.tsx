@@ -33,6 +33,7 @@ import Link from "next/link";
 import { BASE_PATHS } from "@/constants/paths";
 import { usePostApiAuthRegister } from "@/api/endpoints/auth";
 import { toast } from "sonner";
+import { encodeSHA256 } from "@/utils/encode";
 
 const RegisterForm: FC<Props> = (props) => {
   // Props
@@ -66,7 +67,7 @@ const RegisterForm: FC<Props> = (props) => {
         data: {
           email: values.email,
           fullname: values.name,
-          password: values.password,
+          password: encodeSHA256(values.password),
         },
       });
 

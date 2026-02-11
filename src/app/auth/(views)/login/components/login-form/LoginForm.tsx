@@ -34,6 +34,7 @@ import { PostApiAuthLogin200Data } from "@/api/models";
 import { extractErrorMessage } from "@/utils/error";
 import Link from "next/link";
 import { setCookie } from "@/utils/cookies";
+import { encodeSHA256 } from "@/utils/encode";
 
 const LoginForm: FC<Props> = () => {
   // State
@@ -67,7 +68,10 @@ const LoginForm: FC<Props> = () => {
   const handleSubmit = async (values: LoginFormValues) => {
     try {
       const loginResponse = await loginMutation.mutateAsync({
-        data: values,
+        data: {
+          email: values.email,
+          password: encodeSHA256(values.password),
+        },
       });
 
       if (!loginResponse) {

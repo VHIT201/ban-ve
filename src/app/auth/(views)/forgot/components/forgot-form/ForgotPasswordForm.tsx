@@ -11,7 +11,10 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FORGOT_PASSWORD_FORM_DEFAULT_VALUES, FORGOT_PASSWORD_FORM_SCHEMA } from "./lib/constants";
+import {
+  FORGOT_PASSWORD_FORM_DEFAULT_VALUES,
+  FORGOT_PASSWORD_FORM_SCHEMA,
+} from "./lib/constants";
 import { ForgotPasswordFormValues } from "./lib/types";
 import { Loader2Icon, MailIcon, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -67,7 +70,7 @@ const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({ onEmailSubmit }) => {
         />
 
         <Button
-          type="submit" 
+          type="submit"
           disabled={form.formState.isSubmitting}
           className="w-full mt-4 h-10"
         >
@@ -84,7 +87,10 @@ const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({ onEmailSubmit }) => {
             variant="link"
             className="text-muted-foreground hover:text-foreground"
           >
-            <Link href={BASE_PATHS.auth.login.path} className="flex items-center justify-center gap-1">
+            <Link
+              href={BASE_PATHS.auth.login.path}
+              className="flex items-center justify-center gap-1"
+            >
               <ArrowLeft className="h-4 w-4" />
               Quay lại đăng nhập
             </Link>
