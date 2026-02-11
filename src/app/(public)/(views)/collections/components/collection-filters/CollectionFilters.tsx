@@ -1,12 +1,10 @@
 "use client";
 
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Label } from "@/components/ui/label";
 import {
   ChevronDownIcon,
   ChevronUpIcon,
@@ -14,7 +12,7 @@ import {
   Filter,
   Search,
 } from "lucide-react";
-import { useState, useEffect, use, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import TreeView, { TreeViewItem } from "@/components/shared/tree-view/TreeView";
 import { Category } from "@/api/models/category";
 import { Slider } from "@/components/ui/slider";
@@ -45,7 +43,6 @@ import { TreeNode } from "@/components/shared/tree-select/TreeSelect";
 const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
   // Hooks
   const searchParams = useSearchParams();
-  const [selected, setSelected] = useState<string[]>([]);
 
   // States
   const [isPriceOpen, setIsPriceOpen] = useState(true);
@@ -64,6 +61,8 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
       maxPrice: initialValues?.maxPrice || 10000000,
     },
   });
+
+  const categories = form.watch("categories");
 
   // Update form values when initialValues change
   useEffect(() => {
@@ -182,7 +181,7 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
   };
 
   const onSubmit = (data: FilterFormValues) => {
-    onFilterChange?.({ ...data, categories: selected });
+    onFilterChange?.({ ...data, categories });
   };
 
   useEffect(() => {
@@ -252,8 +251,10 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
             <CollapsibleContent className="pt-3">
               <TreeSelect
                 nodes={mappedTreeData}
-                value={selected}
-                onChange={setSelected}
+                value={categories}
+                onChange={(newCategories) =>
+                  form.setValue("categories", newCategories)
+                }
                 placeholder="Chọn danh mục"
                 searchable={true}
                 maxHeight="350px"

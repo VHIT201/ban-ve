@@ -22,6 +22,7 @@ export interface TreeNode {
 }
 
 interface TreeSelectProps {
+  defaultValues?: string[];
   multiple?: boolean;
   nodes: TreeNode[];
   value: string[];
@@ -215,6 +216,7 @@ const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({
 
 // Main Tree Select component
 const TreeSelect: React.FC<TreeSelectProps> = ({
+  defaultValues = [],
   multiple = true,
   nodes,
   value,
