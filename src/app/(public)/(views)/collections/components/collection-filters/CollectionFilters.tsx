@@ -282,7 +282,7 @@ const CollectionFilters = ({ onFilterChange, initialValues }: Props) => {
                         value={field.value}
                         onValueChange={handlePriceRangeChange}
                         max={10000000}
-                        step={100000}
+                        step={1000}
                         className="w-full"
                       />
                     </FormControl>

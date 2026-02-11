@@ -69,12 +69,12 @@ const HeaderShoppingCart = ({ sync = true }: HeaderShoppingCartProps) => {
       </SheetTrigger>
 
       <SheetContent className="p-0 flex flex-col">
-      <SheetHeader className="relative border-b px-4 py-3 bg-primary">
-        <SheetClose asChild>
-          <button className="absolute right-3 top-3 z-50 rounded-full bg-white/15 p-1 text-white hover:bg-white/25 transition">
-            <XIcon className="w-5 h-5" />
-          </button>
-        </SheetClose>
+        <SheetHeader className="relative border-b px-4 py-3 bg-primary">
+          <SheetClose asChild>
+            <button className="absolute right-3 top-3 z-50 rounded-full bg-white/15 p-1 text-white hover:bg-white/25 transition">
+              <XIcon className="w-5 h-5" />
+            </button>
+          </SheetClose>
 
           <SheetTitle className="text-white text-base font-semibold">
             Giỏ hàng
@@ -100,7 +100,6 @@ const HeaderShoppingCart = ({ sync = true }: HeaderShoppingCartProps) => {
                     onUpdate={handleUpdateQuantity}
                     onRemove={handleRemoveItem}
                     onClose={cart.closeCart}
-
                   />
                 ))}
                 {cart.isFetchingCartList &&
@@ -155,7 +154,6 @@ const CartItemRow = ({ item, isLoading, onUpdate, onRemove, onClose }: any) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
-
   // Methods
   const handleRemove = async () => {
     setIsDeleting(true);
@@ -182,7 +180,7 @@ const CartItemRow = ({ item, isLoading, onUpdate, onRemove, onClose }: any) => {
 
       <div className="flex-1 flex flex-col justify-between">
         <div>
-          <p 
+          <p
             className="text-sm font-medium line-clamp-2 cursor-pointer hover:text-primary transition-colors"
             onClick={handleProductClick}
           >
@@ -266,17 +264,8 @@ const CartFooter = ({
 
   return (
     <div className="border-t p-4 space-y-3">
-      <div className="flex justify-between text-sm">
-        <span className="text-muted-foreground">Subtotal ({totalItems})</span>
-        <span className="font-medium">
-          {totalPrice.toLocaleString("vi-VN")} ₫
-        </span>
-      </div>
-
-      <Separator />
-
       <div className="flex justify-between text-base font-semibold">
-        <span>Total</span>
+        <span>Tổng cộng</span>
         <span>{totalPrice.toLocaleString("vi-VN")} ₫</span>
       </div>
 
