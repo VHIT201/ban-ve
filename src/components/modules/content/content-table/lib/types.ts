@@ -9,3 +9,8 @@ export interface useContentTableColumnsDefsProps {
   onReject?: (content: ContentTableRow) => void;
   onView?: (content: ContentTableRow) => void;
 }
+
+export interface DataTableBulkAction {
+  label: string;
+  action: (selectedRows: ContentTableRow[]) => void;
+}

@@ -156,7 +156,7 @@ const BlueprintCard: FC<Props> = (props) => {
 
   const formattedPrice = formatVND(product.price || 0);
 
-  const username = product.createdBy?.email || "Anonymous";
+  const username = product.createdBy?.email || null;
 
   const categoryName = product?.category?.name || "General";
 
@@ -431,27 +431,29 @@ const BlueprintCard: FC<Props> = (props) => {
 
         {/* Card content with stagger animations */}
         <CardContent className="pt-6 px-0 pb-2">
-          <motion.div
-            className="flex items-center gap-2 mb-3"
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2, duration: 0.4 }}
-          >
-            <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
-              <motion.div
-                animate={{
-                  rotate: isHovered ? [0, -10, 10, 0] : 0,
-                }}
-                transition={{
-                  duration: 0.5,
-                  ease: "easeInOut",
-                }}
-              >
-                <User className="w-3 h-3" strokeWidth={3} />
-              </motion.div>
-              <span>{username}</span>
-            </div>
-          </motion.div>
+          {username !== null && (
+            <motion.div
+              className="flex items-center gap-2 mb-3"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+            >
+              <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
+                <motion.div
+                  animate={{
+                    rotate: isHovered ? [0, -10, 10, 0] : 0,
+                  }}
+                  transition={{
+                    duration: 0.5,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <User className="w-3 h-3" strokeWidth={3} />
+                </motion.div>
+                <span>{username}</span>
+              </div>
+            </motion.div>
+          )}
 
           <motion.h3
             className="text-xl font-medium text-foreground leading-tight line-clamp-1 mb-2 group-hover:underline underline-offset-4 decoration-1 transition-all"

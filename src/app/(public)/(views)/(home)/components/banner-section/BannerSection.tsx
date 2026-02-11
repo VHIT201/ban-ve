@@ -99,7 +99,7 @@ const BannerSection = () => {
         <CarouselContent>
           {bannerSlides.map((slide) => (
             <CarouselItem key={slide.id}>
-              <div className="relative h-[200px] md:h-[250px] overflow-hidden">
+              <div className="relative h-fit md:h-[250px] overflow-hidden">
                 {/* Gradient Background */}
                 <div className={cn("absolute inset-0 bg-primary")} />
 
@@ -112,28 +112,26 @@ const BannerSection = () => {
                 <div className="relative h-full px-4 lg:px-8 lg:pr-0">
                   <div className="grid lg:grid-cols-2 gap-8">
                     {/* Left Column - Text Content */}
-                    <div className="flex flex-col justify-center space-y-6 py-8 lg:py-0">
+                    <div className="flex flex-col justify-center space-y-4 md:space-y-6 py-8 lg:py-0">
                       {/* Title */}
-                      <div className="space-y-2">
-                        <h1 className="text-2xl lg:text-3xl font-bold text-white leading-tight">
-                          {slide.title}
-                        </h1>
-                      </div>
+                      <h1 className="text-2xl text-center md:text-left lg:text-3xl font-bold text-white leading-tight">
+                        {slide.title}
+                      </h1>
 
                       {/* Description */}
-                      <p className="text-base md:text-lg text-white/90 leading-relaxed max-w-lg">
+                      <p className="text-base md:text-lg text-white/90 leading-relaxed max-w-lg text-center md:text-left">
                         {slide.description}
                       </p>
 
                       {/* CTA Buttons */}
-                      <div className="flex flex-wrap gap-3">
+                      <div className="flex gap-3 px-2 justify-center md:justify-start">
                         <Button
                           size="lg"
                           className={cn(
+                            "text-xs md:text-base px-4 md:px-6 h-12",
                             "bg-white text-gray-900 hover:bg-white/90",
                             "shadow-lg hover:shadow-xl",
                             "transition-all duration-200 font-semibold",
-                            "px-6 h-12",
                           )}
                           onClick={() => {
                             if (slide.id === 1) {
@@ -149,10 +147,10 @@ const BannerSection = () => {
                           variant="outline"
                           size="lg"
                           className={cn(
+                            "text-xs md:text-base px-4 md:px-6 h-12",
                             "bg-transparent border-2 border-white text-white",
                             "hover:bg-white hover:text-gray-900",
                             "transition-all duration-200 font-semibold",
-                            "px-6 h-12",
                           )}
                           onClick={() => {
                             if (slide.primaryAction.href) {
@@ -170,7 +168,7 @@ const BannerSection = () => {
                     </div>
 
                     {/* Right Column - Illustration */}
-                    <div className="relative h-full">
+                    <div className="hidden md:block relative h-full">
                       <Image
                         alt="banner"
                         src="https://images.pexels.com/photos/18435276/pexels-photo-18435276.jpeg"
