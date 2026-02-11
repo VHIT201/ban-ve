@@ -132,7 +132,7 @@ const CollaboratorStats = () => {
         {(earningsData) => {
           const data = earningsData?.data || {};
           const summary = data || {};
-          const topCollaborators = summary.collaborators?.slice(0, 5) || [];
+          const topCollaborators = summary.collaborators || [];
 
           if (topCollaborators.length === 0) {
             return null;
@@ -141,10 +141,12 @@ const CollaboratorStats = () => {
           return (
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">Top cộng tác viên</CardTitle>
+                <CardTitle className="text-base">
+                  Danh sách cộng tác viên
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
+                <div className="space-y-2 overflow-y-auto max-h-[500px] px-2">
                   {topCollaborators.map((collaborator: any, index: number) => (
                     <div
                       key={collaborator._id}
