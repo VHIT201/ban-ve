@@ -1,6 +1,6 @@
 // @ts-nocheck
-import type { OrderItem } from "./orderItem";
-import type { OrderStatus } from "./orderStatus";
+import type { OrderItem } from './orderItem';
+import type { OrderStatus } from './orderStatus';
 
 export interface Order {
   /** ID của đơn hàng */
@@ -19,7 +19,7 @@ export interface Order {
   /** Phương thức thanh toán */
   paymentMethod?: string;
   /** ID thanh toán */
-  paymentId?: any;
+  paymentId?: string;
   /** ID giao dịch */
   transactionId?: string;
   /** Thời gian hết hạn đơn hàng */
