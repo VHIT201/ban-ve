@@ -96,11 +96,11 @@ export const CommentItem = ({ comment }: CommentItemProps) => {
               </div>
             )}
 
-            <div className="text-xs text-gray-500 mt-2">
+            {/* <div className="text-xs text-gray-500 mt-2">
               <p className="mt-1 text-gray-400">
                 Cập nhật lần cuối: {formattedUpdatedDate}
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
       </CardContent>
