@@ -90,6 +90,8 @@ const DailyBestDownloaded = () => {
           }
         >
           {(products) => {
+            console.log("products", products);
+
             return (
               <div className="lg:col-span-4">
                 <CarouselContent className="-ml-10 pt-6">
