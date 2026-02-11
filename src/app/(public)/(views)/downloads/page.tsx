@@ -386,47 +386,6 @@ export default function DownloadPage() {
                     );
                   })}
                 </div>
-
-                {/* Download All Button */}
-                {(order?.items?.length ?? 0) > 1 && (
-                  <motion.div
-                    className="mt-6 pt-6 border-t"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      delay: 0.9 + (order?.items?.length ?? 0) * 0.1,
-                      duration: 0.5,
-                    }}
-                  >
-                    <motion.div
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <Button
-                        size="lg"
-                        variant="outline"
-                        className="w-full gap-2 transition-colors"
-                        onClick={() => {
-                          console.log("Downloading all files");
-                        }}
-                      >
-                        <motion.div
-                          animate={{
-                            rotate: [0, 10, -10, 0],
-                          }}
-                          transition={{
-                            repeat: Infinity,
-                            duration: 2,
-                            ease: "easeInOut",
-                          }}
-                        >
-                          <Download className="h-4 w-4" />
-                        </motion.div>
-                        Tải xuống tất cả các tệp
-                      </Button>
-                    </motion.div>
-                  </motion.div>
-                )}
               </CardContent>
             </Card>
           </motion.div>

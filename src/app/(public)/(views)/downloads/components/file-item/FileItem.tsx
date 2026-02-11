@@ -12,9 +12,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { extractErrorMessage } from "@/utils/error";
 import { downloadFile, getFileIcon } from "@/utils/file";
 import { motion } from "framer-motion";
-import { DownloadIcon, FileText } from "lucide-react";
+import { DownloadIcon, FileText, XIcon } from "lucide-react";
 import { FC, useState } from "react";
 import { toast } from "sonner";
+import Image from "@/components/ui/image";
 
 interface Props {
   orderId: string;
@@ -118,8 +119,12 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
     }
   };
 
-  // Memos
-  const FileIcon = getFileIcon("PDF");
+  const contentImage =
+    contentData?.images && contentData.images.length > 0
+      ? contentData.images[0]
+      : undefined;
+
+  const FileIcon = getFileIcon(contentData?.file_id?.type || "");
 
   return (
     <motion.div
@@ -156,7 +161,16 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
                     stiffness: 200,
                   }}
                 >
-                  <FileIcon />
+                  {contentData?.images && contentData.images.length > 0 ? (
+                    <Image
+                      src={contentImage}
+                      alt={contentData?.title || "File thumbnail"}
+                      width={64}
+                      height={64}
+                    />
+                  ) : (
+                    <FileIcon />
+                  )}
                 </motion.div>
               </div>
             </motion.div>
@@ -188,12 +202,11 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
                 transition={{ delay: 0.75 + index * 0.1 }}
               >
                 <span className="flex items-center gap-1">
-                  <FileText className="h-3 w-3" />
-                  PDF
-                </span>
-                <span className="flex items-center gap-1">
                   {/* <Package className="h-3 w-3" /> */}
                   {contentData?.price} đ
+                </span>
+                <span className="flex items-center gap-1">
+                  x {item.quantity}
                 </span>
               </motion.div>
             </div>

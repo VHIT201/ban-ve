@@ -59,8 +59,9 @@ export const useColumns = (props: useCollaboratorTableColumnsDefsProps) => {
         header: "Người đăng ký",
         cell: ({ row }) => {
           const user = row.original.user;
-          const displayName = user?.fullname || user?.username || user?.email || "-";
-          
+          const displayName =
+            user?.fullname || user?.username || user?.email || "-";
+
           return (
             <div className="min-w-[160px]">
               <div className="font-medium">{displayName}</div>
@@ -92,7 +93,9 @@ export const useColumns = (props: useCollaboratorTableColumnsDefsProps) => {
 
           return (
             <div className="min-w-[180px]">
-              <div className="text-sm">{shortBankName || "-"}</div>
+              <div className="text-sm truncate max-w-[350px]">
+                {shortBankName || "-"}
+              </div>
               {bankAccount && (
                 <code className="text-xs text-muted-foreground">
                   {bankAccount}
@@ -124,7 +127,8 @@ export const useColumns = (props: useCollaboratorTableColumnsDefsProps) => {
             );
           }
 
-          const displayName = approvedBy?.fullname || approvedBy?.username || "-";
+          const displayName =
+            approvedBy?.fullname || approvedBy?.username || "-";
           return <span className="text-sm">{displayName}</span>;
         },
       },
