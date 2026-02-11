@@ -42,8 +42,6 @@ const QRPayment: FC<Props> = (props) => {
   const router = useRouter();
   const confettiRef = useRef<ConfettiRef>(null);
 
-  console.log("QRPayment rendered with status:", status);
-
   // Derived states
   const isSuccess = status === PaymentStatus.COMPLETED;
 
