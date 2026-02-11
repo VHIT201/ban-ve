@@ -26,16 +26,24 @@ export async function generateMetadata({
     // Fetch content data
     const content = (await getApiContentId(id)) as Content;
 
-    // Get first image or use default - ensure absolute URL
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    // Get first image or use default - ensure absolute URL with mediaDomain
     const firstImage =
       content.images && content.images.length > 0
         ? content.images[0]
         : "/og-image.png";
 
-    const image = firstImage?.startsWith("http")
-      ? firstImage
-      : `${baseUrl}${firstImage}`;
+    // Build absolute image URL using mediaDomain for Zalo compatibility
+    let image: string;
+    if (firstImage?.startsWith("http")) {
+      // Already absolute URL
+      image = firstImage;
+    } else if (firstImage?.startsWith("/")) {
+      // Relative path starting with /
+      image = `${baseConfig.mediaDomain}${firstImage}`;
+    } else {
+      // Relative path without /
+      image = `${baseConfig.mediaDomain}/${firstImage}`;
+    }
 
     // Format price for description
     const priceText = content.price
@@ -91,9 +99,9 @@ const Detail = async ({ params }: DetailPageProps) => {
 
     // Build absolute image URL with mediaDomain
     let image: string;
-    if (firstImage.startsWith("http")) {
+    if (firstImage?.startsWith("http")) {
       image = firstImage;
-    } else if (firstImage.startsWith("/")) {
+    } else if (firstImage?.startsWith("/")) {
       image = `${baseConfig.mediaDomain}${firstImage}`;
     } else {
       image = `${baseConfig.mediaDomain}/${firstImage}`;

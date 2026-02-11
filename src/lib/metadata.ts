@@ -49,8 +49,6 @@ export function generateMetadata(params: GenerateMetadataParams): Metadata {
           width: 1200,
           height: 630,
           alt: title,
-          type: "image/png", // Add image type for Zalo
-          secureUrl: imageUrl.replace("http://", "https://"), // Add secure URL for Zalo
         },
       ],
       ...(publishedTime && type === "article" && { publishedTime }),
@@ -62,9 +60,11 @@ export function generateMetadata(params: GenerateMetadataParams): Metadata {
       description,
       images: [imageUrl],
     },
-    // Additional meta tags for better Zalo/social sharing
+    // Additional meta tags for Zalo/social sharing (manually added)
     other: {
-      "zalo-platform": "website",
+      "og:image:secure_url": imageUrl,
+      "og:image:type": imageUrl.endsWith(".png") ? "image/png" : "image/jpeg",
+      "og:image:alt": title,
     },
   };
 }
