@@ -28,8 +28,12 @@ const personalFormSchema = z.object({
   fullname: z
     .string()
     .min(3, "Họ và tên phải có ít nhất 3 ký tự")
-    .max(50, "Họ và tên không được vượt quá 50 ký tự")
-    .regex(/^[\p{L}\s]+$/u, "Họ và tên chỉ được chứa chữ cái và khoảng trắng"),
+    .max(20, "Họ và tên không được vượt quá 20 ký tự")
+    .regex(/^[\p{L}\s]+$/u, "Họ và tên chỉ được chứa chữ cái và khoảng trắng")
+    .refine(
+      (val) => val === val.trim(),
+      "Họ tên không được có khoảng trắng ở đầu hoặc cuối",
+    ),
   email: z.string().email("Email không hợp lệ"),
 });
 

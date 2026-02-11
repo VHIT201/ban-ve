@@ -1,5 +1,5 @@
 // @ts-nocheck
-import type { CartItemContentIdCategory } from "./cartItemContentIdCategory";
+import type { CartItemContentIdCategory } from './cartItemContentIdCategory';
 
 export type CartItemContentId = {
   _id?: string;

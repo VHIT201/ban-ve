@@ -8,12 +8,18 @@ import {
   usePostApiAuthResetPassword
 } from "@/api/endpoints/auth";
 import { toast } from "sonner";
+import { useSessionStorage } from "@/hooks/use-session-storage";
 
 type ForgotPasswordStep = "email" | "reset";
 
 const ForgotPassword = () => {
-  const [step, setStep] = useState<ForgotPasswordStep>("email");
-  const [email, setEmail] = useState("");
+  const [forgotEmail, setForgotEmail] = useSessionStorage<string | null>(
+    "auth-forgot-email",
+    null,
+  );
+  const [step] = useState<ForgotPasswordStep>(() =>
+    forgotEmail ? "reset" : "email",
+  );
 
   const resetSubmittingRef = useRef(false);
 
@@ -23,11 +29,6 @@ const ForgotPassword = () => {
         toast.success("Mã OTP đã được gửi đến email của bạn", {
           duration: 1000
         });
-        
-        setTimeout(() => {
-          toast.dismiss();
-          setStep("reset");
-        }, 800);
       },
       onError: (error: any) => {
         const errorMessage =
@@ -53,7 +54,7 @@ const ForgotPassword = () => {
       try {
         await resetPasswordMutation.mutateAsync({
           data: {
-            email,
+            email: forgotEmail || "",
             otp,
             newPassword,
           } as any,
@@ -63,15 +64,15 @@ const ForgotPassword = () => {
         throw error;
       }
     },
-    [email, resetPasswordMutation]
+    [forgotEmail, resetPasswordMutation]
   );
 
-  const handleEmailSubmit = async (email: string) => {
+  const handleEmailSubmit = async (emailValue: string) => {
     try {
       await forgotPasswordMutation.mutateAsync({
-        data: { email },
+        data: { email: emailValue },
       });
-      setEmail(email);
+      setForgotEmail(emailValue);
     } catch {}
   };
 
@@ -87,10 +88,12 @@ const ForgotPassword = () => {
         <ForgotPasswordForm onEmailSubmit={handleEmailSubmit} />
       ) : (
         <ResetPasswordForm
-          email={email}
+          email={forgotEmail || ""}
           onSubmit={handleResetPassword}
           onSuccess={handlePasswordResetSuccess}
-          onBack={() => setStep("email")}
+          onBack={() => {
+            setForgotEmail(null);
+          }}
         />
       )}
     </div>

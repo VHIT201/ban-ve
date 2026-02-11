@@ -29,11 +29,11 @@ const PaymentHistoryTable = () => {
   const [pagination, setPagination] = useState<{
     pageIndex: number;
     pageSize: number;
-  }>({ pageIndex: 1, pageSize: 10 });
+  }>({ pageIndex: 0, pageSize: 10 });
 
   // Query
   const getPaymentHistoryQuery = useGetApiPaymentsAll({
-    page: pagination.pageIndex,
+    page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
   });
 
@@ -93,7 +93,7 @@ const PaymentHistoryTable = () => {
       <DataTable
         columns={columns}
         data={paymentData}
-        rowCount={paymentData.length}
+        rowCount={responseData?.pagination?.total ?? 0}
         manualPagination
         enablePagination
         state={{ pagination }}
