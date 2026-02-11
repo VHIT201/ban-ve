@@ -72,13 +72,13 @@ const CustomerReviewSection = () => {
                             <h3 className="font-semibold text-gray-900 dark:text-white">
                               {review.userId?.fullname}
                             </h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[150px] truncate">
                               {review.userId?.email}
                             </p>
                           </div>
                         </div>
                         {/* Nội dung tin nhắn */}
-                        <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
+                        <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed line-clamp-2">
                           {review.content}
                         </p>
                         {/* Rating */}

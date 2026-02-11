@@ -55,7 +55,9 @@ export function generateMetadata(params: GenerateMetadataParams): Metadata {
       card: "summary_large_image",
       title,
       description,
-      images: [image.startsWith("http") ? image : `${baseUrl}/${image}`],
+      images: [
+        "https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m2zj7kewi6eo98",
+      ],
     },
   };
 }
