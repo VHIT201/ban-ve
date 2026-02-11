@@ -25,11 +25,16 @@ export async function generateMetadata({
     // Fetch content data
     const content = (await getApiContentId(id)) as Content;
 
-    // Get first image or use default
-    const image =
+    // Get first image or use default - ensure absolute URL
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const firstImage =
       content.images && content.images.length > 0
         ? content.images[0]
         : "/og-image.png";
+
+    const image = firstImage?.startsWith("http")
+      ? firstImage
+      : `${baseUrl}${firstImage}`;
 
     // Format price for description
     const priceText = content.price
