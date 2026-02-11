@@ -80,8 +80,9 @@ const isFree = content.price === 0 || content.price === undefined;
         }
 
         if (res.data) {
-          // Sử dụng tên file gốc từ backend
-          const fileName = content.file_id?.name || 'tai-xuong';
+          // Lấy extension đúng từ MIME type
+          const extension = getFileExtensionFromMimeType(res.data.type);
+          const fileName = `${content.title || "tai-xuong"}${extension}`;
           downloadFile(res.data, fileName);
 
           toast.success("Đã tải file miễn phí thành công");
