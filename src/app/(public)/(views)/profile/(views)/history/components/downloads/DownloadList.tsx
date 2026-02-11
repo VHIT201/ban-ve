@@ -33,6 +33,19 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+} from "@/components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toInteger } from "lodash-es";
 import { getFileIcon } from "@/utils/file";
 
@@ -42,7 +55,8 @@ interface DownloadItem {
   fileName: string;
   fileType: string;
   fileSize: string;
-  downloadDate: Date;
+  createdAt: Date;
+  lastDownloadedAt: Date;
   downloadCount: number;
   status: "completed" | "failed" | "pending";
 }
@@ -173,10 +187,14 @@ function DownloadItemComponent({
                   <span className="text-xs text-muted-foreground">
                     {formatFileSize(toInteger(download.fileSize))}
                   </span>
+                  <span className="text-xs text-muted-foreground">
+                    Tải lần cuối: {download.lastDownloadedAt.toLocaleDateString("vi-VN")}
+                  </span>
                 </div>
               </div>
+              
 
-              <div className="flex items-center gap-1 shrink-0">
+              {/* <div className="flex items-center gap-1 shrink-0">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -195,7 +213,7 @@ function DownloadItemComponent({
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -206,7 +224,7 @@ function DownloadItemComponent({
 
 function DownloadList() {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const params: GetApiFileDownloadsMyHistoryParams = {
     page: currentPage,
@@ -237,6 +255,8 @@ function DownloadList() {
       downloadDate: new Date(
         item.lastDownloadedAt || item.createdAt || new Date(),
       ),
+      createdAt: new Date(item.createdAt || new Date()),
+      lastDownloadedAt: new Date(item.lastDownloadedAt || new Date()),
       downloadCount: item.count || 1,
       status: "completed",
     }));
@@ -260,13 +280,40 @@ function DownloadList() {
   const goToPreviousPage = () => setCurrentPage((p) => Math.max(1, p - 1));
   const goToNextPage = () => setCurrentPage((p) => Math.min(totalPages, p + 1));
 
-  const getPageNumbers = () => {
-    const pages: number[] = [];
-    const max = 5;
-    let start = Math.max(1, currentPage - 2);
-    let end = Math.min(totalPages, start + max - 1);
-    if (end - start < max - 1) start = Math.max(1, end - max + 1);
-    for (let i = start; i <= end; i++) pages.push(i);
+  const handleItemsPerPageChange = (value: string) => {
+    setItemsPerPage(Number(value));
+    setCurrentPage(1); // Reset to first page when changing page size
+  };
+
+  const generatePageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = startPage + maxVisiblePages - 1;
+
+    if (endPage > totalPages) {
+      endPage = totalPages;
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    if (startPage > 1) {
+      pages.push(1);
+      if (startPage > 2) {
+        pages.push("ellipsis-left");
+      }
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        pages.push("ellipsis-right");
+      }
+      pages.push(totalPages);
+    }
+
     return pages;
   };
 
@@ -312,38 +359,116 @@ function DownloadList() {
         />
       ))}
 
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">
-            Hiển thị {(currentPage - 1) * itemsPerPage + 1}–
-            {Math.min(currentPage * itemsPerPage, totalItems)} / {totalItems}
-          </span>
+      {totalPages > 0 && (
+        <div className="flex flex-col gap-4 px-2 md:flex-row md:items-center md:justify-between p-2">
+          <div className="text-muted-foreground flex-1 text-sm dark:text-gray-400">
+            Hiển thị trang{" "}
+            <span className="text-primary font-medium dark:text-gray-200">
+              {currentPage}
+            </span>{" "}
+            trên{" "}
+            <span className="text-primary font-medium dark:text-gray-200">
+              {totalPages}
+            </span>{" "}
+            trang
+          </div>
 
-          <div className="flex items-center space-x-1">
-            <Button size="icon" variant="outline" onClick={goToFirstPage}>
-              <ChevronsLeft className="h-4 w-4" />
-            </Button>
-            <Button size="icon" variant="outline" onClick={goToPreviousPage}>
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-
-            {getPageNumbers().map((p) => (
-              <Button
-                key={p}
-                size="sm"
-                variant={p === currentPage ? "default" : "outline"}
-                onClick={() => setCurrentPage(p)}
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:space-x-6 lg:space-x-8">
+            <div className="flex min-w-[200px] shrink-0 items-center space-x-4">
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Số dòng hiển thị
+              </p>
+              <Select
+                onValueChange={handleItemsPerPageChange}
+                value={`${itemsPerPage}`}
+                defaultValue="10"
               >
-                {p}
-              </Button>
-            ))}
+                <SelectTrigger className="flex-1 h-8 w-[70px] border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-900">
+                  <SelectValue placeholder={itemsPerPage} />
+                </SelectTrigger>
+                <SelectContent side="top" className="bg-white dark:bg-gray-900">
+                  {[10, 20, 30, 40, 50].map((size) => (
+                    <SelectItem
+                      key={size}
+                      value={`${size}`}
+                      className="hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
+                      {size}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-            <Button size="icon" variant="outline" onClick={goToNextPage}>
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-            <Button size="icon" variant="outline" onClick={goToLastPage}>
-              <ChevronsRight className="h-4 w-4" />
-            </Button>
+            <Pagination className="justify-end">
+              <PaginationContent>
+                <PaginationItem>
+                  <Button
+                    variant="outline"
+                    className="hover:bg-primary/10 dark:hover:bg-primary/20 h-8 w-8 p-0"
+                    onClick={goToFirstPage}
+                    disabled={currentPage <= 1}
+                  >
+                    <span className="sr-only">Go to first page</span>
+                    <ChevronsLeft className="h-4 w-4" />
+                  </Button>
+                </PaginationItem>
+                <PaginationItem>
+                  <Button
+                    variant="outline"
+                    className="hover:bg-primary/10 dark:hover:bg-primary/20 h-8 w-8 p-0"
+                    onClick={goToPreviousPage}
+                    disabled={currentPage <= 1}
+                  >
+                    <span className="sr-only">Go to previous page</span>
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                </PaginationItem>
+
+                {generatePageNumbers().map((page, index) => (
+                  <PaginationItem key={index}>
+                    {page === "ellipsis-left" || page === "ellipsis-right" ? (
+                      <PaginationEllipsis className="text-gray-400" />
+                    ) : (
+                      <Button
+                        variant={currentPage === page ? "default" : "outline"}
+                        className={`h-8 w-8 p-0 ${
+                          currentPage === page
+                            ? "bg-primary hover:bg-primary/90"
+                            : "hover:bg-primary/10 dark:hover:bg-primary/20"
+                        } `}
+                        onClick={() => setCurrentPage(Number(page))}
+                      >
+                        {page}
+                      </Button>
+                    )}
+                  </PaginationItem>
+                ))}
+
+                <PaginationItem>
+                  <Button
+                    variant="outline"
+                    className="hover:bg-primary/10 dark:hover:bg-primary/20 h-8 w-8 p-0"
+                    onClick={goToNextPage}
+                    disabled={currentPage >= totalPages}
+                  >
+                    <span className="sr-only">Go to next page</span>
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </PaginationItem>
+                <PaginationItem>
+                  <Button
+                    variant="outline"
+                    className="hover:bg-primary/10 dark:hover:bg-primary/20 h-8 w-8 p-0"
+                    onClick={goToLastPage}
+                    disabled={currentPage >= totalPages}
+                  >
+                    <span className="sr-only">Go to last page</span>
+                    <ChevronsRight className="h-4 w-4" />
+                  </Button>
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </div>
         </div>
       )}

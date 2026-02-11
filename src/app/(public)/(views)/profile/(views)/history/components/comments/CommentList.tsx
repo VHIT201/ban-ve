@@ -8,6 +8,19 @@ import { RefreshCw, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } fro
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuthStore, useProfileStore } from "@/stores";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+} from "@/components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Comment {
   _id: string;
@@ -44,7 +57,7 @@ export const CommentList: React.FC<CommentListProps> = ({ contentId }) => {
   }, [isSignedIn, router]);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 5; // Số bình luận mỗi trang
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Số bình luận mỗi trang
 
   // Sử dụng useQueryOptions để thêm keepPreviousData
   const queryOptions = {
@@ -73,7 +86,7 @@ export const CommentList: React.FC<CommentListProps> = ({ contentId }) => {
   } = useGetApiCommentsMe<any>(
     {
       page: currentPage,
-      limit: limit
+      limit: itemsPerPage
     },
     { query: queryOptions }
   );
@@ -88,20 +101,38 @@ export const CommentList: React.FC<CommentListProps> = ({ contentId }) => {
     window.scrollTo(0, 0);
   };
 
-  // Tạo mảng các số trang để hiển thị
-  const getPageNumbers = () => {
-    const pages = [];
-    const maxPagesToShow = 5; // Số lượng trang tối đa hiển thị
-    let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
-    let endPage = startPage + maxPagesToShow - 1;
+  const handleItemsPerPageChange = (value: string) => {
+    setItemsPerPage(Number(value));
+    setCurrentPage(1); // Reset to first page when changing page size
+  };
+
+  const generatePageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = startPage + maxVisiblePages - 1;
 
     if (endPage > pagination.totalPages) {
       endPage = pagination.totalPages;
-      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    if (startPage > 1) {
+      pages.push(1);
+      if (startPage > 2) {
+        pages.push("ellipsis-left");
+      }
     }
 
     for (let i = startPage; i <= endPage; i++) {
       pages.push(i);
+    }
+
+    if (endPage < pagination.totalPages) {
+      if (endPage < pagination.totalPages - 1) {
+        pages.push("ellipsis-right");
+      }
+      pages.push(pagination.totalPages);
     }
 
     return pages;
@@ -161,87 +192,116 @@ export const CommentList: React.FC<CommentListProps> = ({ contentId }) => {
         </div>
 
         {/* Phân trang */}
-        {pagination.totalPages > 1 && (
-          <div className="flex items-center justify-between px-2 py-4">
-            <div className="flex-1 flex justify-between sm:hidden">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => goToPage(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                Trang trước
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => goToPage(currentPage + 1)}
-                disabled={currentPage === pagination.totalPages}
-              >
-                Trang sau
-              </Button>
+        {pagination.totalPages > 0 && (
+          <div className="flex flex-col gap-4 px-2 md:flex-row md:items-center md:justify-between p-2">
+            <div className="text-muted-foreground flex-1 text-sm dark:text-gray-400">
+              Hiển thị trang{" "}
+              <span className="text-primary font-medium dark:text-gray-200">
+                {currentPage}
+              </span>{" "}
+              trên{" "}
+              <span className="text-primary font-medium dark:text-gray-200">
+                {pagination.totalPages}
+              </span>{" "}
+              trang
             </div>
-            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-              <div>
-                <p className="text-sm text-gray-700">
-                  Hiển thị <span className="font-medium">{(currentPage - 1) * limit + 1}</span> đến{' '}
-                  <span className="font-medium">
-                    {Math.min(currentPage * limit, pagination.total)}
-                  </span>{' '}
-                  của <span className="font-medium">{pagination.total}</span> kết quả
-                </p>
-              </div>
-              <div>
-                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                  <button
-                    onClick={() => goToPage(1)}
-                    disabled={currentPage === 1}
-                    className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <span className="sr-only">Đầu tiên</span>
-                    <ChevronsLeft className="h-5 w-5" aria-hidden="true" />
-                  </button>
-                  <button
-                    onClick={() => goToPage(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <span className="sr-only">Trước</span>
-                    <ChevronLeft className="h-5 w-5" aria-hidden="true" />
-                  </button>
 
-                  {getPageNumbers().map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => goToPage(page)}
-                      className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                        currentPage === page
-                          ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
-                          : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                      }`}
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:space-x-6 lg:space-x-8">
+              <div className="flex min-w-[200px] shrink-0 items-center space-x-4">
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Số dòng hiển thị
+                </p>
+                <Select
+                  onValueChange={handleItemsPerPageChange}
+                  value={`${itemsPerPage}`}
+                  defaultValue="5"
+                >
+                  <SelectTrigger className="flex-1 h-8 w-[70px] border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-900">
+                    <SelectValue placeholder={itemsPerPage} />
+                  </SelectTrigger>
+                  <SelectContent side="top" className="bg-white dark:bg-gray-900">
+                    {[5, 10, 15, 20, 25].map((size) => (
+                      <SelectItem
+                        key={size}
+                        value={`${size}`}
+                        className="hover:bg-gray-100 dark:hover:bg-gray-800"
+                      >
+                        {size}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Pagination className="justify-end">
+                <PaginationContent>
+                  <PaginationItem>
+                    <Button
+                      variant="outline"
+                      className="hover:bg-primary/10 dark:hover:bg-primary/20 h-8 w-8 p-0"
+                      onClick={() => goToPage(1)}
+                      disabled={currentPage <= 1}
                     >
-                      {page}
-                    </button>
+                      <span className="sr-only">Go to first page</span>
+                      <ChevronsLeft className="h-4 w-4" />
+                    </Button>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <Button
+                      variant="outline"
+                      className="hover:bg-primary/10 dark:hover:bg-primary/20 h-8 w-8 p-0"
+                      onClick={() => goToPage(currentPage - 1)}
+                      disabled={currentPage <= 1}
+                    >
+                      <span className="sr-only">Go to previous page</span>
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                  </PaginationItem>
+
+                  {generatePageNumbers().map((page, index) => (
+                    <PaginationItem key={index}>
+                      {page === "ellipsis-left" || page === "ellipsis-right" ? (
+                        <PaginationEllipsis className="text-gray-400" />
+                      ) : (
+                        <Button
+                          variant={currentPage === page ? "default" : "outline"}
+                          className={`h-8 w-8 p-0 ${
+                            currentPage === page
+                              ? "bg-primary hover:bg-primary/90"
+                              : "hover:bg-primary/10 dark:hover:bg-primary/20"
+                          } `}
+                          onClick={() => goToPage(Number(page))}
+                        >
+                          {page}
+                        </Button>
+                      )}
+                    </PaginationItem>
                   ))}
 
-                  <button
-                    onClick={() => goToPage(currentPage + 1)}
-                    disabled={currentPage === pagination.totalPages}
-                    className="relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <span className="sr-only">Tiếp theo</span>
-                    <ChevronRight className="h-5 w-5" aria-hidden="true" />
-                  </button>
-                  <button
-                    onClick={() => goToPage(pagination.totalPages)}
-                    disabled={currentPage === pagination.totalPages}
-                    className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <span className="sr-only">Cuối cùng</span>
-                    <ChevronsRight className="h-5 w-5" aria-hidden="true" />
-                  </button>
-                </nav>
-              </div>
+                  <PaginationItem>
+                    <Button
+                      variant="outline"
+                      className="hover:bg-primary/10 dark:hover:bg-primary/20 h-8 w-8 p-0"
+                      onClick={() => goToPage(currentPage + 1)}
+                      disabled={currentPage >= pagination.totalPages}
+                    >
+                      <span className="sr-only">Go to next page</span>
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <Button
+                      variant="outline"
+                      className="hover:bg-primary/10 dark:hover:bg-primary/20 h-8 w-8 p-0"
+                      onClick={() => goToPage(pagination.totalPages)}
+                      disabled={currentPage >= pagination.totalPages}
+                    >
+                      <span className="sr-only">Go to last page</span>
+                      <ChevronsRight className="h-4 w-4" />
+                    </Button>
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
             </div>
           </div>
         )}

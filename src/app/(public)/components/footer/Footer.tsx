@@ -1,9 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
 import Link from "next/link";
+import { useGetApiCategoriesAllFlat } from "@/api/endpoints/categories";
+import { Category } from "@/api/models/category";
 
 function Footer() {
   const currentYear = new Date().getFullYear();
+  
+  // Fetch categories from API
+  const { data: categoriesData, isLoading, error } = useGetApiCategoriesAllFlat(
+    { limit: 5, sort: 'oldest' } // Get oldest 5 categories
+  );
+
+  const categories = categoriesData?.data?.categories || [];
 
   return (
     <footer className="bg-[#FAF9F6] border-t border-black/5 pt-24 pb-12 px-6 md:px-12">
@@ -31,20 +40,28 @@ function Footer() {
 
         <div>
           <h4 className="text-[10px] uppercase tracking-[0.2em] font-bold text-black mb-8">
-            Liên kết
+            Thể loại nổi bật
           </h4>
           <ul className="space-y-4">
-            {["Bản vẽ", "Khối CAD", "Mô hình 3D", "Kết cấu", "Mẫu Hatch"].map(
-              (item) => (
-                <li key={item}>
+            {isLoading ? (
+              // Loading skeleton
+              Array.from({ length: 5 }).map((_, i) => (
+                <li key={i}>
+                  <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
+                </li>
+              ))
+            ) : (
+              // Display categories from API
+              categories.map((category: Category) => (
+                <li key={category._id}>
                   <Link
-                    href="#"
-                    className="text-xs text-black/50 hover:text-black transition-colors font-medium"
+                    href={`/collections?${category._id}`}
+                    className="text-xs text-black/60 hover:text-black transition-colors font-medium"
                   >
-                    {item}
+                    {category.name}
                   </Link>
                 </li>
-              ),
+              ))
             )}
           </ul>
         </div>
@@ -85,11 +102,14 @@ function Footer() {
           <h4 className="text-[10px] uppercase tracking-[0.2em] font-bold text-black mb-8">
             Tham gia
           </h4>
-          <p className="text-xs text-black/50 mb-6 leading-relaxed">
-            Nhận thông tin cập nhật về kiến ​​trúc và các bản phát hành tài sản
-            độc quyền được gửi trực tiếp vào hộp thư đến của bạn.
-          </p>
-          <div className="flex items-center border-b border-black/10 pb-2">
+        <p className="text-xs text-black/50 mb-6 leading-relaxed">
+          Nhận thông tin cập nhật về kiến trúc, mô hình 3D và các bản phát hành tài sản độc quyền.
+          <br />
+          Chúng tôi gửi trực tiếp những nội dung giá trị nhất vào hộp thư của bạn mỗi tuần để bạn
+          luôn đi đầu xu hướng thiết kế.
+        </p>
+
+          {/* <div className="flex items-center border-b border-black/10 pb-2">
             <input
               type="email"
               placeholder="Địa chỉ email của bạn"
@@ -101,7 +121,7 @@ function Footer() {
             >
               Tham gia
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
 
