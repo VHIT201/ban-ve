@@ -45,12 +45,10 @@ const ContactTable = () => {
         select: (data) => {
           const response = data as unknown as ResponseData<{
             contacts: Contact[];
-            pagination: {
-              total: number;
-              page: number;
-              limit: number;
-              totalPages: number;
-            };
+            total: number;
+            page: number;
+            limit: number;
+            totalPages: number;
           }>;
           return response;
         },
@@ -59,12 +57,10 @@ const ContactTable = () => {
   ) as UseQueryResult<
     ResponseData<{
       contacts: Contact[];
-      pagination: {
-        total: number;
-        page: number;
-        limit: number;
-        totalPages: number;
-      };
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
     }>
   >;
 
@@ -87,7 +83,7 @@ const ContactTable = () => {
 
   // Auto-adjust pagination when data changes
   useEffect(() => {
-    const total = getContactListQuery.data?.data?.pagination?.total ?? 0;
+    const total = getContactListQuery.data?.data?.total ?? 0;
     const maxPageIndex = Math.max(
       0,
       Math.ceil(total / pagination.pageSize) - 1,
@@ -218,9 +214,9 @@ const ContactTable = () => {
               name: contact.full_name,
             }),
           ) as ContactTableRow[];
-          const paginationData = responseData?.data?.pagination;
-          const total = paginationData?.total || 0;
-
+          const total = responseData?.data?.total || 0;
+          
+          
           return (
             <DataTable
               columns={columns}
