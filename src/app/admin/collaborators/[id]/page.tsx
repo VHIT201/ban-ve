@@ -17,6 +17,7 @@ import {
   usePutApiCollaboratorsRequestsRequestIdReject,
   getGetApiCollaboratorsRequestsQueryKey,
   usePutApiCollaboratorsCommissionCollaboratorId,
+  useGetApiCollaboratorsStats,
 } from "@/api/endpoints/collaborators";
 
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
   CollaboratorResponse,
+  CollaboratorStats,
   GetApiCollaboratorsRequests200,
 } from "@/api/models";
 import { extractErrorMessage } from "@/utils/error";
@@ -74,7 +76,24 @@ const CollaboratorDetail = () => {
     },
   ) as UseQueryResult<CollaboratorResponse | undefined>;
 
-  console.log("Request Data:", getRequestQuery.data);
+  const requestData = getRequestQuery.data;
+
+  const getCommissionQuery = useGetApiCollaboratorsStats<
+    CollaboratorStats | undefined
+  >({
+    query: {
+      enabled: !!requestData?.user?._id,
+      select: (res) => {
+        const resData = (res as unknown as ResponseData<CollaboratorStats[]>)
+          .data;
+
+        const collaborator = (resData ?? []).find(
+          (r) => r._id === requestData?.user?._id,
+        );
+        return collaborator;
+      },
+    },
+  }) as UseQueryResult<CollaboratorStats | undefined>;
 
   // Mutations
   const approveMutation = usePutApiCollaboratorsRequestsRequestIdApprove({
@@ -140,7 +159,6 @@ const CollaboratorDetail = () => {
     }
 
     const request = getRequestQuery.data;
-    console.log("Submitting form with values:", request);
     if (!request || !collaboratorId) return;
 
     const userId = request.user?._id;
@@ -157,7 +175,7 @@ const CollaboratorDetail = () => {
         },
       });
       toast.success("Cập nhật tỷ lệ hoa hồng thành công");
-      getRequestQuery.refetch();
+      getCommissionQuery.refetch();
     } catch (error) {
       toast.error(
         extractErrorMessage(error) || "Không thể cập nhật tỷ lệ hoa hồng",
@@ -246,7 +264,7 @@ const CollaboratorDetail = () => {
                       defaultValues={{
                         bankAccount: request.bankAccount,
                         bankName: request.bankName,
-                        commissionRate: request.commissionRate,
+                        commissionRate: getCommissionQuery.data?.commissionRate,
                         rejectionReason: request.rejectionReason,
                       }}
                       onSubmit={handleFormSubmit}

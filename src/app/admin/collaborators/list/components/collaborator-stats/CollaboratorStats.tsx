@@ -132,7 +132,9 @@ const CollaboratorStats = () => {
         {(earningsData) => {
           const data = earningsData?.data || {};
           const summary = data || {};
-          const topCollaborators = summary.collaborators || [];
+          const topCollaborators = (summary.collaborators || []).sort(
+            (a, b) => (b.totalCommission || 0) - (a.totalCommission || 0),
+          );
 
           if (topCollaborators.length === 0) {
             return null;
@@ -142,7 +144,7 @@ const CollaboratorStats = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="text-base">
-                  Danh sách cộng tác viên
+                  Xếp hạng cộng tác viên
                 </CardTitle>
               </CardHeader>
               <CardContent>

@@ -149,7 +149,6 @@ export const useColumns = (props: useCollaboratorTableColumnsDefsProps) => {
         header: () => <MoreHorizontal className="h-4 w-4" />,
         cell: ({ row }) => {
           const collaborator = row.original;
-          const isPending = collaborator.status === "pending";
 
           const actions = [];
 
@@ -164,7 +163,6 @@ export const useColumns = (props: useCollaboratorTableColumnsDefsProps) => {
           return (
             <DataTableActionCell
               rowName={`#${collaborator._id?.substring(0, 8)}`}
-              onEdit={onEdit ? () => onEdit(collaborator) : undefined}
               extraActions={
                 actions.length > 0 ? (
                   <>
