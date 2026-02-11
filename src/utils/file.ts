@@ -74,6 +74,9 @@ export function getFileExtensionFromMimeType(mimeType: string): string {
     'application/pdf': '.pdf',
     'application/zip': '.zip',
     'application/x-zip-compressed': '.zip',
+    'application/x-rar-compressed': '.rar',
+    'application/x-rar': '.rar',
+    'application/vnd.rar': '.rar',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
     'application/msword': '.doc',
     'application/vnd.ms-excel': '.xls',
@@ -83,8 +86,7 @@ export function getFileExtensionFromMimeType(mimeType: string): string {
     'image/gif': '.gif',
     'text/plain': '.txt',
   };
-
-  return mimeToExt[mimeType] || '.pdf'; // Default fallback
+  return mimeToExt[mimeType] || '';
 }
 
 export function downloadFile(blob: Blob, title: string) {
