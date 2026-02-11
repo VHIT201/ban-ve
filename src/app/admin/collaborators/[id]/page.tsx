@@ -1,9 +1,9 @@
 "use client";
 
 // Core
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
+import { Query, UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -38,6 +38,8 @@ import {
 } from "@/api/models";
 import { extractErrorMessage } from "@/utils/error";
 import { ResponseData } from "@/api/types/base";
+import { CollaboratorRevenue } from "./components";
+import { get } from "http";
 
 const CollaboratorDetail = () => {
   // Hooks
@@ -130,14 +132,32 @@ const CollaboratorDetail = () => {
   };
 
   const handleFormSubmit = async (values: CollaboratorRequestFormValues) => {
+    if (getRequestQuery.data?.status !== "approved") {
+      toast.error(
+        "Chỉ có thể chỉnh sửa tỷ lệ hoa hồng khi yêu cầu đã được phê duyệt",
+      );
+      return;
+    }
+
+    const request = getRequestQuery.data;
+    console.log("Submitting form with values:", request);
+    if (!request || !collaboratorId) return;
+
+    const userId = request.user?._id;
+    if (!userId) {
+      toast.error("Không tìm thấy thông tin người dùng");
+      return;
+    }
+
     try {
       await editCommissionRateMutation.mutateAsync({
-        collaboratorId,
+        collaboratorId: userId,
         data: {
           commissionRate: values.commissionRate,
         },
       });
       toast.success("Cập nhật tỷ lệ hoa hồng thành công");
+      getRequestQuery.refetch();
     } catch (error) {
       toast.error(
         extractErrorMessage(error) || "Không thể cập nhật tỷ lệ hoa hồng",
@@ -169,6 +189,18 @@ const CollaboratorDetail = () => {
       </div>
 
       <Separator />
+
+      <QueryBoundary query={getRequestQuery}>
+        {(request) => {
+          if (request?.status !== "approved") {
+            return null;
+          }
+
+          return (
+            <CollaboratorRevenue collaboratorId={request?.user?._id || ""} />
+          );
+        }}
+      </QueryBoundary>
 
       {/* Content */}
       <QueryBoundary query={getRequestQuery}>

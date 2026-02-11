@@ -8,7 +8,7 @@ import { useCountDown } from "@/hooks";
 import { extractErrorMessage } from "@/utils/error";
 import { downloadFile, getFileExtensionFromMimeType } from "@/utils/file";
 import { Clock, CheckCircle, Sparkles, DownloadIcon } from "lucide-react";
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -17,11 +17,10 @@ interface Props {
 }
 
 const BlueprintDownload: FC<Props> = ({ content }) => {
+  // States
   const [isDownloading, setIsDownloading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [isHover, setIsHover] = useState(false);
-const isFree = content.price === 0 || content.price === undefined;
-  // Countdown với tự động bắt đầu khi download thành công
+  const isFree = content.price === 0 || content.price === undefined;
   const countdown = useCountDown({
     seconds: 30,
     autoStart: false,
@@ -59,6 +58,12 @@ const isFree = content.price === 0 || content.price === undefined;
       return () => clearTimeout(timer);
     }
   }, [isSuccess, countdown.isRunning]);
+
+  useEffect(() => {
+    if (countdown.timeLeft === 0) {
+      countdown.reset();
+    }
+  }, [countdown]);
 
   const handleDownload = async () => {
     try {
@@ -143,170 +148,161 @@ const isFree = content.price === 0 || content.price === undefined;
 
   const buttonState = getButtonState();
 
+  console.log("BlueprintDownload render:", countdown);
+
   return (
     <>
       {isFree && (
-        <motion.div
-          className="relative"
-          whileHover={{ scale: 1.01 }}
-          onHoverStart={() => setIsHover(true)}
-          onHoverEnd={() => setIsHover(false)}
-        >
-      {/* Hiệu ứng nền lấp lánh khi hover */}
-      <AnimatePresence>
-        {isHover && !isLoading && buttonState !== "success" && (
-          <motion.div
-            className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-500/50 to-purple-500/50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Container chính */}
-      <div className="relative overflow-hidden rounded-none border bg-gradient-to-br from-white to-gray-50 shadow-sm transition-all duration-300">
-        {/* Hiệu ứng progress khi loading */}
-        <AnimatePresence>
-          {isLoading && (
-            <motion.div
-              className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-gray-400 to-gray-700"
-              initial={{ width: "0%" }}
-              animate={{ width: "100%" }}
-              exit={{ width: "100%" }}
-              transition={{ duration: 2, ease: "easeInOut" }}
-            />
-          )}
-        </AnimatePresence>
-
-        {/* Nội dung chính */}
-        <div className="p-4">
-          {/* Header với icon và thông tin */}
-          <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div>
-                <h3 className="font-semibold text-gray-900">Tải xuống file</h3>
-                <p className="text-sm text-gray-500">
-                  {content.price === 0 || content.price === undefined
-                    ? "Miễn phí"
-                    : "Có phí"}
-                </p>
-              </div>
-            </div>
-
-            {/* Hiển thị countdown khi active */}
+        <motion.div className="relative" whileHover={{ scale: 1.01 }}>
+          {/* Container chính */}
+          <div className="relative overflow-hidden rounded-none border bg-gradient-to-br from-white to-gray-50 shadow-sm transition-all duration-300">
+            {/* Hiệu ứng progress khi loading */}
             <AnimatePresence>
-              {countdown.isRunning && (
+              {isLoading && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  className="flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1"
-                >
-                  <Clock className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium text-primary">
-                    {countdown.timeLeft}s
-                  </span>
-                </motion.div>
+                  className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-gray-400 to-gray-700"
+                  initial={{ width: "0%" }}
+                  animate={{ width: "100%" }}
+                  exit={{ width: "100%" }}
+                  transition={{ duration: 2, ease: "easeInOut" }}
+                />
               )}
             </AnimatePresence>
-          </div>
 
-          {/* Nút download chính */}
-          
-          <motion.div whileTap={{ scale: 0.98 }}>
-            <Button
-              variant={buttonState === "success" ? "default" : "default"} 
-              size="lg"
-              className="relative w-full gap-2 overflow-hidden bg-primary !text-white hover:bg-primary/90 disabled:bg-primary/60 disabled:!text-white disabled:!opacity-100 [&_svg]:!text-white"
-              onClick={handleDownload}
-              disabled={isLoading || !content.file_id?._id}
-            >
-              <AnimatePresence mode="wait">
-                {buttonState === "loading" ? (
-                  <motion.div
-                    key="loading"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="flex items-center gap-2"
-                  >
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{
-                        duration: 1,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
-                      className="h-5 w-5 rounded-full border-2 border-white border-t-transparent"
-                    />
-                    <span>Đang tải xuống...</span>
-                  </motion.div>
-                ) : buttonState === "success" ? (
-                  <motion.div
-                    key="success"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    className="flex items-center gap-2"
-                  >
-                    <CheckCircle className="h-5 w-5" />
-                    <span>Đã tải xuống!</span>
-                    {countdown.isRunning && (
-                      <span className="text-sm opacity-90">
-                        ({countdown.timeLeft}s)
-                      </span>
-                    )}
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="default"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="flex items-center gap-2"
-                  >
-                    <DownloadIcon className="h-5 w-5" />
-                    <span>Tải file xuống</span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </Button>
-          </motion.div>
-
-          {/* Thông tin bổ sung */}
-          <AnimatePresence>
-            {countdown.isRunning && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="overflow-hidden"
-              >
-                <div className="mt-3 rounded-md p-3">
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm text-primary">
-                      Bạn có thể tải lại sau {countdown.timeLeft} giây
+            {/* Nội dung chính */}
+            <div className="p-4">
+              {/* Header với icon và thông tin */}
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div>
+                    <h3 className="font-semibold text-gray-900">
+                      Tải xuống file
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      {content.price === 0 || content.price === undefined
+                        ? "Miễn phí"
+                        : "Có phí"}
                     </p>
                   </div>
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
-          {/* Thông tin file */}
-          <motion.div
-            className="mt-3 text-xs text-gray-500"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-          >
-            {content.file_id?.name && (
-              <p className="truncate">Tên file: {content.file_id.name}</p>
-            )}
-          </motion.div>
-        </div>
-      </div>
+                {/* Hiển thị countdown khi active */}
+                <AnimatePresence>
+                  {countdown.isRunning && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      className="flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1"
+                    >
+                      <Clock className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-medium text-primary">
+                        {countdown.timeLeft}s
+                      </span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Nút download chính */}
+
+              <motion.div whileTap={{ scale: 0.98 }}>
+                <Button
+                  variant={buttonState === "success" ? "default" : "default"}
+                  size="lg"
+                  className="relative w-full gap-2 overflow-hidden bg-primary !text-white hover:bg-primary/90 disabled:bg-primary/60 disabled:!text-white disabled:!opacity-100 [&_svg]:!text-white"
+                  onClick={handleDownload}
+                  disabled={
+                    isLoading ||
+                    !content.file_id?._id ||
+                    countdown.timeLeft !== 30
+                  }
+                >
+                  <AnimatePresence mode="wait">
+                    {buttonState === "loading" ? (
+                      <motion.div
+                        key="loading"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="flex items-center gap-2"
+                      >
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{
+                            duration: 1,
+                            repeat: Infinity,
+                            ease: "linear",
+                          }}
+                          className="h-5 w-5 rounded-full border-2 border-white border-t-transparent"
+                        />
+                        <span>Đang tải xuống...</span>
+                      </motion.div>
+                    ) : buttonState === "success" ? (
+                      <motion.div
+                        key="success"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="flex items-center gap-2"
+                      >
+                        <CheckCircle className="h-5 w-5" />
+                        <span>Đã tải xuống!</span>
+                        {countdown.isRunning && (
+                          <span className="text-sm opacity-90">
+                            ({countdown.timeLeft}s)
+                          </span>
+                        )}
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="default"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="flex items-center gap-2"
+                      >
+                        <DownloadIcon className="h-5 w-5" />
+                        <span>Tải file xuống</span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </Button>
+              </motion.div>
+
+              {/* Thông tin bổ sung */}
+              <AnimatePresence>
+                {countdown.isRunning && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="mt-3 rounded-md p-3">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm text-primary">
+                          Bạn có thể tải lại sau {countdown.timeLeft} giây
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Thông tin file */}
+              <motion.div
+                className="mt-3 text-xs text-gray-500"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                {content.file_id?.name && (
+                  <p className="truncate">Tên file: {content.file_id.name}</p>
+                )}
+              </motion.div>
+            </div>
+          </div>
         </motion.div>
       )}
     </>
