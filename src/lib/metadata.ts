@@ -29,6 +29,9 @@ export function generateMetadata(params: GenerateMetadataParams): Metadata {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   const fullUrl = url ? `${baseUrl}${url}` : baseUrl;
 
+  // Ensure image URL is absolute
+  const imageUrl = image?.startsWith("http") ? image : `${baseUrl}${image}`;
+
   return {
     title,
     description,
@@ -42,7 +45,7 @@ export function generateMetadata(params: GenerateMetadataParams): Metadata {
       description,
       images: [
         {
-          url: "https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m2zj7kewi6eo98",
+          url: imageUrl,
           width: 1200,
           height: 630,
           alt: title,
@@ -55,9 +58,7 @@ export function generateMetadata(params: GenerateMetadataParams): Metadata {
       card: "summary_large_image",
       title,
       description,
-      images: [
-        "https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-m2zj7kewi6eo98",
-      ],
+      images: [imageUrl],
     },
   };
 }
