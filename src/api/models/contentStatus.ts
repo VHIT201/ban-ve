@@ -10,5 +10,5 @@ export type ContentStatus = typeof ContentStatus[keyof typeof ContentStatus];
 export const ContentStatus = {
   pending: 'pending',
   approved: 'approved',
-  copyright_infringement: 'copyright_infringement',
+  rejected: 'rejected',
 } as const;

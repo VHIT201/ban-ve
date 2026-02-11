@@ -10,7 +10,7 @@ import { DataTableActionCell } from "@/components/shared/data-table/shared";
 
 // Internal
 import { ContentTableRow, useContentTableColumnsDefsProps } from "./types";
-import { ContentStatus } from "@/api/models";
+import { ContentStatus } from "@/enums/content";
 
 const getStatusConfig = (status?: string) => {
   switch (status?.toLowerCase()) {
@@ -21,9 +21,9 @@ const getStatusConfig = (status?: string) => {
         className:
           "bg-green-100 text-green-800 border-green-200 hover:bg-green-200 ",
       };
-    case "rejected":
+    case "copyright_infringement":
       return {
-        label: "Từ chối",
+        label: "Vi phạm",
         variant: "destructive" as const,
         className: "bg-red-100 text-red-800 border-red-200 hover:bg-red-200 ",
       };
@@ -82,7 +82,7 @@ const formatCurrency = (price?: number): string => {
 export const useContentTableColumnsDefs = (
   props: useContentTableColumnsDefsProps,
 ) => {
-  const { onEdit, onDelete, onApprove, onReject, onView } = props;
+  const { onEdit, onDelete, onApprove, onReject, onView, onRevert } = props;
 
   return useMemo<ColumnDef<ContentTableRow>[]>(
     () => [
@@ -260,14 +260,27 @@ export const useContentTableColumnsDefs = (
           const content = row.original;
           const actions = [];
 
+          if (onReject)
+            if (
+              onApprove &&
+              content.status?.toLowerCase() === ContentStatus.PENDING
+            ) {
+              actions.push({
+                label: "Xét duyệt",
+                icon: CheckIcon,
+                onAction: () => onApprove(content),
+              });
+            }
+
           if (
-            onApprove &&
-            content.status?.toLowerCase() === ContentStatus.pending
+            onRevert &&
+            content.status?.toLowerCase() ===
+              ContentStatus.COPYRIGHT_INFRINGEMENT
           ) {
             actions.push({
-              label: "Xét duyệt",
+              label: "Hoàn tác vi phạm",
               icon: CheckIcon,
-              onAction: () => onApprove(content),
+              onAction: () => onRevert(content),
             });
           }
 

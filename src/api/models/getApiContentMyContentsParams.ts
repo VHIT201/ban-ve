@@ -1,5 +1,6 @@
 // @ts-nocheck
 import type { GetApiContentMyContentsSort } from './getApiContentMyContentsSort';
+import type { GetApiContentMyContentsStatus } from './getApiContentMyContentsStatus';
 
 export type GetApiContentMyContentsParams = {
 /**
@@ -17,4 +18,8 @@ limit?: number;
  * Sắp xếp theo thời gian (mới nhất hoặc cũ nhất)
  */
 sort?: GetApiContentMyContentsSort;
+/**
+ * Lọc theo trạng thái
+ */
+status?: GetApiContentMyContentsStatus;
 };

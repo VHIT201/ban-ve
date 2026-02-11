@@ -32,16 +32,14 @@ function Personal() {
       // Cập nhật store với thông tin từ server
       if (response.data) {
         profileStore.setStore({
-          avatar: response.data.avatar || profileStore.avatar,
+          avatar: response.data?.avatar || profileStore.avatar,
           fullName: response.data.fullname,
           email: response.data.email,
         });
         toast.success("Cập nhật thông tin thành công");
       }
     } catch (error) {
-      toast.error(
-        extractErrorMessage(error) || "Cập nhật thông tin thất bại",
-      );
+      toast.error(extractErrorMessage(error) || "Cập nhật thông tin thất bại");
     }
   };
 

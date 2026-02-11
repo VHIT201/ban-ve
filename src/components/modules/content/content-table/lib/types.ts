@@ -8,6 +8,7 @@ export interface useContentTableColumnsDefsProps {
   onApprove?: (content: ContentTableRow) => void;
   onReject?: (content: ContentTableRow) => void;
   onView?: (content: ContentTableRow) => void;
+  onRevert?: (content: ContentTableRow) => void;
 }
 
 export interface DataTableBulkAction {

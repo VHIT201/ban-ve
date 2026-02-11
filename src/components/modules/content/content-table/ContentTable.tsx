@@ -43,6 +43,7 @@ interface Props {
     onDelete?: (content: ContentResponse) => void;
     onView?: (content: ContentResponse) => void;
     onApprove?: (content: ContentResponse) => void;
+    onRevert?: (content: ContentResponse) => void;
   };
   bulkActions?: Action[];
 }
@@ -148,6 +149,7 @@ const ContentTable = (props: Props) => {
     onDelete: actions?.onDelete || handleDelete,
     onView: actions?.onView,
     onApprove: actions?.onApprove,
+    onRevert: actions?.onRevert,
   });
 
   const bulkActionList = [

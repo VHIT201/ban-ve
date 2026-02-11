@@ -2,14 +2,18 @@
 
 // Internal
 
-import { FilterIcon, PlusIcon } from "lucide-react";
+import { FilterIcon, PlusIcon, SlidersHorizontalIcon } from "lucide-react";
 
 // App
 import { Button } from "@/components/ui/button";
 
 // Internal
 import { useRouter } from "next/navigation";
-import { DeleteDialog, DynamicFilter } from "@/components/shared";
+import {
+  ConfirmDialog,
+  DeleteDialog,
+  DynamicFilter,
+} from "@/components/shared";
 import { TreeNode } from "@/components/shared/dynamic-filter";
 import { useState, useEffect } from "react";
 import {
@@ -29,11 +33,15 @@ import {
 import { ContentResponse } from "@/api/types/content";
 import { UseQueryResult } from "@tanstack/react-query";
 import { useBulkActions } from "./lib/hook";
+import { ContentStatus } from "@/enums/content";
 
 const ContentList = () => {
   const router = useRouter();
   // States
   const [selectedRows, setSelectedRows] = useState<ContentResponse[]>([]);
+  const [revertContent, setRevertContent] = useState<ContentResponse | null>(
+    null,
+  );
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<ContentFilterSchema>();
   const [pagination, setPagination] = useState({
@@ -110,6 +118,8 @@ const ContentList = () => {
   }>;
 
   // Mutations
+  const revertContentMutation = usePutApiContentIdApprove();
+
   const approveContentMutation = usePutApiContentIdApprove({
     mutation: {
       onSuccess: () => {
@@ -152,6 +162,10 @@ const ContentList = () => {
     );
   };
 
+  const handleOpenRevertDialog = (content: ContentResponse) => {
+    setRevertContent(content);
+  };
+
   const handleApprove = (content: ContentResponse) => {
     if (!content._id) return;
     if (confirm(`Bạn có chắc chắn muốn duyệt nội dung "${content.title}"?`)) {
@@ -159,6 +173,22 @@ const ContentList = () => {
         id: content._id,
         data: { status: "approved" },
       });
+    }
+  };
+
+  const handleRevert = async () => {
+    if (!revertContent?._id) return;
+
+    try {
+      await revertContentMutation.mutateAsync({
+        id: revertContent._id,
+        data: { status: ContentStatus.APPROVED },
+      });
+
+      toast.success("Hoàn tác vi phạm nội dung thành công");
+      getContentListQuery.refetch();
+    } catch (error) {
+      toast.error("Có lỗi xảy ra khi hoàn tác vi phạm nội dung");
     }
   };
 
@@ -241,9 +271,10 @@ const ContentList = () => {
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
                 className="gap-2 relative"
               >
-                <FilterIcon className="h-4 w-4" />
-                <span className="hidden sm:inline">Bộ lọc</span>
+                <SlidersHorizontalIcon className="h-4 w-4" />
+                {isFilterOpen ? "Ẩn bộ lọc" : "Hiện bộ lọc"}
               </Button>
+
               <Button
                 onClick={() =>
                   router.push(BASE_PATHS.admin.contents.create.path)
@@ -270,7 +301,17 @@ const ContentList = () => {
               onEdit: handleViewEdit,
               onView: handleViewDetail,
               onApprove: handleApprove,
+              onRevert: handleOpenRevertDialog,
             }}
+          />
+
+          <ConfirmDialog
+            isLoading={revertContentMutation.isPending}
+            title="Xác nhận hoàn tác vi phạm nội dung"
+            desc='Bạn có chắc chắn muốn hoàn tác vi phạm nội dung này không? Nội dung sẽ trở về trạng thái "Đã duyệt".'
+            open={!!revertContent}
+            onOpenChange={() => setRevertContent(null)}
+            handleConfirm={handleRevert}
           />
         </div>
       </div>

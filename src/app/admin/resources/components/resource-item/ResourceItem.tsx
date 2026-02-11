@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-
+import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Eye, MoreVertical, Download, Trash2 } from "lucide-react";
+import { Eye, MoreVertical, Download, Trash2, FileIcon } from "lucide-react";
 import { useState } from "react";
 import { getFileIcon, getFileTypeLabel } from "@/utils/file";
 import { FileType } from "@/enums/file";
@@ -47,9 +47,7 @@ export default function ResourceItem({
   const [imageError, setImageError] = useState(false);
 
   const getFullPath = (path: string) => {
-    // Nếu path đã là URL đầy đủ thì trả về luôn
     if (path.startsWith("http")) return path;
-    // Nếu path bắt đầu bằng / thì nối trực tiếp, ngược lại thêm / ở giữa
     return path.startsWith("/")
       ? `${baseConfig.mediaDomain}${path}`
       : `${baseConfig.mediaDomain}/${path}`;
@@ -94,77 +92,119 @@ export default function ResourceItem({
     onDelete?.(item);
   };
 
-  const FileIcon = getFileIcon(item.type as FileType);
+  const IconComponent = getFileIcon(item.type as FileType);
   const previewImage = item.image1 || item.image2 || item.image3 || item.image4;
 
   return (
-    <Card
-      className="flex flex-col items-center justify-center p-4 min-h-40 hover:shadow-md hover:scale-105 hover:bg-muted/30 transition-all duration-200 cursor-pointer relative group rounded-none! shadow-none! border-gray-300"
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.2 }}
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
     >
-      <div className="size-16 bg-muted/50 rounded flex items-center justify-center shrink-0 text-xl overflow-hidden relative">
-        {previewImage && !imageError ? (
-          <Image
-            src={getFullPath(previewImage)}
-            alt={item.name}
-            fill
-            className="object-cover"
-            onError={() => setImageError(true)}
-          />
-        ) : (
-          <FileIcon />
-        )}
-      </div>
+      <Card className="group relative flex flex-col overflow-hidden border border-border/50 bg-background hover:border-border hover:shadow-lg transition-all duration-300 cursor-pointer h-full py-0">
+        {/* Preview Area */}
+        <div className="relative aspect-square bg-muted/30 overflow-hidden">
+          {previewImage && !imageError ? (
+            <motion.div
+              initial={{ scale: 1 }}
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3 }}
+              className="relative w-full h-full"
+            >
+              <Image
+                src={getFullPath(previewImage)}
+                alt={item.name}
+                fill
+                className="object-cover"
+                onError={() => setImageError(true)}
+              />
+            </motion.div>
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <div className="w-16 h-16 text-muted-foreground/40">
+                <IconComponent />
+              </div>
+            </div>
+          )}
 
-      <div className="w-full">
-        <p
-          className="text-sm font-medium text-center line-clamp-2 text-foreground"
-          title={item.name}
-        >
-          {item.name}
-        </p>
-      </div>
-
-      <p className="text-xs text-muted-foreground mt-1">
-        {getFileTypeLabel(item.type as FileType)}
-      </p>
-
-      <div
-        className={`absolute top-2 right-2 transition-opacity duration-200 ${
-          showActions ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          {/* Overlay Actions */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: showActions ? 1 : 0 }}
+            transition={{ duration: 0.2 }}
+            className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center gap-2"
+          >
             <Button
-              variant="ghost"
+              variant="secondary"
               size="icon"
-              className="h-8 w-8 hover:bg-muted"
-              onClick={(e) => e.stopPropagation()}
+              className="h-9 w-9 rounded-full shadow-lg"
+              onClick={handlePreview}
             >
-              <MoreVertical className="h-4 w-4" />
+              <Eye className="h-4 w-4" />
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
-            <DropdownMenuItem onClick={handlePreview}>
-              <Eye className="h-4 w-4 mr-2" />
-              Xem trước
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleDownload}>
-              <Download className="h-4 w-4 mr-2" />
-              Download
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={handleDelete}
-              className="text-destructive"
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-9 w-9 rounded-full shadow-lg"
+              onClick={handleDownload}
             >
-              <Trash2 className="h-4 w-4 mr-2" />
-              Xóa dữ liệu
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </Card>
+              <Download className="h-4 w-4" />
+            </Button>
+          </motion.div>
+        </div>
+
+        {/* Content Area */}
+        <div className="flex-1 flex flex-col p-3 space-y-2">
+          <div className="flex-1">
+            <h3
+              className="text-sm font-medium line-clamp-2 leading-tight text-foreground group-hover:text-primary transition-colors"
+              title={item.name}
+            >
+              {item.name}
+            </h3>
+          </div>
+
+          <div className="flex items-center justify-between gap-2 pt-2 border-t border-border/50">
+            <span className="text-xs text-muted-foreground font-medium">
+              {getFileTypeLabel(item.type as FileType)}
+            </span>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 shrink-0"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <MoreVertical className="h-3.5 w-3.5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem onClick={handlePreview}>
+                  <Eye className="h-4 w-4 mr-2" />
+                  Xem trước
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleDownload}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Tải xuống
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={handleDelete}
+                  className="text-destructive focus:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Xóa
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+      </Card>
+    </motion.div>
   );
 }

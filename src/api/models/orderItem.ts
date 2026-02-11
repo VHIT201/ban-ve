@@ -1,10 +1,8 @@
 // @ts-nocheck
 
-import { CartItemContentId } from "./cartItemContentId";
-
 export interface OrderItem {
   /** ID nội dung */
-  contentId?: CartItemContentId;
+  contentId?: CartItemContent;
   /** Số lượng */
   quantity?: number;
   /** Giá tiền */
