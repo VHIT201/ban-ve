@@ -45,6 +45,7 @@ import { useShallow } from "zustand/shallow";
 import EmailDialog from "@/components/shared/email-dialog";
 import { useCountDown } from "@/hooks";
 import { BlueprintDownload } from "./components";
+import Image from "@/components/ui/image";
 
 const DOWNLOAD_COUNTDOWN_SECONDS = 5;
 
@@ -167,9 +168,9 @@ const BlueprintDetailView: FC<Props> = (props) => {
               isStatic={false}
               ariaLabel="Zoom Area"
             >
-              <img
+              <Image
                 src={imageList[selectedImage]}
-                alt={content.title}
+                alt={content.title ?? "Blueprint Image"}
                 className="w-full h-[400px] lg:h-[550px] object-contain"
               />
             </Lens>

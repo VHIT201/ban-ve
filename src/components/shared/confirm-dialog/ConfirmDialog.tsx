@@ -51,7 +51,7 @@ const ConfirmDialog = (props: ConfirmDialogProps) => {
         {children}
         <AlertDialogFooter className="flex justify-between">
           <AlertDialogCancel disabled={isLoading}>
-            {cancelBtnText ?? "Cancel"}
+            {cancelBtnText ?? "Hủy"}
           </AlertDialogCancel>
           <Button
             loading={isLoading}
@@ -59,7 +59,7 @@ const ConfirmDialog = (props: ConfirmDialogProps) => {
             onClick={handleConfirm}
             disabled={disabled || isLoading}
           >
-            {confirmText ?? "Continue"}
+            {confirmText ?? "Tiếp tục"}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

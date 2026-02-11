@@ -59,7 +59,8 @@ function OrderDetail() {
               <div className="lg:col-span-2">
                 <OrderDetailSoldList
                   items={
-                    order?.paymentId?.paymentDetails?.orderDetails?.items ?? []
+                    (order?.paymentId as unknown as any)?.paymentDetails
+                      ?.orderDetails?.items ?? []
                   }
                 />
               </div>
@@ -67,7 +68,10 @@ function OrderDetail() {
               <div className="lg:col-span-1">
                 <OrderDetailInformation
                   order={order}
-                  items={order?.paymentId?.paymentDetails?.items ?? []}
+                  items={
+                    (order?.paymentId as unknown as any)?.paymentDetails
+                      ?.items ?? []
+                  }
                 />
               </div>
             </div>

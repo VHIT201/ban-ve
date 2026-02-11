@@ -29,6 +29,7 @@ import type {
   GetApiReportsParams,
   GetApiReportsReportId200,
   PostApiReports201,
+  PutApiReportsContentContentIdStatusBody,
   PutApiReportsReportIdStatus200,
   UpdateReportStatusInput
 } from '../models';
@@ -496,6 +497,71 @@ export const usePutApiReportsReportIdStatus = <TError = ErrorType<unknown>,
       > => {
 
       const mutationOptions = getPutApiReportsReportIdStatusMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * API tái sử dụng để Admin thay đổi trạng thái bài viết (ví dụ khôi phục bài hoặc đánh dấu vi phạm thủ công)
+ * @summary Thay đổi trạng thái vi phạm của nội dung (Admin)
+ */
+export const putApiReportsContentContentIdStatus = (
+    contentId: string,
+    putApiReportsContentContentIdStatusBody: BodyType<PutApiReportsContentContentIdStatusBody>,
+ ) => {
+      
+      
+      return mainInstance<void>(
+      {url: `/api/reports/content/${contentId}/status`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: putApiReportsContentContentIdStatusBody
+    },
+      );
+    }
+  
+
+
+export const getPutApiReportsContentContentIdStatusMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiReportsContentContentIdStatus>>, TError,{contentId: string;data: BodyType<PutApiReportsContentContentIdStatusBody>}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof putApiReportsContentContentIdStatus>>, TError,{contentId: string;data: BodyType<PutApiReportsContentContentIdStatusBody>}, TContext> => {
+
+const mutationKey = ['putApiReportsContentContentIdStatus'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiReportsContentContentIdStatus>>, {contentId: string;data: BodyType<PutApiReportsContentContentIdStatusBody>}> = (props) => {
+          const {contentId,data} = props ?? {};
+
+          return  putApiReportsContentContentIdStatus(contentId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutApiReportsContentContentIdStatusMutationResult = NonNullable<Awaited<ReturnType<typeof putApiReportsContentContentIdStatus>>>
+    export type PutApiReportsContentContentIdStatusMutationBody = BodyType<PutApiReportsContentContentIdStatusBody>
+    export type PutApiReportsContentContentIdStatusMutationError = ErrorType<void>
+
+    /**
+ * @summary Thay đổi trạng thái vi phạm của nội dung (Admin)
+ */
+export const usePutApiReportsContentContentIdStatus = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiReportsContentContentIdStatus>>, TError,{contentId: string;data: BodyType<PutApiReportsContentContentIdStatusBody>}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putApiReportsContentContentIdStatus>>,
+        TError,
+        {contentId: string;data: BodyType<PutApiReportsContentContentIdStatusBody>},
+        TContext
+      > => {
+
+      const mutationOptions = getPutApiReportsContentContentIdStatusMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

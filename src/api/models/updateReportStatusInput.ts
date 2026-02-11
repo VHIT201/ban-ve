@@ -1,5 +1,6 @@
 // @ts-nocheck
 import type { UpdateReportStatusInputStatus } from './updateReportStatusInputStatus';
+import type { UpdateReportStatusInputViolationType } from './updateReportStatusInputViolationType';
 
 export interface UpdateReportStatusInput {
   /** Trạng thái mới. Lưu ý:
@@ -9,4 +10,6 @@ export interface UpdateReportStatusInput {
   status: UpdateReportStatusInputStatus;
   /** Ghi chú của admin (sẽ được gửi kèm trong email nếu là resolved) */
   adminNotes?: string;
+  /** Loại vi phạm đã được admin xác nhận (nếu muốn thay đổi so với báo cáo gốc) */
+  violationType?: UpdateReportStatusInputViolationType;
 }

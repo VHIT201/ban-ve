@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getApiContentId } from "@/api/endpoints/content";
 import { Content } from "@/api/models";
+import baseConfig from "@/configs/base";
 import {
   generateMetadata as generateSEOMetadata,
   generateProductJsonLd,
@@ -83,17 +84,25 @@ const Detail = async ({ params }: DetailPageProps) => {
   let jsonLd = null;
   try {
     const content = (await getApiContentId(id)) as Content;
-    const image =
+    const firstImage =
       content.images && content.images.length > 0
         ? content.images[0]
         : "/og-image.png";
 
+    // Build absolute image URL with mediaDomain
+    let image: string;
+    if (firstImage.startsWith("http")) {
+      image = firstImage;
+    } else if (firstImage.startsWith("/")) {
+      image = `${baseConfig.mediaDomain}${firstImage}`;
+    } else {
+      image = `${baseConfig.mediaDomain}/${firstImage}`;
+    }
+
     jsonLd = generateProductJsonLd({
       name: content.title || "Sản phẩm",
       description: content.description || "",
-      image: image?.startsWith("http")
-        ? image
-        : `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}${image}`,
+      image,
       price: content.price || 0,
       currency: "VND",
       availability: "InStock",

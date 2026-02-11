@@ -6,9 +6,7 @@ import { useMemo } from "react";
 
 // Internal
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-
-import { FilterIcon, PlusIcon } from "lucide-react";
+import { PlusIcon, SlidersHorizontalIcon } from "lucide-react";
 import { useState } from "react";
 import {
   getGetApiCategoriesIdChildrenQueryKey,
@@ -179,16 +177,8 @@ const Categories = () => {
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
                 className="gap-2 relative"
               >
-                <FilterIcon className="h-4 w-4" />
-                <span className="hidden sm:inline">Bộ lọc</span>
-                {activeFiltersCount > 0 && (
-                  <Badge
-                    variant="default"
-                    className="ml-1 h-5 min-w-5 px-1 text-xs font-medium"
-                  >
-                    {activeFiltersCount}
-                  </Badge>
-                )}
+                <SlidersHorizontalIcon className="h-4 w-4" />
+                {isFilterOpen ? "Ẩn bộ lọc" : "Hiện bộ lọc"}
               </Button>
               <Button onClick={() => setIsDialogOpen(true)} className="gap-2">
                 <PlusIcon className="h-4 w-4" />
