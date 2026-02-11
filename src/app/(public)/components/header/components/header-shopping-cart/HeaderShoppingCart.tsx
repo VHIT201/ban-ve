@@ -100,6 +100,7 @@ const HeaderShoppingCart = ({ sync = true }: HeaderShoppingCartProps) => {
                     onUpdate={handleUpdateQuantity}
                     onRemove={handleRemoveItem}
                     onClose={cart.closeCart}
+
                   />
                 ))}
                 {cart.isFetchingCartList &&
@@ -154,6 +155,7 @@ const CartItemRow = ({ item, isLoading, onUpdate, onRemove, onClose }: any) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
+
   // Methods
   const handleRemove = async () => {
     setIsDeleting(true);
@@ -191,25 +193,27 @@ const CartItemRow = ({ item, isLoading, onUpdate, onRemove, onClose }: any) => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 mt-2">
-          <button
-            className="w-7 h-7 border rounded text-sm disabled:opacity-40"
-            disabled={isLoading || item.quantity <= 1}
-            onClick={() => onUpdate(item.product._id, item.quantity - 1)}
-          >
-            −
-          </button>
+        {item.product?.price !== 0 && (
+          <div className="flex items-center gap-2 mt-2">
+            <button
+              className="w-7 h-7 border rounded text-sm disabled:opacity-40"
+              disabled={isLoading || item.quantity <= 1}
+              onClick={() => onUpdate(item.product._id, item.quantity - 1)}
+            >
+              −
+            </button>
 
-          <span className="w-6 text-center text-sm">{item.quantity}</span>
+            <span className="w-6 text-center text-sm">{item.quantity}</span>
 
-          <button
-            className="w-7 h-7 border rounded text-sm disabled:opacity-40"
-            disabled={isLoading}
-            onClick={() => onUpdate(item.product._id, item.quantity + 1)}
-          >
-            +
-          </button>
-        </div>
+            <button
+              className="w-7 h-7 border rounded text-sm disabled:opacity-40"
+              disabled={isLoading}
+              onClick={() => onUpdate(item.product._id, item.quantity + 1)}
+            >
+              +
+            </button>
+          </div>
+        )}
       </div>
 
       <button
