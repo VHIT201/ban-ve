@@ -34,6 +34,7 @@ import { BASE_PATHS } from "@/constants/paths";
 import { usePostApiAuthRegister } from "@/api/endpoints/auth";
 import { toast } from "sonner";
 import { encodeSHA256 } from "@/utils/encode";
+import { useWarnIfUnsavedChanges } from "@/hooks/use-warn-if-unsaved-changes";
 
 const RegisterForm: FC<Props> = (props) => {
   // Props
@@ -61,6 +62,8 @@ const RegisterForm: FC<Props> = (props) => {
     },
   });
 
+  const { confirmNavigation } = useWarnIfUnsavedChanges(form.formState.isDirty);
+
   const handleSubmit = async (values: RegisterFormValues) => {
     try {
       await registerMutation.mutateAsync({
@@ -71,6 +74,7 @@ const RegisterForm: FC<Props> = (props) => {
         },
       });
 
+      form.reset();
       onSubmit(values);
       toast.success("Đăng ký thành công! Vui lòng kiểm tra email để xác thực.");
     } catch (error: any) {
@@ -91,9 +95,14 @@ const RegisterForm: FC<Props> = (props) => {
           }
         });
       } else {
-        // Show general error message
         toast.error(errorMessage);
       }
+    }
+  };
+
+  const handleLoginClick = (e: React.MouseEvent) => {
+    if (!confirmNavigation()) {
+      e.preventDefault();
     }
   };
 
@@ -232,7 +241,9 @@ const RegisterForm: FC<Props> = (props) => {
             disabled={form.formState.isSubmitting}
             className="p-0 h-auto ml-2 font-medium text-primary hover:underline"
           >
-            <Link href={BASE_PATHS.auth.login.path}>Đăng nhập ngay</Link>
+            <Link href={BASE_PATHS.auth.login.path} onClick={handleLoginClick}>
+              Đăng nhập ngay
+            </Link>
           </Button>
         </div>
       </form>

@@ -39,7 +39,7 @@ export interface UseWatermarkOptions {
  * @example
  * ```tsx
  * const canvasRef = useWatermark({
- *   text: "TẠO BỞI BANVE.VN",
+ *   text: "TẠO BỞI DATA - DATAORY",
  *   rotation: -Math.PI / 6,
  *   fontSize: 22
  * });
@@ -57,7 +57,7 @@ export interface UseWatermarkOptions {
  */
 export const useWatermark = (options: UseWatermarkOptions = {}) => {
   const {
-    text = "TẠO BỞI BANVE.VN",
+    text = "TẠO BỞI DATA - DATAORY",
     rotation = -Math.PI / 6,
     overlayOpacity = 0.5,
     textOpacity = 0.7,

@@ -55,6 +55,7 @@ type ExtendedPaymentDetails = PaymentPaymentDetails & {
 
 type Payment = Omit<BasePayment, "paymentDetails"> & {
   orderId?: string;
+  orderCode?: string;
   paymentDetails?: ExtendedPaymentDetails;
 };
 
@@ -185,7 +186,7 @@ export default function PaymentDetailPage() {
           </CardHeader>
 
           <CardContent className="space-y-4">
-            <InfoRow label="Mã đơn hàng" value={payment.orderId} />
+            <InfoRow label="Mã đơn hàng" value={payment.orderCode} />
 
             {!paymentDetails?.items?.length && (
               <p className="text-sm text-muted-foreground">Không có sản phẩm</p>

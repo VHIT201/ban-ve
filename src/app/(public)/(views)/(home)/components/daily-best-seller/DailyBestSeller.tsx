@@ -90,8 +90,6 @@ const DailyBestDownloaded = () => {
           }
         >
           {(products) => {
-            console.log("products", products);
-
             return (
               <div className="lg:col-span-4">
                 <CarouselContent className="-ml-10 pt-6">
@@ -101,6 +99,7 @@ const DailyBestDownloaded = () => {
                       className="pl-10 md:basis-1/2 lg:basis-1/5"
                     >
                       <BlueprintCard
+                        viewUsername={false}
                         product={{
                           _id: product.contentId!,
                           ...(product.contentInfo as Content),

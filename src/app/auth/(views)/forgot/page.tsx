@@ -22,6 +22,12 @@ const ForgotPassword = () => {
     forgotEmail ? "reset" : "email",
   );
 
+  useEffect(() => {
+    return () => {
+      setForgotEmail(null);
+    };
+  }, [setForgotEmail]);
+
   const resetSubmittingRef = useRef(false);
 
   const forgotPasswordMutation = usePostApiAuthForgotPassword({

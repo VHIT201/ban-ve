@@ -58,7 +58,7 @@ const ContentDetail = () => {
             await uploadMediaMutation.applyWatermarkToImage(
               image as unknown as File,
               {
-                text: "TẠO BỞI BANVE.VN",
+                text: "TẠO BỞI DATA - DATAORY",
                 fontSize: 36,
                 textOpacity: 0.7,
                 overlayOpacity: 0.4,

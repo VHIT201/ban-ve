@@ -139,7 +139,7 @@ const useUploadMedia = (): UseUploadMediaReturn => {
 
       return new Promise((resolve, reject) => {
         const {
-          text = "TẠO BỞI BANVE.VN",
+          text = "TẠO BỞI DATA - DATAORY",
           rotation = -Math.PI / 6,
           overlayOpacity = 0.5,
           enableOverlay = true,

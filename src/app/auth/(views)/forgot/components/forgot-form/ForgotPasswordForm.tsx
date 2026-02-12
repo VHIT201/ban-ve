@@ -22,6 +22,7 @@ import { FC } from "react";
 import Link from "next/link";
 import { BASE_PATHS } from "@/constants/paths";
 import { toast } from "sonner";
+import { useWarnIfUnsavedChanges } from "@/hooks/use-warn-if-unsaved-changes";
 
 interface ForgotPasswordFormProps {
   onEmailSubmit: (email: string) => Promise<void> | void;
@@ -32,6 +33,8 @@ const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({ onEmailSubmit }) => {
     resolver: zodResolver(FORGOT_PASSWORD_FORM_SCHEMA),
     defaultValues: FORGOT_PASSWORD_FORM_DEFAULT_VALUES,
   });
+
+  const { confirmNavigation } = useWarnIfUnsavedChanges(form.formState.isDirty);
 
   const onSubmit = async (values: ForgotPasswordFormValues) => {
     try {
@@ -90,6 +93,11 @@ const ForgotPasswordForm: FC<ForgotPasswordFormProps> = ({ onEmailSubmit }) => {
             <Link
               href={BASE_PATHS.auth.login.path}
               className="flex items-center justify-center gap-1"
+              onClick={(e) => {
+                if (!confirmNavigation()) {
+                  e.preventDefault();
+                }
+              }}
             >
               <ArrowLeft className="h-4 w-4" />
               Quay lại đăng nhập
