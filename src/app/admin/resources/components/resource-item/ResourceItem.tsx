@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Eye, MoreVertical, Download, Trash2, FileIcon } from "lucide-react";
+import { Eye, MoreVertical, Download, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { getFileIcon, getFileTypeLabel } from "@/utils/file";
 import { FileType } from "@/enums/file";
@@ -142,14 +142,6 @@ export default function ResourceItem({
               variant="secondary"
               size="icon"
               className="h-9 w-9 rounded-full shadow-lg"
-              onClick={handlePreview}
-            >
-              <Eye className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="secondary"
-              size="icon"
-              className="h-9 w-9 rounded-full shadow-lg"
               onClick={handleDownload}
             >
               <Download className="h-4 w-4" />
@@ -185,10 +177,6 @@ export default function ResourceItem({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40">
-                <DropdownMenuItem onClick={handlePreview}>
-                  <Eye className="h-4 w-4 mr-2" />
-                  Xem trước
-                </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleDownload}>
                   <Download className="h-4 w-4 mr-2" />
                   Tải xuống

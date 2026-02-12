@@ -3,7 +3,7 @@
 // Core
 import { useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Query, UseQueryResult, useQueryClient } from "@tanstack/react-query";
+import { UseQueryResult, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -81,7 +81,8 @@ const CollaboratorDetail = () => {
     CollaboratorStats | undefined
   >({
     query: {
-      enabled: !!requestData?.user?._id,
+      enabled:
+        !!requestData?.user?._id && getRequestQuery.data?.status === "approved",
       select: (res) => {
         const resData = (res as unknown as ResponseData<CollaboratorStats[]>)
           .data;
@@ -182,6 +183,12 @@ const CollaboratorDetail = () => {
     }
   };
 
+  const commissionRate = useMemo(() => {
+    return getRequestQuery.data?.status === "approved"
+      ? getCommissionQuery.data?.commissionRate
+      : getRequestQuery.data?.commissionRate;
+  }, [getRequestQuery.data, getCommissionQuery.data]);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -263,7 +270,7 @@ const CollaboratorDetail = () => {
                       defaultValues={{
                         bankAccount: request.bankAccount,
                         bankName: request.bankName,
-                        commissionRate: getCommissionQuery.data?.commissionRate,
+                        commissionRate: commissionRate,
                         rejectionReason: request.rejectionReason,
                       }}
                       onSubmit={handleFormSubmit}

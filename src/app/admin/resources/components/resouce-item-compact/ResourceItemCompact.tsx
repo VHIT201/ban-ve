@@ -196,15 +196,6 @@ const ResourceItemCompact = ({ item, onView, onDownload, onDelete }: Props) => {
             variant="ghost"
             size="icon"
             className="h-8 w-8"
-            onClick={handleView}
-          >
-            <Eye className="h-4 w-4" />
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
             onClick={handleDownload}
           >
             <Download className="h-4 w-4" />
@@ -217,10 +208,6 @@ const ResourceItemCompact = ({ item, onView, onDownload, onDelete }: Props) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40">
-              <DropdownMenuItem onClick={handleView}>
-                <Eye className="h-4 w-4 mr-2" />
-                Xem trước
-              </DropdownMenuItem>
               <DropdownMenuItem onClick={handleDownload}>
                 <Download className="h-4 w-4 mr-2" />
                 Tải xuống

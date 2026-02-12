@@ -10,6 +10,7 @@ import "@/styles/theme.css";
 // App
 import { Providers } from "./providers";
 import { AuthGate } from "@/components/modules/auth";
+import { RouterHydrateFallbackElement } from "./components";
 
 // Metadata configuration
 export const metadata: Metadata = {
@@ -106,7 +107,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <Providers>
             <AuthGate>
               <div className="min-h-screen bg-background">
-                <Suspense fallback={null}>
+                <Suspense fallback={<RouterHydrateFallbackElement />}>
                   <main>{children}</main>
                 </Suspense>
               </div>

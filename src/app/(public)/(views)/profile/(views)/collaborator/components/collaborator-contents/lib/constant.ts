@@ -12,9 +12,9 @@ const CONTENT_FILTER_SCHEMA = z.object({
     .enum(["approved", "pending", "copyright_infringement"])
     .default("approved")
     .optional(),
-  name: z.string().optional(),
-  categories: z.array(z.string()).optional(),
-  priceRange: z.tuple([z.number(), z.number()]).optional(),
+  // name: z.string().optional(),
+  // categories: z.array(z.string()).optional(),
+  // priceRange: z.tuple([z.number(), z.number()]).optional(),
 });
 
 type ContentFilterSchema = z.infer<typeof CONTENT_FILTER_SCHEMA>;
