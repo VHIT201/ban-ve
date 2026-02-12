@@ -14,7 +14,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { XCircleIcon } from "lucide-react";
 import { FC, useState } from "react";
 import { CopyrightReportStatus } from "@/api/models/copyrightReportStatus";
-import { usePutApiReportsReportIdStatus } from "@/api/endpoints/copyright";
+import {
+  getGetApiReportsQueryKey,
+  usePutApiReportsReportIdStatus,
+} from "@/api/endpoints/copyright";
 import { toast } from "sonner";
 
 interface Props {
@@ -35,7 +38,13 @@ const CopyRightRejectDialog: FC<Props> = (props) => {
   const [adminNotes, setAdminNotes] = useState("");
 
   // Mutations
-  const updateStatusMutation = usePutApiReportsReportIdStatus();
+  const updateStatusMutation = usePutApiReportsReportIdStatus({
+    mutation: {
+      meta: {
+        invalidateQueries: [getGetApiReportsQueryKey()],
+      },
+    },
+  });
 
   // Methods
   const handleUpdateStatus = async (
