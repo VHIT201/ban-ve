@@ -98,7 +98,6 @@ const contentFormSchemaStatic = z
 export type ContentFormValues = z.infer<typeof contentFormSchemaStatic>;
 
 interface ContentEditorFormProps {
-  id: string;
   mode?: "create" | "edit" | "view";
   defaultFile?: {
     name: string;
@@ -116,7 +115,6 @@ interface ContentEditorFormProps {
 }
 
 const ContentEditorForm = ({
-  id,
   mode = "create",
   defaultValues,
   defaultFile,
@@ -794,7 +792,8 @@ const ContentEditorForm = ({
                 </div>
               </FormControl>
               <FormDescription>
-                Chọn file bản vẽ (PDF hoặc DWG, tối đa 100MB)
+                Chọn file bản vẽ tối đa 100MB (ZIP, RAR, 7Z, PDF, DOC, DOCX,
+                PNG, JPG, JPEG)
               </FormDescription>
               <FormMessage />
             </FormItem>
