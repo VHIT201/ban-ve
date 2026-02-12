@@ -14,7 +14,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle2Icon } from "lucide-react";
 import { FC, useState } from "react";
 import { CopyrightReportStatus } from "@/api/models/copyrightReportStatus";
-import { usePutApiReportsReportIdStatus } from "@/api/endpoints/copyright";
+import {
+  getGetApiReportsQueryKey,
+  usePutApiReportsReportIdStatus,
+} from "@/api/endpoints/copyright";
 import { toast } from "sonner";
 import {
   getGetApiContentAllQueryKey,
@@ -43,6 +46,7 @@ const CopyRightResolveDialog: FC<Props> = (props) => {
     mutation: {
       meta: {
         invalidateQueries: [
+          getGetApiReportsQueryKey(),
           getGetApiContentAllQueryKey(),
           getGetApiContentQueryKey({}),
         ],
