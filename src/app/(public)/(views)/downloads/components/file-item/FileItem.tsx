@@ -20,6 +20,7 @@ import { DownloadIcon } from "lucide-react";
 import { FC, useState } from "react";
 import { toast } from "sonner";
 import Image from "@/components/ui/image";
+import baseConfig from "@/configs/base";
 
 interface Props {
   orderId: string;
@@ -128,7 +129,9 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
 
   const contentImage =
     contentData?.images && contentData.images.length > 0
-      ? contentData.images[0]
+      ? contentData.images[0]?.startsWith?.('http') 
+        ? contentData.images[0]
+        : `${baseConfig.mediaDomain}${contentData.images[0]?.startsWith?.('/') ? '' : '/'}${contentData.images[0]}`
       : undefined;
 
   const FileIcon = getFileIcon(contentData?.file_id?.type || "");
@@ -174,6 +177,10 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
                       alt={contentData?.title || "File thumbnail"}
                       width={64}
                       height={64}
+                      className="object-cover rounded-md"
+                      onLoadError={(e) => {
+                        console.error("Image failed to load:", contentImage, e);
+                      }}
                     />
                   ) : (
                     <FileIcon />
