@@ -39,11 +39,6 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { TreeViewItem } from "@/components/shared/tree-view/TreeView";
 import { TreeNode } from "@/components/shared/tree-select/TreeSelect";
 import { isEmpty } from "lodash-es";
-import { useDeleteApiFileId } from "@/api/endpoints/files";
-import {
-  getApiContentId,
-  getGetApiContentIdQueryKey,
-} from "@/api/endpoints/content";
 
 // Schema validation
 const contentFormSchemaStatic = z

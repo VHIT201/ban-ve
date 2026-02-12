@@ -13,7 +13,6 @@ import { formatFileSize, getFileIcon } from "@/utils/file";
 import { toast } from "sonner";
 import baseConfig from "@/configs/base";
 import DeleteDialog from "@/components/shared/delete-dialog";
-import { id } from "date-fns/locale";
 import { useDeleteApiFileId } from "@/api/endpoints/files";
 import Image from "@/components/ui/image";
 

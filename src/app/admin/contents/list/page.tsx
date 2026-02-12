@@ -32,7 +32,6 @@ import {
 } from "@/api/endpoints/content";
 import { ContentResponse } from "@/api/types/content";
 import { UseQueryResult } from "@tanstack/react-query";
-import { useBulkActions } from "./lib/hook";
 import { ContentStatus } from "@/enums/content";
 
 const ContentList = () => {
