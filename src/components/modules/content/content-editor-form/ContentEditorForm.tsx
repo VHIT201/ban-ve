@@ -792,7 +792,8 @@ const ContentEditorForm = ({
                 </div>
               </FormControl>
               <FormDescription>
-                Chọn file bản vẽ (PDF hoặc DWG, tối đa 100MB)
+                Chọn file bản vẽ tối đa 100MB (ZIP, RAR, 7Z, PDF, DOC, DOCX,
+                PNG, JPG, JPEG)
               </FormDescription>
               <FormMessage />
             </FormItem>
