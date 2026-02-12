@@ -3,9 +3,11 @@
 import { Stepper } from "@/components/ui/stepper";
 
 import { User, Shield } from "lucide-react";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { RegisterForm, RegisterVerifyForm } from "./components";
 import { useSessionStorage } from "@/hooks/use-session-storage";
+import { useWarnIfUnsavedChanges } from "@/hooks/use-warn-if-unsaved-changes";
+import { usePathname } from "next/navigation";
 
 // Steps data for Stepper
 const stepsData = [
@@ -24,6 +26,9 @@ const stepsData = [
 ];
 
 const Register: FC = () => {
+  const pathname = usePathname();
+  const prevPathnameRef = useRef(pathname);
+
   const [registerEmail, setRegisterEmail] = useSessionStorage<string | null>(
     "auth-register-email",
     null,
@@ -32,12 +37,30 @@ const Register: FC = () => {
     registerEmail ? 2 : 1,
   );
 
+  // Clear session email khi navigate đi trang khác (không tính reload)
   useEffect(() => {
-    return () => {
-      // Clear register email from session storage on unmount
-      setRegisterEmail(null);
+    let isReloading = false;
+
+    const handleBeforeUnload = () => {
+      isReloading = true;
     };
-  }, []);
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+
+      if (!isReloading) {
+        setRegisterEmail(null);
+      }
+    };
+  }, [setRegisterEmail]);
+
+  console.log(
+    "Register render with pathname:",
+    pathname,
+    prevPathnameRef.current,
+  );
 
   return (
     <div className="space-y-8">

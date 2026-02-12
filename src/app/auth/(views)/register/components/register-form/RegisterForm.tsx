@@ -9,12 +9,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -33,7 +27,6 @@ import Link from "next/link";
 import { BASE_PATHS } from "@/constants/paths";
 import { usePostApiAuthRegister } from "@/api/endpoints/auth";
 import { toast } from "sonner";
-import { encodeSHA256 } from "@/utils/encode";
 import { useWarnIfUnsavedChanges } from "@/hooks/use-warn-if-unsaved-changes";
 
 const RegisterForm: FC<Props> = (props) => {
@@ -62,7 +55,10 @@ const RegisterForm: FC<Props> = (props) => {
     },
   });
 
-  const { confirmNavigation } = useWarnIfUnsavedChanges(form.formState.isDirty);
+  const { confirmNavigation } = useWarnIfUnsavedChanges(
+    form.formState.isDirty,
+    "Bạn có chắc muốn rời trang? Thông tin bạn đã nhập sẽ không được lưu.",
+  );
 
   const handleSubmit = async (values: RegisterFormValues) => {
     try {
@@ -70,7 +66,7 @@ const RegisterForm: FC<Props> = (props) => {
         data: {
           email: values.email,
           fullname: values.name,
-          password: encodeSHA256(values.password),
+          password: values.password,
         },
       });
 

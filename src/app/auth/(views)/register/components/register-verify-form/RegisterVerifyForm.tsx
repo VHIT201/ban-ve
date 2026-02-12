@@ -113,7 +113,6 @@ const RegisterVerifyForm: FC<Props> = (props) => {
         duration: 5000,
       });
 
-      // Chuyển hướng sau khi hiển thị thông báo
       setTimeout(() => {
         router.push(BASE_PATHS.auth.login.path);
       }, 1500);
