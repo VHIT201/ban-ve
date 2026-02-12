@@ -190,7 +190,7 @@ const CopyRightDetailPage = () => {
                         <p className="text-sm font-medium text-muted-foreground mb-2">
                           Mô tả vi phạm
                         </p>
-                        <p className="text-sm bg-muted p-4 rounded-md">
+                        <p className="text-sm bg-muted p-4 rounded-none">
                           {report?.description || "Không có mô tả"}
                         </p>
                       </div>
@@ -244,7 +244,7 @@ const CopyRightDetailPage = () => {
                                 href={link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-2 p-3 bg-muted hover:bg-muted/80 rounded-md transition-colors"
+                                className="flex items-center gap-2 p-3 bg-muted hover:bg-muted/80 rounded-none transition-colors"
                               >
                                 <ExternalLink className="h-4 w-4 text-muted-foreground" />
                                 <span className="text-sm truncate flex-1">
@@ -265,7 +265,7 @@ const CopyRightDetailPage = () => {
                         <CardTitle className="text-lg">Ghi chú Admin</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-sm bg-blue-50 p-4 rounded-md border border-blue-200">
+                        <p className="text-sm bg-blue-50 p-4 rounded-none border border-blue-200">
                           {report.adminNotes}
                         </p>
                       </CardContent>
@@ -295,7 +295,9 @@ const CopyRightDetailPage = () => {
                             {report?.reporterId?.fullname || "Không rõ"}
                           </p>
                           <p className="text-sm text-muted-foreground truncate">
-                            {report?.reporterId?.email || "Không có email"}
+                            {report?.reporterId?.email ||
+                              report?.reporterEmail ||
+                              "Không có email"}
                           </p>
                         </div>
                       </div>

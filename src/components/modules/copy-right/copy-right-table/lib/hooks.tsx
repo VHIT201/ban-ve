@@ -11,7 +11,6 @@ import {
   XCircle,
   Clock,
   Eye,
-  ExternalLink,
 } from "lucide-react";
 
 // App
@@ -172,11 +171,11 @@ export const useColumns = (props: useCopyrightReportTableColumnsDefsProps) => {
                 <div className="text-sm font-medium text-gray-900 truncate">
                   {displayName}
                 </div>
-                {/* {email && (
+                {reporter?.email && (
                   <div className="text-xs text-gray-500 truncate">
-                    {email}
+                    {reporter.email}
                   </div>
-                )} */}
+                )}
               </div>
             </div>
           );

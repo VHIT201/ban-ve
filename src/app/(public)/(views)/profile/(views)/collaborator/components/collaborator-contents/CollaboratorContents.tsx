@@ -48,6 +48,7 @@ const ContentList = () => {
   }>({
     page: pagination.pageIndex + 1, // API 1-based
     limit: pagination.pageSize,
+    status: filterValues?.status,
   }) as UseQueryResult<{
     data: ContentResponse[];
     pagination: {
@@ -58,34 +59,34 @@ const ContentList = () => {
     };
   }>;
 
-  const getCategoryTreeQuery = useGetApiCategoriesAllTree(
-    {},
-    {
-      query: {
-        select: (data) => {
-          try {
-            const response = data as unknown as ResponseData<any>;
+  // const getCategoryTreeQuery = useGetApiCategoriesAllTree(
+  //   {},
+  //   {
+  //     query: {
+  //       select: (data) => {
+  //         try {
+  //           const response = data as unknown as ResponseData<any>;
 
-            // Xử lý các cấu trúc response khác nhau
-            if (response?.data?.tree && Array.isArray(response.data.tree)) {
-              return transformToTreeNodes(response.data.tree);
-            }
-            if (response?.data && Array.isArray(response.data)) {
-              return transformToTreeNodes(response.data);
-            }
-            if (Array.isArray(response)) {
-              return transformToTreeNodes(response);
-            }
+  //           // Xử lý các cấu trúc response khác nhau
+  //           if (response?.data?.tree && Array.isArray(response.data.tree)) {
+  //             return transformToTreeNodes(response.data.tree);
+  //           }
+  //           if (response?.data && Array.isArray(response.data)) {
+  //             return transformToTreeNodes(response.data);
+  //           }
+  //           if (Array.isArray(response)) {
+  //             return transformToTreeNodes(response);
+  //           }
 
-            return [];
-          } catch (error) {
-            console.error("Error processing category tree data:", error);
-            return [];
-          }
-        },
-      },
-    },
-  );
+  //           return [];
+  //         } catch (error) {
+  //           console.error("Error processing category tree data:", error);
+  //           return [];
+  //         }
+  //       },
+  //     },
+  //   },
+  // );
 
   // Methods
   const handleEdit = (content: ContentResponse) => {
@@ -98,9 +99,7 @@ const ContentList = () => {
     // Kiểm tra nếu tất cả các giá trị đều empty/undefined
     const hasValues = Object.values(data).some(
       (value) =>
-        value !== undefined &&
-        value !== "" &&
-        (!Array.isArray(value) || value.length > 0),
+        value !== undefined && (!Array.isArray(value) || value.length > 0),
     );
     if (!hasValues) {
       toast.info("Đã xóa bộ lọc");
@@ -117,32 +116,32 @@ const ContentList = () => {
       placeholder: "Chọn trạng thái",
       options: CONTENT_STATUS_OPTIONS,
     },
-    name: {
-      label: "Tên sản phẩm",
-      type: "text" as const,
-      placeholder: "Tìm theo tên sản phẩm...",
-    },
-    categories: {
-      label: "Danh mục",
-      type: "tree" as const,
-      placeholder: "Chọn danh mục",
-      nodes: getCategoryTreeQuery.data || [],
-      searchable: true,
-      maxHeight: "350px",
-    },
-    priceRange: {
-      label: "Khoảng giá",
-      type: "number-range" as const,
-      min: 0,
-      max: 10000000,
-      step: 1000,
-      showInputs: true,
-      formatValue: (value: number) =>
-        new Intl.NumberFormat("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        }).format(value),
-    },
+    // name: {
+    //   label: "Tên sản phẩm",
+    //   type: "text" as const,
+    //   placeholder: "Tìm theo tên sản phẩm...",
+    // },
+    // categories: {
+    //   label: "Danh mục",
+    //   type: "tree" as const,
+    //   placeholder: "Chọn danh mục",
+    //   nodes: getCategoryTreeQuery.data || [],
+    //   searchable: true,
+    //   maxHeight: "350px",
+    // },
+    // priceRange: {
+    //   label: "Khoảng giá",
+    //   type: "number-range" as const,
+    //   min: 0,
+    //   max: 10000000,
+    //   step: 1000,
+    //   showInputs: true,
+    //   formatValue: (value: number) =>
+    //     new Intl.NumberFormat("vi-VN", {
+    //       style: "currency",
+    //       currency: "VND",
+    //     }).format(value),
+    // },
   };
 
   return (

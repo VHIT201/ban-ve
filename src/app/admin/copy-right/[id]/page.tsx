@@ -45,6 +45,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { UseQueryResult } from "@tanstack/react-query";
+import { GetApiReportsReportId200 } from "@/api/models";
 
 const getStatusConfig = (status?: string) => {
   switch (status?.toLowerCase()) {
@@ -136,7 +137,7 @@ const CopyRightDetail = () => {
   // Queries
   const getReportDetailQuery = useGetApiReportsReportId(id, {
     query: {
-      select: (data) => (data as { data: CopyrightReport }).data,
+      select: (data) => (data as GetApiReportsReportId200).data,
     },
   }) as UseQueryResult<CopyrightReport>;
 
@@ -214,7 +215,7 @@ const CopyRightDetail = () => {
 
       {/* Content */}
       <QueryBoundary query={getReportDetailQuery}>
-        {(report) => {
+        {(report: CopyrightReport) => {
           const statusConfig = getStatusConfig(report.status);
           const violationConfig = getViolationTypeConfig(report.violationType);
           const StatusIcon = statusConfig.icon;
@@ -379,10 +380,13 @@ const CopyRightDetail = () => {
                               <p className="font-semibold truncate">
                                 {report.reporterId?.fullname ||
                                   report.reporterId?.email ||
+                                  report?.reporterEmail ||
                                   "Không rõ"}
                               </p>
                               <p className="text-sm text-muted-foreground truncate">
-                                {report.reporterId?.email || "Không có email"}
+                                {report.reporterId?.email ||
+                                  report?.reporterEmail ||
+                                  "Không có email"}
                               </p>
                             </div>
                           </div>
