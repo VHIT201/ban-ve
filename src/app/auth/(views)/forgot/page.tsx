@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { ForgotPasswordForm } from "./components/forgot-form";
 import ResetPasswordForm from "./components/reset-password/ResetPasswordForm";
 import { 
@@ -17,7 +17,7 @@ const ForgotPassword = () => {
     "auth-forgot-email",
     null,
   );
-  const [step] = useState<ForgotPasswordStep>(() =>
+  const [step, setStep] = useState<ForgotPasswordStep>(() =>
     forgotEmail ? "reset" : "email",
   );
 
@@ -73,6 +73,7 @@ const ForgotPassword = () => {
         data: { email: emailValue },
       });
       setForgotEmail(emailValue);
+      setStep("reset"); // Chuyển sang bước reset password
     } catch {}
   };
 
@@ -93,6 +94,7 @@ const ForgotPassword = () => {
           onSuccess={handlePasswordResetSuccess}
           onBack={() => {
             setForgotEmail(null);
+            setStep("email"); // Quay lại bước nhập email
           }}
         />
       )}
