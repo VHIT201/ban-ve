@@ -64,49 +64,32 @@ const chartConfig = {
 
 type TimeRange = "7d" | "30d" | "90d" | "custom";
 
-const DailyUserPostStats = () => {
+const DailyUserPostStats = ({ 
+  timeRange = "90d",
+  setTimeRange,
+  customStartDate,
+  setCustomStartDate,
+  customEndDate,
+  setCustomEndDate,
+  dateParams
+}: {
+  timeRange?: TimeRange;
+  setTimeRange?: (value: TimeRange) => void;
+  customStartDate?: Date;
+  setCustomStartDate?: (date: Date | undefined) => void;
+  customEndDate?: Date;
+  setCustomEndDate?: (date: Date | undefined) => void;
+  dateParams: { startDate: string; endDate: string };
+}) => {
   const isMobile = useIsMobile();
-  const [timeRange, setTimeRange] = useState<TimeRange>("90d");
-  const [customStartDate, setCustomStartDate] = useState<Date>();
-  const [customEndDate, setCustomEndDate] = useState<Date>();
-
-  // Calculate date range based on selected time range
-  const dateParams = useMemo(() => {
-    if (timeRange === "custom" && customStartDate && customEndDate) {
-      return {
-        startDate: format(customStartDate, "yyyy-MM-dd"),
-        endDate: format(customEndDate, "yyyy-MM-dd"),
-      };
-    }
-
-    const endDate = new Date();
-    const startDate = new Date();
-
-    switch (timeRange) {
-      case "7d":
-        startDate.setDate(endDate.getDate() - 7);
-        break;
-      case "30d":
-        startDate.setDate(endDate.getDate() - 30);
-        break;
-      case "90d":
-        startDate.setDate(endDate.getDate() - 90);
-        break;
-    }
-
-    return {
-      startDate: startDate.toISOString().split("T")[0],
-      endDate: endDate.toISOString().split("T")[0],
-    };
-  }, [timeRange, customStartDate, customEndDate]);
 
   // Fetch data for current period
   const { data: currentData, isLoading } = useGetApiAdminStats(dateParams);
 
   // Fetch data for previous period to calculate comparison
   const previousDateParams = useMemo(() => {
-    const currentStart = new Date(dateParams.startDate!);
-    const currentEnd = new Date(dateParams.endDate!);
+    const currentStart = new Date(dateParams.startDate);
+    const currentEnd = new Date(dateParams.endDate);
     const daysInRange = Math.ceil(
       (currentEnd.getTime() - currentStart.getTime()) / (1000 * 60 * 60 * 24),
     );
@@ -148,10 +131,10 @@ const DailyUserPostStats = () => {
   }, [currentData, previousData]);
 
   useEffect(() => {
-    if (isMobile) {
+    if (isMobile && setTimeRange) {
       setTimeRange("7d");
     }
-  }, [isMobile]);
+  }, [isMobile, setTimeRange]);
 
   const timeRangeLabel = useMemo(() => {
     if (timeRange === "custom" && customStartDate && customEndDate) {
@@ -168,7 +151,7 @@ const DailyUserPostStats = () => {
       default:
         return "Tùy chỉnh";
     }
-  }, [timeRange, customStartDate, customEndDate]);
+}, [timeRange, customStartDate, customEndDate]) as string;
 
   return (
     <Card className="@container/card">
@@ -189,7 +172,7 @@ const DailyUserPostStats = () => {
       type="single"
       value={timeRange}
       onValueChange={(value) =>
-        value && setTimeRange(value as TimeRange)
+        value && setTimeRange && setTimeRange(value as TimeRange)
       }
       variant="outline"
       className="flex gap-1"
@@ -209,7 +192,7 @@ const DailyUserPostStats = () => {
               to: customEndDate?.toISOString().split("T")[0] ?? "",
             }}
             onChange={({ from, to }) => {
-              if (from && to) {
+              if (from && to && setCustomStartDate && setCustomEndDate && setTimeRange) {
                 setCustomStartDate(new Date(from));
                 setCustomEndDate(new Date(to));
                 setTimeRange("custom");
@@ -245,7 +228,7 @@ const DailyUserPostStats = () => {
             key={item.value}
             variant={timeRange === item.value ? "default" : "ghost"}
             className="w-full justify-start h-8 px-2"
-            onClick={() => setTimeRange(item.value as TimeRange)}
+            onClick={() => setTimeRange && setTimeRange(item.value as TimeRange)}
           >
             {item.label}
           </Button>
@@ -265,7 +248,7 @@ const DailyUserPostStats = () => {
                   to: customEndDate?.toISOString().split("T")[0] ?? "",
                 }}
                 onChange={({ from, to }) => {
-                  if (from && to) {
+                  if (from && to && setCustomStartDate && setCustomEndDate && setTimeRange) {
                     setCustomStartDate(new Date(from));
                     setCustomEndDate(new Date(to));
                     setTimeRange("custom");

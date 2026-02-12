@@ -5,10 +5,24 @@ import { Info } from "lucide-react";
 import { LineChart, Line, ResponsiveContainer } from "recharts";
 import { useGetApiAdminStats } from "@/api/endpoints/admin";
 import { useMemo } from "react";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 
-const StatsCards = () => {
-  // Fetch stats data from API - defaults to last 7 days if no params provided
-  const { data, isLoading, error } = useGetApiAdminStats();
+const StatsCards = ({ dateParams }: { dateParams?: { startDate: string; endDate: string } }) => {
+  // Fetch stats data from API - use provided dateParams or defaults to last 7 days
+  const { data, isLoading, error } = useGetApiAdminStats(dateParams);
+
+  // Format date range for display
+  const dateRangeText = useMemo(() => {
+    if (!dateParams?.startDate || !dateParams?.endDate) {
+      return "7 ngày gần nhất";
+    }
+    
+    const startDate = new Date(dateParams.startDate);
+    const endDate = new Date(dateParams.endDate);
+    
+    return `${format(startDate, "dd/MM/yyyy", { locale: vi })} - ${format(endDate, "dd/MM/yyyy", { locale: vi })}`;
+  }, [dateParams]);
 
   const generateSparklineData = (trend: "up" | "down") => {
     const baseData = [
@@ -139,7 +153,7 @@ const StatsCards = () => {
 
             <div className="flex items-center justify-between">
               <div className="text-xs text-gray-500 dark:text-gray-400">
-                Kể từ 7 ngày trước
+                {dateRangeText}
               </div>
             </div>
 
