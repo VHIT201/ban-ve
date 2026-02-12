@@ -43,10 +43,10 @@ const Categories = () => {
   const withChildren = searchParams.get("withChildren") === "true";
 
   // States
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filterValues, setFilterValues] =
     useState<z.infer<typeof categoryFilterSchema>>();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   // Mutations
   const createCategoryMutation = usePostApiCategories({
@@ -77,9 +77,7 @@ const Categories = () => {
   // Methods
   const handleFilterSubmit = (data: z.infer<typeof categoryFilterSchema>) => {
     setFilterValues(data);
-    console.log("Filter values:", data);
 
-    // Kiểm tra nếu tất cả các giá trị đều empty/undefined
     const hasValues = Object.values(data).some(
       (value) => value !== undefined && value !== "",
     );
@@ -189,8 +187,9 @@ const Categories = () => {
 
           {/* Category Table */}
           <CategoryTable
-            mode={id ? "children" : withChildren ? "with-children" : "all"}
             id={id}
+            filterValues={filterValues}
+            mode={id ? "children" : withChildren ? "with-children" : "all"}
           />
 
           {/* Category Dialog */}
