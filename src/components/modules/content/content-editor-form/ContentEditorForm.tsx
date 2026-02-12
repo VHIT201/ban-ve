@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 // App
 import {
@@ -37,13 +37,7 @@ import {
 import { ResponseData } from "@/api/types/base";
 import { TreeSelect, Uploader } from "@/components/shared";
 import { useUploadMedia } from "@/hooks";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { TreeViewItem } from "@/components/shared/tree-view/TreeView";
 import { TreeNode } from "@/components/shared/tree-select/TreeSelect";
 import { isEmpty } from "lodash-es";
@@ -712,7 +706,7 @@ const ContentEditorForm = ({
                     value={field.value || []}
                     onChange={field.onChange}
                     maxSize={100 * 1024 * 1024}
-                    accept={{ "image/*": [".png", ".jpg", ".jpeg", ".webp"] }}
+                    accept={{ "image/*": [".png", ".jpg", ".jpeg"] }}
                   >
                     {mode !== "view" && (
                       <Uploader.DropZone>
@@ -760,6 +754,23 @@ const ContentEditorForm = ({
                     onChange={field.onChange}
                     maxFiles={1}
                     maxSize={100 * 1024 * 1024}
+                    accept={{
+                      // File nén
+                      "application/zip": [".zip"],
+                      "application/x-rar-compressed": [".rar"],
+                      "application/x-7z-compressed": [".7z"],
+
+                      // PDF
+                      "application/pdf": [".pdf"],
+
+                      // Word
+                      "application/msword": [".doc"],
+                      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                        [".docx"],
+
+                      // Image
+                      "image/*": [".png", ".jpg", ".jpeg"],
+                    }}
                   >
                     {mode !== "view" && (
                       <Uploader.DropZone>
