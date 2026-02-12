@@ -38,7 +38,12 @@ const UploaderExistList: FC<Props> = (props) => {
   }>(null);
 
   // Mutations
-  const deleteFileMutation = useDeleteApiFileId();
+  // Mutations
+  const deleteFileMutation = useDeleteApiFileId({
+    mutation: {
+      retry: 0,
+    },
+  });
 
   // Methods
   const handleOpenDeleteDialog = (file: { id: string; name: string }) => {
@@ -196,7 +201,6 @@ const UploaderExistList: FC<Props> = (props) => {
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
-
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -226,32 +230,6 @@ const UploaderExistList: FC<Props> = (props) => {
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8"
-                              asChild
-                            >
-                              <a
-                                href={fileUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                <ExternalLink className="h-4 w-4" />
-                              </a>
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Mở trong tab mới</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-
-                      {/* Delete button commented out as requested
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8"
                               onClick={() =>
                                 handleOpenDeleteDialog({
                                   id: file.id,
@@ -267,7 +245,6 @@ const UploaderExistList: FC<Props> = (props) => {
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
-                      */}
                     </div>
                   </div>
                 </div>
