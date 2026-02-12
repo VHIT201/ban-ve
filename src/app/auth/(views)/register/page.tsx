@@ -3,7 +3,7 @@
 import { Stepper } from "@/components/ui/stepper";
 
 import { User, Shield } from "lucide-react";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { RegisterForm, RegisterVerifyForm } from "./components";
 import { useSessionStorage } from "@/hooks/use-session-storage";
 
@@ -31,6 +31,13 @@ const Register: FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(() =>
     registerEmail ? 2 : 1,
   );
+
+  useEffect(() => {
+    return () => {
+      // Clear register email from session storage on unmount
+      setRegisterEmail(null);
+    };
+  }, []);
 
   return (
     <div className="space-y-8">
