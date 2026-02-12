@@ -385,10 +385,11 @@ export function UploadWithWatermarkExample() {
     const result = await uploadSingle(files?.[0] ?? null, {
       applyWatermark: true, // Enable watermark
       watermarkOptions: {
-        text: "TẠO BỞI BANVE.VN",
-        fontSize: 22,
+        text: "TẠO BỞI DATA - DATAORY",
+        fontSize: 36,
         textOpacity: 0.7,
-        overlayOpacity: 0.5,
+        overlayOpacity: 0.4,
+        enableOverlay: true,
       },
       compress: true,
       dir: "watermarked",
@@ -604,9 +605,11 @@ export function WatermarkedPreviewsExample() {
       {
         applyWatermark: true,
         watermarkOptions: {
-          text: "TẠO BỞI BANVE.VN",
-          overlayOpacity: 0.4,
+          text: "TẠO BỞI DATA - DATAORY",
+          fontSize: 36,
           textOpacity: 0.7,
+          overlayOpacity: 0.4,
+          enableOverlay: true,
         },
         requirePayment: true,
         dir: "premium",
@@ -684,7 +687,7 @@ export function WatermarkedPreviewsExample() {
  * - watermarkOptions: UseWatermarkOptions - Custom watermark configuration
  *
  * Watermark Options:
- * - text: string - Watermark text (default: "TẠO BỞI BANVE.VN")
+ * - text: string - Watermark text (default: "TẠO BỞI DATA - DATAORY")
  * - rotation: number - Rotation in radians (default: -Math.PI / 6)
  * - overlayOpacity: number - Overlay opacity 0-1 (default: 0.5)
  * - textOpacity: number - Text opacity 0-1 (default: 0.7)

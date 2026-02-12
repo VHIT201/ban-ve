@@ -342,16 +342,11 @@ const ContentEditorForm = ({
           requirePayment: values.price > 0,
           applyWatermark: true,
           watermarkOptions: {
-            text: "TẠO BỞI BANVE.VN",
-            rotation: -Math.PI / 6,
-            overlayOpacity: 0.5,
-            enableOverlay: true,
-            fontFamily: "Arial",
-            fontWeight: "bold",
+            text: "TẠO BỞI DATA - DATAORY",
+            fontSize: 36,
             textOpacity: 0.7,
-            spacingY: 150,
-            spacingX: 200,
-            fontSize: 22,
+            overlayOpacity: 0.4,
+            enableOverlay: true,
           },
         });
 

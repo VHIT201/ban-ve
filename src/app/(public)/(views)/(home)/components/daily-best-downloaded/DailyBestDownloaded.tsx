@@ -90,6 +90,7 @@ const DailyBestDownloaded = () => {
                     >
                       <BlueprintCard
                         product={product}
+                        viewUsername={false}
                         onViewDetail={handleViewDetail}
                       />
                     </CarouselItem>

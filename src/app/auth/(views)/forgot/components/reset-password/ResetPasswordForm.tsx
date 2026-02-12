@@ -11,13 +11,19 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, CheckCircle2, Loader2 as Loader2Icon } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  CheckCircle2,
+  Loader2 as Loader2Icon,
+} from "lucide-react";
 import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { BASE_PATHS } from "@/constants/paths";
+import { useWarnIfUnsavedChanges } from "@/hooks/use-warn-if-unsaved-changes";
 
 const RESET_PASSWORD_SCHEMA = z
   .object({
@@ -25,10 +31,10 @@ const RESET_PASSWORD_SCHEMA = z
     newPassword: z
       .string()
       .min(8, "Mật khẩu phải có ít nhất 8 ký tự")
-      .max(30,"Mật khẩu phải có tối đa 30 ký tự")
+      .max(30, "Mật khẩu phải có tối đa 30 ký tự")
       .regex(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>/?]).{8,}$/,
-        "Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt"
+        "Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt",
       ),
     confirmPassword: z.string(),
   })
@@ -72,6 +78,8 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
     },
   });
 
+  const { confirmNavigation } = useWarnIfUnsavedChanges(form.formState.isDirty);
+
   const onSubmit = async (data: ResetPasswordFormValues) => {
     if (submittingRef.current) return;
     submittingRef.current = true;
@@ -80,13 +88,13 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
       await onSubmitProp(data.otp, data.newPassword);
 
       toast.success("Đặt lại mật khẩu thành công! Đang chuyển hướng...", {
-        duration: 1000
+        duration: 1000,
       });
-      
+
       setIsSuccess(true);
-      
+
       onSuccess();
-      
+
       setTimeout(() => {
         toast.dismiss();
         router.push(BASE_PATHS.auth.login.path);
@@ -132,7 +140,8 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
     <div className="space-y-8">
       <div className="space-y-2 text-center">
         <p className="text-muted-foreground">
-          Mã OTP đã được gửi đến <span className="font-medium text-foreground">{email}</span>
+          Mã OTP đã được gửi đến{" "}
+          <span className="font-medium text-foreground">{email}</span>
         </p>
       </div>
 
@@ -143,85 +152,92 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
               control={form.control}
               name="otp"
               render={({ field }) => {
-              const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
-              const currentOtp = field.value || '';
+                const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+                const currentOtp = field.value || "";
 
-              const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-                const value = e.target.value;
-                
-                if (value.length > 1) {
-                  const pastedOtp = value.replace(/\D/g, '');
-                  if (pastedOtp.length === 6) {
-                    field.onChange(pastedOtp);
-                    otpRefs.current[5]?.focus();
+                const handleChange = (
+                  e: React.ChangeEvent<HTMLInputElement>,
+                  index: number,
+                ) => {
+                  const value = e.target.value;
+
+                  if (value.length > 1) {
+                    const pastedOtp = value.replace(/\D/g, "");
+                    if (pastedOtp.length === 6) {
+                      field.onChange(pastedOtp);
+                      otpRefs.current[5]?.focus();
+                    }
+                    return;
                   }
-                  return;
-                }
 
-                if (value && !/^\d$/.test(value)) return;
+                  if (value && !/^\d$/.test(value)) return;
 
-                const newOtp = currentOtp.split('');
-                newOtp[index] = value;
-                const finalOtp = newOtp.join('').slice(0, 6);
-                field.onChange(finalOtp);
+                  const newOtp = currentOtp.split("");
+                  newOtp[index] = value;
+                  const finalOtp = newOtp.join("").slice(0, 6);
+                  field.onChange(finalOtp);
 
-                if (value && index < 5) {
-                  otpRefs.current[index + 1]?.focus();
-                }
-              };
-
-              const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-                if (e.key === 'Backspace' && !currentOtp[index] && index > 0) {
-                  e.preventDefault();
-                  otpRefs.current[index - 1]?.focus();
-                }
-                else if (e.key === 'ArrowLeft' && index > 0) {
-                  e.preventDefault();
-                  otpRefs.current[index - 1]?.focus();
-                }
-                else if (e.key === 'ArrowRight' && index < 5) {
-                  e.preventDefault();
-                  otpRefs.current[index + 1]?.focus();
-                }
-                else if (e.key === 'Tab') {
-                  e.preventDefault();
-                  if (e.shiftKey && index > 0) {
-                    otpRefs.current[index - 1]?.focus();
-                  } else if (!e.shiftKey && index < 5) {
+                  if (value && index < 5) {
                     otpRefs.current[index + 1]?.focus();
                   }
-                }
-              };
+                };
 
-              return (
-                <FormItem>
-                  <FormLabel>Mã OTP</FormLabel>
-                  <div className="flex justify-center space-x-3">
-                    {[...Array(6)].map((_, i) => (
-                      <FormControl key={i}>
-                        <Input
-                          ref={(el) => {
-                            otpRefs.current[i] = el;
-                          }}
-                          id={`otp-${i}`}
-                          type="text"
-                          inputMode="numeric"
-                          maxLength={i === 0 ? 6 : 1} 
-                          className="text-center h-14 w-12 text-lg font-medium border-2 border-input focus:border-primary transition-colors"
-                          value={currentOtp[i] || ''}
-                          onChange={(e) => handleChange(e, i)}
-                          onKeyDown={(e) => handleKeyDown(e, i)}
-                          onFocus={(e) => e.target.select()}
-                          autoComplete="one-time-code"
-                        />
-                      </FormControl>
-                    ))}
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
+                const handleKeyDown = (
+                  e: React.KeyboardEvent<HTMLInputElement>,
+                  index: number,
+                ) => {
+                  if (
+                    e.key === "Backspace" &&
+                    !currentOtp[index] &&
+                    index > 0
+                  ) {
+                    e.preventDefault();
+                    otpRefs.current[index - 1]?.focus();
+                  } else if (e.key === "ArrowLeft" && index > 0) {
+                    e.preventDefault();
+                    otpRefs.current[index - 1]?.focus();
+                  } else if (e.key === "ArrowRight" && index < 5) {
+                    e.preventDefault();
+                    otpRefs.current[index + 1]?.focus();
+                  } else if (e.key === "Tab") {
+                    e.preventDefault();
+                    if (e.shiftKey && index > 0) {
+                      otpRefs.current[index - 1]?.focus();
+                    } else if (!e.shiftKey && index < 5) {
+                      otpRefs.current[index + 1]?.focus();
+                    }
+                  }
+                };
+
+                return (
+                  <FormItem>
+                    <FormLabel>Mã OTP</FormLabel>
+                    <div className="flex justify-center space-x-3">
+                      {[...Array(6)].map((_, i) => (
+                        <FormControl key={i}>
+                          <Input
+                            ref={(el) => {
+                              otpRefs.current[i] = el;
+                            }}
+                            id={`otp-${i}`}
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={i === 0 ? 6 : 1}
+                            className="text-center h-14 w-12 text-lg font-medium border-2 border-input focus:border-primary transition-colors"
+                            value={currentOtp[i] || ""}
+                            onChange={(e) => handleChange(e, i)}
+                            onKeyDown={(e) => handleKeyDown(e, i)}
+                            onFocus={(e) => e.target.select()}
+                            autoComplete="one-time-code"
+                          />
+                        </FormControl>
+                      ))}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
           </div>
 
           {/* ===== PASSWORD ===== */}
@@ -269,9 +285,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
                     <button
                       type="button"
                       className="absolute right-3 top-1/2 -translate-y-1/2"
-                      onClick={() =>
-                        setShowConfirmPassword((v) => !v)
-                      }
+                      onClick={() => setShowConfirmPassword((v) => !v)}
                     >
                       {showConfirmPassword ? <Eye /> : <EyeOff />}
                     </button>
@@ -303,7 +317,11 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
             <Button
               type="button"
               variant="outline"
-              onClick={onBack}
+              onClick={() => {
+                if (confirmNavigation()) {
+                  onBack();
+                }
+              }}
               disabled={form.formState.isSubmitting}
             >
               Quay lại

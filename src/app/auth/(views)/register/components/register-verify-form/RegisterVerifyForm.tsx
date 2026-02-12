@@ -36,6 +36,7 @@ import {
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { BASE_PATHS } from "@/constants/paths";
+import { useWarnIfUnsavedChanges } from "@/hooks/use-warn-if-unsaved-changes";
 
 const RegisterVerifyForm: FC<Props> = (props) => {
   // Props
@@ -50,6 +51,9 @@ const RegisterVerifyForm: FC<Props> = (props) => {
 
   // States
   const [countdown, setCountdown] = useState(30);
+
+  // Warn if unsaved changes
+  const { confirmNavigation } = useWarnIfUnsavedChanges(form.formState.isDirty);
 
   // Mutations
   const verifyOTPMutation = usePostApiAuthVerifyRegistration({
@@ -248,7 +252,11 @@ const RegisterVerifyForm: FC<Props> = (props) => {
             <Button
               type="button"
               variant="outline"
-              onClick={onCancel}
+              onClick={() => {
+                if (confirmNavigation()) {
+                  onCancel();
+                }
+              }}
               className="flex-1 h-10"
             >
               <ArrowLeftIcon className="mr-2 h-4 w-4" />

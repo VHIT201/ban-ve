@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 import { Badge } from "@/components/ui/badge";
 
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { CardContent, CardFooter } from "@/components/ui/card";
 
 import {
   DownloadCloudIcon,
@@ -51,6 +51,8 @@ interface Props {
 
   className?: string;
 
+  viewUsername?: boolean;
+
   onViewDetail?: (product: ContentProduct) => void;
 
   onAddToCart?: (product: ContentProduct) => void;
@@ -58,7 +60,13 @@ interface Props {
 
 const BlueprintCard: FC<Props> = (props) => {
   // Props
-  const { product, className, onViewDetail, onAddToCart } = props;
+  const {
+    product,
+    className,
+    viewUsername = true,
+    onViewDetail,
+    onAddToCart,
+  } = props;
 
   // Refs
   const cardRef = useRef<HTMLDivElement>(null);
@@ -156,7 +164,7 @@ const BlueprintCard: FC<Props> = (props) => {
 
   const formattedPrice = formatVND(product.price || 0);
 
-  const username = product.createdBy?.email || null;
+  const username = product.createdBy?.email || "Không xác định";
 
   const categoryName = product?.category?.name || "General";
 
@@ -431,7 +439,7 @@ const BlueprintCard: FC<Props> = (props) => {
 
         {/* Card content with stagger animations */}
         <CardContent className="pt-6 px-0 pb-2">
-          {username !== null && (
+          {viewUsername && (
             <motion.div
               className="flex items-center gap-2 mb-3"
               initial={{ opacity: 0, x: -10 }}

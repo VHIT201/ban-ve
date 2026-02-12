@@ -42,6 +42,8 @@ const ContentList = () => {
   const [revertContent, setRevertContent] = useState<ContentResponse | null>(
     null,
   );
+  const [approvedContents, setApprovedContents] =
+    useState<ContentResponse | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filterValues, setFilterValues] = useState<ContentFilterSchema>();
   const [pagination, setPagination] = useState({
@@ -166,14 +168,8 @@ const ContentList = () => {
     setRevertContent(content);
   };
 
-  const handleApprove = (content: ContentResponse) => {
-    if (!content._id) return;
-    if (confirm(`Bạn có chắc chắn muốn duyệt nội dung "${content.title}"?`)) {
-      approveContentMutation.mutate({
-        id: content._id,
-        data: { status: "approved" },
-      });
-    }
+  const handleOpenApproveDialog = (content: ContentResponse) => {
+    setApprovedContents(content);
   };
 
   const handleRevert = async () => {
@@ -189,6 +185,22 @@ const ContentList = () => {
       getContentListQuery.refetch();
     } catch (error) {
       toast.error("Có lỗi xảy ra khi hoàn tác vi phạm nội dung");
+    }
+  };
+
+  const handleApprove = async () => {
+    if (!approvedContents?._id) return;
+    try {
+      await approveContentMutation.mutateAsync({
+        id: approvedContents._id,
+        data: { status: ContentStatus.APPROVED },
+      });
+      toast.success("Duyệt nội dung thành công");
+      getContentListQuery.refetch();
+    } catch (error) {
+      toast.error("Có lỗi xảy ra khi duyệt nội dung");
+    } finally {
+      setApprovedContents(null);
     }
   };
 
@@ -227,8 +239,6 @@ const ContentList = () => {
         }).format(value),
     },
   };
-
-  console.log("Rendered ContentList with filterValues:", selectedRows);
 
   return (
     <div className="flex overflow-hidden bg-background">
@@ -300,7 +310,7 @@ const ContentList = () => {
             actions={{
               onEdit: handleViewEdit,
               onView: handleViewDetail,
-              onApprove: handleApprove,
+              onApprove: handleOpenApproveDialog,
               onRevert: handleOpenRevertDialog,
             }}
           />
@@ -312,6 +322,15 @@ const ContentList = () => {
             open={!!revertContent}
             onOpenChange={() => setRevertContent(null)}
             handleConfirm={handleRevert}
+          />
+
+          <ConfirmDialog
+            isLoading={approveContentMutation.isPending}
+            title="Xác nhận duyệt nội dung"
+            desc='Bạn có chắc chắn muốn duyệt nội dung này không? Nội dung sẽ trở về trạng thái "Đã duyệt".'
+            open={!!approvedContents}
+            onOpenChange={() => setApprovedContents(null)}
+            handleConfirm={handleApprove}
           />
         </div>
       </div>
