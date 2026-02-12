@@ -726,7 +726,7 @@ const ContentEditorForm = ({
                 </div>
               </FormControl>
               <FormDescription>
-                Chọn ảnh sản phẩm (PNG, JPG, JPEG, WEBP, tối đa 100MB)
+                Chọn ảnh sản phẩm (PNG, JPG, JPEG, tối đa 100MB)
               </FormDescription>
               <FormMessage />
             </FormItem>
