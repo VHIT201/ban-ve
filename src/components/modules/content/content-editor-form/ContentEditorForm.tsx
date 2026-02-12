@@ -27,9 +27,7 @@ import {
   Loader2,
   DollarSign,
   AlertCircle,
-  X,
   Check,
-  FileText,
   ShieldAlert,
   Info,
   CheckCircle2,
@@ -41,6 +39,11 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { TreeViewItem } from "@/components/shared/tree-view/TreeView";
 import { TreeNode } from "@/components/shared/tree-select/TreeSelect";
 import { isEmpty } from "lodash-es";
+import { useDeleteApiFileId } from "@/api/endpoints/files";
+import {
+  getApiContentId,
+  getGetApiContentIdQueryKey,
+} from "@/api/endpoints/content";
 
 // Schema validation
 const contentFormSchemaStatic = z
@@ -100,6 +103,7 @@ const contentFormSchemaStatic = z
 export type ContentFormValues = z.infer<typeof contentFormSchemaStatic>;
 
 interface ContentEditorFormProps {
+  id: string;
   mode?: "create" | "edit" | "view";
   defaultFile?: {
     name: string;
@@ -117,6 +121,7 @@ interface ContentEditorFormProps {
 }
 
 const ContentEditorForm = ({
+  id,
   mode = "create",
   defaultValues,
   defaultFile,
@@ -279,6 +284,7 @@ const ContentEditorForm = ({
     },
   );
 
+  // Memos
   const treeData = useMemo(() => {
     // Handle loading or error states
     if (getCategoryTreeQuery.isLoading || getCategoryTreeQuery.isError) {
@@ -316,10 +322,6 @@ const ContentEditorForm = ({
   const submitForm = async (values: ContentFormValues) => {
     try {
       setUploadError(null);
-
-      // Debug log
-      console.log("Submitting form with values:", values);
-      console.log("Price value:", values.price);
 
       // If new file is selected, upload it first
       if (values.files && values.files.length > 0) {
