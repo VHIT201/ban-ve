@@ -98,7 +98,6 @@ const contentFormSchemaStatic = z
 export type ContentFormValues = z.infer<typeof contentFormSchemaStatic>;
 
 interface ContentEditorFormProps {
-  id: string;
   mode?: "create" | "edit" | "view";
   defaultFile?: {
     name: string;
@@ -116,7 +115,6 @@ interface ContentEditorFormProps {
 }
 
 const ContentEditorForm = ({
-  id,
   mode = "create",
   defaultValues,
   defaultFile,

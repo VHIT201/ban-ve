@@ -191,7 +191,7 @@ const ContentList = () => {
               </Button>
 
               <Button
-                onClick={() => () => router.push("collaborator-content-create")}
+                onClick={() => router.push("collaborator-content-create")}
                 className="gap-2"
               >
                 <PlusIcon className="h-4 w-4" />
