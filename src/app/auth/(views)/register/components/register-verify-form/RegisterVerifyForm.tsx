@@ -50,7 +50,7 @@ const RegisterVerifyForm: FC<Props> = (props) => {
   });
 
   // States
-  const [countdown, setCountdown] = useState(30);
+  const [countdown, setCountdown] = useState(300);
 
   // Warn if unsaved changes
   const { confirmNavigation } = useWarnIfUnsavedChanges(form.formState.isDirty);

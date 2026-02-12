@@ -1,12 +1,10 @@
 "use client";
 import {
-  useGetApiFileId,
   useGetApiFileIdDownload,
   useGetApiFileDownloadFreeContentId,
 } from "@/api/endpoints/files";
 import { useGetApiContentId } from "@/api/endpoints/content";
 import { OrderItem } from "@/api/models";
-import { ResponseData } from "@/api/types/base";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { extractErrorMessage } from "@/utils/error";
@@ -129,9 +127,9 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
 
   const contentImage =
     contentData?.images && contentData.images.length > 0
-      ? contentData.images[0]?.startsWith?.('http') 
+      ? contentData.images[0]?.startsWith?.("http")
         ? contentData.images[0]
-        : `${baseConfig.mediaDomain}${contentData.images[0]?.startsWith?.('/') ? '' : '/'}${contentData.images[0]}`
+        : `${baseConfig.mediaDomain}${contentData.images[0]?.startsWith?.("/") ? "" : "/"}${contentData.images[0]}`
       : undefined;
 
   const FileIcon = getFileIcon(contentData?.file_id?.type || "");

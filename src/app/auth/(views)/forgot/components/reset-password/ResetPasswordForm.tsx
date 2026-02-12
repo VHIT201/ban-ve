@@ -68,7 +68,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
   const [isSuccess, setIsSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [countdown, setCountdown] = useState(30);
+  const [countdown, setCountdown] = useState(300);
   const router = useRouter();
 
   const submittingRef = useRef(false);
