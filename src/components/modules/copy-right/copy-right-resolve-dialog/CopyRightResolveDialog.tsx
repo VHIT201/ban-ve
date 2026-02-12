@@ -16,6 +16,10 @@ import { FC, useState } from "react";
 import { CopyrightReportStatus } from "@/api/models/copyrightReportStatus";
 import { usePutApiReportsReportIdStatus } from "@/api/endpoints/copyright";
 import { toast } from "sonner";
+import {
+  getGetApiContentAllQueryKey,
+  getGetApiContentQueryKey,
+} from "@/api/endpoints/content";
 
 interface Props {
   reportId: string | null;
@@ -35,7 +39,16 @@ const CopyRightResolveDialog: FC<Props> = (props) => {
   const [adminNotes, setAdminNotes] = useState("");
 
   // Mutations
-  const updateStatusMutation = usePutApiReportsReportIdStatus();
+  const updateStatusMutation = usePutApiReportsReportIdStatus({
+    mutation: {
+      meta: {
+        invalidateQueries: [
+          getGetApiContentAllQueryKey(),
+          getGetApiContentQueryKey({}),
+        ],
+      },
+    },
+  });
 
   // Methods
   const handleUpdateStatus = async (

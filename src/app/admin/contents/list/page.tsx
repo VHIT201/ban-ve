@@ -181,6 +181,7 @@ const ContentList = () => {
       });
 
       toast.success("Hoàn tác vi phạm nội dung thành công");
+      setRevertContent(null);
       getContentListQuery.refetch();
     } catch (error) {
       toast.error("Có lỗi xảy ra khi hoàn tác vi phạm nội dung");

@@ -1,13 +1,7 @@
 // Core
 import { useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  CheckCircle2,
-  XCircle,
-  Clock,
-  Eye,
-  MoreHorizontal,
-} from "lucide-react";
+import { Eye, MoreHorizontal } from "lucide-react";
 
 // App
 import { Badge } from "@/components/ui/badge";
@@ -107,7 +101,7 @@ export const useColumns = (props: useCollaboratorTableColumnsDefsProps) => {
       },
       {
         accessorKey: "commissionRate",
-        header: "Hoa hồng",
+        header: "Hoa hồng ban đầu",
         cell: ({ row }) => {
           const rate = row.getValue("commissionRate") as number | undefined;
           if (!rate) return <span className="text-muted-foreground">-</span>;

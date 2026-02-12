@@ -1,19 +1,33 @@
 "use client";
 
 import { QueryClientProvider } from "@tanstack/react-query";
-import { ReactNode } from "react";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ReactNode, useState } from "react";
 import { AuthSync } from "@/components/auth";
-import queryClient from "@/configs/query-client";
+import { getQueryClient } from "@/configs/query-client";
 
 interface ProvidersProps {
   children: ReactNode;
 }
 
 export function Providers({ children }: ProvidersProps) {
+  // NOTE: Avoid useState when initializing the query client if you don't
+  // have a suspense boundary between this and the code that may
+  // suspend because React will throw away the client on the initial
+  // render if it suspends and there is no boundary
+  const [queryClient] = useState(() => getQueryClient());
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthSync />
       {children}
+      {/* DevTools chỉ hiện trong development mode */}
+      {process.env.NODE_ENV === "development" && (
+        <ReactQueryDevtools
+          initialIsOpen={false}
+          buttonPosition="bottom-right"
+        />
+      )}
     </QueryClientProvider>
   );
 }
