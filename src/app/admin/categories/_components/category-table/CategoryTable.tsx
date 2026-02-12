@@ -51,7 +51,7 @@ interface Props {
 
 const CategoryTable: FC<Props> = (props) => {
   // Props
-  const { id, mode = "all" } = props;
+  const { id, mode = "all", filterValues } = props;
 
   // Hooks
   const router = useRouter();
@@ -65,7 +65,9 @@ const CategoryTable: FC<Props> = (props) => {
 
   // Queries
   const getCategoryList = useGetApiCategories(
-    {},
+    {
+      name: filterValues?.name,
+    },
     {
       query: {
         enabled: mode === "all",
@@ -79,7 +81,9 @@ const CategoryTable: FC<Props> = (props) => {
 
   const getCategoryChildrenList = useGetApiCategoriesIdChildren(
     id || "",
-    {},
+    {
+      name: filterValues?.name,
+    },
     {
       query: {
         enabled: mode === "children" && Boolean(id),
@@ -93,7 +97,9 @@ const CategoryTable: FC<Props> = (props) => {
 
   const getCategoryWithChildrenList = useGetApiCategoriesIdWithChildren(
     id || "",
-    {},
+    {
+      name: filterValues?.name,
+    },
     {
       query: {
         enabled: mode === "with-children" && Boolean(id),
