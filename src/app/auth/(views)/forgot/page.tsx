@@ -9,7 +9,6 @@ import {
 } from "@/api/endpoints/auth";
 import { toast } from "sonner";
 import { useSessionStorage } from "@/hooks/use-session-storage";
-import { encodeSHA256 } from "@/utils/encode";
 
 type ForgotPasswordStep = "email" | "reset";
 
@@ -62,7 +61,7 @@ const ForgotPassword = () => {
           data: {
             email: forgotEmail || "",
             otp,
-            newPassword: encodeSHA256(newPassword),
+            newPassword: newPassword,
           } as any,
         });
       } catch (error) {

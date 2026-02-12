@@ -1,11 +1,10 @@
-import { useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-
+import { useEffect, useCallback, useRef } from "react";
 export function useWarnIfUnsavedChanges(
   isDirty: boolean,
   message: string = "Bạn có thay đổi chưa được lưu. Bạn có chắc muốn rời trang?",
 ) {
-  // Cảnh báo khi refresh/đóng tab
+  const isNavigatingRef = useRef(false);
+
   useEffect(() => {
     if (!isDirty) return;
 
@@ -19,6 +18,36 @@ export function useWarnIfUnsavedChanges(
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isDirty, message]);
+
+  // Cảnh báo khi nhấn nút back/forward của trình duyệt
+  useEffect(() => {
+    if (!isDirty) return;
+
+    const handlePopState = (e: PopStateEvent) => {
+      if (isNavigatingRef.current) {
+        isNavigatingRef.current = false;
+        return;
+      }
+
+      const shouldNavigate = window.confirm(message);
+
+      if (!shouldNavigate) {
+        // Nếu user chọn Cancel, push lại current URL để stay on page
+        window.history.pushState(null, "", window.location.href);
+      } else {
+        isNavigatingRef.current = true;
+      }
+    };
+
+    // Push một state để có thể detect popstate
+    window.history.pushState(null, "", window.location.href);
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
     };
   }, [isDirty, message]);
 

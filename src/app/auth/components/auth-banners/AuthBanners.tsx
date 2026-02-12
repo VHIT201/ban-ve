@@ -73,8 +73,12 @@ const AuthBanners = () => {
       {/* Carousel Content */}
       <div className="flex-1 flex items-center justify-center">
         <div className="relative w-full h-full">
-          <Carousel setApi={setApi} opts={{ align: "center", loop: true }}>
-            <CarouselContent>
+          <Carousel
+            setApi={setApi}
+            opts={{ align: "center", loop: true }}
+            className="h-full"
+          >
+            <CarouselContent className="h-full">
               {carouselData.map((item) => {
                 return (
                   <CarouselItem
@@ -83,7 +87,7 @@ const AuthBanners = () => {
                       backgroundImage: `url(${item.bgImage})`,
                       backgroundSize: "cover",
                     }}
-                    className="h-dvh flex items-center justify-center"
+                    className="min-h-dvh h-full flex items-center justify-center"
                   >
                     <div className="text-center space-y-6 px-4">
                       {/* Content */}
