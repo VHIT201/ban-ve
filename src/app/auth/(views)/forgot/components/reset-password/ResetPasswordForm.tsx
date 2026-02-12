@@ -16,14 +16,17 @@ import {
   EyeOff,
   CheckCircle2,
   Loader2 as Loader2Icon,
+  Clock,
+  RefreshCcw,
 } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { BASE_PATHS } from "@/constants/paths";
 import { useWarnIfUnsavedChanges } from "@/hooks/use-warn-if-unsaved-changes";
+import { usePostApiAuthForgotPassword } from "@/api/endpoints/auth";
 
 const RESET_PASSWORD_SCHEMA = z
   .object({
@@ -65,6 +68,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
   const [isSuccess, setIsSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [countdown, setCountdown] = useState(30);
   const router = useRouter();
 
   const submittingRef = useRef(false);
@@ -79,6 +83,12 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
   });
 
   const { confirmNavigation } = useWarnIfUnsavedChanges(form.formState.isDirty);
+
+  const reSendOTPMutation = usePostApiAuthForgotPassword({
+    mutation: {
+      retry: 0,
+    },
+  });
 
   const onSubmit = async (data: ResetPasswordFormValues) => {
     if (submittingRef.current) return;
@@ -114,6 +124,39 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
       }
     }
   };
+
+  const handleResendOTP = async () => {
+    if (!email) {
+      toast.error("Email không hợp lệ. Vui lòng thử lại.");
+      return;
+    }
+
+    try {
+      await reSendOTPMutation.mutateAsync({
+        data: {
+          email: email,
+        },
+      });
+
+      setCountdown(30);
+      toast.success(
+        "Đã gửi lại mã OTP thành công. Vui lòng kiểm tra hộp thư đến hoặc thư mục spam.",
+      );
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        "Không thể gửi lại mã OTP. Vui lòng thử lại sau.";
+      toast.error(errorMessage);
+    }
+  };
+
+  // Effects
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
 
   if (isSuccess) {
     return (
@@ -238,6 +281,34 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
                 );
               }}
             />
+          </div>
+
+          {/* Resend OTP */}
+          <div className="text-center space-y-2">
+            <p className="text-sm text-muted-foreground">Không nhận được mã?</p>
+            {countdown > 0 ? (
+              <div className="flex items-center justify-center space-x-1 text-sm text-muted-foreground">
+                <Clock className="h-4 w-4" />
+                <span>Gửi lại sau {countdown}s</span>
+              </div>
+            ) : (
+              <Button
+                type="button"
+                variant="link"
+                onClick={handleResendOTP}
+                disabled={reSendOTPMutation.isPending}
+                className="p-0 h-auto font-medium text-primary hover:underline"
+              >
+                {reSendOTPMutation.isPending ? (
+                  <>
+                    <RefreshCcw className="mr-1 h-4 w-4 animate-spin" />
+                    Đang gửi...
+                  </>
+                ) : (
+                  "Gửi lại mã"
+                )}
+              </Button>
+            )}
           </div>
 
           {/* ===== PASSWORD ===== */}
