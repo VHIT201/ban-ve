@@ -168,6 +168,7 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
                     type: "spring",
                     stiffness: 200,
                   }}
+                  className="p-1"
                 >
                   {contentData?.images && contentData.images.length > 0 ? (
                     <Image
@@ -175,7 +176,7 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
                       alt={contentData?.title || "File thumbnail"}
                       width={64}
                       height={64}
-                      className="object-cover rounded-md"
+                      className="object-cover rounded-md size-14"
                       onLoadError={(e) => {
                         console.error("Image failed to load:", contentImage, e);
                       }}

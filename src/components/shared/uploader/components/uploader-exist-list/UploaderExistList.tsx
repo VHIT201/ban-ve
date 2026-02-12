@@ -221,7 +221,7 @@ const UploaderExistList: FC<Props> = (props) => {
                         </Tooltip>
                       </TooltipProvider>
 
-                      <TooltipProvider>
+                      {/* <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button
@@ -243,7 +243,7 @@ const UploaderExistList: FC<Props> = (props) => {
                             <p>Xóa file</p>
                           </TooltipContent>
                         </Tooltip>
-                      </TooltipProvider>
+                      </TooltipProvider> */}
                     </div>
                   </div>
                 </div>
