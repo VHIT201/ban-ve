@@ -5,7 +5,7 @@ import { cn } from "@/utils/ui";
 import { AppHeader, AppMainContent, AppSidebar } from "./_components";
 import { LayoutProvider } from "@/contexts";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import NextNProgress from "nextjs-progressbar";
+import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -14,7 +14,12 @@ interface AdminLayoutProps {
 const AdminLayout = ({ children }: AdminLayoutProps) => {
   return (
     <LayoutProvider>
-      <NextNProgress />
+      <ProgressBar
+        height="3px"
+        color="#29D"
+        options={{ showSpinner: false }}
+        shallowRouting
+      />
       <SidebarProvider defaultOpen={true}>
         {/* ===== Sidebar ===== */}
         <AppSidebar />
