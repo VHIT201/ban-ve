@@ -13,9 +13,7 @@ import {
 import { Lens } from "@/components/ui/lens";
 import { formatFileSize } from "@/utils/file";
 import {
-  DownloadIcon,
   ShoppingCartIcon,
-  StarIcon,
   Check,
   HeartIcon,
   ShareIcon,

@@ -253,7 +253,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
                   key={selectedImage}
                   src={imageList[selectedImage]}
                   alt={content.title}
-                  className="w-full h-[300px] sm:h-[400px] lg:h-[550px] object-contain"
+                  className="w-full h-[300px] sm:h-[400px] lg:h-[550px] object-cover cursor-zoom-in"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.3 }}

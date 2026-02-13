@@ -81,14 +81,26 @@ interface SearchResult {
   file_type?: string;
 }
 
-function HeaderContentSearch() {
+interface HeaderContentSearchProps {
+  searchQuery?: string;
+  setSearchQuery?: (value: string) => void;
+}
+
+function HeaderContentSearch({
+  searchQuery: externalSearchQuery,
+  setSearchQuery: externalSetSearchQuery,
+}: HeaderContentSearchProps = {}) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const mobileInputRef = useRef<HTMLInputElement>(null);
   const isMobile = useIsMobile();
 
   // States
-  const [searchQuery, setSearchQuery] = useState("");
+  const [internalSearchQuery, setInternalSearchQuery] = useState("");
+  const searchQuery = externalSearchQuery ?? internalSearchQuery;
+  const setSearchQuery =
+    externalSetSearchQuery ??
+    ((value: string) => setInternalSearchQuery(value));
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
@@ -271,7 +283,7 @@ function HeaderContentSearch() {
     debouncedSearch.cancel();
     setSelectedIndex(-1);
     inputRef.current?.focus();
-  }, [debouncedSearch]);
+  }, [debouncedSearch, setSearchQuery]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {

@@ -3,6 +3,7 @@
 import {
   getGetApiContentAllQueryKey,
   getGetApiContentIdQueryKey,
+  getGetApiContentMyContentsQueryKey,
   getGetApiContentQueryKey,
   useGetApiContentId,
   usePutApiContentId,
@@ -43,6 +44,7 @@ const ContentEditPage = () => {
           getGetApiContentAllQueryKey(),
           getGetApiContentIdQueryKey(contentId),
           getGetApiContentQueryKey(),
+          getGetApiContentMyContentsQueryKey(),
         ],
       },
     },

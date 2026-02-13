@@ -27,6 +27,7 @@ const Header = () => {
   const router = useRouter();
   const shouldReduceMotion = useReducedMotion();
   const [isSlideDown, setIsSlideDown] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     ``;
@@ -168,7 +169,10 @@ const Header = () => {
                   variants={itemVariants}
                   className="hidden md:block flex-1 max-w-md lg:max-w-lg mx-4"
                 >
-                  <HeaderSearchBar />
+                  <HeaderSearchBar
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                  />
                 </motion.div>
 
                 <motion.div
@@ -177,7 +181,10 @@ const Header = () => {
                 >
                   <div className="space-x-2 flex items-center">
                     <div className="md:hidden">
-                      <HeaderSearchBar />
+                      <HeaderSearchBar
+                        searchQuery={searchQuery}
+                        setSearchQuery={setSearchQuery}
+                      />
                     </div>
                     <HeaderShoppingCart />
                   </div>
@@ -219,13 +226,19 @@ const Header = () => {
               variants={itemVariants}
               className="hidden md:block flex-1 max-w-md lg:max-w-lg mx-4"
             >
-              <HeaderSearchBar />
+              <HeaderSearchBar
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+              />
             </motion.div>
 
             <motion.div variants={itemVariants} className="flex items-center">
               <div className="space-x-2 flex items-center">
                 <div className="md:hidden">
-                  <HeaderSearchBar />
+                  <HeaderSearchBar
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                  />
                 </div>
                 <HeaderShoppingCart />
               </div>

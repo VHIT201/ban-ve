@@ -7,8 +7,8 @@ import { Response } from "@/api/types/base";
 
 // Constants
 const RETRY_COUNT = 0;
-const STALE_TIME = 1000 * 60 * 5; // 5 minutes
-const GC_TIME = 1000 * 60 * 10; // 10 minutes
+const STALE_TIME = 0; // 0 minutes
+const GC_TIME = 1000 * 60 * 3; // 3 minutes
 
 // Utils
 // Handle delay value

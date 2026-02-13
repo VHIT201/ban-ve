@@ -48,6 +48,8 @@ import {
 } from "lucide-react";
 import { CopyrightReportViolationType } from "@/api/models/copyrightReportViolationType";
 import { EnvelopeIcon } from "@phosphor-icons/react";
+import { useAuthStore, useProfileStore } from "@/stores";
+import { useShallow } from "zustand/shallow";
 
 // Schema validation
 const copyrightReportFormSchema = z.object({
@@ -124,10 +126,18 @@ const CopyRightEditorForm = ({
 }: CopyrightReportEditorFormProps) => {
   const [evidenceInput, setEvidenceInput] = useState("");
 
+  // Stores
+  const authStore = useAuthStore(
+    useShallow(({ isSignedIn }) => ({ isSignedIn })),
+  );
+
+  const profileStore = useProfileStore(useShallow(({ email }) => ({ email })));
+
   // Initialize form
   const form = useForm<CopyrightReportFormValues>({
     resolver: zodResolver(copyrightReportFormSchema),
     defaultValues: {
+      email: authStore.isSignedIn ? profileStore.email || "" : "",
       violationType:
         defaultValues?.violationType || CopyrightReportViolationType.copyright,
       description: defaultValues?.description || "",
@@ -252,6 +262,7 @@ const CopyRightEditorForm = ({
                 <FormField
                   control={form.control}
                   name="email"
+                  disabled={authStore.isSignedIn || isViewMode}
                   render={({ field }) => (
                     <FormItem className="mt-2">
                       <FormLabel className="text-sm font-medium text-gray-700">
@@ -264,7 +275,9 @@ const CopyRightEditorForm = ({
                             placeholder="Nhập email liên hệ"
                             className="pl-10 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 font-mono text-sm"
                             {...field}
-                            disabled={loading || isViewMode}
+                            disabled={
+                              loading || authStore.isSignedIn || isViewMode
+                            }
                             maxLength={50}
                           />
                           <div className="absolute bottom-3 right-3 flex items-center gap-2">
@@ -410,10 +423,10 @@ const CopyRightEditorForm = ({
                         <div className="relative">
                           <Textarea
                             placeholder="Mô tả chi tiết về vi phạm bao gồm:
-• Cách thức vi phạm cụ thể
-• Thời điểm phát hiện vi phạm  
-• Ảnh hưởng của vi phạm
-• Các chi tiết khác giúp làm rõ vấn đề"
+                            • Cách thức vi phạm cụ thể
+                            • Thời điểm phát hiện vi phạm  
+                            • Ảnh hưởng của vi phạm
+                            • Các chi tiết khác giúp làm rõ vấn đề"
                             className="min-h-[140px] resize-none border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 text-sm leading-relaxed"
                             {...field}
                             disabled={loading || isViewMode}
