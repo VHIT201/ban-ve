@@ -46,25 +46,6 @@ const ContentCreate = () => {
         return;
       }
 
-      const fileToUpload = values.files[0];
-      const fileUploadResponse = await uploadMediaMutation.uploadSingle(
-        fileToUpload as unknown as File,
-        {
-          filename: fileToUpload.name,
-          dir: "contents",
-          private: false,
-          compress: false,
-          applyWatermark: true,
-          watermarkOptions: {
-            text: "CREATED BY BANVE.VN",
-            fontSize: 36,
-            textOpacity: 0.7,
-            overlayOpacity: 0.4,
-            enableOverlay: true,
-          },
-        },
-      );
-
       const warkMarkImages = [];
       for (const image of values.images) {
         const watermarkedImage =
@@ -83,14 +64,12 @@ const ContentCreate = () => {
         warkMarkImages.push(watermarkedImage);
       }
 
-      const fileData = fileUploadResponse as unknown as UploadedFile;
-
       const result = await createContentMutation.mutateAsync({
         data: {
           title: values.title,
           description: values.description,
           category_id: values.category_id,
-          file_id: fileData._id,
+          file_id: values.content_file?._id as string,
           price: values.price,
           image1: warkMarkImages?.[0],
           image2: warkMarkImages?.[1],

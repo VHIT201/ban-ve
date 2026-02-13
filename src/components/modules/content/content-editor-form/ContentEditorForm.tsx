@@ -39,6 +39,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { TreeViewItem } from "@/components/shared/tree-view/TreeView";
 import { TreeNode } from "@/components/shared/tree-select/TreeSelect";
 import { isEmpty } from "lodash-es";
+import { toast } from "sonner";
 
 // Schema validation
 const contentFormSchemaStatic = z
@@ -213,6 +214,9 @@ const ContentEditorForm = ({
     },
   });
 
+  // States
+  const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
+
   // Reset form when mode changes
   useEffect(() => {
     if (defaultValues) {
@@ -307,8 +311,10 @@ const ContentEditorForm = ({
 
   const handleConfirmSubmit = async () => {
     if (formValues) {
+      setIsLoadingSubmit(true);
       await submitForm(formValues);
       setShowConfirmDialog(false);
+      setIsLoadingSubmit(false);
     }
   };
 
@@ -339,6 +345,12 @@ const ContentEditorForm = ({
           },
         });
 
+        if ((uploadedFile?.size ?? 0) >= 50 * 1024 * 1024) {
+          toast.success(
+            "File sau khi nén vẫn vượt quá 50MB. Cần duyệt nội dung để hiển thị",
+          );
+        }
+
         if (!uploadedFile) {
           setUploadError("Upload file thất bại. Vui lòng thử lại.");
           return;
@@ -352,9 +364,6 @@ const ContentEditorForm = ({
           size: uploadedFile.size || 0,
         };
       }
-
-      // Debug log before submit
-      console.log("Final values before onSubmit:", values);
 
       // Submit form with uploaded file info
       await onSubmit(values);
@@ -534,7 +543,7 @@ const ContentEditorForm = ({
                 <Button
                   type="button"
                   onClick={handleConfirmSubmit}
-                  disabled={isLoading || isUploadingFile}
+                  loading={isLoadingSubmit || isLoading || isUploadingFile}
                   className="min-w-[140px] bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
                 >
                   {isLoading || isUploadingFile ? (
