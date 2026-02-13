@@ -58,7 +58,7 @@ const handleAuthError = (error: unknown) => {
 let browserQueryClient: QueryClient | undefined = undefined;
 
 export function makeQueryClient() {
-  return new QueryClient({
+  const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         // Avoid refetch immediately on mount for SSR
@@ -91,44 +91,34 @@ export function makeQueryClient() {
       },
     }),
     mutationCache: new MutationCache({
-      onError: (error) => {
-        // Global error handler for mutations
-        handleAuthError(error);
-      },
       onSuccess: async (_data, _variables, _context, mutation) => {
         const meta = mutation.options.meta;
+        console.log("Mutation succeeded.", meta);
         if (meta?.invalidateQueries?.length) {
+          console.log("Invalidating queries.", meta.invalidateQueries);
+
           const validQueryKeys = meta.invalidateQueries.filter(
             (qk) => qk && Array.isArray(qk) && qk.length > 0,
           );
 
           if (validQueryKeys.length > 0) {
-            const queryClientInstance = browserQueryClient;
-            if (queryClientInstance) {
-              const promises = validQueryKeys.map((qk) =>
-                queryClientInstance.invalidateQueries({ queryKey: qk }),
-              );
+            const promises = validQueryKeys.map((qk) =>
+              queryClient.invalidateQueries({ queryKey: qk }),
+            );
 
-              await Promise.all(promises);
-            }
+            await Promise.all(promises);
           }
         }
       },
     }),
   });
+
+  return queryClient;
 }
 
 // Get or create query client for browser
 export function getQueryClient() {
-  if (typeof window === "undefined") {
-    // Server: always make a new query client
-    return makeQueryClient();
-  } else {
-    // Browser: make a new query client if we don't already have one
-    // This ensures that data is not shared between different users and requests
-    if (!browserQueryClient) browserQueryClient = makeQueryClient();
-    return browserQueryClient;
-  }
+  return makeQueryClient();
 }
 
 // Default export for backward compatibility

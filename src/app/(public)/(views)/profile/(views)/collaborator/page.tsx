@@ -353,8 +353,6 @@ const Collaborator = () => {
     return getCollaboratorMeQuery.data;
   }, [getCollaboratorMeQuery.data]);
 
-  console.log("Collaborator data:", collaboratorMe);
-
   return (
     <div className="space-y-6">
       {collaboratorMe ? (
