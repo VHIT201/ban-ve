@@ -54,9 +54,6 @@ const handleAuthError = (error: unknown) => {
   }
 };
 
-// Create query client with best practices
-let browserQueryClient: QueryClient | undefined = undefined;
-
 export function makeQueryClient() {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -101,9 +98,11 @@ export function makeQueryClient() {
             (qk) => qk && Array.isArray(qk) && qk.length > 0,
           );
 
+          console.log("Valid query keys to invalidate:", validQueryKeys);
+
           if (validQueryKeys.length > 0) {
             const promises = validQueryKeys.map((qk) =>
-              queryClient.invalidateQueries({ queryKey: qk }),
+              queryClient.refetchQueries({ queryKey: qk }),
             );
 
             await Promise.all(promises);
