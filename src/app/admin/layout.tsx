@@ -5,6 +5,7 @@ import { cn } from "@/utils/ui";
 import { AppHeader, AppMainContent, AppSidebar } from "./_components";
 import { LayoutProvider } from "@/contexts";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import NextNProgress from "nextjs-progressbar";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -13,6 +14,7 @@ interface AdminLayoutProps {
 const AdminLayout = ({ children }: AdminLayoutProps) => {
   return (
     <LayoutProvider>
+      <NextNProgress />
       <SidebarProvider defaultOpen={true}>
         {/* ===== Sidebar ===== */}
         <AppSidebar />

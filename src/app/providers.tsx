@@ -11,17 +11,12 @@ interface ProvidersProps {
 }
 
 export function Providers({ children }: ProvidersProps) {
-  // NOTE: Avoid useState when initializing the query client if you don't
-  // have a suspense boundary between this and the code that may
-  // suspend because React will throw away the client on the initial
-  // render if it suspends and there is no boundary
-  const [queryClient] = useState(() => getQueryClient());
+  const queryClient = getQueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthSync />
       {children}
-      {/* DevTools chỉ hiện trong development mode */}
       {process.env.NODE_ENV === "development" && (
         <ReactQueryDevtools
           initialIsOpen={false}

@@ -36,7 +36,6 @@ const ContentDetail = () => {
           getGetApiContentQueryKey(),
           getGetApiContentAllQueryKey(),
           getGetApiContentMyContentsQueryKey(),
-          getGetApiContentMyContentsQueryKey(),
         ],
       },
     },
