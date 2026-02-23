@@ -16,6 +16,8 @@ import { Separator } from "@/components/ui/separator";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { use } from "react";
+import { size } from "lodash-es";
 
 const Header = () => {
   // Stores
@@ -28,9 +30,13 @@ const Header = () => {
   const shouldReduceMotion = useReducedMotion();
   const [isSlideDown, setIsSlideDown] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-
+  
+  const [isMounted, setIsMounted] =useState(false)
+  const enableMotion = isMounted && !shouldReduceMotion;
+  useEffect(() =>{
+    setIsMounted(true)
+  }, [])
   useEffect(() => {
-    ``;
     let lastScrollY = window.scrollY;
     let ticking = false;
 
@@ -101,12 +107,12 @@ const Header = () => {
   };
 
   const renderLogo = (size: "sm" | "md" = "md") => (
-    <motion.div
-      variants={shouldReduceMotion ? {} : logoVariants}
-      initial="initial"
-      whileHover="hover"
-      whileTap="tap"
-    >
+<motion.div
+  variants={isMounted ? logoVariants : {}}
+  initial={isMounted ? "initial" : false}
+  whileHover={isMounted ? "hover" : undefined}
+  whileTap={isMounted ? "tap" : undefined}
+>
       <Link
         href="/"
         className="flex items-center gap-2 sm:gap-3 group transition-all duration-200"
@@ -156,7 +162,7 @@ const Header = () => {
             initial="hidden"
             animate="visible"
             exit="hidden"
-            variants={shouldReduceMotion ? {} : headerVariants}
+           variants={enableMotion ? logoVariants : {}}
             className="fixed top-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-border/40 supports-backdrop-filter:bg-background/60"
           >
             <div className="max-w-[1500px] mx-auto px-3 sm:px-4">
@@ -215,7 +221,7 @@ const Header = () => {
       <motion.div
         initial="hidden"
         animate="visible"
-        variants={shouldReduceMotion ? {} : headerVariants}
+       variants={enableMotion ? logoVariants : {}}
         className="relative top-0 z-50 w-full bg-white backdrop-blur-xl border-b border-border/40 supports-backdrop-filter:bg-background/60"
       >
         <div className="max-w-[1500px] mx-auto px-3 sm:px-4">

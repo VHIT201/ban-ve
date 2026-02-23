@@ -9,7 +9,7 @@ function Footer() {
   
   // Fetch categories from API
   const { data: categoriesData, isLoading, error } = useGetApiCategoriesAllFlat(
-    { limit: 5, sort: 'oldest' } // Get oldest 5 categories
+    { limit: 3, sort: 'oldest' } // Get oldest 3 categories
   );
 
   const categories = categoriesData?.data?.categories || [];
@@ -39,7 +39,7 @@ function Footer() {
         </div>
 
         <div>
-          <h4 className="text-[10px] uppercase tracking-[0.2em] font-bold text-black mb-8">
+          <h4 className="text-xs uppercase tracking-wide font-bold text-black mb-6">
             Thể loại nổi bật
           </h4>
           <ul className="space-y-4">
@@ -55,7 +55,7 @@ function Footer() {
               categories.map((category: Category) => (
                 <li key={category._id}>
                   <Link
-                    href={`/collections?${category._id}`}
+                    href={`/collections?category=${category._id}`}
                     className="text-xs text-black/60 hover:text-black transition-colors font-medium"
                   >
                     {category.name}
@@ -67,7 +67,7 @@ function Footer() {
         </div>
 
         <div>
-          <h4 className="text-[10px] uppercase tracking-[0.2em] font-bold text-black mb-8">
+         <h4 className="text-xs uppercase tracking-wide font-bold text-black mb-6">
             Hỗ trợ
           </h4>
           <ul className="space-y-4">
@@ -99,15 +99,21 @@ function Footer() {
         </div>
 
         <div>
-          <h4 className="text-[10px] uppercase tracking-[0.2em] font-bold text-black mb-8">
-            Tham gia
+        <h4 className="text-xs uppercase tracking-wide font-bold text-black mb-6">
+           Khám phá
           </h4>
-        <p className="text-xs text-black/50 mb-6 leading-relaxed">
-          Nhận thông tin cập nhật về kiến trúc, mô hình 3D và các bản phát hành tài sản độc quyền.
-          <br />
-          Chúng tôi gửi trực tiếp những nội dung giá trị nhất vào hộp thư của bạn mỗi tuần để bạn
-          luôn đi đầu xu hướng thiết kế.
+         <p className="text-xs text-black/50 mb-6 leading-relaxed">
+          Khám phá hàng nghìn bản vẽ CAD, mô hình 3D và tài nguyên thiết kế chất lượng cao
+          dành cho kiến trúc sư và nhà thiết kế.
         </p>
+        <Link href="/collections">
+        <Button
+          className="bg-black text-white text-xs md:text-sm uppercase tracking-widest px-6 py-3.5 rounded-none 
+          hover:bg-black/90 active:scale-95 transition-all w-full md:w-auto"
+        >
+          Khám phá ngay
+        </Button>
+      </Link>
 
           {/* <div className="flex items-center border-b border-black/10 pb-2">
             <input
