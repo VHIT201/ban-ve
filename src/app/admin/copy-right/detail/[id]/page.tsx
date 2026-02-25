@@ -187,10 +187,10 @@ const CopyRightDetailPage = () => {
                       <Separator />
 
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground mb-2">
+                        <p className="text-sm font-medium text-muted-foreground mb-2 ">
                           Mô tả vi phạm
                         </p>
-                        <p className="text-sm bg-muted p-4 rounded-none">
+                        <p className="text-sm bg-muted p-4 rounded-none break-words">
                           {report?.description || "Không có mô tả"}
                         </p>
                       </div>

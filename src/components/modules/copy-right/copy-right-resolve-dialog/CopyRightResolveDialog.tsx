@@ -16,6 +16,7 @@ import { FC, useState } from "react";
 import { CopyrightReportStatus } from "@/api/models/copyrightReportStatus";
 import {
   getGetApiReportsQueryKey,
+  getGetApiReportsReportIdQueryKey,
   usePutApiReportsReportIdStatus,
 } from "@/api/endpoints/copyright";
 import { toast } from "sonner";
@@ -23,6 +24,7 @@ import {
   getGetApiContentAllQueryKey,
   getGetApiContentQueryKey,
 } from "@/api/endpoints/content";
+import { get } from "http";
 
 interface Props {
   reportId: string | null;
@@ -47,6 +49,7 @@ const CopyRightResolveDialog: FC<Props> = (props) => {
       meta: {
         invalidateQueries: [
           getGetApiReportsQueryKey(),
+          getGetApiReportsReportIdQueryKey(reportId!),
           getGetApiContentAllQueryKey(),
           getGetApiContentQueryKey({}),
         ],

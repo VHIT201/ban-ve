@@ -191,6 +191,8 @@ const BlueprintCard: FC<Props> = (props) => {
 
   const index = 0;
 
+  const isFree = product.price === 0;
+
   return (
     <motion.div
       ref={cardRef}
@@ -511,65 +513,106 @@ const BlueprintCard: FC<Props> = (props) => {
             }}
             whileTap={{ scale: 0.98 }}
           >
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={isAddingToCart}
-              className={cn(
-                "h-12 rounded-none w-full px-5 font-semibold text-[12px] uppercase tracking-wider border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 bg-transparent relative overflow-hidden group/button",
-                isProductInCart &&
-                  "bg-primary text-primary-foreground border-primary",
-                isAddingToCart && "cursor-not-allowed opacity-70",
-              )}
-              onClick={handleAddToCart}
-            >
-              {/* Button shimmer effect */}
-              <motion.div
-                className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent"
-                initial={{ x: "-100%" }}
-                animate={{
-                  x: isHovered ? ["100%", "-100%"] : "-100%",
-                }}
-                transition={{
-                  duration: 1.5,
-                  repeat: isHovered ? Infinity : 0,
-                  ease: "linear",
-                }}
-              />
+            {isFree ? (
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={isAddingToCart}
+                className={cn(
+                  "h-12 rounded-none w-full px-5 font-semibold text-[12px] uppercase tracking-wider hover:bg-success border-primary/20 hover:text-primary-foreground hover:border-success/80 transition-all duration-300 bg-transparent relative overflow-hidden group/button",
+                  isProductInCart &&
+                    "bg-success text-primary-foreground border-success",
+                  isAddingToCart && "cursor-not-allowed opacity-70",
+                )}
+              >
+                {/* Button shimmer effect */}
+                <motion.div
+                  className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent"
+                  initial={{ x: "-100%" }}
+                  animate={{
+                    x: isHovered ? ["100%", "-100%"] : "-100%",
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: isHovered ? Infinity : 0,
+                    ease: "linear",
+                  }}
+                />
 
-              <span className="relative z-10 flex items-center justify-center">
-                {isAddingToCart ? (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="flex items-center"
-                  >
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Đang xử lý...
-                  </motion.div>
-                ) : (
+                <span className="relative z-10 flex items-center justify-center">
                   <motion.div
                     className="flex items-center"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     whileHover={{ x: 2 }}
                   >
-                    <motion.div
-                      animate={{
-                        rotate: isHovered ? [0, -10, 10, -10, 0] : 0,
-                      }}
-                      transition={{
-                        duration: 0.5,
-                        ease: "easeInOut",
-                      }}
-                    >
-                      <ShoppingCartIcon className="w-4 h-4 mr-2" />
-                    </motion.div>
-                    {isProductInCart ? "Bỏ khỏi giỏ hàng" : "Thêm vào giỏ hàng"}
+                    Miễn phí
                   </motion.div>
+                </span>
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={isAddingToCart}
+                className={cn(
+                  "h-12 rounded-none w-full px-5 font-semibold text-[12px] uppercase tracking-wider border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 bg-transparent relative overflow-hidden group/button",
+                  isProductInCart &&
+                    "bg-primary text-primary-foreground border-primary",
+                  isAddingToCart && "cursor-not-allowed opacity-70",
                 )}
-              </span>
-            </Button>
+                onClick={handleAddToCart}
+              >
+                {/* Button shimmer effect */}
+                <motion.div
+                  className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent"
+                  initial={{ x: "-100%" }}
+                  animate={{
+                    x: isHovered ? ["100%", "-100%"] : "-100%",
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: isHovered ? Infinity : 0,
+                    ease: "linear",
+                  }}
+                />
+
+                <span className="relative z-10 flex items-center justify-center">
+                  {isAddingToCart ? (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="flex items-center"
+                    >
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Đang xử lý...
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      className="flex items-center"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      whileHover={{ x: 2 }}
+                    >
+                      <motion.div
+                        animate={{
+                          rotate: isHovered ? [0, -10, 10, -10, 0] : 0,
+                        }}
+                        transition={{
+                          duration: 0.5,
+                          ease: "easeInOut",
+                        }}
+                      >
+                        <ShoppingCartIcon className="w-4 h-4 mr-2" />
+                      </motion.div>
+                      {isProductInCart
+                        ? "Bỏ khỏi giỏ hàng"
+                        : "Thêm vào giỏ hàng"}
+                    </motion.div>
+                  )}
+                </span>
+              </Button>
+            )}
           </motion.div>
         </CardFooter>
       </div>

@@ -8,7 +8,11 @@ import { useMemo } from "react";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 
-const StatsCards = ({ dateParams }: { dateParams?: { startDate: string; endDate: string } }) => {
+const StatsCards = ({
+  dateParams,
+}: {
+  dateParams?: { startDate: string; endDate: string };
+}) => {
   // Fetch stats data from API - use provided dateParams or defaults to last 7 days
   const { data, isLoading, error } = useGetApiAdminStats(dateParams);
 
@@ -17,10 +21,10 @@ const StatsCards = ({ dateParams }: { dateParams?: { startDate: string; endDate:
     if (!dateParams?.startDate || !dateParams?.endDate) {
       return "7 ngày gần nhất";
     }
-    
+
     const startDate = new Date(dateParams.startDate);
     const endDate = new Date(dateParams.endDate);
-    
+
     return `${format(startDate, "dd/MM/yyyy", { locale: vi })} - ${format(endDate, "dd/MM/yyyy", { locale: vi })}`;
   }, [dateParams]);
 
@@ -115,7 +119,7 @@ const StatsCards = ({ dateParams }: { dateParams?: { startDate: string; endDate:
   }
 
   return (
-    <div className="flex items-center gap-8">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {statsConfig.map((stat) => (
         <Card
           key={stat.title}

@@ -8,6 +8,8 @@ import { useQueryClient } from "@tanstack/react-query";
 
 // App
 import {
+  getGetApiReportsQueryKey,
+  getGetApiReportsReportIdQueryKey,
   useGetApiReportsReportId,
   usePutApiReportsReportIdStatus,
 } from "@/api/endpoints/copyright";
@@ -144,10 +146,11 @@ const CopyRightDetail = () => {
   // Mutations
   const updateStatusMutation = usePutApiReportsReportIdStatus({
     mutation: {
-      onSuccess: () => {
-        // Invalidate queries to refetch data
-        queryClient.invalidateQueries({ queryKey: [`/api/reports/${id}`] });
-        queryClient.invalidateQueries({ queryKey: [`/api/reports`] });
+      meta: {
+        invalidateQueries: [
+          getGetApiReportsReportIdQueryKey(id),
+          getGetApiReportsQueryKey(),
+        ],
       },
     },
   });
