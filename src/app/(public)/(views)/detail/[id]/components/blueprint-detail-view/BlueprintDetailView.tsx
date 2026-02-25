@@ -51,6 +51,7 @@ import { BlueprintDownload } from "./components";
 import { ImageProtection } from "@/components/shared";
 import { motion, AnimatePresence, easeOut, easeInOut } from "framer-motion";
 import { useCart } from "@/hooks/use-cart";
+import { Badge } from "@/components/ui/badge";
 
 const BlueprintDetailView: FC<Props> = (props) => {
   // Props
@@ -365,14 +366,17 @@ const BlueprintDetailView: FC<Props> = (props) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
               >
-                <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-br from-white to-white/70 bg-clip-text text-transparent">
+                <Badge
+                  variant="success"
+                  className="px-4 py-2 font-semibold text-[14px]"
+                >
                   {content.price
                     ? new Intl.NumberFormat("vi-VN", {
                         style: "currency",
                         currency: "VND",
                       }).format(content.price)
                     : "Miễn phí"}
-                </div>
+                </Badge>
               </motion.div>
 
               {/* Description */}
@@ -418,83 +422,86 @@ const BlueprintDetailView: FC<Props> = (props) => {
               </motion.div>
 
               {/* Action Buttons */}
-              <motion.div
-                className="space-y-3 pt-2"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7, duration: 0.5 }}
-              >
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <motion.div
-                    className="w-full sm:flex-1"
-                    variants={buttonVariants}
-                    whileHover="hover"
-                    whileTap="tap"
-                  >
-                    <Button
-                      size="lg"
-                      className="w-full h-12 bg-white text-gray-900 hover:bg-white/90 font-semibold  shadow-lg hover:shadow-xl transition-shadow"
-                      onClick={handleAddToCart}
-                      disabled={isAdding}
-                      variant="default"
-                    >
-                      <AnimatePresence mode="wait">
-                        {isAdding ? (
-                          <motion.div
-                            key="loading"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="flex items-center"
-                          >
-                            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
-                            Đang thêm...
-                          </motion.div>
-                        ) : justAdded ? (
-                          <motion.div
-                            key="success"
-                            initial={{ scale: 0.8, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="flex items-center"
-                          >
-                            <Check className="h-5 w-5 mr-2" />
-                            Đã thêm vào giỏ
-                          </motion.div>
-                        ) : (
-                          <motion.div
-                            key="default"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="flex items-center"
-                          >
-                            <ShoppingCartIcon className="h-5 w-5 mr-2" />
-                            Thêm vào giỏ
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </Button>
-                  </motion.div>
 
-                  <motion.div
-                    className="w-full sm:flex-1"
-                    variants={buttonVariants}
-                    whileHover="hover"
-                    whileTap="tap"
-                  >
-                    <Button
-                      size="lg"
-                      variant="destructive"
-                      className="w-full h-12 font-semibold  shadow-lg hover:shadow-xl transition-shadow"
-                      onClick={handleBuyNow}
-                      disabled={isFree}
+              {!isFree && (
+                <motion.div
+                  className="space-y-3 pt-2"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7, duration: 0.5 }}
+                >
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <motion.div
+                      className="w-full sm:flex-1"
+                      variants={buttonVariants}
+                      whileHover="hover"
+                      whileTap="tap"
                     >
-                      Mua ngay
-                    </Button>
-                  </motion.div>
-                </div>
-              </motion.div>
+                      <Button
+                        size="lg"
+                        className="w-full h-12 bg-white text-gray-900 hover:bg-white/90 font-semibold  shadow-lg hover:shadow-xl transition-shadow"
+                        onClick={handleAddToCart}
+                        disabled={isAdding}
+                        variant="default"
+                      >
+                        <AnimatePresence mode="wait">
+                          {isAdding ? (
+                            <motion.div
+                              key="loading"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              className="flex items-center"
+                            >
+                              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
+                              Đang thêm...
+                            </motion.div>
+                          ) : justAdded ? (
+                            <motion.div
+                              key="success"
+                              initial={{ scale: 0.8, opacity: 0 }}
+                              animate={{ scale: 1, opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              className="flex items-center"
+                            >
+                              <Check className="h-5 w-5 mr-2" />
+                              Đã thêm vào giỏ
+                            </motion.div>
+                          ) : (
+                            <motion.div
+                              key="default"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              className="flex items-center"
+                            >
+                              <ShoppingCartIcon className="h-5 w-5 mr-2" />
+                              Thêm vào giỏ
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </Button>
+                    </motion.div>
+
+                    <motion.div
+                      className="w-full sm:flex-1"
+                      variants={buttonVariants}
+                      whileHover="hover"
+                      whileTap="tap"
+                    >
+                      <Button
+                        size="lg"
+                        variant="destructive"
+                        className="w-full h-12 font-semibold  shadow-lg hover:shadow-xl transition-shadow"
+                        onClick={handleBuyNow}
+                        disabled={isFree}
+                      >
+                        Mua ngay
+                      </Button>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              )}
 
               {/* Download Section */}
               <motion.div

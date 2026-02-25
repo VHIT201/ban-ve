@@ -1,91 +1,83 @@
 // Core
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { vi } from "date-fns/locale";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
+import { DateRange } from "react-day-picker";
 
 // App
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 
 interface Props {
-  value: { from: string; to: string };
+  value?: {
+    from?: string;
+    to?: string;
+  };
   placeholder?: string;
   onChange: (date: { from: string; to: string }) => void;
 }
 
-// Component
-const DateRangerPicker: FC<Props> = (props) => {
-  // Props
-  const { value, placeholder, onChange } = props;
+const DateRangePicker: FC<Props> = ({
+  value,
+  placeholder = "Chọn khoảng ngày",
+  onChange,
+}) => {
+  // Internal range state
+  const [range, setRange] = useState<DateRange | undefined>();
 
-  // States
-  const [open, setOpen] = useState(false);
-  const [fromDate, setFromDate] = useState<Date | null>();
-  const [toDate, setToDate] = useState<Date | null>();
+  // Sync external value → internal DateRange
+  useEffect(() => {
+    if (value?.from && value?.to) {
+      setRange({
+        from: parseISO(value.from),
+        to: parseISO(value.to),
+      });
+    }
+  }, [value]);
 
-  // Methods
   const handleApply = () => {
-    if (!fromDate || !toDate) return;
+    if (!range?.from || !range?.to) return;
+
     onChange({
-      from: format(fromDate, "yyyy-MM-dd"),
-      to: format(toDate, "yyyy-MM-dd"),
+      from: format(range.from, "yyyy-MM-dd"),
+      to: format(range.to, "yyyy-MM-dd"),
     });
-    setOpen(false);
   };
 
-  // Memos
-  const formatDateRange = () => {
-    if (!fromDate && !toDate) return placeholder ?? "Chọn khoảng ngày";
+  const handleClear = () => {
+    setRange(undefined);
+  };
 
-    return `${value.from ? format(value.from, "dd/MM/yyyy") : "..."} - ${value.to ? format(value.to, "dd/MM/yyyy") : "..."}`;
+  const renderLabel = () => {
+    if (!range?.from) return placeholder;
+
+    if (!range.to) return format(range.from, "dd/MM/yyyy", { locale: vi });
+
+    return `${format(range.from, "dd/MM/yyyy", {
+      locale: vi,
+    })} - ${format(range.to, "dd/MM/yyyy", { locale: vi })}`;
   };
 
   return (
-    <div>
-      <div className="mb-2 flex items-center justify-between">
-        <h4 className="text-primary font-medium">Chọn khoảng ngày</h4>
-      </div>
-      <div className="flex flex-col gap-4 md:flex-row">
-        <div>
-          <p className="mb-1 text-sm">Từ</p>
-          <Calendar
-            mode="single"
-            selected={fromDate || undefined}
-            onSelect={(date) => {
-              if (date && toDate && date > toDate) {
-                setToDate(null);
-              }
-              setFromDate(date || null);
-            }}
-            locale={vi}
-          />
-        </div>
-        <div>
-          <p className="mb-1 text-sm">Đến</p>
-          <Calendar
-            mode="single"
-            selected={toDate || undefined}
-            onSelect={(date) => setToDate(date || null)}
-            disabled={{ before: fromDate || new Date() }}
-            locale={vi}
-          />
-        </div>
-      </div>
-      <div className="mt-4 flex justify-end gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            setFromDate(null);
-            setToDate(null);
-          }}
-        >
+    <div className="p-4 space-y-4">
+      <h4 className="text-primary font-medium">{renderLabel()}</h4>
+
+      <Calendar
+        mode="range"
+        numberOfMonths={2}
+        locale={vi}
+        selected={range}
+        onSelect={setRange}
+      />
+
+      <div className="flex justify-end gap-2">
+        <Button variant="outline" size="sm" onClick={handleClear}>
           Xóa
         </Button>
+
         <Button
-          variant="default"
           size="sm"
-          disabled={!fromDate || !toDate}
+          disabled={!range?.from || !range?.to}
           onClick={handleApply}
         >
           Áp dụng
@@ -95,4 +87,4 @@ const DateRangerPicker: FC<Props> = (props) => {
   );
 };
 
-export default DateRangerPicker;
+export default DateRangePicker;
