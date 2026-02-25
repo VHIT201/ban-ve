@@ -5,4 +5,5 @@ export type GetApiCommentsContentsContentId200Pagination = {
   page?: number;
   limit?: number;
   totalPages?: number;
+  currentPage?: number;
 };

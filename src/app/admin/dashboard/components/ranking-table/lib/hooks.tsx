@@ -4,7 +4,6 @@ import { ColumnDef } from "@tanstack/react-table";
 
 // App
 import { Badge } from "@/components/ui/badge";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import {
   UserRankingTableRow,
   useUserRankingTableColumnsDefsProps,
