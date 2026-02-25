@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Props } from "./lib/types";
-import { FC, useState } from "react";
+import { FC, useState, useMemo } from "react";
 import { cn } from "@/utils/ui";
 import { useCommentSectionContext } from "../../lib/hooks";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import {
   usePostApiCommentsContentsContentId,
   usePutApiCommentsId,
   useDeleteApiCommentsId,
+  useGetApiCommentsContentsContentId,
 } from "@/api/endpoints/comments";
 import { MutationDataResult } from "@/api/types/base";
 import { CommentItem } from "../../lib/types";
@@ -29,16 +30,19 @@ import { useProfileStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
 import baseConfig from "@/configs/base";
 import { RatingStar } from "@/components/shared";
+import { useQueryClient } from "@tanstack/react-query";
 
 const CommentCreationForm: FC<Props> = (props) => {
   // Props
   const {
+    contentId,
     editableCommentId,
     mode = "create",
     defaultValues,
     className,
     classNames,
     onClose,
+    onSuccess,
   } = props;
 
   // Stores
@@ -52,11 +56,55 @@ const CommentCreationForm: FC<Props> = (props) => {
 
   // Hooks
   const {
-    contentId,
+    contentId: contextContentId,
     createComment,
     updateComment,
     admin: isAdmin,
   } = useCommentSectionContext();
+
+  // Use contentId from props or fallback to context
+  const finalContentId = contentId || contextContentId;
+
+  // Query Client for refetching
+  const queryClient = useQueryClient();
+
+  // Query to get all comments for checking
+  const { data: allCommentsData } = useGetApiCommentsContentsContentId(
+    finalContentId!,
+    {
+      page: 1,
+      limit: 1000, // Get all comments to check
+    },
+    {
+      query: {
+        enabled: !!finalContentId && mode === "create", // Only fetch when creating new comment
+        select: (data: any) => data.data,
+      },
+    }
+  );
+
+ const userComment = useMemo(() => {
+  if (!allCommentsData || !profileStore.email) return null;
+
+  let commentsArray: any[] = [];
+
+  if (Array.isArray(allCommentsData)) {
+    commentsArray = allCommentsData;
+  } else if ('data' in allCommentsData) {
+    commentsArray = allCommentsData.data || [];
+  } else if ('pages' in allCommentsData) {
+    commentsArray =
+      allCommentsData.pages?.flatMap((page: any) => page?.data || []) || [];
+  }
+
+  return commentsArray.find(
+    (comment: any) =>
+      comment.userId?.email === profileStore.email ||
+      comment.email === profileStore.email
+  );
+}, [allCommentsData, profileStore.email]);
+
+const hasReviewed = !!userComment;
 
   // Constants
   const MAX_COMMENT_LENGTH = 500;
@@ -90,12 +138,20 @@ const CommentCreationForm: FC<Props> = (props) => {
       return;
     }
 
-    if (!contentId) return;
+    if (!finalContentId) return;
+
+    // Check if user has already commented (only for new comments, not edits)
+    if (mode === "create" && hasReviewed && !contentId) {
+      // Only check for existing comments when creating new comment in normal context
+      // Skip this check when contentId is provided (like from history page)
+      toast.warning("Bạn đã đánh giá sản phẩm này rồi.");
+      return;
+    }
 
     try {
       if (mode === "create" || mode === "reply") {
         const commentResponse = await createCommentMutation.mutateAsync({
-          contentId,
+          contentId: finalContentId,
           data: {
             content: commentContent,
             stars: ratingValue === 0 ? 1 : ratingValue,
@@ -108,6 +164,16 @@ const CommentCreationForm: FC<Props> = (props) => {
         createComment?.({
           newCommentItem: commentData,
         });
+
+        // Invalidate query to refetch comments
+        queryClient.invalidateQueries({
+          queryKey: [`/api/comments/contents/${finalContentId}`],
+        });
+
+        // Also refetch immediately for instant update
+        queryClient.refetchQueries({
+          queryKey: [`/api/comments/contents/${finalContentId}`],
+        });
       } else if (mode === "edit") {
         if (!editableCommentId) {
           toast.warning("Không tìm thấy bình luận để chỉnh sửa.");
@@ -118,6 +184,7 @@ const CommentCreationForm: FC<Props> = (props) => {
           id: editableCommentId,
           data: {
             content: commentContent,
+            stars: ratingValue === 0 ? 1 : ratingValue,
           },
         });
 
@@ -128,11 +195,24 @@ const CommentCreationForm: FC<Props> = (props) => {
         updateComment?.({
           updatedCommentItem: {
             ...commentData,
+            userId: {
+              email: profileStore.email,
+              fullname: profileStore.fullName,
+            },
             guestName: profileStore.fullName,
-            avatar: profileStore.avatar?.replace("//", "/"),
-            email: profileStore.email,
+            avatar: profileStore.avatar,
             isGuest: false,
           },
+        });
+
+        // Invalidate query to refetch comments
+        queryClient.invalidateQueries({
+          queryKey: [`/api/comments/contents/${finalContentId}`],
+        });
+
+        // Also refetch immediately for instant update
+        queryClient.refetchQueries({
+          queryKey: [`/api/comments/contents/${finalContentId}`],
         });
       }
 
@@ -152,6 +232,7 @@ const CommentCreationForm: FC<Props> = (props) => {
         setRatingValue(0);
       }
       onClose?.();
+      onSuccess?.();
     } catch {
       toast.warning("Gửi bình luận thất bại. Vui lòng thử lại.");
     }
@@ -352,7 +433,7 @@ const CommentCreationForm: FC<Props> = (props) => {
 
             <div className="pt-2 pb-0 flex items-center gap-4">
               <RatingStar
-                view={mode === "edit"}
+                view={false}
                 value={ratingValue}
                 onChange={setRatingValue}
                 className={{

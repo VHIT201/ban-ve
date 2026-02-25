@@ -1,4 +1,5 @@
 export interface Props {
+  contentId?: string;
   editableCommentId?: string;
   defaultValues?: {
     content?: string;
@@ -14,4 +15,5 @@ export interface Props {
     button?: string;
   };
   onClose?: () => void;
+  onSuccess?: () => void;
 }

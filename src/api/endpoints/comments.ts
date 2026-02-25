@@ -24,13 +24,13 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  Comment,
   DeleteApiCommentsId200,
   GetApiCommentsContentsContentId200,
   GetApiCommentsContentsContentIdParams,
   GetApiCommentsMe200,
   GetApiCommentsMeParams,
   GetApiCommentsStatisticsLatestFiveStar200,
+  PostApiCommentsContentsContentId201,
   PostApiCommentsContentsContentIdBody,
   PutApiCommentsId200,
   UpdateCommentInput
@@ -221,7 +221,7 @@ export const postApiCommentsContentsContentId = (
 ) => {
       
       
-      return mainInstance<Comment>(
+      return mainInstance<PostApiCommentsContentsContentId201>(
       {url: `/api/comments/contents/${contentId}`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: postApiCommentsContentsContentIdBody, signal
@@ -277,7 +277,7 @@ export const usePostApiCommentsContentsContentId = <TError = ErrorType<void>,
       return useMutation(mutationOptions, queryClient);
     }
     /**
- * @summary Lấy danh sách bình luận của một nội dung
+ * @summary Lấy danh sách bình luận đã duyệt của một nội dung
  */
 export const getApiCommentsContentsContentId = (
     contentId: string,
@@ -362,7 +362,7 @@ export function useGetApiCommentsContentsContentIdInfinite<TData = InfiniteData<
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Lấy danh sách bình luận của một nội dung
+ * @summary Lấy danh sách bình luận đã duyệt của một nội dung
  */
 
 export function useGetApiCommentsContentsContentIdInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, GetApiCommentsContentsContentIdParams['page']>, TError = ErrorType<unknown>>(
@@ -434,7 +434,7 @@ export function useGetApiCommentsContentsContentId<TData = Awaited<ReturnType<ty
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Lấy danh sách bình luận của một nội dung
+ * @summary Lấy danh sách bình luận đã duyệt của một nội dung
  */
 
 export function useGetApiCommentsContentsContentId<TData = Awaited<ReturnType<typeof getApiCommentsContentsContentId>>, TError = ErrorType<unknown>>(

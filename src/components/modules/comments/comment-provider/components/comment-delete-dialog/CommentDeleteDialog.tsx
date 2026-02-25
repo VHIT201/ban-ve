@@ -14,13 +14,17 @@ import { Trash2Icon } from "lucide-react";
 import { useDeleteApiCommentsId } from "@/api/endpoints/comments";
 import { toast } from "sonner";
 import { extractErrorMessage } from "@/utils/error";
+import { useQueryClient } from "@tanstack/react-query";
 
 const DeleteCommentDialog: FC<Props> = (props) => {
   // Props
   const { commentId, parentCommentId, open, onOpenChange } = props;
 
+  // Query Client for refetching
+  const queryClient = useQueryClient();
+
   // Hooks
-  const { deleteComment } = useCommentSectionContext();
+  const { deleteComment, contentId } = useCommentSectionContext();
 
   // Mutations
   const deleteCommentMutation = useDeleteApiCommentsId();
@@ -36,6 +40,13 @@ const DeleteCommentDialog: FC<Props> = (props) => {
 
       deleteComment?.({ commentId, parentCommentId });
       toast.success("Xóa bình luận thành công");
+      
+      // Refetch comment data to update feedback filter
+      if (contentId) {
+        queryClient.invalidateQueries({
+          queryKey: [`/api/comments/contents/${contentId}`],
+        });
+      }
     } catch (error) {
       toast.error(
         extractErrorMessage(error) || "Đã có lỗi xảy ra. Vui lòng thử lại."

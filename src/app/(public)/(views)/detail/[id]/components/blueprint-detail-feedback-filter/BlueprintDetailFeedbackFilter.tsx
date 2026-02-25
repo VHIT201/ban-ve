@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 
 import { RatingStar } from "@/components/shared";
 import { useGetApiCommentsContentsContentId } from "@/api/endpoints/comments";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ReviewSidebarProps {
   contentId: string;
@@ -17,6 +18,8 @@ const BlueprintDetailFeedbackFilter = ({
 }: ReviewSidebarProps & {
   onRatingFilterChange?: (rating: number | null) => void;
 }) => {
+  const queryClient = useQueryClient();
+
   // Queries
   const getCommentListQuery = useGetApiCommentsContentsContentId(
     contentId,
@@ -27,12 +30,30 @@ const BlueprintDetailFeedbackFilter = ({
     {
       query: {
         select: (query) => query.data,
+        // Refetch when window gains focus and enable background refetching
+        refetchOnWindowFocus: true,
+        staleTime: 0, // Consider data stale immediately
+        gcTime: 1000 * 60 * 5, // Keep in cache for 5 minutes
+        // Auto refetch every 30 seconds only when tab is visible
+        refetchInterval: 1000 * 30,
+        refetchIntervalInBackground: false,
       },
     },
   );
 
   // Memos
   const comments = getCommentListQuery.data ?? [];
+
+  // Function to refetch comments - can be called by parent components
+  const refetchComments = () => {
+    getCommentListQuery.refetch();
+  };
+
+  // Expose refetch function via ref or callback if needed
+  // For now, we'll add it as a window method for debugging
+  if (typeof window !== 'undefined') {
+    (window as any).refetchBlueprintComments = refetchComments;
+  }
 
   const totalReviews = comments.length;
 

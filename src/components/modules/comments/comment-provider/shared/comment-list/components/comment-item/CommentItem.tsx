@@ -21,6 +21,20 @@ import { RatingStar } from "@/components/shared";
 
 const MAX_CONTENT_LENGTH = 100;
 
+// Status helper function
+const getStatusInfo = (status?: string) => {
+  switch (status) {
+    case 'approved':
+      return { label: 'Thành công', className: 'bg-green-100 text-green-800 border-green-200' };
+    case 'pending':
+      return { label: 'Chờ xử lý', className: 'bg-amber-100 text-amber-800 border-amber-200' };
+    case 'rejected':
+      return { label: 'Bị từ chối', className: 'bg-red-100 text-red-800 border-red-200' };
+    default:
+      return { label: 'Không xác định', className: 'bg-gray-100 text-gray-800 border-gray-200' };
+  }
+};
+
 const CommentItem: FC<Props> = (props) => {
   // Props
   const { comment, isReply: isReplyDefault = false } = props;
@@ -29,6 +43,9 @@ const CommentItem: FC<Props> = (props) => {
   const profileStore = useProfileStore(
     useShallow(({ email, fullName }) => ({ email, fullName })),
   );
+
+  // Get status info
+  const statusInfo = getStatusInfo(comment.status);
 
   // Hooks
   const { selectCommentIdToDelete } = useCommentSectionContext();
@@ -129,6 +146,15 @@ const CommentItem: FC<Props> = (props) => {
                       className="text-xs px-2 py-0 h-5"
                     >
                       Bạn
+                    </Badge>
+                  )}
+                  {/* Show status badge for pending/rejected comments */}
+                  {comment.status && comment.status !== 'approved' && (
+                    <Badge 
+                      variant="outline" 
+                      className={`text-xs px-2 py-0.5 whitespace-nowrap ${statusInfo.className}`}
+                    >
+                      {statusInfo.label}
                     </Badge>
                   )}
                   <span className="text-xs text-gray-400">

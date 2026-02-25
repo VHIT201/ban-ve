@@ -7,6 +7,8 @@ import { CommentItem, CommentItemSkeleton } from "./components";
 import { useCommentSectionContext } from "../../lib/hooks";
 import CommentDataEmpty from "../../components/comment-data-empty/CommentDataEmpty";
 import { Button } from "@/components/ui/button";
+import { AlertCircle, Clock } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const CommentList: FC<Props> = (props) => {
   // Props
@@ -15,6 +17,10 @@ const CommentList: FC<Props> = (props) => {
   // Hooks
   const { commentList, isFetching, hasNextPage, fetchNextPage } =
     useCommentSectionContext();
+
+  // Count pending comments
+  const pendingCount = commentList?.filter(comment => comment.status === 'pending').length || 0;
+  const approvedComments = commentList?.filter(comment => comment.status !== 'pending') || [];
 
   if (isFetching) {
     return (
@@ -32,8 +38,18 @@ const CommentList: FC<Props> = (props) => {
 
   return (
     <div className={className}>
+      {/* Pending notification */}
+      {pendingCount > 0 && (
+        <Alert className="mb-4 border-amber-200 bg-amber-50">
+          <Clock className="h-4 w-4 text-amber-600" />
+          <AlertDescription className="text-amber-800">
+            {pendingCount} bình luận đang chờ duyệt và sẽ không được hiển thị.
+          </AlertDescription>
+        </Alert>
+      )}
+
       <ul className="flex flex-col gap-4 p-1">
-        {commentList.map((comment, index) => (
+        {approvedComments.map((comment, index) => (
           <CommentItem
             key={`${comment._id}-${comment.createdAt}-${index}`}
             comment={comment}

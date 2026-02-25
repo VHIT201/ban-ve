@@ -204,7 +204,7 @@ export const CommentList: React.FC<CommentListProps> = ({ contentId }) => {
                 {pagination.totalPages}
               </span>{" "}
               trang
-            </div>
+            </div>  
 
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:space-x-6 lg:space-x-8">
               <div className="flex min-w-[200px] shrink-0 items-center space-x-4">
