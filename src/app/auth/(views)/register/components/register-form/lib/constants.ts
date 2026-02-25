@@ -12,7 +12,33 @@ export const REGISTER_FORM_SCHEMA = z
         "Họ tên không được có khoảng trắng ở đầu hoặc cuối",
       ),
 
-    email: z.string().email("Email không hợp lệ"),
+   email: z
+  .string()
+  .trim()
+  .min(1, "Email không được để trống")
+  .max(30, "Email không được vượt quá 30 ký tự")
+  .refine((email) => {
+    // Regex cơ bản
+    const basicRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!basicRegex.test(email)) return false;
+
+    const [local, domain] = email.split("@");
+
+    // phải có đúng 1 @
+    if (!local || !domain) return false;
+
+    if (domain.length > 30) return false;
+
+    const parts = domain.split(".");
+
+    // phải có ít nhất 2 phần: gmail.com
+    if (parts.length < 2 || parts.length > 3) return false;
+
+    // mỗi phần domain không quá dài
+    if (parts.some((p) => p.length > 15)) return false;
+
+    return true;
+  }, "Email không hợp lệ"),
     password: z
       .string()
       .min(6, "Mật khẩu phải có ít nhất 6 ký tự")
