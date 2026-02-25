@@ -2,7 +2,7 @@
 
 export interface OrderItem {
   /** ID nội dung */
-  contentId?: string;
+  contentId?: CartItemContent;
   /** Số lượng */
   quantity?: number;
   /** Giá tiền */
