@@ -145,6 +145,7 @@ export * from './getApiFileDownloadsMyHistory200DataPagination';
 export * from './getApiFileDownloadsMyHistoryParams';
 export * from './getApiFileIdDownloadParams';
 export * from './getApiFileParams';
+export * from './getApiNotificationsParams';
 export * from './getApiOrders200';
 export * from './getApiOrdersOrderId200';
 export * from './getApiOrdersOrderIdParams';

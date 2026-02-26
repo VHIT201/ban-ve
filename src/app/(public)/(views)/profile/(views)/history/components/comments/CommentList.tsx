@@ -37,6 +37,7 @@ interface Comment {
   contentId: string;
   createdAt?: string;
   updatedAt?: string;
+  avatar?: string; // thêm trường avatar
 }
 
 interface CommentListProps {
@@ -187,6 +188,7 @@ export const CommentList: React.FC<CommentListProps> = ({ contentId }) => {
             <CommentItem 
               key={comment._id} 
               comment={comment}
+              
             />
           ))}
         </div>
