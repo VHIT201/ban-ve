@@ -24,6 +24,7 @@ import { usePutApiCommentsId, useDeleteApiCommentsId } from "@/api/endpoints/com
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { RatingStar } from "@/components/shared";
+import baseConfig from "@/configs/base";
 
 interface CommentItemProps {
   comment: Comment & {
@@ -31,12 +32,14 @@ interface CommentItemProps {
       _id: string;
       fullname?: string;
       email?: string;
+      avatar?: string;
     };
     contentDetails?: {
       _id: string;
       title: string;
       slug?: string;
     };
+    avatar?: string;
   };
 }
 
@@ -100,8 +103,19 @@ export const CommentItem: FC<CommentItemProps> = ({ comment }) => {
     ? comment.guestName || 'Khách'
     : comment.userId?.fullname || 'Người dùng';
 
-  // Tạo avatar từ tên nếu không có avatar
-  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(authorName)}&background=random`;
+  const getUserInitials = (name: string) => {
+    const words = name.trim().split(" ");
+    if (words.length >= 2) {
+      return `${words?.[0]?.[0]}${words?.[words.length - 1]?.[0]}`.toUpperCase();
+    }
+    return name.substring(0, 1).toUpperCase();
+  };
+
+  const avatarUrl = comment.avatar
+    ? comment.avatar.startsWith(`${baseConfig.mediaDomain}/`)
+      ? comment.avatar
+      : `${baseConfig.mediaDomain}/${comment.avatar}`
+    : getUserInitials(authorName);
 
   // Định dạng ngày tháng
   const formattedDate = comment.createdAt 
@@ -148,12 +162,9 @@ export const CommentItem: FC<CommentItemProps> = ({ comment }) => {
       <CardContent className="p-4">
         <div className="flex items-start space-x-3">
           <Avatar className="h-10 w-10 flex-shrink-0">
-            <AvatarImage src={avatarUrl} alt={authorName} />
-            <AvatarFallback>
-              {authorName
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
+            <AvatarImage src={avatarUrl} />
+            <AvatarFallback className="text-white text-sm font-semibold">
+              {getUserInitials(authorName)}
             </AvatarFallback>
           </Avatar>
           

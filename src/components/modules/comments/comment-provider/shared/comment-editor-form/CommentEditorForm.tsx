@@ -31,6 +31,7 @@ import { useShallow } from "zustand/shallow";
 import baseConfig from "@/configs/base";
 import { RatingStar } from "@/components/shared";
 import { useQueryClient } from "@tanstack/react-query";
+import { extractErrorMessage } from "@/utils/error";
 
 const CommentCreationForm: FC<Props> = (props) => {
   // Props
@@ -144,7 +145,7 @@ const hasReviewed = !!userComment;
     if (mode === "create" && hasReviewed && !contentId) {
       // Only check for existing comments when creating new comment in normal context
       // Skip this check when contentId is provided (like from history page)
-      toast.warning("Bạn đã đánh giá sản phẩm này rồi.");
+      toast.error("Bạn đã đánh giá sản phẩm này rồi. Không thể gửi thêm bình luận.");
       return;
     }
 
@@ -233,8 +234,9 @@ const hasReviewed = !!userComment;
       }
       onClose?.();
       onSuccess?.();
-    } catch {
-      toast.warning("Gửi bình luận thất bại. Vui lòng thử lại.");
+    } catch (error) {
+      const errorMessage = extractErrorMessage(error);
+      toast.error(errorMessage);
     }
   };
 
@@ -255,7 +257,8 @@ const hasReviewed = !!userComment;
       toast.success("Đã xóa bình luận thành công");
       onClose?.();
     } catch (error) {
-      toast.error("Không thể xóa bình luận. Vui lòng thử lại sau.");
+      const errorMessage = extractErrorMessage(error);
+      toast.error(errorMessage);
     } finally {
       setShowDeleteConfirm(false);
     }
