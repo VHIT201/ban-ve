@@ -35,7 +35,7 @@ const CategoriesFeatureSection = () => {
     data: categoriesResponse,
     isLoading,
     error,
-  } = useGetApiCategories({ sort: "oldest" });
+  } = useGetApiCategories({ sort: "newest" });
 
   const categories = categoriesResponse?.data?.categories;
   const [isHovered, setIsHovered] = useState(false);

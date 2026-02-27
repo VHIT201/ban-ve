@@ -83,7 +83,7 @@ const Image: FC<ImageProps> = ({
   };
 
   const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    console.error("Image load error:", e);
+    // console.error("Image load error:", e);
     if (fallbackSrc && currentSrc !== fallbackSrc) {
       setCurrentSrc(fallbackSrc);
       setImageState("loading");

@@ -19,11 +19,10 @@ function Footer() {
       <div className="max-w-[1500px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
         <div className="space-y-6">
           <h3 className="text-xl font-serif font-bold tracking-tighter">
-            Marketplace Blueprint
+            Marketplace Dataory
           </h3>
           <p className="text-sm leading-relaxed text-black/60 max-w-xs">
-            Sàn giao dịch được tuyển chọn dành cho kiến ​​trúc sư và nhà thiết
-            kế. Bản vẽ CAD chất lượng cao, mô hình 3D và tài nguyên thiết kế.
+           Dữ liệu các bạn có thể mua bán tại đây
           </p>
           <div className="flex items-center gap-4">
             {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
