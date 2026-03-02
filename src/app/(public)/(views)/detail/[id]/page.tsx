@@ -54,18 +54,18 @@ export async function generateMetadata({
       : "Miễn phí";
 
     const metadata = generateSEOMetadata({
-      title: content.title || "Chi tiết sản phẩm",
+      title: content.title?.slice(0, 60) || "Chi tiết sản phẩm",
       description:
-        content.description ||
-        `Sản phẩm ${content.title} - Giá: ${priceText}. Xem chi tiết tại BanVe.vn`,
+        content.description?.slice(0, 160) ||
+        `Sản phẩm ${content.title?.slice(0, 60)} - Giá: ${priceText}. Xem chi tiết tại BanVe.vn`,
       image,
       url: `/detail/${id}`,
       type: "article",
       keywords: [
-        content.title || "",
+        content.title?.slice(0, 60) || "",
         "bản vẽ",
         "thiết kế",
-        content.field || "",
+        content.field?.slice(0, 60) || "",
         "BanVe.vn",
       ].filter(Boolean),
       publishedTime: content.createdAt,
@@ -108,8 +108,8 @@ const Detail = async ({ params }: DetailPageProps) => {
     }
 
     jsonLd = generateProductJsonLd({
-      name: content.title || "Sản phẩm",
-      description: content.description || "",
+      name: content.title?.slice(0, 60) || "Sản phẩm",
+      description: content.description?.slice(0, 160) || "",
       image,
       price: content.price || 0,
       currency: "VND",
