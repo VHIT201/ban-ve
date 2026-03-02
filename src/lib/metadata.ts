@@ -26,7 +26,7 @@ export function generateMetadata(params: GenerateMetadataParams): Metadata {
     authors = [],
   } = params;
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const baseUrl = "https://giangvien.org/gateway/ban-ve";
   const fullUrl = url ? `${baseUrl}${url}` : baseUrl;
 
   // Ensure image URL is absolute
