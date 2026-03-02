@@ -8,7 +8,16 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { getApiCommentsContentsContentId } from "@/api/endpoints/comments";
-import { Comment, GetApiCommentsContentsContentId200 } from "@/api/models";
+import {
+  Comment,
+  GetApiCommentsContentsContentId200,
+  GetApiCommentsContentsContentId200Pagination,
+} from "@/api/models";
+
+type PaginationComment = GetApiCommentsContentsContentId200Pagination & {
+  currentPage: number;
+};
+
 // Hook useExamContext
 export const useCommentSectionContext = () => {
   // Hooks
@@ -46,7 +55,9 @@ export const useCommentList = (postId: string) => {
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       if (
-        (lastPage.pagination?.currentPage ?? 0) * (COMMENT_PAGE_SIZE ?? 0) >=
+        ((lastPage.pagination as unknown as PaginationComment)?.currentPage ??
+          0) *
+          (COMMENT_PAGE_SIZE ?? 0) >=
         (lastPage?.pagination?.total ?? 0)
       )
         return undefined;

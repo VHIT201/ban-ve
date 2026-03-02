@@ -27,7 +27,8 @@ const AuthGate: FC<Props> = (props) => {
     query: {
       staleTime: Infinity,
       enabled: authStore.isSignedIn,
-      select: (data) => (data as unknown as ResponseData<User>).data,
+      select: (data) =>
+        (data as unknown as ResponseData<User & { avatar?: string }>).data,
     },
   });
 
