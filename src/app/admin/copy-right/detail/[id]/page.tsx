@@ -24,7 +24,7 @@ import {
   CopyRightRejectDialog,
   CopyRightResolveDialog,
 } from "@/components/modules/copy-right";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UseQueryResult } from "@tanstack/react-query";
 import { CopyrightReport } from "@/api/models";
 
@@ -46,6 +46,13 @@ const CopyRightDetailPage = () => {
       enabled: !!reportId,
     },
   }) as UseQueryResult<GetApiReportsReportId200, Error>;
+
+  // Debug log
+  useEffect(() => {
+    if (reportQuery.data?.data) {
+      console.log('Reporter avatar:', reportQuery.data.data.reporterId?.avatar);
+    }
+  }, [reportQuery.data]);
 
   const getStatusBadge = (status?: string) => {
     switch (status) {
@@ -290,11 +297,17 @@ const CopyRightDetailPage = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="flex items-start gap-3">
-                        <Avatar className="h-12 w-12">
-                          <AvatarFallback className="bg-primary text-primary-foreground">
-                            {report?.reporterId?.fullname?.[0] || "?"}
-                          </AvatarFallback>
-                        </Avatar>
+                         <Avatar className="h-12 w-12">
+                            {report.reporterId?.avatar ? (
+                              <AvatarImage
+                                src={`https://giangvien.org/gateway/ban-ve/${report.reporterId.avatar}`}
+                                alt={report.reporterId.fullname}
+                              />
+                            ) : null}
+                            <AvatarFallback className="bg-green-500 text-white">
+                              {report.reporterId?.fullname?.[0] || "A"}
+                            </AvatarFallback>
+                          </Avatar>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium truncate">
                             {report?.reporterId?.fullname || "Không rõ"}
@@ -320,15 +333,15 @@ const CopyRightDetailPage = () => {
                       </CardHeader>
                       <CardContent>
                         <div className="flex items-start gap-3">
-                          <Avatar className="h-12 w-12">
-                            {report.resolvedBy.avatar ? (
+                           <Avatar className="h-12 w-12">
+                            {report.resolvedBy?.avatar ? (
                               <AvatarImage
-                                src={`https://giangvien.org/gateway/ban-ve${report.resolvedBy.avatar}`}
+                                src={`https://giangvien.org/gateway/ban-ve/${report.resolvedBy.avatar}`}
                                 alt={report.resolvedBy.fullname}
                               />
                             ) : null}
                             <AvatarFallback className="bg-green-500 text-white">
-                              {report.resolvedBy.fullname?.[0] || "A"}
+                              {report.resolvedBy?.fullname?.[0] || "A"}
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1 min-w-0">

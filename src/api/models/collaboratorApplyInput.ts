@@ -7,6 +7,4 @@ export interface CollaboratorApplyInput {
   bankName: string;
   /** Tỷ lệ hoa hồng (từ 0-100) */
   commissionRate: number;
-  /** Ảnh mã QR của tài khoản ngân hàng (File upload) */
-  qrCode?: Blob;
 }
