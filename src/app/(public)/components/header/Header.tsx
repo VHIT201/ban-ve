@@ -146,7 +146,7 @@ const Header = () => {
             Marketplace Data – Dataory
           </h1>
           <p className="text-xs text-muted-foreground/80 font-medium">
-            Premium Blueprints
+           Trang thương mại điện tử chuyên kinh doanh dữ liệu
           </p>
         </div>
       </Link>
