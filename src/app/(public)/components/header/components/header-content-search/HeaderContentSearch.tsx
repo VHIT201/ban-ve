@@ -364,7 +364,7 @@ function HeaderContentSearch({
       <Input
         ref={ref}
         type="text"
-        placeholder="Tìm kiếm bản vẽ"
+        placeholder="Tìm kiếm"
         className={cn(
           "shadow-none border-border/40 bg-background/50",
           "focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/40",

@@ -258,6 +258,7 @@ export * from './putApiCart200';
 export * from './putApiCartBody';
 export * from './putApiCategoriesIdBody';
 export * from './putApiCollaboratorsCommissionCollaboratorIdBody';
+export * from './putApiCollaboratorsQrcodeBody';
 export * from './putApiCollaboratorsRequestsRequestIdRejectBody';
 export * from './putApiCommentsId200';
 export * from './putApiContentId200';

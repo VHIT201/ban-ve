@@ -33,6 +33,7 @@ import type {
   GetApiCollaboratorsRequests200,
   GetApiCollaboratorsRequestsParams,
   PutApiCollaboratorsCommissionCollaboratorIdBody,
+  PutApiCollaboratorsQrcodeBody,
   PutApiCollaboratorsRequestsRequestIdRejectBody
 } from '../models';
 
@@ -51,11 +52,18 @@ export const postApiCollaboratorsApply = (
  signal?: AbortSignal
 ) => {
       
-      
+      const formData = new FormData();
+formData.append(`bankAccount`, collaboratorApplyInput.bankAccount)
+formData.append(`bankName`, collaboratorApplyInput.bankName)
+formData.append(`commissionRate`, collaboratorApplyInput.commissionRate.toString())
+if(collaboratorApplyInput.qrCode !== undefined) {
+ formData.append(`qrCode`, collaboratorApplyInput.qrCode)
+ }
+
       return mainInstance<CollaboratorResponse>(
       {url: `/api/collaborators/apply`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: collaboratorApplyInput, signal
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData, signal
     },
       );
     }
@@ -613,6 +621,73 @@ export function useGetApiCollaboratorsMe<TData = Awaited<ReturnType<typeof getAp
 
 
 /**
+ * @summary Cập nhật ảnh mã QR của cộng tác viên
+ */
+export const putApiCollaboratorsQrcode = (
+    putApiCollaboratorsQrcodeBody: BodyType<PutApiCollaboratorsQrcodeBody>,
+ ) => {
+      
+      const formData = new FormData();
+if(putApiCollaboratorsQrcodeBody.qrCode !== undefined) {
+ formData.append(`qrCode`, putApiCollaboratorsQrcodeBody.qrCode)
+ }
+
+      return mainInstance<void>(
+      {url: `/api/collaborators/qrcode`, method: 'PUT',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData
+    },
+      );
+    }
+  
+
+
+export const getPutApiCollaboratorsQrcodeMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCollaboratorsQrcode>>, TError,{data: BodyType<PutApiCollaboratorsQrcodeBody>}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof putApiCollaboratorsQrcode>>, TError,{data: BodyType<PutApiCollaboratorsQrcodeBody>}, TContext> => {
+
+const mutationKey = ['putApiCollaboratorsQrcode'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiCollaboratorsQrcode>>, {data: BodyType<PutApiCollaboratorsQrcodeBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  putApiCollaboratorsQrcode(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutApiCollaboratorsQrcodeMutationResult = NonNullable<Awaited<ReturnType<typeof putApiCollaboratorsQrcode>>>
+    export type PutApiCollaboratorsQrcodeMutationBody = BodyType<PutApiCollaboratorsQrcodeBody>
+    export type PutApiCollaboratorsQrcodeMutationError = ErrorType<void>
+
+    /**
+ * @summary Cập nhật ảnh mã QR của cộng tác viên
+ */
+export const usePutApiCollaboratorsQrcode = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiCollaboratorsQrcode>>, TError,{data: BodyType<PutApiCollaboratorsQrcodeBody>}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putApiCollaboratorsQrcode>>,
+        TError,
+        {data: BodyType<PutApiCollaboratorsQrcodeBody>},
+        TContext
+      > => {
+
+      const mutationOptions = getPutApiCollaboratorsQrcodeMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
  * @summary Xem danh sách yêu cầu trở thành cộng tác viên (Admin)
  */
 export const getApiCollaboratorsRequests = (
