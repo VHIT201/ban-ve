@@ -21,7 +21,7 @@ import { useRequiredPathParams } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
@@ -494,13 +494,18 @@ const CopyRightDetail = () => {
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-3">
-                          <div className="flex items-center gap-3">
-                            <Avatar className="w-12 h-12">
-                              <AvatarFallback className="bg-linear-to-br from-green-500 to-emerald-600 text-white">
-                                {report.resolvedBy.fullname?.[0]?.toUpperCase() ||
-                                  "?"}
-                              </AvatarFallback>
-                            </Avatar>
+                          <div className="flex items-center gap-3"> 
+                          <Avatar className="h-12 w-12">
+                            {report.resolvedBy.avatar? (
+                              <AvatarImage
+                                src={`https://giangvien.org/gateway/ban-ve${report.resolvedBy.avatar}`}
+                                alt={report.resolvedBy.fullname}
+                              />
+                            ) : null}
+                            <AvatarFallback className="bg-green-500 text-white">
+                              {report.resolvedBy.fullname?.[0] || "A"}
+                            </AvatarFallback>
+                          </Avatar>
                             <div className="flex-1 min-w-0">
                               <p className="font-semibold truncate">
                                 {report.resolvedBy.fullname || "Không rõ"}

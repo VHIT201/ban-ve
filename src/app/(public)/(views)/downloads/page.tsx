@@ -378,7 +378,7 @@ export default function DownloadPage() {
                   {(order?.items ?? []).map((item, index) => {
                     return (
                       <FileItem
-                        key={`download-file-item-${item.contentId?._id}-${index}`}
+                        key={`download-file-item-${item.contentId}-${index}`}
                         orderId={order._id!}
                         item={item}
                         index={index}

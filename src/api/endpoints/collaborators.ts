@@ -52,18 +52,11 @@ export const postApiCollaboratorsApply = (
  signal?: AbortSignal
 ) => {
       
-      const formData = new FormData();
-formData.append(`bankAccount`, collaboratorApplyInput.bankAccount)
-formData.append(`bankName`, collaboratorApplyInput.bankName)
-formData.append(`commissionRate`, collaboratorApplyInput.commissionRate.toString())
-if(collaboratorApplyInput.qrCode !== undefined) {
- formData.append(`qrCode`, collaboratorApplyInput.qrCode)
- }
-
+      
       return mainInstance<CollaboratorResponse>(
       {url: `/api/collaborators/apply`, method: 'POST',
-      headers: {'Content-Type': 'multipart/form-data', },
-       data: formData, signal
+      headers: {'Content-Type': 'application/json', },
+      data: collaboratorApplyInput, signal
     },
       );
     }
