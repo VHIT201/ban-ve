@@ -44,7 +44,6 @@ export async function middleware(request: NextRequest) {
 
   // Get tokens from cookies
   const accessToken = request.cookies.get("accessToken")?.value;
-  const refreshToken = request.cookies.get("refreshToken")?.value;
 
   // Decode session
   const session = accessToken ? decodeToken(accessToken) : null;
@@ -114,42 +113,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Token refresh logic (if access token expired but refresh token exists)
-  if (!session && refreshToken) {
-    console.log("Attempting token refresh...");
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ refreshToken }),
-        },
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        const newAccessToken = data.data.accessToken;
-
-        // Create response with new cookie
-        const nextResponse = NextResponse.next();
-
-        nextResponse.cookies.set("accessToken", newAccessToken, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "lax",
-          maxAge: 60 * 60 * 24 * 7, // 7 days
-          path: "/",
-        });
-
-        return nextResponse;
-      }
-    } catch (error) {
-      console.error("Token refresh failed:", error);
-    }
-  }
+  // NOTE: Token refresh logic removed from middleware
+  // Refresh token should be handled client-side or in API routes
+  // to avoid Edge Runtime limitations and blocking behavior
 
   return NextResponse.next();
 }

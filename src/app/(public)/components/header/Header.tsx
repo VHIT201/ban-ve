@@ -31,12 +31,12 @@ const Header = () => {
   const shouldReduceMotion = useReducedMotion();
   const [isSlideDown, setIsSlideDown] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  
-  const [isMounted, setIsMounted] =useState(false)
+
+  const [isMounted, setIsMounted] = useState(false);
   const enableMotion = isMounted && !shouldReduceMotion;
-  useEffect(() =>{
-    setIsMounted(true)
-  }, [])
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   useEffect(() => {
     let lastScrollY = window.scrollY;
     let ticking = false;
@@ -108,12 +108,12 @@ const Header = () => {
   };
 
   const renderLogo = (size: "sm" | "md" = "md") => (
-<motion.div
-  variants={isMounted ? logoVariants : {}}
-  initial={isMounted ? "initial" : false}
-  whileHover={isMounted ? "hover" : undefined}
-  whileTap={isMounted ? "tap" : undefined}
->
+    <motion.div
+      variants={isMounted ? logoVariants : {}}
+      initial={isMounted ? "initial" : false}
+      whileHover={isMounted ? "hover" : undefined}
+      whileTap={isMounted ? "tap" : undefined}
+    >
       <Link
         href="/"
         className="flex items-center gap-2 sm:gap-3 group transition-all duration-200"
@@ -147,7 +147,7 @@ const Header = () => {
             Marketplace Data – Dataory
           </h1>
           <p className="text-xs text-muted-foreground/80 font-medium">
-           Trang thương mại điện tử chuyên kinh doanh dữ liệu
+            Trang thương mại điện tử chuyên kinh doanh dữ liệu
           </p>
         </div>
       </Link>
@@ -163,7 +163,7 @@ const Header = () => {
             initial="hidden"
             animate="visible"
             exit="hidden"
-           variants={enableMotion ? logoVariants : {}}
+            variants={enableMotion ? logoVariants : {}}
             className="fixed top-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-border/40 supports-backdrop-filter:bg-background/60"
           >
             <div className="max-w-[1500px] mx-auto px-3 sm:px-4">
@@ -223,7 +223,7 @@ const Header = () => {
       <motion.div
         initial="hidden"
         animate="visible"
-       variants={enableMotion ? logoVariants : {}}
+        variants={enableMotion ? logoVariants : {}}
         className="relative top-0 z-50 w-full bg-white backdrop-blur-xl border-b border-border/40 supports-backdrop-filter:bg-background/60"
       >
         <div className="max-w-[1500px] mx-auto px-3 sm:px-4">
