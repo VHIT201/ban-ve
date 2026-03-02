@@ -26,6 +26,11 @@ import {
 } from "@/components/modules/copy-right";
 import { useState } from "react";
 import { UseQueryResult } from "@tanstack/react-query";
+import { CopyrightReport } from "@/api/models";
+
+type CopyrightReportType = CopyrightReport & {
+  reporterEmail?: string;
+};
 
 const CopyRightDetailPage = () => {
   const router = useRouter();
@@ -113,7 +118,7 @@ const CopyRightDetailPage = () => {
     <div className="space-y-6">
       <QueryBoundary query={reportQuery}>
         {(data) => {
-          const report = data.data;
+          const report = data.data as unknown as CopyrightReportType;
           const isPending = report?.status === "pending";
 
           return (

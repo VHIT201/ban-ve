@@ -39,7 +39,7 @@ export const useUserRankingTableColumnsDefs = (
         accessorKey: "fullname",
         header: "Người dùng",
         cell: ({ row }) => {
-          const user = row.original;
+          const user = row.original as UserRankingTableRow;
           return (
             <div className="flex items-center gap-3">
               <img

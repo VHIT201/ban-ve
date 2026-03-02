@@ -49,6 +49,10 @@ import {
 import { UseQueryResult } from "@tanstack/react-query";
 import { GetApiReportsReportId200 } from "@/api/models";
 
+type CopyrightReportType = CopyrightReport & {
+  reporterEmail?: string;
+};
+
 const getStatusConfig = (status?: string) => {
   switch (status?.toLowerCase()) {
     case "resolved":
@@ -218,7 +222,7 @@ const CopyRightDetail = () => {
 
       {/* Content */}
       <QueryBoundary query={getReportDetailQuery}>
-        {(report: CopyrightReport) => {
+        {(report: CopyrightReportType) => {
           const statusConfig = getStatusConfig(report.status);
           const violationConfig = getViolationTypeConfig(report.violationType);
           const StatusIcon = statusConfig.icon;

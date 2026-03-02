@@ -4,6 +4,7 @@ export type UserRankingTableRow = Partial<User> & {
   ranking: number;
   totalPosts: number;
   totalLikes: number;
+  avatar?: string;
 };
 
 export type useUserRankingTableColumnsDefsProps = {

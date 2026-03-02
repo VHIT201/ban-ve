@@ -4,7 +4,7 @@ import {
   usePostApiCart,
   usePutApiCart,
 } from "@/api/endpoints/cart";
-import { CartItem } from "@/api/models";
+import { CartItem, CartItemContentId } from "@/api/models";
 import { ResponseData } from "@/api/types/base";
 import { ContentResponse } from "@/api/types/content";
 import { useAuthStore } from "@/stores";
@@ -12,6 +12,11 @@ import { useCartStore } from "@/stores/use-cart-store";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useShallow } from "zustand/shallow";
+
+type CartItemContentType = CartItemContentId & {
+  price?: number;
+  images?: string[];
+};
 
 interface UseCartReturn {
   // State
@@ -90,17 +95,21 @@ export const useCart = ({
   const apiCartItems = useMemo(() => {
     if (!isSignedIn || !getCartQuery.data) return [];
 
-    return getCartQuery.data.map((item) => ({
-      product: {
-        _id: item.contentId?._id,
-        title: item.contentId?.title || "",
-        description: item.contentId?.description || "",
-        price: item.contentId?.price || 0,
-        images: item.contentId?.images || [],
-      } as ContentResponse,
-      quantity: item.quantity || 0,
-      addedAt: new Date().toISOString(),
-    }));
+    return getCartQuery.data.map((item) => {
+      const contentId = item.contentId as CartItemContentType;
+
+      return {
+        product: {
+          _id: contentId?._id,
+          title: contentId?.title || "",
+          description: contentId?.description || "",
+          price: contentId?.price || 0,
+          images: contentId?.images || [],
+        } as ContentResponse,
+        quantity: item.quantity || 0,
+        addedAt: new Date().toISOString(),
+      };
+    });
   }, [isSignedIn, getCartQuery.data]);
 
   // Chọn nguồn dữ liệu: API nếu đã đăng nhập, local store nếu chưa
