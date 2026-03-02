@@ -7,12 +7,23 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useGetApiCommentsStatisticsLatestFiveStar } from "@/api/endpoints/comments";
 import { GetApiCommentsStatisticsLatestFiveStar200 } from "@/api/models";
 import Link from "next/link";
 import { BASE_PATHS } from "@/constants/paths";
+import baseConfig from "@/configs/base";
 
 const CustomerReviewSection = () => {
+  // Helper function to build full avatar URL
+  const getAvatarUrl = (avatarPath?: string) => {
+    if (!avatarPath) return undefined;
+    // If it's already a full URL (starts with http), return as is
+    if (avatarPath.startsWith('http')) return avatarPath;
+    // Otherwise, prepend the media domain
+    return `${baseConfig.mediaDomain}/${avatarPath}`;
+  };
+
   // Queries
   const getCustomerReviewsQuery = useGetApiCommentsStatisticsLatestFiveStar({
     query: {
@@ -65,15 +76,21 @@ const CustomerReviewSection = () => {
                       <CardContent className="relative bg-white dark:bg-gray-800 p-6 shadow-none rounded-none">
                         {/* Header */}
                         <div className="flex items-center mb-4">
-                          <div className="w-11 h-11 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold">
-                            {review.userId?.fullname?.charAt(0)}
-                          </div>
+                          <Avatar className="w-11 h-11">
+                            <AvatarImage 
+                              src={getAvatarUrl(review.userId?.avatar)} 
+                              alt={review.userId?.fullname || review.guestName || "User avatar"}
+                            />
+                            <AvatarFallback className="bg-blue-500">
+                              {review.userId?.fullname?.charAt(0) || review.guestName?.charAt(0) || "U"}
+                            </AvatarFallback>
+                          </Avatar>
                           <div className="ml-3">
                             <h3 className="font-semibold text-gray-900 dark:text-white">
-                              {review.userId?.fullname}
+                              {review.userId?.fullname || review.guestName}
                             </h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[150px] truncate">
-                              {review.userId?.email}
+                              {review.userId?.email || review.email}
                             </p>
                           </div>
                         </div>
