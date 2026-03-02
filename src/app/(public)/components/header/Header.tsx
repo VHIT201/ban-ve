@@ -6,6 +6,7 @@ import {
   HeaderSearchBar,
   HeaderShoppingCart,
   HeaderUserProfile,
+  HeaderNotifications,
 } from "./components";
 import { useAuthStore } from "@/stores";
 import { useShallow } from "zustand/shallow";
@@ -192,6 +193,7 @@ const Header = () => {
                         setSearchQuery={setSearchQuery}
                       />
                     </div>
+                    <HeaderNotifications />
                     <HeaderShoppingCart />
                   </div>
 
@@ -246,6 +248,7 @@ const Header = () => {
                     setSearchQuery={setSearchQuery}
                   />
                 </div>
+                <HeaderNotifications />
                 <HeaderShoppingCart />
               </div>
 
