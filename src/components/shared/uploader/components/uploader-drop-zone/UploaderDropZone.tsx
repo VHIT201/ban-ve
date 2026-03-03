@@ -14,20 +14,19 @@ const UploaderDropZone: FC<UploaderDropZoneProps> = (props) => {
   const { dropZoneStates, multiple, fileList } = useUploaderContext();
   const { getRootProps, getInputProps, isDragActive } = dropZoneStates;
 
-  if (!multiple && fileList.length > 0) {
-    return null;
-  }
+  const hasFile = !multiple && fileList.length > 0;
 
   return (
     <div
-      {...getRootProps()}
+      {...(!hasFile && getRootProps())}
       className={cn(
-        "relative flex min-h-[200px] cursor-pointer flex-col items-center justify-center rounded-none border-2 border-dashed border-gray-300 p-6 transition-colors",
+        "relative flex min-h-[200px] flex-col items-center justify-center rounded-none border-2 border-dashed border-gray-300 p-6 transition-colors",
+        !hasFile && "cursor-pointer",
         isDragActive && "border-primary bg-primary/5",
-        className
+        className,
       )}
     >
-      <input {...getInputProps()} multiple={multiple} />
+      {!hasFile && <input {...getInputProps()} multiple={multiple} />}
       {children}
     </div>
   );

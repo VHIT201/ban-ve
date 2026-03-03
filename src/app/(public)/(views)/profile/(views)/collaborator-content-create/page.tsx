@@ -81,7 +81,7 @@ const ContentDetail = () => {
           image2: warkMarkImages?.[1],
           image3: warkMarkImages?.[2],
           image4: warkMarkImages?.[3],
-          image5: warkMarkImages?.[4],
+          image5: values.seoImage,
         },
       });
 

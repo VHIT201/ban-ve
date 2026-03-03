@@ -94,7 +94,7 @@ const Detail = async ({ params }: DetailPageProps) => {
     const content = (await getApiContentId(id)) as Content;
     const firstImage =
       content.images && content.images.length > 0
-        ? content.images[0]
+        ? content.images[content.images.length - 1]
         : "/og-image.png";
 
     // Build absolute image URL with mediaDomain

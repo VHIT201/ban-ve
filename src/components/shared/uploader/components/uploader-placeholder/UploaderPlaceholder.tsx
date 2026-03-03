@@ -10,7 +10,6 @@ const UploaderPlaceholder: FC<UploaderPlaceholderProps> = () => {
   // Hooks
   const { accept, maxFiles, maxSize } = useUploaderContext();
 
-  const maxSizeMB = Math.round(maxSize / (1024 * 1024));
   const supportedFormats = accept
     ? Object.values(accept).flat().join(", ")
     : "All files";

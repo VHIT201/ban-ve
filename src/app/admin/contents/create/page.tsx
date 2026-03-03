@@ -64,6 +64,8 @@ const ContentCreate = () => {
         warkMarkImages.push(watermarkedImage);
       }
 
+      console.log("VALUES CONTENT:", values);
+
       const result = await createContentMutation.mutateAsync({
         data: {
           title: values.title,
@@ -75,7 +77,7 @@ const ContentCreate = () => {
           image2: warkMarkImages?.[1],
           image3: warkMarkImages?.[2],
           image4: warkMarkImages?.[3],
-          image5: warkMarkImages?.[4],
+          image5: values.seoImage,
         },
       });
 

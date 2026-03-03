@@ -3,10 +3,8 @@ import { FileStatus, FileWithPreview } from "./types";
 export const createFileWithPreview = (
   file: File,
   status: FileStatus,
-  errorMessage?: string
+  errorMessage?: string,
 ): FileWithPreview => {
-  console.log("Creating file with preview:", file.name, "Status:", status);
-
   const fileWithPreview = Object.assign(file, {
     status,
     uploadProgress: 0,

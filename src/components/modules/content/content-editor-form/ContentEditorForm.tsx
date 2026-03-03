@@ -40,6 +40,7 @@ import { TreeViewItem } from "@/components/shared/tree-view/TreeView";
 import { TreeNode } from "@/components/shared/tree-select/TreeSelect";
 import { isEmpty } from "lodash-es";
 import { toast } from "sonner";
+import { UploaderSEOPlaceholder } from "./components";
 
 // Schema validation
 const contentFormSchemaStatic = z
@@ -60,10 +61,15 @@ const contentFormSchemaStatic = z
       })
       .min(0, "Giá không được âm")
       .max(1000000000, "Giá không được vượt quá 1 tỷ VNĐ"),
+    seoImage: z
+      .instanceof(File, { message: "Vui lòng chọn một file hình ảnh cho SEO" })
+      .refine((file) => file.size <= 2 * 1024 * 1024, {
+        message: "Kích thước file không được vượt quá 2MB",
+      }),
     images: z
       .array(z.instanceof(File))
       .min(1, "Vui lòng chọn ít nhất 1 file")
-      .max(5, "Tối đa chỉ được chọn 5 file")
+      .max(4, "Tối đa chỉ được chọn 4 file")
       .refine(
         (files) => files.every((file) => file.size <= 100 * 1024 * 1024),
         "Kích thước file không được vượt quá 100MB",
@@ -72,7 +78,7 @@ const contentFormSchemaStatic = z
     files: z
       .array(z.instanceof(File))
       .min(1, "Vui lòng chọn ít nhất 1 file")
-      .max(5, "Tối đa chỉ được chọn 5 file")
+      .max(1, "Tối đa chỉ được chọn 1 file")
       .refine(
         (files) => files.every((file) => file.size <= 100 * 1024 * 1024),
         "Kích thước file không được vượt quá 100MB",
@@ -107,6 +113,7 @@ interface ContentEditorFormProps {
     type: string;
     id: string;
   };
+  defaultSeoImage?: string;
   defaultImages?: string[];
   defaultValues?: Partial<ContentFormValues>;
   onSubmit: (values: ContentFormValues) => void | Promise<void>;
@@ -119,6 +126,7 @@ const ContentEditorForm = ({
   mode = "create",
   defaultValues,
   defaultFile,
+  defaultSeoImage,
   defaultImages = [],
   onSubmit,
   isLoading = false,
@@ -143,6 +151,13 @@ const ContentEditorForm = ({
         })
         .min(0, "Giá không được âm")
         .max(1000000000, "Giá không được vượt quá 1 tỷ VNĐ"),
+      seoImage: z
+        .instanceof(File, {
+          message: "Vui lòng chọn một file hình ảnh cho SEO",
+        })
+        .refine((file) => file.size <= 2 * 1024 * 1024, {
+          message: "Kích thước file không được vượt quá 2MB",
+        }),
       images: z
         .array(z.instanceof(File))
         .min(1, "Vui lòng chọn ít nhất 1 file")
@@ -302,6 +317,9 @@ const ContentEditorForm = ({
     getCategoryTreeQuery.isError,
   ]);
 
+  const titleValue = form.watch("title");
+  const descriptionValue = form.watch("description");
+
   // Methods
   const handleSubmit = async (values: ContentFormValues) => {
     // Store form values and show confirmation dialog
@@ -364,11 +382,11 @@ const ContentEditorForm = ({
           size: uploadedFile.size || 0,
         };
       }
+      console.log("Final form values before submit:", values);
 
       // Submit form with uploaded file info
       await onSubmit(values);
     } catch (error) {
-      console.error("Form submission error:", error);
       setUploadError(error instanceof Error ? error.message : "Có lỗi xảy ra");
     }
   };
@@ -693,6 +711,67 @@ const ContentEditorForm = ({
           )}
         />
 
+        {/* SEO Image Upload */}
+        <FormField
+          control={form.control}
+          name="seoImage"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-primary font-semibold tracking-wider">
+                Ảnh SEO <span className="text-red-500">*</span>
+              </FormLabel>
+              <FormControl>
+                <div className="space-y-3">
+                  <Uploader
+                    maxFiles={1}
+                    value={field.value ? [field.value] : []}
+                    onChange={(values) => {
+                      console.log("Selected SEO image:", values);
+                      field.onChange(values[0] || undefined);
+                    }}
+                    maxSize={2 * 1024 * 1024}
+                    accept={{ "image/*": [".png", ".jpg", ".jpeg"] }}
+                  >
+                    {mode !== "view" && (
+                      <div className="flex gap-2">
+                        <Uploader.DropZone className="w-16 h-16! min-h-0! aspect-square p-0!">
+                          <UploaderSEOPlaceholder
+                            file={
+                              defaultSeoImage
+                                ? {
+                                    id: defaultSeoImage || "",
+                                    path: defaultSeoImage || "",
+                                    name:
+                                      defaultSeoImage?.split("/").pop() ||
+                                      "seo-image",
+                                  }
+                                : undefined
+                            }
+                          />
+                        </Uploader.DropZone>
+                        <div>
+                          <h3 className="text-sm font-medium mb-1">
+                            {titleValue ? titleValue : "Chưa có tiêu đề"}
+                          </h3>
+                          <p className="text-xs text-gray-500 text-wrap max-w-[300px]">
+                            {descriptionValue
+                              ? descriptionValue.slice(0, 100)
+                              : "Chưa có mô tả"}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </Uploader>
+                </div>
+              </FormControl>
+              <FormDescription>
+                Chọn ảnh sản phẩm (PNG, JPG, JPEG, tối đa 2MB)
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         {/* Image Upload */}
         <FormField
           control={form.control}
@@ -706,7 +785,7 @@ const ContentEditorForm = ({
                 <div className="space-y-3">
                   <Uploader
                     multiple
-                    maxFiles={5}
+                    maxFiles={4}
                     value={field.value || []}
                     onChange={field.onChange}
                     maxSize={100 * 1024 * 1024}
