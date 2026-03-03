@@ -32,7 +32,7 @@ const HeaderNotifications = () => {
   const { data: unreadCount, isLoading: isLoadingCount } =
     useGetApiNotificationsUnreadCount<NotificationUnreadCountResponse>({
       query: {
-        refetchInterval: 60000, // Refetch every 60 seconds
+        refetchInterval: 60000,
         refetchOnWindowFocus: true,
       },
     });

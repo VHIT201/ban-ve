@@ -86,7 +86,7 @@ const ContentEditPage = () => {
           image2: warkMarkImages?.[1],
           image3: warkMarkImages?.[2],
           image4: warkMarkImages?.[3],
-          image5: warkMarkImages?.[4],
+          image5: formData?.seoImage,
         },
       });
 
@@ -150,7 +150,8 @@ const ContentEditPage = () => {
         )}
       >
         {(contentDetail) => {
-          console.log("Content Detail Data:", contentDetail);
+          const images = contentDetail?.images ?? [];
+          const hasEnoughImages = images.length >= 5;
 
           return (
             <ContentEditorForm
@@ -178,7 +179,8 @@ const ContentEditPage = () => {
                     }
                   : undefined
               }
-              defaultImages={contentDetail?.images || []}
+              defaultImages={hasEnoughImages ? images.slice(0, 5) : images}
+              defaultSeoImage={hasEnoughImages ? images[4] : undefined}
               isLoading={editContentMutation.isPending}
               onSubmit={handleUpdateContent}
             />

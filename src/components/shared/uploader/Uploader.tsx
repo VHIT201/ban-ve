@@ -35,6 +35,8 @@ const Uploader: FC<UploaderRootProps> = (props) => {
     children,
   } = props;
 
+  console.log("VALUES - multiple:", value);
+
   // Hooks
   const dropZoneStates = useDropzone({
     multiple,
@@ -69,6 +71,7 @@ const Uploader: FC<UploaderRootProps> = (props) => {
   // Methods
   const handleAddFiles = useCallback(
     (newFile: File) => {
+      console.log("handleAddFiles called with file:", newFile);
       if (value.length >= maxFiles) return;
 
       const fileWithPreview = createFileWithPreview(
