@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 // App
 import { useAuthStore } from "@/stores";
-import { extractErrorMessage } from "@/utils/error";
+import { shouldRefreshToken } from "@/utils/token";
 
 // Internal
 import baseConfig from "../../configs/base";
@@ -24,121 +24,269 @@ export const MAIN_AXIOS_INSTANCE = Axios.create({
   baseURL: baseConfig.backendDomain,
 });
 
+// Refresh token state management
 let isRefreshing = false;
-let failedQueue: Array<{
+let refreshTokenPromise: Promise<string> | null = null;
+
+interface QueuedRequest {
   resolve: (token: string) => void;
   reject: (error: AxiosError) => void;
-}> = [];
+}
 
+let failedQueue: QueuedRequest[] = [];
+
+/**
+ * Process queued requests after token refresh
+ */
 const processQueue = (
   error: AxiosError | null,
   token: string | null = null,
 ): void => {
-  failedQueue.forEach((prom) => {
+  failedQueue.forEach((request) => {
     if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token!);
+      request.reject(error);
+    } else if (token) {
+      request.resolve(token);
     }
   });
   failedQueue = [];
 };
 
+/**
+ * Add request to queue and wait for token refresh
+ */
+const addToQueue = (
+  resolve: (token: string) => void,
+  reject: (error: AxiosError) => void,
+): void => {
+  failedQueue.push({ resolve, reject });
+};
+
+/**
+ * Refresh access token using refresh token
+ */
+const refreshAccessToken = async (): Promise<string> => {
+  const refreshToken = useAuthStore.getState().refreshToken;
+
+  if (!refreshToken) {
+    throw new Error("No refresh token available");
+  }
+
+  // Get the refresh function dynamically to avoid circular dependency
+  const postApiAuthRefreshToken = await getAuthRefreshFunction();
+  const authRefreshResponse = await postApiAuthRefreshToken({
+    refreshToken,
+  });
+
+  if (!authRefreshResponse.data?.accessToken) {
+    throw new Error("Refresh token failed - no access token returned");
+  }
+
+  const newAccessToken = authRefreshResponse.data.accessToken;
+  const newRefreshToken = authRefreshResponse.data.refreshToken || refreshToken;
+
+  // Update store with new tokens
+  useAuthStore.getState().setStore({
+    accessToken: newAccessToken,
+    refreshToken: newRefreshToken,
+  });
+
+  return newAccessToken;
+};
+
+/**
+ * Request interceptor - adds auth token and handles proactive refresh
+ */
 MAIN_AXIOS_INSTANCE.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
+  async (config: InternalAxiosRequestConfig) => {
     const accessToken = useAuthStore.getState().accessToken;
-    if (accessToken && config.headers) {
+
+    // Skip auth for public endpoints
+    const publicEndpoints = [
+      "/api/auth/login",
+      "/api/auth/register",
+      "/api/auth/forgot-password",
+      "/api/auth/refresh-token",
+    ];
+    const isPublicEndpoint = publicEndpoints.some((endpoint) =>
+      config.url?.includes(endpoint),
+    );
+
+    if (isPublicEndpoint) {
+      return config;
+    }
+
+    // Check if we have a token
+    if (!accessToken) {
+      return config;
+    }
+
+    // Proactive token refresh - refresh if token will expire soon
+    if (shouldRefreshToken(accessToken, 5)) {
+      try {
+        // If already refreshing, wait for it
+        if (isRefreshing && refreshTokenPromise) {
+          const newToken = await refreshTokenPromise;
+          if (config.headers) {
+            config.headers.Authorization = `Bearer ${newToken}`;
+          }
+          return config;
+        }
+
+        // Start refresh process
+        isRefreshing = true;
+        refreshTokenPromise = refreshAccessToken();
+
+        const newToken = await refreshTokenPromise;
+
+        if (config.headers) {
+          config.headers.Authorization = `Bearer ${newToken}`;
+        }
+
+        isRefreshing = false;
+        refreshTokenPromise = null;
+
+        return config;
+      } catch (error) {
+        console.error("Proactive token refresh failed:", error);
+        isRefreshing = false;
+        refreshTokenPromise = null;
+        // Continue with current token, might fail and trigger response interceptor
+      }
+    }
+
+    // Add current token to request
+    if (config.headers) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
+
     return config;
   },
   (error) => Promise.reject(error),
 );
 
+/**
+ * Response interceptor - handles 401 errors and automatic token refresh
+ */
 MAIN_AXIOS_INSTANCE.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
+      _retryCount?: number;
     };
 
-    console.log("Response error:", error);
-
+    // Check if response exists
     if (isUndefined(error.response)) {
+      console.error("Network error or request cancelled:", error.message);
       return Promise.reject(error);
     }
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      console.log("Response error 1 : ", error);
-
-      // Skip token refresh for login endpoint
-      if (originalRequest.url?.includes("/api/auth/login")) {
+    // Handle 401 Unauthorized - token expired or invalid
+    if (error.response?.status === 401) {
+      // Skip token refresh for authentication endpoints
+      const authEndpoints = [
+        "/api/auth/login",
+        "/api/auth/register",
+        "/api/auth/refresh-token",
+      ];
+      if (
+        authEndpoints.some((endpoint) =>
+          originalRequest.url?.includes(endpoint),
+        )
+      ) {
         return Promise.reject(error);
       }
 
-      if (isRefreshing) {
-        return new Promise<string>((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        })
-          .then((token) => {
-            if (originalRequest.headers) {
-              originalRequest.headers.Authorization = `Bearer ${token}`;
-            }
-            return MAIN_AXIOS_INSTANCE(originalRequest);
-          })
-          .catch((err) => Promise.reject(err));
+      // Prevent infinite retry loops
+      if (originalRequest._retry) {
+        console.error("Token refresh already attempted, logging out");
+        useAuthStore.getState().resetStore();
+
+        // Only show toast once
+        if (!originalRequest._retryCount || originalRequest._retryCount === 1) {
+          toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+        }
+
+        // Optionally redirect to login
+        if (typeof window !== "undefined") {
+          window.location.href = "/auth/login";
+        }
+
+        return Promise.reject(error);
       }
 
+      // If already refreshing, add to queue
+      if (isRefreshing && refreshTokenPromise) {
+        try {
+          const newToken = await new Promise<string>((resolve, reject) => {
+            addToQueue(resolve, reject);
+          });
+
+          if (originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          }
+
+          // Retry original request with new token
+          return MAIN_AXIOS_INSTANCE(originalRequest);
+        } catch (refreshError) {
+          return Promise.reject(refreshError);
+        }
+      }
+
+      // Mark this request as retry attempt
       originalRequest._retry = true;
+      originalRequest._retryCount = (originalRequest._retryCount || 0) + 1;
       isRefreshing = true;
 
       try {
-        console.log("Response error 2 : ", error);
-        const refreshToken = useAuthStore.getState().refreshToken;
+        // Start refresh process
+        refreshTokenPromise = refreshAccessToken();
+        const newAccessToken = await refreshTokenPromise;
 
-        if (!refreshToken) {
-          throw new Error("No refresh token available");
-        }
-
-        // Gọi API refresh token
-        const postApiAuthRefreshToken = await getAuthRefreshFunction();
-        const authRefreshResponse = await postApiAuthRefreshToken({
-          refreshToken,
-        });
-
-        if (!authRefreshResponse.data) {
-          throw new Error("Refresh token failed");
-        }
-
-        const newAccessToken = authRefreshResponse.data.accessToken;
-
-        useAuthStore.getState().setStore({
-          accessToken: newAccessToken,
-          refreshToken: authRefreshResponse.data.refreshToken || refreshToken,
-        });
-
+        // Update the failed request with new token
         if (originalRequest.headers) {
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         }
 
+        // Process all queued requests
         processQueue(null, newAccessToken);
 
+        // Retry the original request
         return MAIN_AXIOS_INSTANCE(originalRequest);
       } catch (refreshError) {
-        console.log("Response error 3 : ", error);
+        console.error("Token refresh failed:", refreshError);
+
+        // Notify all queued requests about the failure
         processQueue(refreshError as AxiosError, null);
 
+        // Clear auth state
         useAuthStore.getState().resetStore();
 
-        toast.error("Session expired. Please login again.");
+        // Show error message
+        toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+
+        // Optionally redirect to login
+        if (typeof window !== "undefined") {
+          window.location.href = "/auth/login";
+        }
 
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
+        refreshTokenPromise = null;
       }
     }
 
-    console.log("Response error 4 : ", error);
+    // Handle other errors with specific messages
+    if (error.response?.status === 403) {
+      toast.error("Bạn không có quyền truy cập tài nguyên này.");
+    } else if (error.response?.status === 429) {
+      toast.error("Quá nhiều yêu cầu. Vui lòng thử lại sau.");
+    } else if (error.response?.status >= 500) {
+      toast.error("Lỗi server. Vui lòng thử lại sau.");
+    }
+
     return Promise.reject(error);
   },
 );

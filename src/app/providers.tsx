@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ReactNode, useState } from "react";
 import { AuthSync } from "@/components/auth";
+import { TokenRefreshProvider } from "@/components/auth/TokenRefreshProvider";
 import { getQueryClient } from "@/configs/query-client";
 
 interface ProvidersProps {
@@ -16,6 +17,7 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthSync />
+      <TokenRefreshProvider />
       {children}
       {process.env.NODE_ENV === "development" && (
         <ReactQueryDevtools
