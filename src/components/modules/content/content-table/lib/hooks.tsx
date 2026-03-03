@@ -5,12 +5,14 @@ import { ColumnDef } from "@tanstack/react-table";
 
 // App
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DataTableActionCell } from "@/components/shared/data-table/shared";
 
 // Internal
 import { ContentTableRow, useContentTableColumnsDefsProps } from "./types";
 import { ContentStatus } from "@/enums/content";
+import baseConfig from "@/configs/base";
+import { cn } from "@/utils/ui";
 
 const getStatusConfig = (status?: string) => {
   switch (status?.toLowerCase()) {
@@ -192,13 +194,33 @@ export const useContentTableColumnsDefs = (
         header: "Người tạo",
         cell: ({ row }) => {
           const createdBy = row.original.createdBy;
+          const avatar = createdBy?.avatar;
           const initials = createdBy?.fullname?.[0]?.toUpperCase() || "?";
 
           return (
             <div className="flex items-center gap-2 min-w-[140px]">
               <Avatar className="w-7 h-7">
-                <AvatarFallback className="text-white text-xs">
-                  {initials}
+                {createdBy?.avatar && (
+                  <img
+                    src={`${baseConfig.mediaDomain}/${createdBy.avatar}`}
+                    alt={createdBy.fullname}
+                    className="w-full h-full object-cover rounded-full"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      e.currentTarget.nextElementSibling?.classList.remove("hidden");
+                    }}
+                  />
+                )}
+                <AvatarFallback
+                  className={cn(
+                    "bg-gradient-to-br from-green-500 to-emerald-600 text-white text-xs font-medium",
+                    "flex items-center justify-center w-full h-full",
+                    createdBy?.avatar && "hidden"
+                  )}
+                >
+                  <span className="translate-y-[0.5px]">
+                    {createdBy?.fullname?.trim()?.charAt(0)?.toUpperCase() || "?"}
+                  </span>
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col gap-0.5 flex-1 min-w-0">
