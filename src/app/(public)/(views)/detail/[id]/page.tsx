@@ -29,7 +29,7 @@ export async function generateMetadata({
     // Get first image or use default - ensure absolute URL with mediaDomain
     const firstImage =
       content.images && content.images.length > 0
-        ? content.images[0]
+        ? content.images[content.images.length - 1]
         : "/og-image.png";
 
     // Build absolute image URL using mediaDomain for Zalo compatibility
@@ -71,8 +71,6 @@ export async function generateMetadata({
       publishedTime: content.createdAt,
       authors: content.createdBy?.fullname ? [content.createdBy.fullname] : [],
     });
-
-    console.log("Generated metadata for detail page:", metadata);
 
     return metadata;
   } catch (error) {
