@@ -14,11 +14,9 @@ import { RouterHydrateFallbackElement } from "./components";
 
 // Metadata configuration
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-  ),
+  metadataBase: new URL("https://giangvien.org/gateway/ban-ve"),
   icons: {
-    icon: "/favicon.ico",
+    icon: "/logo.png",
     apple: "/apple-touch-icon.png",
     other: [
       {
