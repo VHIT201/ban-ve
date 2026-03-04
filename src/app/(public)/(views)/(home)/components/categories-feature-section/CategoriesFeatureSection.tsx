@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/utils/ui";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Autoplay from "embla-carousel-autoplay";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Create motion-enhanced components
 const MotionCard = motion(Card);
@@ -31,12 +32,14 @@ const buttonVariants = {
 };
 
 const CategoriesFeatureSection = () => {
+  // Hooks
   const router = useRouter();
   const {
     data: categoriesResponse,
     isLoading,
     error,
   } = useGetApiCategories({ sort: "newest" });
+  const isMobile = useIsMobile();
 
   const categories = categoriesResponse?.data?.categories;
   const [isHovered, setIsHovered] = useState(false);
@@ -102,6 +105,7 @@ const CategoriesFeatureSection = () => {
             align: "start",
             loop: true,
             dragFree: false,
+            slidesToScroll: isMobile ? 1 : 5,
           }}
           plugins={[
             Autoplay({
