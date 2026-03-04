@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     siteName: "BanVe",
     title: "BanVe - Nền tảng mua bán nội dung số",
     description: "Khám phá và tải xuống nội dung số chất lượng cao",
-    url: "https://giangvien.org/gateway/ban-ve/",
+    url: "https://ban-ve.vercel.app/",
     images: [
       {
         url: "https://giangvien.org/gateway/ban-ve/uploads/file-1772616968811-311061199.png",
@@ -71,6 +71,10 @@ export const metadata: Metadata = {
     title: "BanVe - Nền tảng mua bán nội dung số",
     description: "Khám phá và tải xuống nội dung số chất lượng cao",
     images: ["/logo.png"],
+  },
+  other: {
+    "og:locale": "vi_VN",
+    "og:site_name": "BanVe",
   },
   robots: {
     index: true,
