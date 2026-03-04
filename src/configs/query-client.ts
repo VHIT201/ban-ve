@@ -45,7 +45,6 @@ const handleAuthError = (error: unknown) => {
       import("@/stores").then(({ useAuthStore }) => {
         useAuthStore.getState().resetStore();
       });
-
       // Redirect to login
       if (typeof window !== "undefined") {
         window.location.href = "/auth/login";

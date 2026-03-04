@@ -248,7 +248,7 @@ const Header = () => {
                     setSearchQuery={setSearchQuery}
                   />
                 </div>
-                <HeaderNotifications />
+                {authStore.isSignedIn && <HeaderNotifications />}
                 <HeaderShoppingCart />
               </div>
 

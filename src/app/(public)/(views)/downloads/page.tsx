@@ -376,6 +376,11 @@ export default function DownloadPage() {
               <CardContent>
                 <div className="space-y-3">
                   {(order?.items ?? []).map((item, index) => {
+                    console.log(
+                      "Rendering FileItem for contentId:",
+                      item.contentId,
+                    );
+
                     return (
                       <FileItem
                         key={`download-file-item-${item.contentId}-${index}`}

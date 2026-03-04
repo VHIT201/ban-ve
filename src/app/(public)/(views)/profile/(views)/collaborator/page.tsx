@@ -25,7 +25,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -346,6 +345,7 @@ const Collaborator = () => {
   const getCollaboratorMeQuery = useGetApiCollaboratorsMe({
     query: {
       select: (data) => (data as unknown as ResponseData<CollaboratorMe>).data,
+      retry: false,
     },
   }) as UseQueryResult<CollaboratorMe>;
 

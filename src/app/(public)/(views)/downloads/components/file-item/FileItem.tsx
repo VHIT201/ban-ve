@@ -47,7 +47,7 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
   const [isError, setIsError] = useState<boolean>(false);
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
-  const contentId = (item.contentId ?? "") as unknown as string;
+  const contentId = (item.contentId?._id ?? "") as unknown as string;
 
   const { data: contentData } = useGetApiContentId(contentId, {
     query: {
