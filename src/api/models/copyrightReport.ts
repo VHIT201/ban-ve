@@ -1,9 +1,9 @@
 // @ts-nocheck
-import type { User } from './user';
-import type { CopyrightReportContentId } from './copyrightReportContentId';
-import type { CopyrightReportReportedContentId } from './copyrightReportReportedContentId';
-import type { CopyrightReportViolationType } from './copyrightReportViolationType';
-import type { CopyrightReportStatus } from './copyrightReportStatus';
+import type { User } from "./user";
+import type { CopyrightReportContentId } from "./copyrightReportContentId";
+import type { CopyrightReportReportedContentId } from "./copyrightReportReportedContentId";
+import type { CopyrightReportViolationType } from "./copyrightReportViolationType";
+import type { CopyrightReportStatus } from "./copyrightReportStatus";
 
 export interface CopyrightReport {
   _id?: string;
@@ -19,4 +19,5 @@ export interface CopyrightReport {
   resolvedBy?: User;
   createdAt?: string;
   updatedAt?: string;
+  avatar?: string;
 }

@@ -15,7 +15,7 @@ import {
 
 // App
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { DataTableActionCell } from "@/components/shared/data-table/shared";
@@ -155,51 +155,52 @@ export const useColumns = (props: useCopyrightReportTableColumnsDefsProps) => {
         cell: ({ row }) => {
           const reporter = row.original.reporterId;
           const displayName =
-            reporter?.fullname ||
-            reporter?.email ||
-            "Không rõ";
+            reporter?.fullname || reporter?.email || "Không rõ";
           const initials = displayName[0]?.toUpperCase() || "?";
 
           return (
-          <div className="flex items-center gap-3 min-w-[180px]">
-  <Avatar className="w-8 h-8 shrink-0">
-    {reporter?.avatar && (
-      <img
-        src={`${baseConfig.mediaDomain}/${reporter.avatar}`}
-        alt={reporter.fullname}
-        className="w-full h-full object-cover rounded-full"
-        onError={(e) => {
-          e.currentTarget.style.display = "none";
-          e.currentTarget.nextElementSibling?.classList.remove("hidden");
-        }}
-      />
-    )}
+            <div className="flex items-center gap-3 min-w-[180px]">
+              <Avatar className="w-8 h-8 shrink-0">
+                {reporter?.avatar && (
+                  <img
+                    src={`${baseConfig.mediaDomain}/${reporter.avatar}`}
+                    alt={reporter.fullname}
+                    className="w-full h-full object-cover rounded-full"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      e.currentTarget.nextElementSibling?.classList.remove(
+                        "hidden",
+                      );
+                    }}
+                  />
+                )}
 
-<AvatarFallback
-  className={cn(
-    "bg-gradient-to-br from-green-500 to-emerald-600 text-white text-xs font-medium",
-    "flex items-center justify-center w-full h-full",
-    reporter?.avatar && "hidden"
-  )}
->
-  <span className="translate-y-[0.5px]">
-    {reporter?.fullname?.trim()?.charAt(0)?.toUpperCase() || "K"}
-  </span>
-</AvatarFallback>
-  </Avatar>
+                <AvatarFallback
+                  className={cn(
+                    "bg-gradient-to-br from-green-500 to-emerald-600 text-white text-xs font-medium",
+                    "flex items-center justify-center w-full h-full",
+                    reporter?.avatar && "hidden",
+                  )}
+                >
+                  <span className="translate-y-[0.5px]">
+                    {reporter?.fullname?.trim()?.charAt(0)?.toUpperCase() ||
+                      "K"}
+                  </span>
+                </AvatarFallback>
+              </Avatar>
 
-  <div className="flex flex-col justify-center min-w-0 leading-tight">
-    <div className="text-sm font-medium text-gray-900 truncate">
-      {displayName}
-    </div>
+              <div className="flex flex-col justify-center min-w-0 leading-tight">
+                <div className="text-sm font-medium text-gray-900 truncate">
+                  {displayName}
+                </div>
 
-    {reporter?.email && (
-      <div className="text-xs text-gray-500 truncate">
-        {reporter.email}
-      </div>
-    )}
-  </div>
-</div>
+                {reporter?.email && (
+                  <div className="text-xs text-gray-500 truncate">
+                    {reporter.email}
+                  </div>
+                )}
+              </div>
+            </div>
           );
         },
       },
@@ -352,7 +353,9 @@ export const useColumns = (props: useCopyrightReportTableColumnsDefsProps) => {
           const displayName = resolvedBy.fullname || resolvedBy.email || "N/A";
           const avatar = resolvedBy.avatar;
           const initials = displayName[0]?.toUpperCase() || "?";
-          const avatarUrl = avatar ? `${baseConfig.mediaDomain}/${avatar}` : null;
+          const avatarUrl = avatar
+            ? `${baseConfig.mediaDomain}/${avatar}`
+            : null;
 
           return (
             <div className="flex flex-col gap-1 min-w-[140px]">
@@ -364,15 +367,19 @@ export const useColumns = (props: useCopyrightReportTableColumnsDefsProps) => {
                       alt={displayName}
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                        e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                        e.currentTarget.style.display = "none";
+                        e.currentTarget.nextElementSibling?.classList.remove(
+                          "hidden",
+                        );
                       }}
                     />
                   )}
-                  <AvatarFallback className={cn(
-                    "bg-gradient-to-br from-green-500 to-emerald-600 text-white text-[10px]",
-                    avatarUrl && "hidden"
-                  )}>
+                  <AvatarFallback
+                    className={cn(
+                      "bg-gradient-to-br from-green-500 to-emerald-600 text-white text-[10px]",
+                      avatarUrl && "hidden",
+                    )}
+                  >
                     {initials}
                   </AvatarFallback>
                 </Avatar>
