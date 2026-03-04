@@ -56,7 +56,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "https://giangvien.org/gateway/ban-ve/uploads/file-1772616968811-311061199.png",
-        secureUrl: "https://giangvien.org/gateway/ban-ve/uploads/file-1772616968811-311061199.png",
+        secureUrl:
+          "https://giangvien.org/gateway/ban-ve/uploads/file-1772616968811-311061199.png",
         width: 1200,
         height: 630,
         alt: "BanVe - Nền tảng mua bán nội dung số",
