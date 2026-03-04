@@ -33,7 +33,7 @@ import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 import { User, CreditCard, Percent, Building2Icon } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { UseQueryResult } from "@tanstack/react-query";
 import { CollaboratorMe } from "@/api/types/collaborator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -206,6 +206,16 @@ function CollaboratorStatus({
   data: any;
   loading: boolean;
 }) {
+  const [activeTab, setActiveTab] = useState("info");
+  
+  // Check hash on mount
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash === 'contents') {
+      setActiveTab('contents');
+    }
+  }, []);
+  
   const revenueData = useMemo(() => {
     const earnings = data?.earnings || null;
     return {
@@ -217,7 +227,7 @@ function CollaboratorStatus({
   }, [data]);
 
   return (
-    <Tabs defaultValue="info">
+    <Tabs value={activeTab} onValueChange={setActiveTab}>
       <TabsList>
         <TabsTrigger value="info">Thông tin cộng tác viên</TabsTrigger>
         <TabsTrigger value="contents">Sản phẩm cộng tác viên</TabsTrigger>
@@ -335,7 +345,7 @@ function CollaboratorStatus({
         </Card>
       </TabsContent>
 
-      <TabsContent value="contents">
+      <TabsContent value="contents" id="contents">
         <CollaboratorContents />
       </TabsContent>
     </Tabs>
