@@ -46,9 +46,11 @@ export function generateMetadata(params: GenerateMetadataParams): Metadata {
       images: [
         {
           url: imageUrl,
+          secureUrl: imageUrl,
           width: 1200,
           height: 630,
           alt: title,
+          type: imageUrl.endsWith(".png") ? "image/png" : "image/jpeg",
         },
       ],
       ...(publishedTime && type === "article" && { publishedTime }),
@@ -59,12 +61,6 @@ export function generateMetadata(params: GenerateMetadataParams): Metadata {
       title,
       description,
       images: [imageUrl],
-    },
-    // Additional meta tags for Zalo/social sharing (manually added)
-    other: {
-      "og:image:secure_url": imageUrl,
-      "og:image:type": imageUrl.endsWith(".png") ? "image/png" : "image/jpeg",
-      "og:image:alt": title,
     },
   };
 }

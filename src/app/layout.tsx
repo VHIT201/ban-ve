@@ -50,16 +50,17 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "vi_VN",
-    url: "/",
     siteName: "BanVe",
     title: "BanVe - Nền tảng mua bán nội dung số",
     description: "Khám phá và tải xuống nội dung số chất lượng cao",
     images: [
       {
-        url: "/logo.png",
-        width: 1408,
-        height: 768,
+        url: "https://giangvien.org/gateway/ban-ve/uploads/file-1772616968811-311061199.png",
+        secureUrl: "https://giangvien.org/gateway/ban-ve/uploads/file-1772616968811-311061199.png",
+        width: 1200,
+        height: 630,
         alt: "BanVe - Nền tảng mua bán nội dung số",
+        type: "image/png",
       },
     ],
   },
