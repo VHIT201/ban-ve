@@ -278,10 +278,7 @@ MAIN_AXIOS_INSTANCE.interceptors.response.use(
       }
     }
 
-    // Handle other errors with specific messages
-    if (error.response?.status === 403) {
-      toast.error("Bạn không có quyền truy cập tài nguyên này.");
-    } else if (error.response?.status === 429) {
+    if (error.response?.status === 429) {
       toast.error("Quá nhiều yêu cầu. Vui lòng thử lại sau.");
     } else if (error.response?.status >= 500) {
       toast.error("Lỗi server. Vui lòng thử lại sau.");

@@ -17,6 +17,16 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
   ),
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+    other: [
+      {
+        rel: "manifest",
+        url: "/manifest.json",
+      },
+    ],
+  },
   title: {
     default: "BanVe - Nền tảng mua bán nội dung số",
     template: "%s | BanVe",
@@ -48,9 +58,9 @@ export const metadata: Metadata = {
     description: "Khám phá và tải xuống nội dung số chất lượng cao",
     images: [
       {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
+        url: "/logo.png",
+        width: 1408,
+        height: 768,
         alt: "BanVe - Nền tảng mua bán nội dung số",
       },
     ],
@@ -59,7 +69,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "BanVe - Nền tảng mua bán nội dung số",
     description: "Khám phá và tải xuống nội dung số chất lượng cao",
-    images: ["/og-image.png"],
+    images: ["/logo.png"],
   },
   robots: {
     index: true,
@@ -96,11 +106,6 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="vi" suppressHydrationWarning>
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.json" />
-      </head>
       <body suppressHydrationWarning>
         <Fragment>
           <Toaster richColors position="bottom-right" />

@@ -23,10 +23,17 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { HeaderNotificationItem } from "./components";
+import { useAuthStore } from "@/stores";
+import { useShallow } from "zustand/shallow";
 
 const HeaderNotifications = () => {
   // States
   const [isOpen, setIsOpen] = useState(false);
+
+  // Stores
+  const authStore = useAuthStore(
+    useShallow(({ isSignedIn }) => ({ isSignedIn })),
+  );
 
   // Queries
   const { data: unreadCount, isLoading: isLoadingCount } =
@@ -34,6 +41,7 @@ const HeaderNotifications = () => {
       query: {
         refetchInterval: 60000,
         refetchOnWindowFocus: true,
+        enabled: authStore.isSignedIn && isOpen,
       },
     });
 
