@@ -53,6 +53,7 @@ export const metadata: Metadata = {
     siteName: "BanVe",
     title: "BanVe - Nền tảng mua bán nội dung số",
     description: "Khám phá và tải xuống nội dung số chất lượng cao",
+    url: "https://giangvien.org/gateway/ban-ve/",
     images: [
       {
         url: "https://giangvien.org/gateway/ban-ve/uploads/file-1772616968811-311061199.png",
