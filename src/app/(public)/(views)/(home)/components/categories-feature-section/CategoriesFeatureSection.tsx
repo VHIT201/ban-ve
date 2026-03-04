@@ -17,6 +17,7 @@ import { useGetApiCategories } from "@/api/endpoints/categories";
 import { useRouter } from "next/navigation";
 import { cn } from "@/utils/ui";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import Autoplay from "embla-carousel-autoplay";
 
 // Create motion-enhanced components
 const MotionCard = motion(Card);
@@ -102,6 +103,13 @@ const CategoriesFeatureSection = () => {
             loop: true,
             dragFree: false,
           }}
+          plugins={[
+            Autoplay({
+              delay: 7000,
+              stopOnInteraction: false,
+              stopOnMouseEnter: true,
+            }),
+          ]}
         >
           <CarouselContent className="-ml-2 md:-ml-4 py-2">
             {categories.map((category) => (
