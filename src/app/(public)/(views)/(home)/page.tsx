@@ -29,12 +29,11 @@ export const metadata: Metadata = {
     title: "BanVe - Nền tảng mua bán nội dung số",
     description: "Khám phá và tải xuống nội dung số chất lượng cao",
     type: "website",
-    url: "/",
     images: [
       {
-        url: "https://meu.com.vn/wp-content/uploads/2025/07/logo-meu-solutions-new-no-background.png",
+        url: "https://giangvien.org/gateway/ban-ve/uploads/file-1772616968811-311061199.png",
         secureUrl:
-          "https://meu.com.vn/wp-content/uploads/2025/07/logo-meu-solutions-new-no-background.png",
+          "https://giangvien.org/gateway/ban-ve/uploads/file-1772616968811-311061199.png",
         width: 1200,
         height: 630,
         alt: "BanVe - Nền tảng mua bán nội dung số",
