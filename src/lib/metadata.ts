@@ -62,6 +62,10 @@ export function generateMetadata(params: GenerateMetadataParams): Metadata {
       description,
       images: [imageUrl],
     },
+    other: {
+      "og:locale": "vi_VN",
+      "og:site_name": "BanVe",
+    },
   };
 }
 
