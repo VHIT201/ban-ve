@@ -8,8 +8,6 @@ export interface User {
   fullname?: string;
   /** Email người dùng */
   email?: string;
-  /** Avatar người dùng */
-  avatar?: string;
   /** Vai trò người dùng */
   role?: UserRole;
   /** Thời gian tạo tài khoản */
