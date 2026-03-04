@@ -8,7 +8,6 @@ import type { CopyrightReportStatus } from './copyrightReportStatus';
 export interface CopyrightReport {
   _id?: string;
   reporterId?: User;
-  reporterEmail?: string;
   contentId?: CopyrightReportContentId;
   reportedContentId?: CopyrightReportReportedContentId;
   violationType?: CopyrightReportViolationType;

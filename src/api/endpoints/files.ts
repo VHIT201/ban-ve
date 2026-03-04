@@ -1,21 +1,4 @@
 // @ts-nocheck
-
-/**
- * Normalize filename to handle Vietnamese characters and special characters
- * This ensures proper encoding when sending to the server
- */
-const normalizeFilename = (filename: string): string => {
-  try {
-    // Return filename as-is to preserve Vietnamese characters
-    // FormData should handle UTF-8 encoding automatically
-    return filename;
-  } catch (error) {
-    // If any error occurs, return the original filename
-    console.warn('Filename processing failed:', error);
-    return filename;
-  }
-};
-
 import {
   useInfiniteQuery,
   useMutation,
@@ -96,10 +79,7 @@ if(postApiFileUploadBody.image4 !== undefined) {
  formData.append(`image4`, postApiFileUploadBody.image4)
  }
 if(postApiFileUploadBody.filename !== undefined) {
- formData.append(`filename`, normalizeFilename(postApiFileUploadBody.filename))
- } else if (postApiFileUploadBody.file instanceof File) {
- // Use original filename if no custom filename provided
- formData.append(`filename`, normalizeFilename(postApiFileUploadBody.file.name))
+ formData.append(`filename`, postApiFileUploadBody.filename)
  }
 if(postApiFileUploadBody.dir !== undefined) {
  formData.append(`dir`, postApiFileUploadBody.dir)
@@ -119,6 +99,7 @@ if(postApiFileUploadBody.expiresAfterDays !== undefined) {
 
       return mainInstance<FileUploadResponse>(
       {url: `/api/file/upload`, method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data', },
        data: formData, signal
     },
       );
