@@ -105,11 +105,12 @@ const CategoriesFeatureSection = () => {
             align: "start",
             loop: true,
             dragFree: false,
-            slidesToScroll: isMobile ? 1 : 5,
+            // slidesToScroll: isMobile ? 1 : 5,
+            slidesToScroll: 1,
           }}
           plugins={[
             Autoplay({
-              delay: 7000,
+              delay: 5000,
               stopOnInteraction: false,
               stopOnMouseEnter: true,
             }),
