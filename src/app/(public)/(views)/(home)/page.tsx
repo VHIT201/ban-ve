@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Main } from "@/components/layouts";
 import {
   BannerSection,
-  DailyBestDownloaded,
+  // DailyBestDownloaded,
   DailyBestSeller,
   DailyFeatureSection,
   DailyCustomerReviewSection,
@@ -63,7 +63,7 @@ export default async function HomePage() {
         <TopSellingLists />
         <DailyBestSeller />
         <BannerSection />
-        <DailyBestDownloaded />
+        {/* <DailyBestDownloaded /> */}
         <DailyCustomerReviewSection />
         <DailyFeatureSection />
       </Main>

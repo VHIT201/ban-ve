@@ -64,7 +64,7 @@ const DailyFeatureSection = () => {
       <div>
         <div className="flex items-end justify-between pb-2">
           <h2 className="text-xl uppercase font-semibold tracking-widest text-[#1a1a1a]">
-            Sản phẩm nổi bật
+            Dữ liệu mới đăng
           </h2>
         </div>
 
