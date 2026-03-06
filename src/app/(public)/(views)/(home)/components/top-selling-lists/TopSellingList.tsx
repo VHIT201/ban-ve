@@ -119,7 +119,7 @@ const BestSellingData = () => {
     <section className="pt-8 pb-2 max-w-[1500px] mx-auto">
       <div className="flex items-end justify-between pb-2">
         <h2 className="text-xl uppercase font-semibold tracking-widest text-[#1a1a1a]">
-          Dữ liệu bán chạy
+          Dữ liệu bán chạy (Theo tuần)
         </h2>
       </div>
 

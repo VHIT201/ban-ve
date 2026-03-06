@@ -58,23 +58,23 @@ const contactInfoItems = [
   {
     icon: MapPin,
     title: "Địa chỉ",
-    content: (
-      <>
-        123 Đường ABC, Phường XYZ
-        <br />
-        Quận 1, TP. Hồ Chí Minh
-      </>
-    ),
+ content: (
+  <>
+    15 Đường Trường Sơn, Phường 4
+    <br />
+    Quận Tân Bình, TP. Hồ Chí Minh
+  </>
+),
   },
   {
     icon: Mail,
     title: "Email",
     content: (
       <a
-        href="mailto:contact@blueprint.vn"
+        href="mailto:Dataorymarket@gmail.com"
         className="text-primary hover:text-primary/80 hover:underline transition-all font-medium"
       >
-        contact@blueprint.vn
+        Dataorymarket@gmail.com
       </a>
     ),
   },
