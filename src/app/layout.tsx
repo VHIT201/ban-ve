@@ -26,11 +26,11 @@ export const metadata: Metadata = {
     ],
   },
   title: {
-    default: "BanVe - Nền tảng mua bán nội dung số",
-    template: "%s | BanVe",
+    default: "Dataory - Nền tảng mua bán nội dung số",
+    template: "%s | Dataory",
   },
   description:
-    "Khám phá và tải xuống nội dung số chất lượng cao. BanVe - Nền tảng mua bán tài nguyên thiết kế hàng đầu Việt Nam.",
+    "Khám phá và tải xuống nội dung số chất lượng cao. Dataory - Nền tảng mua bán tài nguyên thiết kế hàng đầu Việt Nam.",
   keywords: [
     "digital content",
     "marketplace",
@@ -39,9 +39,9 @@ export const metadata: Metadata = {
     "graphics",
     "vector",
   ],
-  authors: [{ name: "BanVe Team" }],
-  creator: "BanVe",
-  publisher: "BanVe",
+  authors: [{ name: "Dataory Team" }],
+  creator: "Dataory",
+  publisher: "Dataory",
   formatDetection: {
     email: false,
     address: false,
@@ -50,8 +50,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "vi_VN",
-    siteName: "BanVe",
-    title: "BanVe - Nền tảng mua bán nội dung số",
+    siteName: "Dataory",
+    title: "Dataory - Nền tảng mua bán nội dung số",
     description: "Khám phá và tải xuống nội dung số chất lượng cao",
     url: "https://ban-ve.vercel.app/",
     images: [
@@ -61,20 +61,20 @@ export const metadata: Metadata = {
           "https://giangvien.org/gateway/ban-ve/uploads/file-1772616968811-311061199.png",
         width: 1200,
         height: 630,
-        alt: "BanVe - Nền tảng mua bán nội dung số",
+        alt: "Dataory - Nền tảng mua bán nội dung số",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "BanVe - Nền tảng mua bán nội dung số",
+    title: "Dataory - Nền tảng mua bán nội dung số",
     description: "Khám phá và tải xuống nội dung số chất lượng cao",
     images: ["/logo.png"],
   },
   other: {
     "og:locale": "vi_VN",
-    "og:site_name": "BanVe",
+    "og:site_name": "Dataory",
   },
   robots: {
     index: true,

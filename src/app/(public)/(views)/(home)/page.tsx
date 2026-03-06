@@ -14,7 +14,7 @@ import {
 export const metadata: Metadata = {
   title: "Trang chủ",
   description:
-    "Khám phá và tải xuống nội dung số chất lượng cao. BanVe - Nền tảng mua bán tài nguyên thiết kế hàng đầu Việt Nam.",
+    "Khám phá và tải xuống nội dung số chất lượng cao. Dataory - Nền tảng mua bán tài nguyên thiết kế hàng đầu Việt Nam.",
   keywords: [
     "digital content",
     "marketplace",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     "thiết kế",
   ],
   openGraph: {
-    title: "BanVe - Nền tảng mua bán nội dung số",
+    title: "Dataory - Nền tảng mua bán nội dung số",
     description: "Khám phá và tải xuống nội dung số chất lượng cao",
     type: "website",
     url: "https://ban-ve.vercel.app/",
@@ -37,14 +37,14 @@ export const metadata: Metadata = {
           "https://giangvien.org/gateway/ban-ve/uploads/file-1772616968811-311061199.png",
         width: 1200,
         height: 630,
-        alt: "BanVe - Nền tảng mua bán nội dung số",
+        alt: "Dataory - Nền tảng mua bán nội dung số",
         type: "image/png",
       },
     ],
   },
   other: {
     "og:locale": "vi_VN",
-    "og:site_name": "BanVe",
+    "og:site_name": "Dataory",
   },
 };
 
