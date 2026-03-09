@@ -1,6 +1,5 @@
 "use client";
 
-import { DraftingCompassIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import {
   HeaderSearchBar,
@@ -18,7 +17,6 @@ import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { use } from "react";
-import { size } from "lodash-es";
 
 const Header = () => {
   // Stores
@@ -37,7 +35,7 @@ const Header = () => {
   useEffect(() => {
     setIsMounted(true);
   }, []);
-  useEffect(() => {
+    useEffect(() => {
     let lastScrollY = window.scrollY;
     let ticking = false;
 
@@ -116,28 +114,25 @@ const Header = () => {
     >
       <Link
         href="/"
-        className="flex items-center gap-2 sm:gap-3 group transition-all duration-200"
+        className="flex items-center gap-1 sm:gap-1.5 group transition-all duration-200"
       >
         <div className="relative">
-          <motion.div
+          <div
             className={cn(
-              "relative rounded-none rotate-6 bg-linear-to-br from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/20 transition-all duration-300",
-              size === "sm" ? "size-8" : "size-10",
+              "relative rounded-none bg-transparent transition-all duration-300 overflow-hidden",
+                  size === "sm" ? "w-14 h-14 translate-y-1" : "w-20 h-20 translate-y-2 md:translate-y-3",
             )}
-            whileHover={{
-              boxShadow: "0 20px 25px -5px rgba(var(--primary), 0.3)",
-            }}
           >
-            <DraftingCompassIcon
-              strokeWidth={2}
-              className={cn(
-                "absolute left-1/2 top-1/2 -translate-1/2 -rotate-6",
-                size === "sm" ? "size-4" : "size-6",
-              )}
+            <img
+              src="/logo.png"
+              alt="Dataory logo"
+              width={size === "sm" ? 36 : 50}
+              height={size === "sm" ? 36 : 50}
+              className="object-contain"
             />
-          </motion.div>
+          </div>
         </div>
-        <div className="hidden sm:block">
+        <div className="hidden sm:block -ml-5">
           <h1
             className={cn(
               "font-bold tracking-tight text-foreground group-hover:text-primary transition-colors duration-200",
@@ -224,10 +219,10 @@ const Header = () => {
         initial="hidden"
         animate="visible"
         variants={enableMotion ? logoVariants : {}}
-        className="relative top-0 z-50 w-full bg-white backdrop-blur-xl border-b border-border/40 supports-backdrop-filter:bg-background/60"
+          className="md:relative fixed top-0 z-50 w-full bg-white backdrop-blur-xl border-b border-border/40 supports-backdrop-filter:bg-background/60"
       >
         <div className="max-w-[1500px] mx-auto px-3 sm:px-4">
-          <div className="flex items-center justify-between h-16 sm:h-18 lg:h-20">
+          <div className="flex items-center justify-between h-20 sm:h-18 lg:h-20">
             <motion.div variants={itemVariants}>{renderLogo()}</motion.div>
 
             <motion.div
