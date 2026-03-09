@@ -102,7 +102,7 @@ function Footer() {
            Khám phá
           </h4>
          <p className="text-xs text-black/50 mb-6 leading-relaxed">
-          Khám phá hàng nghìn bản vẽ CAD, mô hình 3D và tài nguyên thiết kế chất lượng cao
+          Khám phá hàng nghìn dữ liệu CAD, mô hình 3D và tài nguyên thiết kế chất lượng cao
           dành cho kiến trúc sư và nhà thiết kế.
         </p>
         <Link href="/collections">
@@ -132,7 +132,7 @@ function Footer() {
 
       <div className="max-w-[1500px] mx-auto border-t border-black/5 pt-12 flex flex-col md:flex-row items-center justify-center gap-6">
         <p className="text-[10px] uppercase tracking-widest text-black/40 font-medium">
-          © {currentYear} Marketplace Blueprint. ALL RIGHTS RESERVED.
+          © {currentYear} Marketplace Dataory. ALL RIGHTS RESERVED.
         </p>
       </div>
     </footer>

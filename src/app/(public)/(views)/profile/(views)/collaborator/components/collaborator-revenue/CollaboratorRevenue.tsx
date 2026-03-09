@@ -65,7 +65,7 @@ const CollaboratorRevenue: FC<Props> = (props) => {
           Thống kê doanh thu
         </h2>
         <p className={`text-muted-foreground ${descriptionSize}`}>
-          Tổng quan về doanh thu từ các bản vẽ của bạn
+          Tổng quan về doanh thu từ các dữ liệu của bạn
         </p>
       </div>
 

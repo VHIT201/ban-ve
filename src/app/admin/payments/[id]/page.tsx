@@ -194,8 +194,8 @@ export default function PaymentDetailPage() {
 
             {paymentDetails?.items?.map((item, index) => (
               <div key={index} className="border-t pt-4 space-y-2 text-sm">
-                <InfoRow label="Tên bản vẽ" value={item.title} />
-                <InfoRow label="Mã bản vẽ" value={item.contentId} />
+                <InfoRow label="Tên dữ liệu" value={item.title} />
+                <InfoRow label="Mã dữ liệu" value={item.contentId} />
 
                 <div className="flex justify-between">
                   <span>Số lượng: {item.quantity}</span>

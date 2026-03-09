@@ -63,7 +63,7 @@ export async function generateMetadata({
       type: "article",
       keywords: [
         content.title?.slice(0, 60) || "",
-        "bản vẽ",
+        "dữ liệu",
         "thiết kế",
         content.field?.slice(0, 60) || "",
         "BanVe.vn",

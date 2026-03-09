@@ -31,7 +31,7 @@ const bannerSlides = [
     title: "Kho dữ liệu miễn phí",
     subtitle: "Mua, Bán & Tải Dữ Liệu Chất Lượng Cao!",
     description:
-      "Khám phá kho bản vẽ kiến trúc chuyên nghiệp với hơn 1000+ thiết kế độc đáo. Giải pháp toàn diện cho mọi dự án của bạn.",
+      "Khám phá kho dữ liệu kiến trúc chuyên nghiệp với hơn 1000+ thiết kế độc đáo. Giải pháp toàn diện cho mọi dự án của bạn.",
     primaryAction: {
       text: "Tìm Kiếm Dữ Liệu",
       icon: Search,
@@ -44,7 +44,7 @@ const bannerSlides = [
   //   id: 2,
   //   gradient: "from-purple-600 via-pink-500 to-orange-400",
   //   title: "Thiết Kế Chuyên Nghiệp",
-  //   subtitle: "Bản vẽ CAD & 3D Chất Lượng Cao",
+  //   subtitle: "dữ liệu CAD & 3D Chất Lượng Cao",
   //   description:
   //     "Truy cập ngay vào thư viện thiết kế kiến trúc hiện đại với công nghệ BIM và 3D. Tiết kiệm thời gian và chi phí cho dự án.",
   //   primaryAction: { text: "Khám Phá Ngay", icon: ArrowRight },
@@ -55,9 +55,9 @@ const bannerSlides = [
   //   id: 3,
   //   gradient: "from-teal-600 via-green-500 to-yellow-400",
   //   title: "Giải Pháp Thông Minh",
-  //   subtitle: "Nền Tảng Số Hóa Bản Vẽ",
+  //   subtitle: "Nền Tảng Số Hóa dữ liệu",
   //   description:
-  //     "Quản lý, chia sẻ và mua bán bản vẽ dễ dàng. Hệ thống bảo mật cao, hỗ trợ 24/7 và thanh toán linh hoạt.",
+  //     "Quản lý, chia sẻ và mua bán dữ liệu dễ dàng. Hệ thống bảo mật cao, hỗ trợ 24/7 và thanh toán linh hoạt.",
   //   primaryAction: { text: "Bắt Đầu Ngay", icon: ArrowRight },
   //   secondaryAction: { text: "Xem Demo", icon: BarChart3 },
   //   illustration: "charts",

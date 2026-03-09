@@ -466,7 +466,7 @@ const BlueprintCard: FC<Props> = (props) => {
           )}
 
           <motion.h3
-            className="text-xl font-medium text-foreground leading-tight line-clamp-1 mb-2 group-hover:underline underline-offset-4 decoration-1 transition-all"
+            className="text-xl font-medium text-foreground leading-tight line-clamp-2 min-h-[3.5rem] mb-2 group-hover:underline underline-offset-4 decoration-1 transition-all"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.4 }}

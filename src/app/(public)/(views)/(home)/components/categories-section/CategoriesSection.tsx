@@ -45,7 +45,7 @@ const CategoriesSection = () => {
             Tìm theo
           </span>
           <h2 className="text-2xl uppercase font-semibold tracking-tight text-[#1a1a1a]">
-            Danh mục bản vẽ
+            Danh mục dữ liệu
           </h2>
         </div>
         <button

@@ -116,7 +116,7 @@ const CategoryDialog = (props: CategoryDialogProps) => {
           </DialogTitle>
           <DialogDescription>
             {mode === "create"
-              ? "Điền thông tin để tạo danh mục mới cho bản vẽ"
+              ? "Điền thông tin để tạo danh mục mới cho dữ liệu"
               : "Cập nhật thông tin danh mục"}
           </DialogDescription>
         </DialogHeader>
