@@ -9,6 +9,7 @@ export type GetApiCollaboratorsMe200 = {
   commissionRate?: number;
   bankAccount?: string;
   bankName?: string;
+  qrCode?: string;
   isApproved?: boolean;
   isActive?: boolean;
   createdAt?: string;

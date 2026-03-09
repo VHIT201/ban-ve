@@ -12,6 +12,8 @@ export interface CollaboratorResponse {
   bankAccount?: string;
   /** Tên ngân hàng */
   bankName?: string;
+  /** URL ảnh mã QR */
+  qrCode?: string;
   /** Tỷ lệ hoa hồng (%) */
   commissionRate?: number;
   approvedBy?: User;

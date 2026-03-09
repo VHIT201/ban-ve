@@ -15,6 +15,7 @@ export interface CollaboratorRequest {
   bankAccount: string;
   bankName: string;
   commissionRate: number;
+  qrCode?: string; // QR code image path
   approvedBy?: UserInfo; // có thể null/undefined
   approvedAt?: string; // có thể null/undefined
   rejectionReason?: string; // khi rejected

@@ -11,4 +11,6 @@ export interface CollaboratorStats {
   totalEarnings?: number;
   /** Tỷ lệ hoa hồng (%) */
   commissionRate?: number;
+  /** URL ảnh mã QR */
+  qrCode?: string;
 }
