@@ -102,7 +102,7 @@ function CollaboratorForm() {
           Đăng ký Cộng tác viên
         </CardTitle>
         <CardDescription className="text-sm text-gray-600">
-          Trở thành cộng tác viên để kiếm thêm thu nhập từ việc bán bản vẽ
+          Trở thành cộng tác viên để kiếm thêm thu nhập từ việc bán dữ liệu
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-6">

@@ -121,7 +121,7 @@ const SearchResults = () => {
           </div>
           <h3 className="text-lg font-medium mb-2">Nhập từ khóa để tìm kiếm</h3>
           <p className="text-muted-foreground">
-            Tìm kiếm tài liệu, bản vẽ, và nhiều hơn nữa...
+            Tìm kiếm tài liệu, dữ liệu, và nhiều hơn nữa...
           </p>
         </div>
       ) : results.length === 0 ? (

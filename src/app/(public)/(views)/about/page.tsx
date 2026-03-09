@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Về chúng tôi - Blueprint Marketplace',
-  description: 'Giới thiệu về Blueprint Marketplace - Nền tảng chia sẻ bản vẽ kiến trúc và thiết kế',
+  description: 'Giới thiệu về Blueprint Marketplace - Nền tảng chia sẻ dữ liệu kiến trúc và thiết kế',
 };
 
 export default function AboutPage() {
@@ -30,7 +30,7 @@ export default function AboutPage() {
           <h2 className="text-2xl font-semibold mb-4">Tầm nhìn</h2>
           <div className="space-y-4">
             <p>
-              Trở thành nền tảng hàng đầu về chia sẻ bản vẽ kiến trúc và tài nguyên thiết kế tại Việt Nam, góp phần nâng cao chất lượng đào tạo và thực hành kiến trúc.
+              Trở thành nền tảng hàng đầu về chia sẻ dữ liệu kiến trúc và tài nguyên thiết kế tại Việt Nam, góp phần nâng cao chất lượng đào tạo và thực hành kiến trúc.
             </p>
           </div>
         </section>
@@ -40,7 +40,7 @@ export default function AboutPage() {
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-card p-6 rounded-lg border">
               <h3 className="font-semibold text-lg mb-2">Chất lượng</h3>
-              <p className="text-muted-foreground">Chúng tôi cam kết mang đến những bản vẽ và tài nguyên chất lượng cao, được kiểm duyệt kỹ lưỡng bởi đội ngũ chuyên gia.</p>
+              <p className="text-muted-foreground">Chúng tôi cam kết mang đến những dữ liệu và tài nguyên chất lượng cao, được kiểm duyệt kỹ lưỡng bởi đội ngũ chuyên gia.</p>
             </div>
             <div className="bg-card p-6 rounded-lg border">
               <h3 className="font-semibold text-lg mb-2">Sáng tạo</h3>

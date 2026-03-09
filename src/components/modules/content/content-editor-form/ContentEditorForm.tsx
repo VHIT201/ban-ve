@@ -600,13 +600,13 @@ const ContentEditorForm = ({
               </FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Nhập tiêu đề bản vẽ..."
+                  placeholder="Nhập tiêu đề dữ liệu..."
                   {...field}
                   disabled={isLoading}
                 />
               </FormControl>
               <FormDescription>
-                Tiêu đề ngắn gọn, mô tả chính xác nội dung bản vẽ (3-200 ký tự)
+                Tiêu đề ngắn gọn, mô tả chính xác nội dung dữ liệu (3-200 ký tự)
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -624,7 +624,7 @@ const ContentEditorForm = ({
               </FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Mô tả chi tiết về bản vẽ, công năng, kích thước, yêu cầu kỹ thuật..."
+                  placeholder="Mô tả chi tiết về dữ liệu, công năng, kích thước, yêu cầu kỹ thuật..."
                   className="min-h-[120px] resize-none"
                   {...field}
                   disabled={isLoading}
@@ -828,7 +828,7 @@ const ContentEditorForm = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-primary font-semibold tracking-wider">
-                File bản vẽ <span className="text-red-500">*</span>
+                File dữ liệu <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <div className="space-y-3">
@@ -880,7 +880,7 @@ const ContentEditorForm = ({
                 </div>
               </FormControl>
               <FormDescription>
-                Chọn file bản vẽ tối đa 100MB (ZIP, RAR, 7Z, PDF, DOC, DOCX,
+                Chọn file dữ liệu tối đa 100MB (ZIP, RAR, 7Z, PDF, DOC, DOCX,
                 PNG, JPG, JPEG)
               </FormDescription>
               <FormMessage />

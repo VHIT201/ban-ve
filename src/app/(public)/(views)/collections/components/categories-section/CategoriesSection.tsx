@@ -41,7 +41,7 @@ const CategoriesSection = () => {
     <section className="mt-8">
       <div className="flex items-end justify-between mb-8 border-b border-black/10 pb-8">
         <h2 className="text-2xl uppercase font-semibold tracking-tight text-[#1a1a1a]">
-          Danh mục bản vẽ
+          Danh mục dữ liệu
         </h2>
       </div>
 
