@@ -19,6 +19,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -31,12 +32,13 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
-import { User, CreditCard, Percent, Building2Icon } from "lucide-react";
-import { useMemo, useEffect, useState } from "react";
+import { User, CreditCard, Percent, Building2Icon, ScanLine, Upload, Trash2 } from "lucide-react";
+import { useMemo, useEffect, useState, useCallback } from "react";
 import { UseQueryResult } from "@tanstack/react-query";
 import { CollaboratorMe } from "@/api/types/collaborator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CollaboratorContents } from "./components";
+import UpdateQRCode from "./components/update-qr-code/UpdateQrCode";
 import {
   Select,
   SelectContent,
@@ -61,21 +63,62 @@ const collaboratorApplySchema = z.object({
     .number()
     .min(0, "Tỷ lệ hoa hồng tối thiểu là 0%")
     .max(100, "Tỷ lệ hoa hồng tối đa là 100%"),
+  qrCode: z.instanceof(Blob).optional(),
 });
 
 function CollaboratorForm() {
   const applyMutation = usePostApiCollaboratorsApply();
+  
+  // QR Code state
+  const [qrCodePreview, setQrCodePreview] = useState<string | null>(null);
+  const [qrCodeFile, setQrCodeFile] = useState<File | null>(null);
 
-  const form = useForm<CollaboratorApplyInput>({
+  const form = useForm<typeof collaboratorApplySchema._type>({
     resolver: zodResolver(collaboratorApplySchema),
     defaultValues: {
       bankAccount: "",
       bankName: "",
       commissionRate: 30,
+      qrCode: undefined,
     },
   });
 
-  const onSubmit = (data: CollaboratorApplyInput) => {
+  // Handle QR Code file change
+  const handleQrCodeChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        form.setError('qrCode', { message: 'Vui lòng chọn file ảnh' });
+        return;
+      }
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        form.setError('qrCode', { message: 'Kích thước file không được vượt quá 5MB' });
+        return;
+      }
+      
+      setQrCodeFile(file);
+      form.setValue('qrCode', file as any);
+      form.clearErrors('qrCode');
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setQrCodePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  }, [form]);
+
+  // Handle QR Code removal
+  const handleQrCodeRemove = useCallback(() => {
+    setQrCodeFile(null);
+    setQrCodePreview(null);
+    form.setValue('qrCode', undefined);
+    form.clearErrors('qrCode');
+  }, [form]);
+
+  const onSubmit = (data: typeof collaboratorApplySchema._type) => {
     applyMutation.mutate(
       { data },
       {
@@ -83,6 +126,9 @@ function CollaboratorForm() {
           const message = "Đã gửi đơn đăng ký thành công!";
           toast.success(message);
           form.reset();
+          // Clear QR code state
+          setQrCodeFile(null);
+          setQrCodePreview(null);
         },
         onError: (error: any) => {
           const message =
@@ -184,6 +230,79 @@ function CollaboratorForm() {
               )}
             />
 
+            <FormField
+              control={form.control}
+              name="qrCode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    <div className="flex items-center gap-2">
+                      <ScanLine className="h-4 w-4" />
+                      Ảnh mã QR ngân hàng <span className="text-muted-foreground">(tùy chọn)</span>
+                    </div>
+                  </FormLabel>
+                  <FormControl>
+                    <div className="space-y-3">
+                      {/* Upload Area */}
+                      {!qrCodePreview ? (
+                        <div className="relative">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleQrCodeChange}
+                            disabled={applyMutation.isPending}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                          />
+                          <div className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-50">
+                            <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                            <p className="text-sm text-gray-600 text-center">
+                              <span className="font-medium">Nhấp để tải lên</span> hoặc kéo thả ảnh
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF tối đa 5MB</p>
+                          </div>
+                        </div>
+                      ) : (
+                        /* Preview Area */
+                        <div className="relative">
+                          <div className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                            <div className="relative w-20 h-20 flex-shrink-0">
+                              <img
+                                src={qrCodePreview}
+                                alt="QR Code Preview"
+                                className="w-full h-full object-contain border border-gray-200 rounded bg-white"
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-gray-900">
+                                {qrCodeFile?.name || "Mã QR đã tải lên"}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {qrCodeFile ? `${(qrCodeFile.size / 1024).toFixed(1)} KB` : ""}
+                              </p>
+                            </div>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={handleQrCodeRemove}
+                              disabled={applyMutation.isPending}
+                              className="flex-shrink-0"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormDescription>
+                    Tải lên ảnh mã QR của tài khoản ngân hàng để khách hàng dễ dàng thanh toán
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <Button
               type="submit"
               className="w-full h-11 mt-6"
@@ -207,6 +326,15 @@ function CollaboratorStatus({
 }) {
   const [activeTab, setActiveTab] = useState("info");
   
+  // Get the query instance for refetch
+  const getCollaboratorMeQuery = useGetApiCollaboratorsMe({
+    query: {
+      select: (data) => (data as unknown as ResponseData<CollaboratorMe>).data,
+      retry: false,
+      enabled: false, // Don't auto-fetch since we already have the data
+    },
+  }) as UseQueryResult<CollaboratorMe>;
+  
   // Check hash on mount
   useEffect(() => {
     const hash = window.location.hash.replace('#', '');
@@ -229,6 +357,7 @@ function CollaboratorStatus({
     <Tabs value={activeTab} onValueChange={setActiveTab}>
       <TabsList>
         <TabsTrigger value="info">Thông tin cộng tác viên</TabsTrigger>
+        <TabsTrigger value="qr-code">Cập nhật mã QR</TabsTrigger>
         <TabsTrigger value="contents">Sản phẩm cộng tác viên</TabsTrigger>
       </TabsList>
 
@@ -281,6 +410,42 @@ function CollaboratorStatus({
                   </p>
                 </div>
               </div>
+
+              {/* QR Code */}
+              {data.qrCodeUrl && (
+                <div className="flex items-start gap-4 p-4 bg-gray-50 border border-gray-100">
+                  <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center flex-shrink-0">
+                    <ScanLine className="w-5 h-5 text-gray-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-700 mb-3">
+                      Mã QR thanh toán
+                    </p>
+                    <div className="flex items-center gap-4">
+                      <div className="relative w-24 h-24 flex-shrink-0">
+                        <img
+                          src={data.qrCodeUrl}
+                          alt="QR Code"
+                          className="w-full h-full object-contain border border-gray-200 rounded-lg bg-white shadow-sm"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs text-gray-600 mb-2">
+                          Khách hàng có thể quét mã QR này để thanh toán trực tiếp vào tài khoản của bạn.
+                        </p>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open(data.qrCodeUrl, '_blank')}
+                          className="text-xs"
+                        >
+                          Xem ảnh gốc
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Approver */}
               {data.approvedBy && (
@@ -342,6 +507,16 @@ function CollaboratorStatus({
             </div>
           </CardContent>
         </Card>
+      </TabsContent>
+
+      <TabsContent value="qr-code" className="space-y-6">
+        <UpdateQRCode 
+          currentQrCodeUrl={data.qrCodeUrl}
+          onSuccess={() => {
+            // Refetch collaborator data to get updated QR code
+            getCollaboratorMeQuery.refetch();
+          }}
+        />
       </TabsContent>
 
       <TabsContent value="contents" id="contents">

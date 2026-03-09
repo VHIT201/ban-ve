@@ -7,6 +7,7 @@ import { Eye, MoreHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { DataTableActionCell } from "@/components/shared/data-table/shared";
+import baseConfig from "@/configs/base";
 
 // Internal
 import {
@@ -106,6 +107,42 @@ export const useColumns = (props: useCollaboratorTableColumnsDefsProps) => {
           const rate = row.getValue("commissionRate") as number | undefined;
           if (!rate) return <span className="text-muted-foreground">-</span>;
           return <span className="font-medium">{rate}%</span>;
+        },
+      },
+      {
+        accessorKey: "qrCode",
+        header: "Mã QR",
+        cell: ({ row }) => {
+          const qrCode = row.getValue("qrCode") as string | undefined;
+          
+          if (!qrCode) {
+            return <span className="text-muted-foreground">-</span>;
+          }
+
+          // Handle both relative and absolute paths
+          const qrCodeUrl = qrCode.startsWith('http') 
+            ? qrCode 
+            : `${baseConfig.mediaDomain}/${qrCode}`;
+
+          return (
+            <div className="flex items-center justify-center">
+              <img
+                src={qrCodeUrl}
+                alt="QR Code"
+                className="w-12 h-12 object-cover border border-gray-200 rounded cursor-pointer hover:scale-110 transition-transform"
+                onClick={() => {
+                  // Open QR code in new tab for better viewing
+                  window.open(qrCodeUrl, '_blank');
+                }}
+                onError={(e) => {
+                  // Fallback if image fails to load
+                  (e.target as HTMLImageElement).style.display = 'none';
+                  (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+                }}
+              />
+              <span className="hidden text-muted-foreground text-xs">Lỗi tải ảnh</span>
+            </div>
+          );
         },
       },
       {

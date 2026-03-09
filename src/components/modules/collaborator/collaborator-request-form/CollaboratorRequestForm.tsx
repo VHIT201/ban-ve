@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { useCallback, useState } from "react";
 import {
   Loader2,
   AlertCircle,
@@ -36,6 +37,10 @@ import {
   User,
   CheckCircle2,
   XCircle,
+  Upload,
+  ScanLine,
+  Image as ImageIcon,
+  Trash2,
 } from "lucide-react";
 import { VIETNAM_BANKS } from "@/constants/banks";
 
@@ -55,6 +60,7 @@ const collaboratorRequestFormSchema = z.object({
     })
     .min(0, "Tỷ lệ hoa hồng không được âm")
     .max(100, "Tỷ lệ hoa hồng không được vượt quá 100%"),
+  qrCode: z.instanceof(Blob).optional(),
   rejectionReason: z.string().optional(),
 });
 
@@ -79,6 +85,7 @@ interface CollaboratorRequestFormProps {
     email?: string;
   };
   approvedAt?: string;
+  qrCode?: string; // QR code URL from API
 }
 
 const CollaboratorRequestForm = ({
@@ -92,6 +99,7 @@ const CollaboratorRequestForm = ({
   userInfo,
   approvedBy,
   approvedAt,
+  qrCode,
 }: CollaboratorRequestFormProps) => {
   // Initialize form
   const form = useForm<CollaboratorRequestFormValues>({
@@ -100,12 +108,53 @@ const CollaboratorRequestForm = ({
       bankAccount: defaultValues?.bankAccount || "",
       bankName: defaultValues?.bankName || "",
       commissionRate: defaultValues?.commissionRate || 10,
+      qrCode: defaultValues?.qrCode,
       rejectionReason: defaultValues?.rejectionReason || "",
     },
   });
 
+  // QR Code state
+  const [qrCodePreview, setQrCodePreview] = useState<string | null>(null);
+  const [qrCodeFile, setQrCodeFile] = useState<File | null>(null);
+
   // Watch commission rate
   const commissionRate = form.watch("commissionRate");
+
+  // Handle QR Code file change
+  const handleQrCodeChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        form.setError('qrCode', { message: 'Vui lòng chọn file ảnh' });
+        return;
+      }
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        form.setError('qrCode', { message: 'Kích thước file không được vượt quá 5MB' });
+        return;
+      }
+      
+      setQrCodeFile(file);
+      form.setValue('qrCode', file);
+      form.clearErrors('qrCode');
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setQrCodePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  }, [form]);
+
+  // Handle QR Code removal
+  const handleQrCodeRemove = useCallback(() => {
+    setQrCodeFile(null);
+    setQrCodePreview(null);
+    form.setValue('qrCode', undefined);
+    form.clearErrors('qrCode');
+  }, [form]);
 
   // Reset form when mode changes
   useEffect(() => {
@@ -114,10 +163,34 @@ const CollaboratorRequestForm = ({
         bankAccount: defaultValues.bankAccount || "",
         bankName: defaultValues.bankName || "",
         commissionRate: defaultValues.commissionRate || 10,
+        qrCode: defaultValues.qrCode,
         rejectionReason: defaultValues.rejectionReason || "",
       });
+      // Reset QR code preview if there's a default QR code
+      if (defaultValues.qrCode && defaultValues.qrCode instanceof File) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setQrCodePreview(e.target?.result as string);
+        };
+        reader.readAsDataURL(defaultValues.qrCode);
+      } else {
+        setQrCodePreview(null);
+      }
     }
   }, [defaultValues, form, mode]);
+
+  // Set QR code preview from API if available
+  useEffect(() => {
+    if (qrCode && !qrCodePreview) {
+      // Import baseConfig to construct QR code URL
+      import("@/configs/base").then(({ default: baseConfig }) => {
+        const qrCodeUrl = qrCode.startsWith('http') 
+          ? qrCode 
+          : `${baseConfig.mediaDomain}/${qrCode}`;
+        setQrCodePreview(qrCodeUrl);
+      });
+    }
+  }, [qrCode]);
 
   const handleSubmit = async (values: CollaboratorRequestFormValues) => {
     try {
@@ -306,6 +379,82 @@ const CollaboratorRequestForm = ({
               </FormControl>
               <FormDescription>
                 Số tài khoản ngân hàng để nhận hoa hồng (6-20 chữ số)
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* QR Code Upload */}
+        <FormField
+          control={form.control}
+          name="qrCode"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <div className="flex items-center gap-2">
+                  <ScanLine className="h-4 w-4" />
+                  Ảnh mã QR ngân hàng <span className="text-muted-foreground">(tùy chọn)</span>
+                </div>
+              </FormLabel>
+              <FormControl>
+                <div className="space-y-3">
+                  {/* Upload Area */}
+                  {!qrCodePreview ? (
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleQrCodeChange}
+                        disabled={isDisabled}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                      />
+                      <div className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-50">
+                        <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                        <p className="text-sm text-gray-600 text-center">
+                          <span className="font-medium">Nhấp để tải lên</span> hoặc kéo thả ảnh
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF tối đa 5MB</p>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Preview Area */
+                    <div className="relative">
+                      <div className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                        <div className="relative w-20 h-20 flex-shrink-0">
+                          <img
+                            src={qrCodePreview}
+                            alt="QR Code Preview"
+                            className="w-full h-full object-contain border border-gray-200 rounded bg-white"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900">
+                            {qrCodeFile?.name || "Mã QR đã tải lên"}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {qrCodeFile ? `${(qrCodeFile.size / 1024).toFixed(1)} KB` : ""}
+                          </p>
+                        </div>
+                        {!isViewMode && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={handleQrCodeRemove}
+                            disabled={isLoading}
+                            className="flex-shrink-0"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </FormControl>
+              <FormDescription>
+                Tải lên ảnh mã QR của tài khoản ngân hàng để khách hàng dễ dàng thanh toán
               </FormDescription>
               <FormMessage />
             </FormItem>
