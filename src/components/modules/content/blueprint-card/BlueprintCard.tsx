@@ -164,8 +164,8 @@ const BlueprintCard: FC<Props> = (props) => {
 
   const formattedPrice = formatVND(product.price || 0);
 
-  const username = product.createdBy?.email || "Không xác định";
-
+  const username = product.createdBy?.fullname?.trim() || "Không xác định";
+    // const username = product.createdBy?.email || "Không xác định";
   const categoryName = product?.category?.name || "General";
 
   const productImage = useMemo(() => {
