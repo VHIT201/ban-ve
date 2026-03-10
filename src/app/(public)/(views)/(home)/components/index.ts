@@ -1,4 +1,4 @@
-export { default as BannerSection } from "./banner-section";
+// export { default as BannerSection } from "./banner-section";
 export { default as DailyBestSeller } from "./daily-best-seller";
 export { default as CategoriesSection } from "./categories-section";
 export { default as DailyBestDownloaded } from "./daily-best-downloaded";
