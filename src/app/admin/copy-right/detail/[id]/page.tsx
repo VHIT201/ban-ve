@@ -50,7 +50,7 @@ const CopyRightDetailPage = () => {
   // Debug log
   useEffect(() => {
     if (reportQuery.data?.data) {
-      console.log('Reporter avatar:', reportQuery.data.data.reporterId?.avatar);
+      console.log("Reporter avatar:", reportQuery.data.data.reporterId?.avatar);
     }
   }, [reportQuery.data]);
 
@@ -297,17 +297,17 @@ const CopyRightDetailPage = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="flex items-start gap-3">
-                         <Avatar className="h-12 w-12">
-                            {report.reporterId?.avatar ? (
-                              <AvatarImage
-                                src={`https://giangvien.org/gateway/ban-ve/${report.reporterId.avatar}`}
-                                alt={report.reporterId.fullname}
-                              />
-                            ) : null}
-                            <AvatarFallback className="bg-green-500 text-white">
-                              {report.reporterId?.fullname?.[0] || "A"}
-                            </AvatarFallback>
-                          </Avatar>
+                        <Avatar className="h-12 w-12">
+                          {report.reporterId?.avatar ? (
+                            <AvatarImage
+                              src={`https://giangvien.org/gateway/ban-ve/${report.reporterId.avatar}`}
+                              alt={report.reporterId.fullname}
+                            />
+                          ) : null}
+                          <AvatarFallback className="bg-green-500 text-white">
+                            {report.reporterId?.fullname?.[0] || "A"}
+                          </AvatarFallback>
+                        </Avatar>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium truncate">
                             {report?.reporterId?.fullname || "Không rõ"}
@@ -333,7 +333,7 @@ const CopyRightDetailPage = () => {
                       </CardHeader>
                       <CardContent>
                         <div className="flex items-start gap-3">
-                           <Avatar className="h-12 w-12">
+                          <Avatar className="h-12 w-12">
                             {report.resolvedBy?.avatar ? (
                               <AvatarImage
                                 src={`https://giangvien.org/gateway/ban-ve/${report.resolvedBy.avatar}`}
