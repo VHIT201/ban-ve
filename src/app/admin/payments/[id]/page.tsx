@@ -55,7 +55,10 @@ type ExtendedPaymentDetails = PaymentPaymentDetails & {
 
 type Payment = Omit<BasePayment, "paymentDetails"> & {
   orderId?: string;
+  payerEmail?: string;
   orderCode?: string;
+  downloadCount?: number;
+  isSubscription?: boolean;
   paymentDetails?: ExtendedPaymentDetails;
 };
 
@@ -217,7 +220,7 @@ export default function PaymentDetailPage() {
           </CardHeader>
 
           <CardContent className="space-y-3">
-            <InfoRow label="Mã người dùng" value={payment.userId} />
+            <InfoRow label="email" value={payment.payerEmail} />
             <InfoRow label="Ngân hàng" value={paymentDetails?.bankName} />
             <InfoRow
               label="Tài khoản ảo"

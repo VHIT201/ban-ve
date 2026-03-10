@@ -162,30 +162,30 @@ export const useColumns = (props: usePaymentTableColumnsDefsProps) => {
         },
       },
       {
-        accessorKey: "userId",
-        header: "User ID",
+        accessorKey: "orderId.email",
+        header: "Email",
         cell: ({ row }) => {
-          const userId = row.getValue("userId") as string | undefined;
+          const email = row.original.orderId?.email;
           return (
-            <span className="font-mono text-xs text-muted-foreground">
-              {userId?.substring(0, 8) || "-"}
+            <span className="text-sm text-muted-foreground">
+              {email || "-"}
             </span>
           );
         },
       },
-      {
-        accessorKey: "paymentDetails.items[0].contentId",
-        header: "Content ID",
-        cell: ({ row }) => {
-          const paymentDetails = row.original.paymentDetails as any;
-          const contentId = paymentDetails?.items?.[0]?.contentId;
-          return (
-            <span className="font-mono text-xs text-muted-foreground">
-              {contentId || "-"}
-            </span>
-          );
-        },
-      },
+      // {
+      //   accessorKey: "paymentDetails.items[0].contentId",
+      //   header: "Content ID",
+      //   cell: ({ row }) => {
+      //     const paymentDetails = row.original.paymentDetails as any;
+      //     const contentId = paymentDetails?.items?.[0]?.contentId;
+      //     return (
+      //       <span className="font-mono text-xs text-muted-foreground">
+      //         {contentId || "-"}
+      //       </span>
+      //     );
+      //   },
+      // },
       {
         accessorKey: "createdAt",
         header: "Ngày tạo",

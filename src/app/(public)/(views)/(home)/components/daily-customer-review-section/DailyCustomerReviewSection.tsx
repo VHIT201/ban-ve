@@ -78,7 +78,7 @@ const CustomerReviewSection = () => {
                         <div className="flex items-center mb-4">
                           <Avatar className="w-11 h-11">
                             <AvatarImage
-                              src={getAvatarUrl(review.userId?.avatar)}
+                              src={getAvatarUrl(review.avatar)}
                               alt={
                                 review.userId?.fullname ||
                                 review.guestName ||

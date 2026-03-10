@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import type { Metadata } from "next";
 import { Main } from "@/components/layouts";
 import {
-  BannerSection,
+  // BannerSection,
   // DailyBestDownloaded,
   DailyBestSeller,
   DailyFeatureSection,
@@ -62,7 +62,7 @@ export default async function HomePage() {
       <Main className="pt-0">
         <TopSellingLists />
         <DailyBestSeller />
-        <BannerSection />
+        {/* <BannerSection /> */}
         {/* <DailyBestDownloaded /> */}
         <DailyCustomerReviewSection />
         <DailyFeatureSection />
