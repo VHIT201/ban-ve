@@ -411,8 +411,8 @@ const BlueprintCard: FC<Props> = (props) => {
             transition={{ duration: 0.4 }}
           />
 
-          {/* Status badge with parallax */}
-          <AnimatePresence>
+          {/* Status badge with parallax - HIDDEN */}
+          {/* <AnimatePresence>
             {product.status && (
               <motion.div
                 className="absolute bottom-4 left-4 right-4"
@@ -436,7 +436,7 @@ const BlueprintCard: FC<Props> = (props) => {
                 </Badge>
               </motion.div>
             )}
-          </AnimatePresence>
+          </AnimatePresence> */}
         </div>
 
         {/* Card content with stagger animations */}

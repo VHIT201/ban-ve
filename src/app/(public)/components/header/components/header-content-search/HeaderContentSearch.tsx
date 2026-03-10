@@ -412,9 +412,9 @@ function HeaderContentSearch({
               "rounded-full transition-all duration-300 relative",
               isMobileView ? "p-2" : "p-1.5",
               isListening
-                ? "text-white bg-red-500 shadow-lg shadow-red-500/30"
+                ? "text-white bg-green-500 shadow-lg shadow-green-500/30"
                 : "text-muted-foreground hover:text-foreground hover:bg-muted",
-              isListening && "ring-2 ring-offset-2 ring-red-500",
+              isListening && "ring-2 ring-offset-2 ring-green-500",
             )}
             disabled={isLoading}
             title={isListening ? "Đang nghe..." : "Nhấn để nói"}
@@ -422,8 +422,8 @@ function HeaderContentSearch({
             <div className="relative">
               {isListening ? (
                 <div className="relative">
-                  <div className="absolute -inset-1.5 bg-red-500/20 rounded-full animate-ping"></div>
-                  <MicOffIcon
+                  <div className="absolute -inset-1.5 bg-green-500/20 rounded-full animate-ping"></div>
+                  <MicIcon
                     className={cn(
                       isMobileView ? "h-5 w-5" : "h-4 w-4",
                       "relative",
