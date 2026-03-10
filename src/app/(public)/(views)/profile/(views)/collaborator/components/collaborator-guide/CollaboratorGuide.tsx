@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,18 +12,16 @@ import {
 } from "@/components/ui/dialog";
 import { BookOpen, Play } from "lucide-react";
 
+const YOUTUBE_VIDEO_ID = "vVi3NuGKpns";
+
 const CollaboratorGuide = () => {
   // States
   const [open, setOpen] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  // Hooks
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [hasStarted, setHasStarted] = useState(false);
 
   // Methods
   const handlePlay = () => {
-    videoRef.current?.play();
-    setIsPlaying(true);
+    setHasStarted(true);
   };
 
   return (
@@ -34,8 +32,7 @@ const CollaboratorGuide = () => {
           setOpen(true);
         } else {
           setOpen(false);
-          setIsPlaying(false);
-          videoRef.current = null;
+          setHasStarted(false);
         }
       }}
     >
@@ -86,45 +83,38 @@ const CollaboratorGuide = () => {
                 exit={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.4, delay: 0.1 }}
               >
-                <div className="relative group rounded-xl overflow-hidden bg-black aspect-video shadow-lg">
-                  {/* Video */}
-                  <video
-                    ref={videoRef}
-                    src="https://www.pexels.com/vi-vn/download/video/36244111/"
-                    controls={isPlaying}
-                    className="w-full h-full object-cover"
-                    onPlay={() => setIsPlaying(true)}
-                    onPause={() => setIsPlaying(false)}
-                  />
-
-                  {/* Overlay */}
-                  {!isPlaying && (
-                    <div
-                      className="absolute inset-0 flex items-center justify-center 
-                bg-black/30 group-hover:bg-black/40 transition cursor-pointer rounded-xl"
-                      onClick={handlePlay}
-                    >
-                      {/* Play Button */}
-                      <motion.div
-                        initial={{ scale: 0.9, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        whileHover={{ scale: 1.1 }}
-                        className="
-                            w-20 h-20 
-                            rounded-full 
-                            bg-gradient-to-b from-white/80 via-primary/50 to-primary/30
-                            ring-8 ring-white/30 
-                            backdrop-blur
-                            flex items-center justify-center
-                            shadow-xl
-                            "
+                <div className="relative group rounded-xl overflow-hidden bg-black shadow-lg aspect-video w-full">
+                  {hasStarted ? (
+                    <iframe
+                      src={`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&rel=0`}
+                      title="YouTube video player"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full border-0"
+                    />
+                  ) : (
+                    <>
+                      <img
+                        src={`https://img.youtube.com/vi/${YOUTUBE_VIDEO_ID}/maxresdefault.jpg`}
+                        alt="Video thumbnail"
+                        className="w-full h-full object-cover"
+                      />
+                      {/* Overlay */}
+                      <div
+                        className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition cursor-pointer rounded-xl"
+                        onClick={handlePlay}
                       >
-                        <Play
-                          className="w-8 h-8 text-white"
-                          fill="currentColor"
-                        />
-                      </motion.div>
-                    </div>
+                        {/* Play Button */}
+                        <motion.div
+                          initial={{ scale: 0.9, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          whileHover={{ scale: 1.1 }}
+                          className="w-20 h-20 rounded-full bg-gradient-to-b from-white/80 via-primary/50 to-primary/30 ring-8 ring-white/30 backdrop-blur flex items-center justify-center shadow-xl"
+                        >
+                          <Play className="w-8 h-8 text-white" fill="currentColor" />
+                        </motion.div>
+                      </div>
+                    </>
                   )}
                 </div>
               </motion.div>
@@ -134,8 +124,11 @@ const CollaboratorGuide = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.4, delay: 0.3 }}
-                className="pt-4"
+                className="pt-4 space-y-2"
               >
+                <p className="text-sm text-slate-500 text-center">
+                  Sẽ thanh toán cuối tháng cho cộng tác viên
+                </p>
                 <Button
                   variant="success"
                   onClick={() => setOpen(false)}
