@@ -4,7 +4,6 @@ import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Download,
-  FileText,
   Clock,
   Package,
   CheckCircle2,
@@ -18,7 +17,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
