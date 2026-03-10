@@ -128,7 +128,7 @@ const CategoriesFeatureSection = () => {
                       `${BASE_PATHS.app.collections.path}?category=${category._id}`,
                     )
                   }
-                  className="cursor-pointer flex relative flex-col bg-white shadow-sm p-0 rounded-none"
+                  className="cursor-pointer flex relative flex-col bg-white shadow-sm p-0 rounded-none h-full"
                   whileHover={{
                     scale: 1.05,
                     boxShadow:
@@ -140,7 +140,7 @@ const CategoriesFeatureSection = () => {
                     damping: 20,
                   }}
                 >
-                  <CardContent className="flex flex-col flex-1 p-2">
+                  <CardContent className="flex flex-col flex-1 p-2 h-full">
                     {/* Category Image */}
                     {category.imageUrl && (
                       <Image
@@ -151,7 +151,7 @@ const CategoriesFeatureSection = () => {
                     )}
 
                     {/* Category Details */}
-                    <h3 className="text-base font-semibold text-center text-foreground line-clamp-1 mb-2">
+                    <h3 className="text-base font-semibold text-center text-foreground line-clamp-2 mt-2">
                       {category.name}
                     </h3>
                   </CardContent>

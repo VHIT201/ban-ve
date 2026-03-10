@@ -19,7 +19,7 @@ const CustomerReviewSection = () => {
   const getAvatarUrl = (avatarPath?: string) => {
     if (!avatarPath) return undefined;
     // If it's already a full URL (starts with http), return as is
-    if (avatarPath.startsWith('http')) return avatarPath;
+    if (avatarPath.startsWith("http")) return avatarPath;
     // Otherwise, prepend the media domain
     return `${baseConfig.mediaDomain}/${avatarPath}`;
   };
@@ -71,18 +71,24 @@ const CustomerReviewSection = () => {
                   >
                     <Card
                       key={review._id}
-                      className="relative max-w-[300px] h-full bg-transparent rounded-none! shadow-none! hover:scale-105 transition-transform duration-300"
+                      className="relative max-w-[300px] h-full bg-transparent rounded-none! shadow-none! hover:scale-105 transition-transform duration-300 py-0"
                     >
                       <CardContent className="relative bg-white dark:bg-gray-800 p-6 shadow-none rounded-none">
                         {/* Header */}
                         <div className="flex items-center mb-4">
                           <Avatar className="w-11 h-11">
-                            <AvatarImage 
-                              src={getAvatarUrl(review.userId?.avatar)} 
-                              alt={review.userId?.fullname || review.guestName || "User avatar"}
+                            <AvatarImage
+                              src={getAvatarUrl(review.userId?.avatar)}
+                              alt={
+                                review.userId?.fullname ||
+                                review.guestName ||
+                                "User avatar"
+                              }
                             />
                             <AvatarFallback className="bg-blue-500">
-                              {review.userId?.fullname?.charAt(0) || review.guestName?.charAt(0) || "U"}
+                              {review.userId?.fullname?.charAt(0) ||
+                                review.guestName?.charAt(0) ||
+                                "U"}
                             </AvatarFallback>
                           </Avatar>
                           <div className="ml-3">
@@ -118,8 +124,6 @@ const CustomerReviewSection = () => {
               ))}
             </CarouselContent>
           </Carousel>
-          <div className="from-background pointer-events-none absolute inset-y-0 left-0 w-1/6 bg-gradient-to-r"></div>
-          <div className="from-background pointer-events-none absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l"></div>
         </div>
       </div>
     </section>

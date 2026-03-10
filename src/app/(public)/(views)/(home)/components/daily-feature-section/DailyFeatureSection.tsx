@@ -60,7 +60,7 @@ const DailyFeatureSection = () => {
     [];
 
   return (
-    <section className="pt-16 mb-12 bg-white">
+    <section className="pt-10 mb-12 bg-white">
       <div>
         <div className="flex items-end justify-between pb-2">
           <h2 className="text-xl uppercase font-semibold tracking-widest text-[#1a1a1a]">

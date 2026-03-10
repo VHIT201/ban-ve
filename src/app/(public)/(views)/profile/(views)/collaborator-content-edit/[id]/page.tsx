@@ -181,7 +181,9 @@ const ContentEditPage = () => {
                   : undefined
               }
               defaultImages={hasEnoughImages ? images.slice(0, 5) : images}
-              defaultSeoImage={hasEnoughImages ? images[4] : undefined}
+              defaultSeoImage={
+                hasEnoughImages ? images[images.length - 1] : undefined
+              }
               isLoading={editContentMutation.isPending}
               onSubmit={handleUpdateContent}
             />
