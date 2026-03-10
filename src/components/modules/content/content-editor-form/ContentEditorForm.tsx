@@ -150,7 +150,10 @@ const ContentEditorForm = ({
           invalid_type_error: "Giá phải là số",
         })
         .min(0, "Giá không được âm")
-        .max(1000000000, "Giá không được vượt quá 1 tỷ VNĐ"),
+        .max(1000000000, "Giá không được vượt quá 1 tỷ VNĐ")
+        .refine((value) => value === 0 || value >= 10000, {
+          message: "Giá phải bằng 0 hoặc lớn hơn hoặc bằng 10.000 VNĐ",
+        }),
       seoImage: z
         .instanceof(File, {
           message: "Vui lòng chọn một file hình ảnh cho SEO",
@@ -718,7 +721,7 @@ const ContentEditorForm = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-primary font-semibold tracking-wider">
-                Ảnh SEO <span className="text-red-500">*</span>
+                Ảnh chia sẻ liên kết <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
                 <div className="space-y-3">

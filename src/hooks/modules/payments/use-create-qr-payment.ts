@@ -6,6 +6,7 @@ import {
   CreateQRPaymentResponse,
   SSEPaymentMessage,
 } from "@/api/types/payments";
+import { toast } from "sonner";
 import baseConfig from "@/configs/base";
 import { PaymentMethod, PaymentStatus } from "@/enums/payment";
 import useSSEStream from "@/hooks/use-sse-stream";
@@ -14,7 +15,6 @@ import { OrderItem } from "@/types/order";
 import { extractErrorMessage } from "@/utils/error";
 import { isUndefined } from "lodash-es";
 import { useMemo, useState, useCallback } from "react";
-import { toast } from "sonner";
 
 // Types
 interface Props {
