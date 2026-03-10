@@ -6,6 +6,7 @@ import { ReactNode, useState } from "react";
 import { AuthSync } from "@/components/auth";
 import { TokenRefreshProvider } from "@/components/auth/TokenRefreshProvider";
 import { getQueryClient } from "@/configs/query-client";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 interface ProvidersProps {
   children: ReactNode;
@@ -16,15 +17,17 @@ export function Providers({ children }: ProvidersProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthSync />
-      <TokenRefreshProvider />
-      {children}
-      {process.env.NODE_ENV === "development" && (
-        <ReactQueryDevtools
-          initialIsOpen={false}
-          buttonPosition="bottom-right"
-        />
-      )}
+      <AuthProvider>
+        <AuthSync />
+        <TokenRefreshProvider />
+        {children}
+        {process.env.NODE_ENV === "development" && (
+          <ReactQueryDevtools
+            initialIsOpen={false}
+            buttonPosition="bottom-right"
+          />
+        )}
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

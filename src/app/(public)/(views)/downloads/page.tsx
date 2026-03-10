@@ -26,6 +26,7 @@ import { useGetApiOrdersOrderId } from "@/api/endpoints/orders";
 import type { Order } from "@/api/models/order";
 import { formatDate } from "@/utils/date";
 import { FileItem } from "./components";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Helper function to get status badge variant
 const getStatusVariant = (
@@ -75,6 +76,7 @@ export default function DownloadPage() {
   const orderId = searchParams?.get("orderId");
   const orderCode = searchParams?.get("orderCode");
   const orderUserGmail = searchParams?.get("email");
+  const { user } = useAuth();
 
   const { data, isLoading, error } = useGetApiOrdersOrderId(
     orderId || "",
@@ -201,6 +203,36 @@ export default function DownloadPage() {
             <AlertDescription>
               Your order is currently in <strong>{order.status}</strong> status.
               Downloads will be available once your order is completed.
+            </AlertDescription>
+          </Alert>
+        </motion.div>
+      </motion.div>
+    );
+  }
+
+  // User verification - check if logged-in user is the order owner
+  console.log("Debug - User:", user?.email, "Order email:", order.email);
+  if (user && order.email && user.email !== order.email) {
+    return (
+      <motion.div
+        className="container mx-auto px-4 py-16"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.1 }}
+        >
+          <Alert variant="destructive">
+            <XCircle className="h-4 w-4" />
+            <AlertTitle>Truy cập bị từ chối</AlertTitle>
+            <AlertDescription>
+              Bạn không có quyền tải xuống các tệp từ đơn hàng này. Đơn hàng này
+              thuộc về email <strong>{order.email}</strong>, nhưng bạn đang đăng nhập
+              bằng email <strong>{user.email}</strong>. Vui lòng đăng nhập bằng đúng
+              tài khoản đã đặt hàng.
             </AlertDescription>
           </Alert>
         </motion.div>
