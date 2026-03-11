@@ -415,6 +415,7 @@ export default function DownloadPage() {
                       <FileItem
                         key={`download-file-item-${item.contentId}-${index}`}
                         orderId={order._id!}
+                        orderEmail={order.email!}
                         item={item}
                         index={index}
                       />
