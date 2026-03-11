@@ -57,6 +57,7 @@ import {
 import { VIETNAM_BANKS } from "@/constants/banks";
 import { ResponseData } from "@/api/types/base";
 import CollaboratorRevenue from "./components/collaborator-revenue";
+import baseConfig from "@/configs/base";
 
 const collaboratorApplySchema = z.object({
   bankAccount: z
@@ -538,7 +539,7 @@ function CollaboratorStatus({
 
       <TabsContent value="qr-code" className="space-y-6">
         <UpdateQRCode
-          currentQrCodeUrl={data.qrCodeUrl}
+          currentQrCodeUrl={`${baseConfig.mediaDomain}/${data.qrCode}`}
           onSuccess={() => {
             // Refetch collaborator data to get updated QR code
             getCollaboratorMeQuery.refetch();
