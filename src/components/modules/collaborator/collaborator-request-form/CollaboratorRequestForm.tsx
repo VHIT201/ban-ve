@@ -43,6 +43,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { VIETNAM_BANKS } from "@/constants/banks";
+import Image from "@/components/ui/image";
 
 // Vietnamese banks list
 
@@ -85,7 +86,7 @@ interface CollaboratorRequestFormProps {
     email?: string;
   };
   approvedAt?: string;
-  qrCode?: string; // QR code URL from API
+  qrCode?: string;
 }
 
 const CollaboratorRequestForm = ({
@@ -121,39 +122,44 @@ const CollaboratorRequestForm = ({
   const commissionRate = form.watch("commissionRate");
 
   // Handle QR Code file change
-  const handleQrCodeChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        form.setError('qrCode', { message: 'Vui lòng chọn file ảnh' });
-        return;
+  const handleQrCodeChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        // Validate file type
+        if (!file.type.startsWith("image/")) {
+          form.setError("qrCode", { message: "Vui lòng chọn file ảnh" });
+          return;
+        }
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          form.setError("qrCode", {
+            message: "Kích thước file không được vượt quá 5MB",
+          });
+          return;
+        }
+
+        setQrCodeFile(file);
+        form.setValue("qrCode", file);
+        form.clearErrors("qrCode");
+
+        // Create preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setQrCodePreview(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
       }
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        form.setError('qrCode', { message: 'Kích thước file không được vượt quá 5MB' });
-        return;
-      }
-      
-      setQrCodeFile(file);
-      form.setValue('qrCode', file);
-      form.clearErrors('qrCode');
-      
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setQrCodePreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  }, [form]);
+    },
+    [form],
+  );
 
   // Handle QR Code removal
   const handleQrCodeRemove = useCallback(() => {
     setQrCodeFile(null);
     setQrCodePreview(null);
-    form.setValue('qrCode', undefined);
-    form.clearErrors('qrCode');
+    form.setValue("qrCode", undefined);
+    form.clearErrors("qrCode");
   }, [form]);
 
   // Reset form when mode changes
@@ -184,8 +190,8 @@ const CollaboratorRequestForm = ({
     if (qrCode && !qrCodePreview) {
       // Import baseConfig to construct QR code URL
       import("@/configs/base").then(({ default: baseConfig }) => {
-        const qrCodeUrl = qrCode.startsWith('http') 
-          ? qrCode 
+        const qrCodeUrl = qrCode.startsWith("http")
+          ? qrCode
           : `${baseConfig.mediaDomain}/${qrCode}`;
         setQrCodePreview(qrCodeUrl);
       });
@@ -394,7 +400,8 @@ const CollaboratorRequestForm = ({
               <FormLabel>
                 <div className="flex items-center gap-2">
                   <ScanLine className="h-4 w-4" />
-                  Ảnh mã QR ngân hàng <span className="text-muted-foreground">(tùy chọn)</span>
+                  Ảnh mã QR ngân hàng{" "}
+                  <span className="text-muted-foreground">(tùy chọn)</span>
                 </div>
               </FormLabel>
               <FormControl>
@@ -412,9 +419,12 @@ const CollaboratorRequestForm = ({
                       <div className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-50">
                         <Upload className="w-8 h-8 text-gray-400 mb-2" />
                         <p className="text-sm text-gray-600 text-center">
-                          <span className="font-medium">Nhấp để tải lên</span> hoặc kéo thả ảnh
+                          <span className="font-medium">Nhấp để tải lên</span>{" "}
+                          hoặc kéo thả ảnh
                         </p>
-                        <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF tối đa 5MB</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          PNG, JPG, GIF tối đa 5MB
+                        </p>
                       </div>
                     </div>
                   ) : (
@@ -422,7 +432,8 @@ const CollaboratorRequestForm = ({
                     <div className="relative">
                       <div className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
                         <div className="relative w-20 h-20 flex-shrink-0">
-                          <img
+                          <Image
+                            preview
                             src={qrCodePreview}
                             alt="QR Code Preview"
                             className="w-full h-full object-contain border border-gray-200 rounded bg-white"
@@ -433,7 +444,9 @@ const CollaboratorRequestForm = ({
                             {qrCodeFile?.name || "Mã QR đã tải lên"}
                           </p>
                           <p className="text-xs text-gray-500">
-                            {qrCodeFile ? `${(qrCodeFile.size / 1024).toFixed(1)} KB` : ""}
+                            {qrCodeFile
+                              ? `${(qrCodeFile.size / 1024).toFixed(1)} KB`
+                              : ""}
                           </p>
                         </div>
                         {!isViewMode && (
@@ -454,7 +467,8 @@ const CollaboratorRequestForm = ({
                 </div>
               </FormControl>
               <FormDescription>
-                Tải lên ảnh mã QR của tài khoản ngân hàng để khách hàng dễ dàng thanh toán
+                Tải lên ảnh mã QR của tài khoản ngân hàng để khách hàng dễ dàng
+                thanh toán
               </FormDescription>
               <FormMessage />
             </FormItem>

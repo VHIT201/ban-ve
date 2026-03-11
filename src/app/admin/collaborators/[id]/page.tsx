@@ -273,6 +273,7 @@ const CollaboratorDetail = () => {
                         commissionRate: commissionRate,
                         rejectionReason: request.rejectionReason,
                       }}
+                      qrCode={request.qrCode}
                       onSubmit={handleFormSubmit}
                     />
                   </CardContent>

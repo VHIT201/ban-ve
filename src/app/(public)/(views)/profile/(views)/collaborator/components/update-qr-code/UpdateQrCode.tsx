@@ -6,7 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { usePutApiCollaboratorsQrcode } from "@/api/endpoints/collaborators";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -17,14 +23,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "sonner";
-import {
-  ScanLine,
-  Upload,
-  Trash2,
-  Loader2,
-  CheckCircle2,
-} from "lucide-react";
+import { ScanLine, Upload, Trash2, Loader2, CheckCircle2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
+import Image from "@/components/ui/image";
 
 // Schema validation
 const updateQRCodeSchema = z.object({
@@ -54,44 +55,49 @@ const UpdateQRCode = ({ currentQrCodeUrl, onSuccess }: UpdateQRCodeProps) => {
   });
 
   // Handle QR Code file change
-  const handleQrCodeChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        form.setError('qrCode', { message: 'Vui lòng chọn file ảnh' });
-        return;
+  const handleQrCodeChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        // Validate file type
+        if (!file.type.startsWith("image/")) {
+          form.setError("qrCode", { message: "Vui lòng chọn file ảnh" });
+          return;
+        }
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          form.setError("qrCode", {
+            message: "Kích thước file không được vượt quá 5MB",
+          });
+          return;
+        }
+
+        setQrCodeFile(file);
+        form.setValue("qrCode", file);
+        form.clearErrors("qrCode");
+
+        // Create preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setQrCodePreview(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
       }
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        form.setError('qrCode', { message: 'Kích thước file không được vượt quá 5MB' });
-        return;
-      }
-      
-      setQrCodeFile(file);
-      form.setValue('qrCode', file);
-      form.clearErrors('qrCode');
-      
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setQrCodePreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  }, [form]);
+    },
+    [form],
+  );
 
   // Handle QR Code removal
   const handleQrCodeRemove = useCallback(() => {
     setQrCodeFile(null);
     setQrCodePreview(null);
-    form.setValue('qrCode', undefined);
-    form.clearErrors('qrCode');
+    form.setValue("qrCode", undefined);
+    form.clearErrors("qrCode");
   }, [form]);
 
   const onSubmit = async (values: UpdateQRCodeFormValues) => {
     if (!values.qrCode) {
-      form.setError('qrCode', { message: 'Vui lòng chọn ảnh mã QR' });
+      form.setError("qrCode", { message: "Vui lòng chọn ảnh mã QR" });
       return;
     }
 
@@ -104,12 +110,12 @@ const UpdateQRCode = ({ currentQrCodeUrl, onSuccess }: UpdateQRCodeProps) => {
             form.reset();
             setQrCodeFile(null);
             setQrCodePreview(null);
-            
+
             // Invalidate collaborator me query to refresh data
             queryClient.invalidateQueries({
-              queryKey: ['/api/collaborators/me'],
+              queryKey: ["/api/collaborators/me"],
             });
-            
+
             onSuccess?.();
           },
           onError: (error: any) => {
@@ -119,7 +125,7 @@ const UpdateQRCode = ({ currentQrCodeUrl, onSuccess }: UpdateQRCodeProps) => {
               "Cập nhật mã QR thất bại";
             toast.error(message);
           },
-        }
+        },
       );
     } catch (error) {
       console.error("QR Code update error:", error);
@@ -134,7 +140,8 @@ const UpdateQRCode = ({ currentQrCodeUrl, onSuccess }: UpdateQRCodeProps) => {
           Cập nhật mã QR thanh toán
         </CardTitle>
         <CardDescription className="text-sm text-gray-600">
-          Cập nhật ảnh mã QR của tài khoản ngân hàng để khách hàng dễ dàng thanh toán
+          Cập nhật ảnh mã QR của tài khoản ngân hàng để khách hàng dễ dàng thanh
+          toán
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-6">
@@ -143,10 +150,13 @@ const UpdateQRCode = ({ currentQrCodeUrl, onSuccess }: UpdateQRCodeProps) => {
             {/* Current QR Code Display */}
             {currentQrCodeUrl && !qrCodePreview && (
               <div className="space-y-3">
-                <h4 className="text-sm font-medium text-gray-700">Mã QR hiện tại</h4>
+                <h4 className="text-sm font-medium text-gray-700">
+                  Mã QR hiện tại
+                </h4>
                 <div className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
                   <div className="relative w-20 h-20 flex-shrink-0">
-                    <img
+                    <Image
+                      preview
                       src={currentQrCodeUrl}
                       alt="Current QR Code"
                       className="w-full h-full object-contain border border-gray-200 rounded bg-white shadow-sm"
@@ -154,12 +164,13 @@ const UpdateQRCode = ({ currentQrCodeUrl, onSuccess }: UpdateQRCodeProps) => {
                   </div>
                   <div className="flex-1">
                     <p className="text-sm text-gray-600">
-                      Đây là mã QR hiện tại của bạn. Tải lên ảnh mới để thay thế.
+                      Đây là mã QR hiện tại của bạn. Tải lên ảnh mới để thay
+                      thế.
                     </p>
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => window.open(currentQrCodeUrl, '_blank')}
+                      onClick={() => window.open(currentQrCodeUrl, "_blank")}
                       className="text-xs mt-2"
                     >
                       Xem ảnh gốc
@@ -196,9 +207,14 @@ const UpdateQRCode = ({ currentQrCodeUrl, onSuccess }: UpdateQRCodeProps) => {
                           <div className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-50">
                             <Upload className="w-8 h-8 text-gray-400 mb-2" />
                             <p className="text-sm text-gray-600 text-center">
-                              <span className="font-medium">Nhấp để tải lên</span> hoặc kéo thả ảnh
+                              <span className="font-medium">
+                                Nhấp để tải lên
+                              </span>{" "}
+                              hoặc kéo thả ảnh
                             </p>
-                            <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF tối đa 5MB</p>
+                            <p className="text-xs text-gray-500 mt-1">
+                              PNG, JPG, GIF tối đa 5MB
+                            </p>
                           </div>
                         </div>
                       ) : (
@@ -217,7 +233,9 @@ const UpdateQRCode = ({ currentQrCodeUrl, onSuccess }: UpdateQRCodeProps) => {
                                 {qrCodeFile?.name || "Mã QR đã tải lên"}
                               </p>
                               <p className="text-xs text-gray-500">
-                                {qrCodeFile ? `${(qrCodeFile.size / 1024).toFixed(1)} KB` : ""}
+                                {qrCodeFile
+                                  ? `${(qrCodeFile.size / 1024).toFixed(1)} KB`
+                                  : ""}
                               </p>
                             </div>
                             <Button
