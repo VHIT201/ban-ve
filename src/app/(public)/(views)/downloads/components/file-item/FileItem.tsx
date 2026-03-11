@@ -19,9 +19,12 @@ import { FC, useState } from "react";
 import { toast } from "sonner";
 import Image from "@/components/ui/image";
 import baseConfig from "@/configs/base";
+import { useAuth } from "@/contexts/AuthContext";
+import { Input } from "@/components/ui/input";
 
 interface Props {
   orderId: string;
+  orderEmail: string;
   item: OrderItem;
   index: number;
 }
@@ -42,10 +45,13 @@ export const parseBlobError = async (error: any): Promise<string> => {
   return "Unknown error";
 };
 
-const FileItem: FC<Props> = ({ orderId, item, index }) => {
+const FileItem: FC<Props> = ({ orderId, orderEmail, item, index }) => {
   // States
   const [isError, setIsError] = useState<boolean>(false);
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
+  const [showEmailInput, setShowEmailInput] = useState<boolean>(false);
+  const [inputEmail, setInputEmail] = useState<string>("");
+  const { user } = useAuth();
 
   const contentId = item.contentId?._id ?? "";
 
@@ -63,6 +69,7 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
     orderId!,
     {
       fileId: contentData?.file_id?._id! as string,
+      email: inputEmail || orderEmail,
     },
     {
       query: {
@@ -82,6 +89,11 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
 
   // Methods
   const handleDownloadFile = async () => {
+    if (!user && !inputEmail) {
+      setShowEmailInput(true);
+      return;
+    }
+
     try {
       let res;
 
@@ -263,6 +275,39 @@ const FileItem: FC<Props> = ({ orderId, item, index }) => {
                   Tải xuống
                 </Button>
               </motion.div>
+
+              {/* Form nhập email khi chưa đăng nhập */}
+              {showEmailInput && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-3 p-3 bg-muted rounded-lg"
+                >
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Vui lòng nhập email để xác thực
+                  </p>
+                  <div className="flex gap-2">
+                    <Input
+                      type="email"
+                      placeholder="Email thanh toán..."
+                      value={inputEmail}
+                      onChange={(e) => setInputEmail(e.target.value)}
+                      className="text-sm"
+                    />
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        if (inputEmail) {
+                          setShowEmailInput(false);
+                          handleDownloadFile();
+                        }
+                      }}
+                    >
+                      Xác thực
+                    </Button>
+                  </div>
+                </motion.div>
+              )}
             </motion.div>
           </div>
         </CardContent>

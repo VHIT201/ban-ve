@@ -487,17 +487,15 @@ export function useGetApiFilePendingLarge<TData = Awaited<ReturnType<typeof getA
 
 
 /**
- * Tải xuống file và tất cả ảnh minh họa liên quan (image1, image2, image3, image4) từ một đơn hàng đã thanh toán.
-- Nếu chỉ có file chính: Trả về file đó trực tiếp
-- Nếu có nhiều file (file chính + ảnh minh họa): Trả về file ZIP chứa tất cả các file
+ * Tải xuống file và tất cả ảnh minh họa liên quan từ một đơn hàng đã thanh toán.
 
-**Xác thực:**
-- **Khách vãng lai**: Không cần token, chỉ cần orderId của đơn hàng
-- **Người dùng đăng nhập**: Cần token JWT trong header Authorization và orderId phải khớp với userId
+**Xác thực và Rào bảo mật:**
+- **Khách vãng lai (Guest)**: Cần cung cấp `orderId` (trong path) và **`email`** (trong query) khớp với email lúc thanh toán.
+- **Người dùng đăng nhập**: Cần token JWT. Nếu đơn hàng thuộc về tài khoản này, không cần điền email query.
 
-**Giới hạn tải xuống:**
-- Khách vãng lai: 3 lần/đơn hàng
-- Người dùng đăng nhập: 5 lần/đơn hàng
+**Giới hạn tải xuống (Tính theo Order):**
+- Đơn hàng vãng lai: 3 lần/đơn hàng (Dù sau đó có đăng nhập thì vẫn giữ hạn 3 lần của đơn guest).
+- Đơn hàng thành viên: 5 lần/đơn hàng.
 
  * @summary Tải xuống file từ đơn hàng (khách hoặc người dùng đăng nhập)
  */
