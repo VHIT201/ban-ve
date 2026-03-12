@@ -150,16 +150,16 @@ const UpdateQRCode = ({ currentQrCodeUrl, onSuccess }: UpdateQRCodeProps) => {
             {/* Current QR Code Display */}
             {currentQrCodeUrl && !qrCodePreview && (
               <div className="space-y-3">
-                <h4 className="text-sm font-medium text-gray-700">
+               <h4 className="text-sm font-medium text-gray-700">
                   Mã QR hiện tại
                 </h4>
                 <div className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
-                  <div className="relative w-20 h-20 flex-shrink-0">
+                  <div className="relative w-20 flex-shrink-0 max-h-32 overflow-hidden rounded border border-gray-200 bg-white shadow-sm">
                     <Image
                       preview
                       src={currentQrCodeUrl}
                       alt="Current QR Code"
-                      className="w-full h-full object-contain border border-gray-200 rounded bg-white shadow-sm"
+                      className="w-full h-auto object-contain"
                     />
                   </div>
                   <div className="flex-1">
