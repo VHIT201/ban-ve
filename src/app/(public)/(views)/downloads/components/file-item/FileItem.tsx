@@ -21,6 +21,8 @@ import Image from "@/components/ui/image";
 import baseConfig from "@/configs/base";
 import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/input";
+import { useProfileStore } from "@/stores";
+import { useShallow } from "zustand/shallow";
 
 interface Props {
   orderId: string;
@@ -51,7 +53,16 @@ const FileItem: FC<Props> = ({ orderId, orderEmail, item, index }) => {
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [showEmailInput, setShowEmailInput] = useState<boolean>(false);
   const [inputEmail, setInputEmail] = useState<string>("");
+  const [emailError, setEmailError] = useState<string>("");
   const { user } = useAuth();
+  const { profileEmail } = useProfileStore(
+    useShallow((s) => ({ profileEmail: s.email }))
+  );
+
+  // Đã đăng nhập và email khớp với email đơn hàng → bỏ qua form
+  const isVerified =
+    !!profileEmail &&
+    profileEmail.toLowerCase() === orderEmail.toLowerCase();
 
   const contentId = item.contentId?._id ?? "";
 
@@ -69,7 +80,7 @@ const FileItem: FC<Props> = ({ orderId, orderEmail, item, index }) => {
     orderId!,
     {
       fileId: contentData?.file_id?._id! as string,
-      email: inputEmail || orderEmail,
+      email: profileEmail || inputEmail || orderEmail,
     },
     {
       query: {
@@ -89,7 +100,7 @@ const FileItem: FC<Props> = ({ orderId, orderEmail, item, index }) => {
 
   // Methods
   const handleDownloadFile = async () => {
-    if (!user && !inputEmail) {
+    if (!isVerified && !user && !inputEmail) {
       setShowEmailInput(true);
       return;
     }
@@ -284,28 +295,38 @@ const FileItem: FC<Props> = ({ orderId, orderEmail, item, index }) => {
                   className="mt-3 p-3 bg-muted rounded-lg"
                 >
                   <p className="text-xs text-muted-foreground mb-2">
-                    Vui lòng nhập email để xác thực
+                    Vui lòng nhập email xác thực
                   </p>
                   <div className="flex gap-2">
                     <Input
                       type="email"
-                      placeholder="Email thanh toán..."
+                      placeholder="Email đã mua hàng..."
                       value={inputEmail}
-                      onChange={(e) => setInputEmail(e.target.value)}
-                      className="text-sm"
+                      onChange={(e) => {
+                        setInputEmail(e.target.value);
+                        setEmailError("");
+                      }}
+                      className={`text-sm ${emailError ? "border-destructive" : ""}`}
                     />
                     <Button
                       size="sm"
                       onClick={() => {
-                        if (inputEmail) {
-                          setShowEmailInput(false);
-                          handleDownloadFile();
+                        if (!inputEmail) return;
+                        if (inputEmail.toLowerCase() !== orderEmail.toLowerCase()) {
+                          setEmailError("Email không khớp với email đã mua hàng");
+                          return;
                         }
+                        setEmailError("");
+                        setShowEmailInput(false);
+                        handleDownloadFile();
                       }}
                     >
                       Xác thực
                     </Button>
                   </div>
+                  {emailError && (
+                    <p className="text-xs text-destructive mt-1">{emailError}</p>
+                  )}
                 </motion.div>
               )}
             </motion.div>
