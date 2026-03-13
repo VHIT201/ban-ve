@@ -109,6 +109,7 @@ const hasReviewed = !!userComment;
 
   // Constants
   const MAX_COMMENT_LENGTH = 500;
+  const MIN_COMMENT_LENGTH = 10;
 
   // States
   const [commentContent, setCommentContent] = useState<string>(
@@ -135,6 +136,13 @@ const hasReviewed = !!userComment;
     if (commentContent.length > MAX_COMMENT_LENGTH) {
       toast.warning(
         `Bình luận không được vượt quá ${MAX_COMMENT_LENGTH} ký tự`,
+      );
+      return;
+    }
+
+    if (commentContent.trim().length < MIN_COMMENT_LENGTH) {
+      toast.warning(
+        `Bình luận phải có ít nhất ${MIN_COMMENT_LENGTH} ký tự`,
       );
       return;
     }
@@ -401,6 +409,8 @@ const hasReviewed = !!userComment;
                   classNames?.textarea,
                   commentContent.length > MAX_COMMENT_LENGTH
                     ? "border-red-500"
+                    : commentContent.trim().length > 0 && commentContent.trim().length < MIN_COMMENT_LENGTH
+                    ? "border-red-500"
                     : "",
                 )}
                 disabled={isSubmitting}
@@ -408,6 +418,11 @@ const hasReviewed = !!userComment;
               <div className="absolute bottom-2 right-2 text-xs text-gray-500">
                 {commentContent.length}/{MAX_COMMENT_LENGTH}
               </div>
+              {commentContent.trim().length > 0 && commentContent.trim().length < MIN_COMMENT_LENGTH && (
+                <div className="absolute bottom-6 right-2 text-xs text-red-500">
+                  Tối thiểu {MIN_COMMENT_LENGTH} ký tự
+                </div>
+              )}
             </div>
 
             {commentMediaList.length > 0 && (

@@ -267,7 +267,7 @@ const BlueprintCard: FC<Props> = (props) => {
 
       {/* Main card container with parallax layers */}
       <div className="relative">
-        <div className="relative aspect-square overflow-hidden bg-[#F5F5F3]">
+        <div className="relative aspect-square overflow-hidden bg-[#F5F5F3] rounded-lg">
           {/* Shimmer overlay effect */}
           <motion.div
             className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 pointer-events-none"
@@ -335,7 +335,7 @@ const BlueprintCard: FC<Props> = (props) => {
               src={productImage ?? generateImageRandom()}
               alt={title}
               wrapperClassName="h-full"
-              className="object-cover h-full w-full"
+              className="object-cover h-full w-full rounded-lg"
             />
           </motion.div>
 
@@ -519,7 +519,7 @@ const BlueprintCard: FC<Props> = (props) => {
                 variant="outline"
                 disabled={isAddingToCart}
                 className={cn(
-                  "h-12 rounded-none w-full px-5 font-semibold text-[12px] uppercase tracking-wider hover:bg-success border-primary/20 hover:text-primary-foreground hover:border-success/80 transition-all duration-300 bg-transparent relative overflow-hidden group/button",
+                  "h-12 rounded-lg w-full px-5 font-semibold text-[12px] uppercase tracking-wider hover:bg-success border-primary/20 hover:text-primary-foreground hover:border-success/80 transition-all duration-300 bg-transparent relative overflow-hidden group/button",
                   isProductInCart &&
                     "bg-success text-primary-foreground border-success",
                   isAddingToCart && "cursor-not-allowed opacity-70",
@@ -556,7 +556,7 @@ const BlueprintCard: FC<Props> = (props) => {
                 variant="outline"
                 disabled={isAddingToCart}
                 className={cn(
-                  "h-12 rounded-none w-full px-5 font-semibold text-[12px] uppercase tracking-wider border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 bg-transparent relative overflow-hidden group/button",
+                  "h-12 rounded-lg w-full px-5 font-semibold text-[12px] uppercase tracking-wider border-primary/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 bg-transparent relative overflow-hidden group/button",
                   isProductInCart &&
                     "bg-primary text-primary-foreground border-primary",
                   isAddingToCart && "cursor-not-allowed opacity-70",

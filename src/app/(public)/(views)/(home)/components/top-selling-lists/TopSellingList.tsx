@@ -28,9 +28,9 @@ import { useState } from "react";
 
 const BestSellingCardSkeleton = () => {
   return (
-    <Card className="relative overflow-hidden flex flex-col bg-white shadow-sm p-0 rounded-none">
+    <Card className="relative overflow-hidden flex flex-col bg-white shadow-sm p-0 rounded-lg">
       {/* Badge skeleton */}
-      <Skeleton className="absolute top-2 right-2 h-8 w-16 rounded-none" />
+      <Skeleton className="absolute top-2 right-2 h-8 w-16 rounded-lg" />
 
       <CardContent className="flex flex-col flex-1 p-2">
         {/* Image */}
@@ -151,17 +151,17 @@ const BestSellingData = () => {
                   key={product.id}
                   className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/5"
                 >
-                  <Card className="relative overflow-hidden flex flex-col bg-white shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 p-0 rounded-none">
-                    <Badge className="absolute top-2 right-2 px-8 z-20 p-1 text-2xl inline-block bg-orange-500 italic text-white font-semibold hover:bg-orange-400">
+                  <Card className="relative overflow-hidden flex flex-col bg-white shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300 p-0 rounded-lg">
+                    <Badge className="absolute top-2 right-2 px-8 z-20 p-1 text-2xl inline-block bg-orange-500 italic text-white font-semibold hover:bg-orange-400 rounded-lg">
                       # {index + 1}
                     </Badge>
                     <CardContent className="flex flex-col flex-1 p-2">
                       {/* Product Image */}
-                      <div className="relative aspect-square max-h-[200px] overflow-hidden bg-gray-100">
+                      <div className="relative aspect-square max-h-[200px] overflow-hidden bg-gray-100 rounded-lg">
                         <Image
                           src={product.image}
                           alt={product.title}
-                          className="object-cover h-full w-full"
+                          className="object-cover h-full w-full rounded-lg"
                         />
                       </div>
                       {/* Product Details */}
@@ -184,7 +184,7 @@ const BestSellingData = () => {
                               ),
                             )
                           }
-                          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 transition-colors duration-200"
+                          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 transition-colors duration-200 rounded-lg"
                         >
                           Mua Ngay
                         </Button>

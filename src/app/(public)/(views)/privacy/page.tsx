@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Chính sách Bảo mật - Blueprint Marketplace',
-  description: 'Chính sách bảo mật thông tin của Blueprint Marketplace',
+  title: 'Chính sách Bảo mật - Marketplace Data - Dataory',
+  description: 'Chính sách bảo mật thông tin của Marketplace Data - Dataory',
 };
 
 export default function PrivacyPage() {
@@ -18,7 +18,7 @@ export default function PrivacyPage() {
           <h2 className="text-2xl font-semibold mb-4">1. Giới thiệu</h2>
           <div className="space-y-4">
             <p>
-              Tại Blueprint Marketplace, chúng tôi cam kết bảo vệ quyền riêng tư của bạn. Chính sách Bảo mật này giải thích cách chúng tôi thu thập, sử dụng, tiết lộ và bảo vệ thông tin của bạn khi bạn sử dụng dịch vụ của chúng tôi.
+              Tại Marketplace Data - Dataory, chúng tôi cam kết bảo vệ quyền riêng tư của bạn. Chính sách Bảo mật này giải thích cách chúng tôi thu thập, sử dụng, tiết lộ và bảo vệ thông tin của bạn khi bạn sử dụng dịch vụ của chúng tôi.
             </p>
             <p>
               Bằng cách sử dụng Dịch vụ của chúng tôi, bạn đồng ý với việc thu thập và sử dụng thông tin theo chính sách này.
@@ -123,20 +123,10 @@ export default function PrivacyPage() {
           </div>
         </section>
 
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">8. Liên hệ chúng tôi</h2>
-          <div className="space-y-4">
-            <p>Nếu bạn có bất kỳ câu hỏi hoặc mối quan tâm nào về Chính sách Bảo mật này, vui lòng liên hệ với chúng tôi tại:</p>
-            <ul className="list-disc pl-6 space-y-2">
-              <li>Email: <a href="mailto:privacy@bandoviet.com" className="text-primary hover:underline">privacy@bandoviet.com</a></li>
-              <li>Điện thoại: <a href="tel:+84123456789" className="text-primary hover:underline">+84 123 456 789</a></li>
-              <li>Địa chỉ: Số 123, Đường Thiết Kế, P. Sáng Tạo, Q. Đổi Mới, TP. Hồ Chí Minh</li>
-            </ul>
-          </div>
-        </section>
+        
 
         <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">9. Thay đổi đối với Chính sách Bảo mật</h2>
+          <h2 className="text-2xl font-semibold mb-4">8. Thay đổi đối với Chính sách Bảo mật</h2>
           <div className="space-y-4">
             <p>Chúng tôi có thể cập nhật Chính sách Bảo mật này theo thời gian. Chúng tôi sẽ thông báo cho bạn về bất kỳ thay đổi nào bằng cách đăng Chính sách Bảo mật mới trên trang này.</p>
             <p>Bạn nên xem xét Chính sách Bảo mật này định kỳ để biết bất kỳ thay đổi nào. Việc bạn tiếp tục sử dụng Dịch vụ sau khi chúng tôi đăng các thay đổi đối với Chính sách Bảo mật này đồng nghĩa với việc bạn chấp nhận các thay đổi đó.</p>

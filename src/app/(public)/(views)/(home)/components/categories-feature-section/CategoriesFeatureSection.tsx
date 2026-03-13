@@ -128,7 +128,7 @@ const CategoriesFeatureSection = () => {
                       `${BASE_PATHS.app.collections.path}?category=${category._id}`,
                     )
                   }
-                  className="cursor-pointer flex relative flex-col bg-white shadow-sm p-0 rounded-none h-full"
+                  className="cursor-pointer flex relative flex-col bg-white shadow-sm p-0 rounded-lg h-full"
                   whileHover={{
                     scale: 1.05,
                     boxShadow:
@@ -166,7 +166,7 @@ const CategoriesFeatureSection = () => {
             initial="hidden"
             animate={isHovered ? "visible" : "hidden"}
             className={cn(
-              "absolute left-4 top-1/2 -translate-y-1/2 z-20 rounded-none",
+              "absolute left-4 top-1/2 -translate-y-1/2 z-20 rounded-lg",
               "bg-gray-700/50 border-white/40 text-white backdrop-blur-sm",
               "hover:bg-gray-300 hover:border-white/60",
               "transition-all duration-200 w-10 h-10 md:w-12 md:h-12",
@@ -181,7 +181,7 @@ const CategoriesFeatureSection = () => {
             initial="hidden"
             animate={isHovered ? "visible" : "hidden"}
             className={cn(
-              "absolute right-4 top-1/2 -translate-y-1/2 z-20 rounded-none",
+              "absolute right-4 top-1/2 -translate-y-1/2 z-20 rounded-lg",
               "bg-gray-700/50 border-white/40 text-white backdrop-blur-sm",
               "hover:bg-gray-300 hover:border-white/60",
               "transition-all duration-200 w-10 h-10 md:w-12 md:h-12",

@@ -67,13 +67,13 @@ const CustomerReviewSection = () => {
                       ":id",
                       review?.contentId?._id ?? "",
                     )}
-                    className="cursor-pointer"
+                    className="cursor-pointer w-full flex justify-center md:block"
                   >
                     <Card
                       key={review._id}
-                      className="relative max-w-[300px] h-full bg-transparent rounded-none! shadow-none! hover:scale-105 transition-transform duration-300 py-0"
+                      className="relative max-w-[300px] h-full bg-transparent rounded-lg shadow-none! hover:scale-105 transition-transform duration-300 py-0 flex flex-col"
                     >
-                      <CardContent className="relative bg-white dark:bg-gray-800 p-6 shadow-none rounded-none">
+                      <CardContent className="relative bg-white dark:bg-gray-800 p-6 shadow-none rounded-lg flex-1">
                         {/* Header */}
                         <div className="flex items-center mb-4">
                           <Avatar className="w-11 h-11">
@@ -101,14 +101,14 @@ const CustomerReviewSection = () => {
                           </div>
                         </div>
                         {/* Nội dung tin nhắn */}
-                        <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed line-clamp-2">
+                        <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed line-clamp-2 flex-grow min-h-[3.5rem]">
                           {review.content}
                         </p>
                         {/* Rating */}
-                        <div className="flex space-x-1">
+                        <div className="flex space-x-1 mt-auto pt-4">
                           {[...Array(5)].map((_, i) => (
                             <Star
-                              key={i}
+                              key={i} 
                               className={`w-4 h-4 ${
                                 i < (review.stars ?? 0)
                                   ? "text-yellow-400 fill-current"

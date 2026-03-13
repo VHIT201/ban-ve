@@ -111,12 +111,12 @@ const DailyFeatureSection = () => {
             ))}
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-8">
           <Button
             loading={getBluePrintListInfiniteQuery.isFetchingNextPage}
             onClick={() => getBluePrintListInfiniteQuery.fetchNextPage()}
             className={cn(
-              "h-14 px-8 text-xl font-medium",
+              "h-14 px-8 text-xl font-medium rounded-lg",
               getBluePrintListInfiniteQuery.hasNextPage ? "block" : "hidden",
             )}
           >

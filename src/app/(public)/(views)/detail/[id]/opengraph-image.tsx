@@ -50,17 +50,26 @@ export default async function Image({ params }: Props) {
   return new ImageResponse(
     <div
       style={{
-        fontSize: 128,
+        fontSize: 80,
         background: "linear-gradient(to bottom right, #1e293b, #334155)",
         width: "100%",
         height: "100%",
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         color: "white",
+        borderRadius: "24px",
+        padding: "40px",
+        textAlign: "center",
       }}
     >
-      BanVe
+      <div style={{ marginBottom: "20px" }}>
+        Marketplace Data - Dataory
+      </div>
+      <div style={{ fontSize: "32px", opacity: 0.8 }}>
+        Product Detail
+      </div>
     </div>,
     {
       ...size,
