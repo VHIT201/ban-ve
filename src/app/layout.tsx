@@ -56,8 +56,9 @@ export const metadata: Metadata = {
     url: "https://ban-ve.vercel.app/",
     images: [
       {
-        url: "/logo.png",
-        secureUrl: "/logo.png",
+        url: "https://giangvien.org/gateway/ban-ve/uploads/file-1773448559270-62649628.png",
+        secureUrl:
+          "https://giangvien.org/gateway/ban-ve/uploads/file-1773448559270-62649628.png",
         width: 1200,
         height: 630,
         alt: "Dataory - Nền tảng mua bán nội dung số",
