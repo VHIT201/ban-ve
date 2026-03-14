@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Điều khoản và Điều kiện - Blueprint Marketplace',
-  description: 'Điều khoản và điều kiện sử dụng dịch vụ của Blueprint Marketplace',
+  title: 'Điều khoản và Điều kiện - Marketplace Data - Dataory',
+  description: 'Điều khoản và điều kiện sử dụng dịch vụ của Marketplace Data - Dataory',
 };
 
 export default function TermsPage() {
@@ -18,7 +18,7 @@ export default function TermsPage() {
           <h2 className="text-2xl font-semibold mb-4">1. Giới thiệu</h2>
           <div className="space-y-4">
             <p>
-              Chào mừng bạn đến với Blueprint Marketplace ("Chúng tôi", "Công ty", "Chúng tôi"). Bằng cách truy cập hoặc sử dụng bất kỳ phần nào của trang web, ứng dụng hoặc dịch vụ của chúng tôi, bạn đồng ý bị ràng buộc bởi các điều khoản và điều kiện này.
+              Chào mừng bạn đến với Marketplace Data - Dataory. Bằng cách truy cập hoặc sử dụng bất kỳ phần nào của trang web, ứng dụng hoặc dịch vụ của chúng tôi, bạn đồng ý bị ràng buộc bởi các điều khoản và điều kiện này.
             </p>
             <p>
               Nếu bạn không đồng ý với bất kỳ phần nào của các điều khoản này, vui lòng không sử dụng Dịch vụ của chúng tôi.
@@ -29,7 +29,7 @@ export default function TermsPage() {
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">2. Định nghĩa</h2>
           <ul className="list-disc pl-6 space-y-2">
-            <li><strong>Dịch vụ</strong>: Bao gồm tất cả các sản phẩm, dịch vụ và nội dung do Blueprint Marketplace cung cấp.</li>
+            <li><strong>Dịch vụ</strong>: Bao gồm tất cả các sản phẩm, dịch vụ và nội dung do Marketplace Data - Dataory cung cấp.</li>
             <li><strong>Người dùng</strong>: Bất kỳ cá nhân hoặc tổ chức nào truy cập hoặc sử dụng Dịch vụ của chúng tôi.</li>
             <li><strong>Tài khoản</strong>: Hồ sơ cá nhân của bạn trên nền tảng của chúng tôi.</li>
             <li><strong>Nội dung</strong>: Tất cả thông tin, văn bản, đồ họa, hình ảnh, âm nhạc, phần mềm, âm thanh và các tài liệu khác.</li>
@@ -122,16 +122,7 @@ export default function TermsPage() {
           <p>Điều khoản Dịch vụ này sẽ được điều chỉnh và giải thích theo luật pháp Việt Nam. Bất kỳ tranh chấp phát sinh từ việc sử dụng Dịch vụ của chúng tôi sẽ được giải quyết tại tòa án có thẩm quyền tại Việt Nam.</p>
         </section>
 
-        <section>
-          <h2 className="text-2xl font-semibold mb-4">11. Liên hệ</h2>
-          <p>Nếu bạn có bất kỳ câu hỏi nào về các Điều khoản Dịch vụ này, vui lòng liên hệ với chúng tôi:</p>
-          <ul className="list-disc pl-6 space-y-2 mt-2">
-            <li>Email: support@blueprintmarketplace.com</li>
-            <li>Điện thoại: 1900 1234</li>
-            <li>Địa chỉ: Tòa nhà ABC, 123 Đường XYZ, Quận 1, TP. Hồ Chí Minh, Việt Nam</li>
-          </ul>
-          <p className="mt-4">Cảm ơn bạn đã dành thời gian đọc Điều khoản Dịch vụ của chúng tôi!</p>
-        </section>
+        
       </div>
     </main>
   );

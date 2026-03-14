@@ -228,7 +228,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
     <Fragment>
       <ImageProtection>
         <motion.div
-          className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-10"
+          className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-10 "
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -240,7 +240,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
           >
             {/* Main Image */}
             <motion.div
-              className="bg-white/5 backdrop-blur-sm overflow-hidden shadow-xl border border-white/10"
+              className="bg-white/5 backdrop-blur-sm overflow-hidden shadow-xl border border-white/10 rounded-lg"
               variants={imageVariants}
               layoutId={`image-${selectedImage}`}
             >
@@ -254,7 +254,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
                   key={selectedImage}
                   src={imageList[selectedImage]}
                   alt={content.title}
-                  className="w-full h-[300px] sm:h-[400px] lg:h-[550px] object-cover cursor-zoom-in"
+                  className="w-full h-[300px] sm:h-[400px] lg:h-[550px] object-cover cursor-zoom-in rounded-lg"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.3 }}
@@ -279,7 +279,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
                     >
                       <motion.button
                         onClick={() => setSelectedImage(index)}
-                        className={`aspect-square bg-white/5 backdrop-blur-sm  overflow-hidden border transition-all duration-300 w-full ${
+                        className={`aspect-square bg-white/5 backdrop-blur-sm overflow-hidden border transition-all duration-300 w-full rounded-lg ${
                           selectedImage === index
                             ? "border-white/40 ring-2 ring-white/20 shadow-lg"
                             : "border-white/10 hover:border-white/30 opacity-60 hover:opacity-100"
@@ -291,7 +291,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
                         <img
                           src={image}
                           alt={`Preview ${index + 1}`}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover rounded-lg"
                           draggable="false"
                           onContextMenu={(e) => e.preventDefault()}
                         />
@@ -301,8 +301,8 @@ const BlueprintDetailView: FC<Props> = (props) => {
                 </CarouselContent>
                 {imageList.length > 5 && (
                   <>
-                    <CarouselPrevious className="-left-3 size-8 bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/20 shadow-lg" />
-                    <CarouselNext className="-right-3 size-8 bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/20 shadow-lg" />
+                    <CarouselPrevious className="-left-3 size-8 bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/20 shadow-lg rounded-lg" />
+                    <CarouselNext className="-right-3 size-8 bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/20 shadow-lg rounded-lg" />
                   </>
                 )}
               </Carousel>
@@ -314,9 +314,9 @@ const BlueprintDetailView: FC<Props> = (props) => {
             className="lg:col-span-2 space-y-6"
             variants={itemVariants}
           >
-            <div className="bg-white/5 backdrop-blur-sm p-6 sm:p-8 shadow-xl border border-white/10 space-y-6 h-fit">
+            <div className="bg-white/5 backdrop-blur-sm p-6 sm:p-8 shadow-xl border border-white/10 space-y-6 h-fit rounded-lg">
               {/* Header with Actions */}
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start justify-between gap-4 rounded-lg">
                 <motion.h1
                   className="text-2xl sm:text-3xl font-bold text-white leading-tight flex-1"
                   initial={{ opacity: 0, x: -20 }}
@@ -336,12 +336,12 @@ const BlueprintDetailView: FC<Props> = (props) => {
                       <Button
                         size="icon"
                         variant="ghost"
-                        className="text-white/60 hover:text-white hover:bg-white/10  transition-colors"
+                        className="text-white/60 hover:text-white hover:bg-white/10 transition-colors rounded-lg"
                       >
                         <EllipsisIcon className="size-5" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
+                    <DropdownMenuContent align="end" className="rounded-lg">
                       <DropdownMenuItem onClick={handleShare}>
                         <ShareIcon className="size-4 mr-2" />
                         Chia sẻ
@@ -368,7 +368,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
               >
                 <Badge
                   variant="success"
-                  className="px-4 py-2 font-semibold text-[14px]"
+                  className="px-4 py-2 font-semibold text-[14px] rounded-lg"
                 >
                   {content.price
                     ? new Intl.NumberFormat("vi-VN", {
@@ -439,7 +439,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
                     >
                       <Button
                         size="lg"
-                        className="w-full h-12 bg-white text-gray-900 hover:bg-white/90 font-semibold  shadow-lg hover:shadow-xl transition-shadow"
+                        className="w-full h-12 bg-white text-gray-900 hover:bg-white/90 font-semibold shadow-lg hover:shadow-xl transition-shadow rounded-lg"
                         onClick={handleAddToCart}
                         disabled={isAdding}
                         variant="default"
@@ -492,7 +492,7 @@ const BlueprintDetailView: FC<Props> = (props) => {
                       <Button
                         size="lg"
                         variant="destructive"
-                        className="w-full h-12 font-semibold  shadow-lg hover:shadow-xl transition-shadow"
+                        className="w-full h-12 font-semibold shadow-lg hover:shadow-xl transition-shadow rounded-lg"
                         onClick={handleBuyNow}
                         disabled={isFree}
                       >

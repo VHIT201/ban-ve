@@ -127,14 +127,15 @@ const QRPayment: FC<Props> = (props) => {
               transition={{ delay: 0.4 }}
               className="w-full p-5 bg-linear-to-br from-green-500/5 to-green-600/5 border border-green-500/20"
             >
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground font-medium">
-                  Số tiền thanh toán
-                </span>
-                <span className="text-2xl font-bold text-success font-mono">
-                  {formatVND(amount)}
-                </span>
-              </div>
+             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+  <span className="text-sm text-muted-foreground font-medium">
+    Số tiền thanh toán
+  </span>
+
+  <span className="text-xl sm:text-2xl font-bold text-success font-mono">
+    {formatVND(amount)}
+  </span>
+</div>
             </motion.div>
             {/* Action Button */}
             {order && (

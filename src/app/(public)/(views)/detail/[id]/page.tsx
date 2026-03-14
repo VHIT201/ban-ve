@@ -57,7 +57,7 @@ export async function generateMetadata({
       title: content.title?.slice(0, 60) || "Chi tiết sản phẩm",
       description:
         content.description?.slice(0, 160) ||
-        `Sản phẩm ${content.title?.slice(0, 60)} - Giá: ${priceText}. Xem chi tiết tại BanVe.vn`,
+        `Sản phẩm ${content.title?.slice(0, 60)} - Giá: ${priceText}. Xem chi tiết tại Marketplace Data - Dataory`,
       image,
       url: `/detail/${id}`,
       type: "article",
@@ -66,7 +66,7 @@ export async function generateMetadata({
         "dữ liệu",
         "thiết kế",
         content.field?.slice(0, 60) || "",
-        "BanVe.vn",
+        "Marketplace Data - Dataory",
       ].filter(Boolean),
       publishedTime: content.createdAt,
       authors: content.createdBy?.fullname ? [content.createdBy.fullname] : [],
@@ -77,7 +77,7 @@ export async function generateMetadata({
     // If error, return default metadata
     return generateSEOMetadata({
       title: "Chi tiết sản phẩm",
-      description: "Xem chi tiết sản phẩm tại BanVe.vn",
+      description: "Xem chi tiết sản phẩm tại Marketplace Data - Dataory",
       url: "/detail",
     });
   }

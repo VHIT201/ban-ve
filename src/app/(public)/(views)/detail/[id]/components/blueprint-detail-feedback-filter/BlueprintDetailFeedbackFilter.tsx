@@ -118,7 +118,7 @@ const BlueprintDetailFeedbackFilter = ({
     >
       {/* Rating Summary Card */}
       <motion.div variants={cardVariants}>
-        <Card className="p-8 bg-gradient-to-br from-card to-card/50 border-border/50 backdrop-blur-sm overflow-hidden relative">
+        <Card className="p-8 bg-gradient-to-br from-card to-card/50 border-border/50 backdrop-blur-sm overflow-hidden relative rounded-lg">
           {/* Subtle background decoration */}
           <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-transparent pointer-events-none" />
 
@@ -175,7 +175,7 @@ const BlueprintDetailFeedbackFilter = ({
 
       {/* Rating Distribution */}
       <motion.div variants={cardVariants}>
-        <Card className="p-6 bg-card/80 border-border/50 backdrop-blur-sm">
+        <Card className="p-6 bg-card/80 border-border/50 backdrop-blur-sm rounded-lg">
           <h3 className="text-sm font-semibold mb-5 text-foreground/90">
             Phân bổ đánh giá
           </h3>

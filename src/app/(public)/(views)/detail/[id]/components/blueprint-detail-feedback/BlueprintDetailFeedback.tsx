@@ -35,7 +35,7 @@ const BlueprintDetailFeedback: FC<Props> = (props) => {
       <CommentProvider contentId={content._id}>
         <div className="space-y-8">
           {allowedToComment && (
-            <div className="bg-gray-50 p-6 border border-gray-200">
+            <div className="bg-gray-50 p-6 border border-gray-200 rounded-lg">
               <CommentCreationForm />
             </div>
           )}

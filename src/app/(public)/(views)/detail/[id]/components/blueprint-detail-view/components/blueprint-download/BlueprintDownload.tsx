@@ -153,7 +153,7 @@ const BlueprintDownload: FC<Props> = ({ content }) => {
       {isFree && (
         <motion.div className="relative" whileHover={{ scale: 1.01 }}>
           {/* Container chính */}
-          <div className="relative overflow-hidden rounded-none border bg-gradient-to-br from-white to-gray-50 shadow-sm transition-all duration-300">
+          <div className="relative overflow-hidden rounded-lg border bg-gradient-to-br from-white to-gray-50 shadow-sm transition-all duration-300">
             {/* Hiệu ứng progress khi loading */}
             <AnimatePresence>
               {isLoading && (
@@ -208,7 +208,7 @@ const BlueprintDownload: FC<Props> = ({ content }) => {
                 <Button
                   variant={buttonState === "success" ? "default" : "default"}
                   size="lg"
-                  className="relative w-full gap-2 overflow-hidden bg-primary !text-white hover:bg-primary/90 disabled:bg-primary/60 disabled:!text-white disabled:!opacity-100 [&_svg]:!text-white"
+                  className="relative w-full gap-2 overflow-hidden bg-primary !text-white hover:bg-primary/90 disabled:bg-primary/60 disabled:!text-white disabled:!opacity-100 [&_svg]:!text-white rounded-lg"
                   onClick={handleDownload}
                   disabled={
                     isLoading ||
@@ -277,7 +277,7 @@ const BlueprintDownload: FC<Props> = ({ content }) => {
                     exit={{ height: 0, opacity: 0 }}
                     className="overflow-hidden"
                   >
-                    <div className="mt-3 rounded-md p-3">
+                    <div className="mt-3 rounded-lg p-3">
                       <div className="flex items-center gap-2">
                         <p className="text-sm text-primary">
                           Bạn có thể tải lại sau {countdown.timeLeft} giây
